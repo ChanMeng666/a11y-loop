@@ -2,7 +2,7 @@
 
 ## Getting Help
 
-If you need help with A11y Loop, here are the available channels:
+If you need help with a11y-loop, here are the available channels:
 
 - **GitHub Discussions**: for general questions, feedback, and ideas, visit the [Discussions](https://github.com/ChanMeng666/a11y-loop/discussions) tab.
 - **GitHub Issues**: for bug reports and feature requests, [open an issue](https://github.com/ChanMeng666/a11y-loop/issues).

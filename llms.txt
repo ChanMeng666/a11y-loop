@@ -1,4 +1,4 @@
-# A11y Loop
+# a11y-loop
 
 > a11y-loop makes AI coding agents write accessible UI by default, then proves what it can prove with a real browser audit across the states it built — and tells you exactly what it could not check.
 
@@ -8,17 +8,23 @@ of the project for large language models and AI agents.
 ## About
 
 - Repository: https://github.com/ChanMeng666/a11y-loop
-- Primary stack: Node.js / JavaScript
-- License: MIT
+- Primary stack: Node.js / JavaScript (ESM), Playwright, axe-core
+- License: MIT (axe-core dependency is MPL-2.0 — see THIRD-PARTY-NOTICES.md)
+- Two layers: an Agent Skill (`skill/a11y-loop/`, open Agent Skills standard) for generation-time
+  rules, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff`) for browser-verified checks
 
 ## Key documents
 
-- [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): overview, features, installation, usage
+- [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): overview, features, honest coverage, installation, usage
 - [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
+- [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/SKILL.md): the agent-facing generation rules and audit-loop instructions
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
+- [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats
 - [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history
 
 ## For agents
 
 To work effectively here: read the README and AGENTS.md first, then follow the commands and
-conventions they describe. Prefer the project's own scripts over ad-hoc commands.
+conventions they describe. Prefer the project's own scripts over ad-hoc commands. If you are being
+asked to write UI code in a project that has installed the `a11y-loop` skill, read
+`skill/a11y-loop/SKILL.md` and treat it as binding, not this file.

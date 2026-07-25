@@ -1,4 +1,4 @@
-# Contributing to A11y Loop
+# Contributing to a11y-loop
 
 Thank you for your interest in contributing! This guide explains how to get involved.
 
@@ -40,9 +40,22 @@ Have an idea? [Open a feature request](https://github.com/ChanMeng666/a11y-loop/
 # Install dependencies
 npm install
 
+# Install the Chromium build the audit engine needs (required before tests or the CLI)
+npx playwright install chromium
+
 # Run the test suite
 npm test
 ```
+
+This project is not yet published to npm and has no GitHub remote pushed yet, so `npm install`
+means installing from your local clone. If you keep Playwright browsers off the system drive, set
+`PLAYWRIGHT_BROWSERS_PATH` before running `npx playwright install chromium`.
+
+When your change touches `demo/` or other seeded-violation fixtures, run the full
+audit-fix-re-audit loop to convergence (`a11y-loop diff` should report "Converged") before opening
+a PR — see [`AGENTS.md`](AGENTS.md) for the full discipline. Never soften the project's honesty
+language (no "compliant", "guarantees", "fully accessible", "no manual testing needed", or a single
+accessibility score) in code, docs, or output you add.
 
 ## Code of Conduct
 

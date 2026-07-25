@@ -34,6 +34,10 @@ Security concerns most likely to apply to this project include:
 - Injection or insecure handling of user-supplied input
 - Exposure or leakage of sensitive data
 - Dependencies with known vulnerabilities
+- `a11y-loop audit` launches a real Chromium instance against a URL, a local file, or an HTML
+  fragment you supply — treat any code path that could make it fetch or render untrusted,
+  attacker-controlled targets (e.g. an internal network URL passed through from an unvalidated
+  input) as in scope
 
 ## Attribution
 

@@ -1,15 +1,19 @@
-# AGENTS.md
+# AGENTS.md — a11y-loop
 
 This file provides project guidance to AI coding assistants (Claude Code, GitHub Copilot, Cursor,
 Codex, etc.) working with this repository. Read it before writing or changing any code.
 
 ## Project Overview
 
-A11y Loop — a11y-loop makes AI coding agents write accessible UI by default, then proves what it can prove with a real browser audit across the states it built — and tells you exactly what it could not check.
+a11y-loop — makes AI coding agents write accessible UI by default, then proves what it can prove
+with a real browser audit across the states it built, and tells you exactly what it could not
+check. Two layers: an Agent Skill (`skill/a11y-loop/`, open Agent Skills standard) supplying
+standing generation rules, and a Node CLI (`src/`) supplying `audit` / `contrast --fix` / `diff`.
 
-- **Primary language / stack:** Node.js / JavaScript
+- **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
 - **Repository:** https://github.com/ChanMeng666/a11y-loop
+- **Not yet published to npm; no GitHub remote pushed yet.** Work from a local clone.
 
 ## Commands
 
@@ -17,33 +21,82 @@ A11y Loop — a11y-loop makes AI coding agents write accessible UI by default, t
 # Install dependencies
 npm install
 
-# Run the test suite
-npm test
+# Install the Chromium build Playwright/the audit engine need — required before
+# any test or CLI run that touches a real browser
+npx playwright install chromium
+
+npm test                   # full suite (node --test)
+npm run test:unit          # unit tests only — no browser needed
+npm run test:integration   # integration tests only — launches real Chromium
+
+# Run the CLI directly from a checkout (no global install)
+node src/cli.js audit --html "<button>hi</button>"
 ```
 
 > If a command above is missing or wrong, check the project manifest (e.g. `package.json` scripts,
 > `Makefile`, `pyproject.toml`) and update this file — keeping AGENTS.md accurate is part of the work.
 
+If you keep Playwright browsers off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before both
+`npx playwright install chromium` and before running tests — the two must agree on the same path
+or Playwright will report a missing browser.
+
 ## Architecture & Conventions
 
-<!-- Fill in as the project grows. Good things to capture here:
-  - Where the entry points live and how the main pieces fit together
-  - Directory map (what lives where)
-  - Non-obvious patterns that diverge from framework defaults
-  - State management, data flow, key abstractions
-  - Naming/style conventions an agent should follow
--->
-
-- _Describe the high-level architecture here so an agent doesn't have to reverse-engineer it._
+- **`skill/a11y-loop/SKILL.md`** — the agent-facing standing instructions (generation rules +
+  the mandatory audit loop + honesty rules for talking about results). `skill/a11y-loop/references/`
+  holds the supporting docs (AI-specific failure modes, APG patterns, manual-testing guidance, a
+  WCAG 2.2 quick reference) loaded on demand, not upfront. `skill/a11y-loop/evals/` holds
+  trigger-accuracy and behavior evals for the skill itself.
+- **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
+  `src/commands/{audit,contrast,diff}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
+  `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
+- **`src/lib/`** — the engine: `axe-runner.js` (Playwright + axe-core orchestration across the
+  five rendering passes), `checks/` (a11y-loop's own checks that axe can't run — dialog focus
+  trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size),
+  `contrast-math.js` + `suggest-color.js` (WCAG contrast + OKLCh fix suggestions), `fingerprint.js`
+  (stable finding IDs for `diff`), `diff.js` (FIXED/NEW/REMAINING classification), `finding.js`
+  (the shared finding shape), `format/` (`json.js`, `human.js`, `sarif.js`, `checklist.js` — one
+  serializer per output format), `wcag-map.js` (rule → WCAG SC + ACT ID mapping), `serve.js` and
+  `browser-utils.js` (local static serving for `--file`/`--html`, and Playwright lifecycle helpers).
+- **`demo/before/` and `demo/after/`** — the seeded-violation fixture and its fixed counterpart
+  that back the README's headline claim and `test/integration/demo.test.js`. `VIOLATIONS.md` and
+  `FIXES.md` are the finding-by-finding record — keep them in sync with the actual markup if you
+  touch these files.
+- **`test/fixtures/manifest.json`** — the fixture matrix driving `test/integration/fixtures.test.js`:
+  one seeded-violation HTML fixture per failure class, declared in the manifest rather than
+  hardcoded per-test, so adding a fixture means adding a manifest entry plus the HTML file.
+- **`evals/`** — the baseline-vs-skilled benchmark (`benchmark-results.md` + `outputs/baseline/`,
+  `outputs/skilled/`). This is evidence, not fixtures — don't regenerate `outputs/` casually; a
+  real regeneration means re-running both generation conditions and re-auditing.
+- **`docs/research/`** — the market/competitive and standards/regulatory briefings that ground the
+  tool's claims and citations (coverage percentages, WCAG version mapping, credibility red lines).
+  Consult before changing any claim in README, SKILL.md, or CLI output about what the tool covers.
 
 ## Gotchas & Anti-patterns
 
-<!-- Silent traps that waste an agent's time. Examples:
-  - "Don't edit generated files in `dist/` — they're rebuilt by `npm run build`."
-  - "This framework version has breaking changes vs. your training data — check the local docs."
--->
-
-- _List the things that have bitten you (or an agent) before._
+- **Never weaken the honesty language.** No "compliant", "guarantees", "fully accessible",
+  "automatically fixes accessibility", "reduces legal risk", "no manual testing needed", or a
+  single accessibility score — anywhere: README, SKILL.md, CLI output, commit messages describing
+  the tool. This is a deliberate, researched red line (see `docs/research/market.md` §A2), not house
+  style you can relax for convenience.
+- **Don't audit over `file://`.** `--file` and `--html` serve content over local HTTP first —
+  axe-core and some browser APIs behave differently (or refuse to run) over `file://`.
+- **The `--interact` loop discipline:** when you touch demo pages or add interaction-state
+  fixtures, re-run the full audit-fix-re-audit loop to convergence (0 violations, `diff` reports
+  "Converged") before considering the change done — a partially-fixed demo undermines the tool's
+  own headline claim.
+- **axe tags are not cumulative.** `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` must each
+  be listed explicitly wherever axe options are configured; omitting one silently drops that tier's
+  coverage rather than erroring.
+- **The W3C ACT-rules-to-axe-core report is stale** (per `docs/research/standards.md` §4) — derive
+  ACT rule ID mappings from axe-core's own rule metadata at the pinned version, not from that
+  report.
+- **SARIF is secondary, and deliberately so** — see `src/lib/format/sarif.js`'s own comment on why
+  GitHub Code Scanning drops URL+selector-located results. Don't "fix" this by inventing fake file
+  paths to satisfy Code Scanning; that would misrepresent the findings' actual location.
+- **Fixture tests are manifest-driven.** Adding a new seeded-violation fixture without a
+  corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
+  `test/integration/fixtures.test.js`.
 
 ## Reading Order
 

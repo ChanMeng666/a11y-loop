@@ -1,6 +1,6 @@
 # Project Governance
 
-This document describes how **A11y Loop** is governed and how decisions are made.
+This document describes how **a11y-loop** is governed and how decisions are made.
 
 ## Overview
 
