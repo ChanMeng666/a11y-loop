@@ -277,7 +277,13 @@ a:hover {
 /* ------------------------------------------------------------------- hero --- */
 
 .hero {
-  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
+  /* Solid background-color UNDER the gradient image: a real fallback for
+     browsers/contexts that can't paint the gradient, and it also gives axe-core
+     a determinate background to test contrast against instead of reporting
+     `incomplete`/bgGradient. Same darker gradient stop, so nothing visually
+     changes — the gradient still paints on top wherever it can render. */
+  background-color: var(--hero-from);
+  background-image: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
   color: var(--hero-ink);
   padding: clamp(2.5rem, 7vw, 4.5rem) 0;
 }

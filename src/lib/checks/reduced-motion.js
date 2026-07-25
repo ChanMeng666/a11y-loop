@@ -105,6 +105,14 @@ export function reducedMotionFindings(samples, ctx) {
 
 /**
  * Sample computed animation state. Only meaningful on the reduced-motion pass.
+ *
+ * Uses isRendered rather than isVisible deliberately: SC 2.2.2 is about
+ * motion a SIGHTED user can see, which has nothing to do with the
+ * accessibility tree. A moving element inside an aria-hidden container (a
+ * decorative marquee/ticker, say) is still a real vestibular hazard and still
+ * needs to stop under prefers-reduced-motion, even though it is correctly
+ * invisible to a screen reader.
+ *
  * @param {import('playwright').Page} page
  */
 export async function surveyAnimations(page) {
@@ -112,7 +120,7 @@ export async function surveyAnimations(page) {
     const helpers = window.__a11yLoop;
     const samples = [];
     for (const el of document.querySelectorAll('*')) {
-      if (!helpers.isVisible(el)) continue;
+      if (!helpers.isRendered(el)) continue;
       const style = getComputedStyle(el);
       if (!style.animationName || style.animationName === 'none') continue;
       samples.push({

@@ -156,17 +156,25 @@ export async function hasVisibleDialog(page) {
 }
 
 /**
- * Probe the first visible dialog: initial focus, focus trap, Escape, focus
- * return. This drives the keyboard and therefore changes page state, so the
- * caller must run it last in a pass.
+ * Snapshot the first visible dialog's identity and whether focus was moved
+ * into it — BEFORE anything else has a chance to touch focus.
+ *
+ * This must be called immediately after whatever opened the dialog (a click,
+ * or an --interact state's setup function), and before any other survey runs.
+ * The keyboard and focus-visibility surveys each walk the page with real Tab
+ * presses, which moves focus around; if "was focus moved into the dialog on
+ * open" were checked afterwards, it would be answering a different question —
+ * "where did those OTHER surveys leave focus" — and a page that sets initial
+ * focus correctly would be reported as though it had not.
  *
  * @param {import('playwright').Page} page
  * @param {{presumedTrigger?:string|null}} [opts]
+ * @returns {Promise<{selector:string, html:string, trigger:string|null, focusMovedIntoDialog:boolean, initialFocus:string|null}|null>}
  */
-export async function surveyDialog(page, opts = {}) {
+export async function captureDialogInitialState(page, opts = {}) {
   const { presumedTrigger = null } = opts;
 
-  const found = await page.evaluate(
+  return page.evaluate(
     ({ selector, presumed }) => {
       const helpers = window.__a11yLoop;
       const dialog = Array.from(document.querySelectorAll(selector)).find((el) =>
@@ -194,35 +202,68 @@ export async function surveyDialog(page, opts = {}) {
     },
     { selector: DIALOG_SELECTOR, presumed: presumedTrigger },
   );
+}
 
+/**
+ * Probe focus trap, Escape, and focus return, given a dialog snapshot already
+ * captured by `captureDialogInitialState`. This drives the keyboard and
+ * therefore changes page state (and, if Escape closes the dialog, closes it),
+ * so the caller must run it last in a pass — but it must be handed the
+ * initial-focus fact rather than re-deriving it, for the reason above.
+ *
+ * @param {import('playwright').Page} page
+ * @param {Awaited<ReturnType<typeof captureDialogInitialState>>} found
+ */
+export async function surveyDialog(page, found) {
   if (!found) return null;
 
   // Focus trap: Tab repeatedly and watch for focus leaving the dialog.
+  //
+  // Real Chromium, for a genuinely native <dialog> opened with showModal(),
+  // transiently moves document.activeElement to document.body for exactly
+  // one Tab press when wrapping past the dialog's last (or before its first)
+  // focusable descendant, then redirects back inside on the very next press —
+  // body itself stays inert throughout, so nothing is actually reachable
+  // there. Treating that single step as an escape would flag a correctly
+  // trapped native dialog as broken. It is only a real failure if landing
+  // outside the dialog is on a genuine element, or if it does not recover on
+  // the immediately following press.
   let focusTrapped = true;
   let escapedTo = null;
+  let sawUnconfirmedTransient = false;
   for (let i = 0; i < TRAP_PROBE_STEPS; i++) {
     await page.keyboard.press('Tab');
-    const outside = await page.evaluate(
+    const check = await page.evaluate(
       ({ selector }) => {
         const helpers = window.__a11yLoop;
         const dialog = Array.from(document.querySelectorAll(selector)).find((el) =>
           helpers.isVisible(el),
         );
         const active = document.activeElement;
-        if (!dialog || !active) return null;
-        if (dialog.contains(active)) return null;
-        if (active === document.body || active === document.documentElement) {
-          return 'the browser UI / document root';
-        }
-        return helpers.cssPath(active);
+        if (!dialog || !active) return { inside: false, transient: false, label: null };
+        if (dialog.contains(active)) return { inside: true, transient: false, label: null };
+        const isBodyOrRoot = active === document.body || active === document.documentElement;
+        const stillModal = typeof dialog.matches === 'function' && dialog.matches(':modal');
+        return {
+          inside: false,
+          transient: isBodyOrRoot && stillModal,
+          label: isBodyOrRoot ? 'the browser UI / document root' : helpers.cssPath(active),
+        };
       },
       { selector: DIALOG_SELECTOR },
     );
-    if (outside) {
-      focusTrapped = false;
-      escapedTo = outside;
-      break;
+
+    if (check.inside) {
+      sawUnconfirmedTransient = false;
+      continue;
     }
+    if (check.transient && !sawUnconfirmedTransient) {
+      sawUnconfirmedTransient = true;
+      continue;
+    }
+    focusTrapped = false;
+    escapedTo = check.label;
+    break;
   }
 
   await page.keyboard.press('Escape');

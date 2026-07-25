@@ -105,17 +105,53 @@ export const HELPERS_SOURCE = `
     return (el.textContent || '').replace(/\\s+/g, ' ').trim();
   }
 
-  /** Is the element rendered and not hidden from everyone? */
-  function isVisible(el) {
+  /** Is the element actually rendered — regardless of who it is hidden from? */
+  function isRendered(el) {
     if (!el || el.nodeType !== 1) return false;
     const style = getComputedStyle(el);
     if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false;
     if (Number(style.opacity) === 0) return false;
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 && rect.height === 0) return false;
-    if (el.closest('[aria-hidden="true"]')) return false;
     return true;
   }
+
+  /**
+   * Is the element rendered AND exposed to assistive technology / keyboard
+   * navigation? Most checks want this — an aria-hidden element is not
+   * reachable, not announced, not a real target. Motion is the exception:
+   * SC 2.2.2 is about what a SIGHTED user sees moving on screen, which has
+   * nothing to do with the accessibility tree, so the reduced-motion check
+   * uses isRendered directly rather than this.
+   */
+  function isVisible(el) {
+    if (!isRendered(el)) return false;
+    if (el.closest('[aria-hidden="true"]')) return false;
+    // A native <dialog> opened with showModal() (or a fullscreen element)
+    // makes everything outside itself genuinely inert: unclickable,
+    // unfocusable, unreachable by Tab, whatever the DOM and CSS say. Without
+    // this, every check that surveys "visible" elements would flood a report
+    // with the rest of the page once a modal is open — not a real defect,
+    // just this helper not knowing the platform already handled it.
+    var modal = document.querySelector(':modal');
+    if (modal && !modal.contains(el)) return false;
+    return true;
+  }
+
+  // Record the CSS path of whatever was last clicked, for the whole life of
+  // the page. This is how a dialog check identifies "the trigger" when
+  // nothing declares it explicitly (no aria-controls / data-dialog-target):
+  // a click is a far more reliable signal than "whatever has focus right
+  // now", because a well-behaved dialog moves focus into itself as soon as
+  // it opens, which overwrites the one clue that would otherwise identify
+  // the trigger by the time anything gets a chance to look.
+  document.addEventListener(
+    'click',
+    function (event) {
+      window.__a11yLoopLastClick = cssPath(event.target);
+    },
+    true,
+  );
 
   /** Elements a user can interact with — the population for target-size etc. */
   function interactiveElements() {
@@ -154,11 +190,30 @@ export const HELPERS_SOURCE = `
     return 'rgb(255, 255, 255)';
   }
 
+  /**
+   * Where a forward Tab walk should be scoped: inside the open modal dialog
+   * if there is one (everything outside it is inert and cannot be reached),
+   * otherwise the whole document. tabbable() itself has no idea a native
+   * dialog element made the rest of the page inert, so callers must pass
+   * this as the container rather than always walking document.body.
+   */
+  function tabbableRoot() {
+    return document.querySelector(':modal') || document.body;
+  }
+
+  /** The CSS path of whatever was last clicked, or null if nothing was. */
+  function lastClickSelector() {
+    return window.__a11yLoopLastClick || null;
+  }
+
   window.__a11yLoop = {
     cssPath: cssPath,
     shortHtml: shortHtml,
     accessibleName: accessibleName,
+    isRendered: isRendered,
     isVisible: isVisible,
+    tabbableRoot: tabbableRoot,
+    lastClickSelector: lastClickSelector,
     interactiveElements: interactiveElements,
     backdropColor: backdropColor,
   };

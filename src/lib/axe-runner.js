@@ -26,8 +26,10 @@ import { surveyTargets, targetSizeFindings } from './checks/target-size.js';
 import { surveyAnimations, reducedMotionFindings } from './checks/reduced-motion.js';
 import { surveyLinks, linkTextFindings } from './checks/link-text.js';
 import { surveyReflow, reflowFindings, REFLOW_VIEWPORT } from './checks/reflow.js';
+import { surveyClickableNonInteractive, divButtonFindings } from './checks/div-button.js';
 import {
   hasVisibleDialog,
+  captureDialogInitialState,
   surveyDialog,
   dialogFindings,
   surveyRoleButtons,
@@ -234,10 +236,22 @@ function buildAxe(page, { includeBestPractice }) {
 
 /**
  * Own checks that only make sense once, on a normally-rendered page.
- * Interaction-driven probes run last because they change page state.
+ *
+ * The dialog's initial-focus state is captured FIRST, before anything else
+ * runs: the keyboard and focus-visibility surveys each drive real Tab presses
+ * to walk the page, which moves focus around, and "was focus moved into the
+ * dialog on open" must answer for the moment the dialog opened — not for
+ * wherever those other surveys happened to leave focus afterwards. The
+ * interactive probes (trap, Escape, focus-return) still run last, since
+ * pressing Escape may close the dialog and change page state for anything
+ * that ran after it.
  */
 async function runDefaultPassChecks(page, ctx) {
   const findings = [];
+
+  const dialogInitial = (await hasVisibleDialog(page))
+    ? await captureDialogInitialState(page, { presumedTrigger: ctx.presumedTrigger ?? null })
+    : null;
 
   const keyboard = await surveyKeyboard(page);
   findings.push(...keyboardFindings(keyboard, ctx));
@@ -251,11 +265,14 @@ async function runDefaultPassChecks(page, ctx) {
   const links = await surveyLinks(page);
   findings.push(...linkTextFindings(links, ctx));
 
+  const clickableDivs = await surveyClickableNonInteractive(page);
+  findings.push(...divButtonFindings(clickableDivs, ctx));
+
   const roleButtons = await surveyRoleButtons(page);
   findings.push(...roleButtonFindings(roleButtons, ctx));
 
-  if (await hasVisibleDialog(page)) {
-    const dialog = await surveyDialog(page, { presumedTrigger: ctx.presumedTrigger ?? null });
+  if (dialogInitial) {
+    const dialog = await surveyDialog(page, dialogInitial);
     findings.push(...dialogFindings(dialog, ctx));
   }
 
@@ -335,11 +352,11 @@ export async function runAudit({ target, options = {} }) {
         await setup(page);
         await page.waitForTimeout(150);
 
-        const presumedTrigger = await page.evaluate(() => {
-          const active = document.activeElement;
-          if (!active || active === document.body) return null;
-          return window.__a11yLoop.cssPath(active);
-        });
+        // The last element clicked, not whatever currently has focus: a
+        // well-behaved dialog moves focus into itself as soon as it opens,
+        // which would overwrite the one clue that identifies the trigger by
+        // the time anything looked at document.activeElement.
+        const presumedTrigger = await page.evaluate(() => window.__a11yLoop.lastClickSelector());
 
         const axeResults = await buildAxe(page, { includeBestPractice: bestPractice }).analyze();
         const stateFindings = [

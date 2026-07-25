@@ -33,6 +33,7 @@ import {
 } from '../../src/lib/checks/link-text.js';
 import { reflowFindings } from '../../src/lib/checks/reflow.js';
 import { dialogFindings, roleButtonFindings } from '../../src/lib/checks/dialog.js';
+import { divButtonFindings } from '../../src/lib/checks/div-button.js';
 import { SEVERITY } from '../../src/lib/finding.js';
 
 const ctx = { passes: ['default'], state: null };
@@ -134,6 +135,49 @@ describe('keyboard: tab order diff', () => {
     assert.equal(unreachable[0].severity, SEVERITY.VIOLATION);
     assert.equal(unreachable[0].wcag.sc, '2.1.1');
     assert.equal(unreachable[0].html, '<b>');
+  });
+
+  test('a positive-tabindex element never also reports as keyboard-unreachable', () => {
+    // Real Chromium behaviour: elements with a positive tabindex sort into an
+    // earlier phase of the focus order than a forward-only walk anchored at
+    // document start can ever reach, so diffTabOrder legitimately calls them
+    // "unreachable" from that walk's point of view. positive-tabindex already
+    // reports the real defect; keyboard-unreachable must not repeat it under a
+    // second, misleading rule id.
+    const findings = keyboardFindings(
+      {
+        expected: ['#a', '#b', '#c'],
+        observed: ['#c'],
+        expectedDetails: [
+          { selector: '#a', html: '<input tabindex="1">' },
+          { selector: '#b', html: '<input tabindex="2">' },
+        ],
+        positiveTabindex: [
+          { selector: '#a', html: '<input tabindex="1">', tabindex: '1' },
+          { selector: '#b', html: '<input tabindex="2">', tabindex: '2' },
+        ],
+      },
+      ctx,
+    );
+    const ids = findings.map((f) => f.ruleId);
+    assert.equal(ids.filter((id) => id === 'positive-tabindex').length, 2);
+    assert.equal(ids.includes('keyboard-unreachable'), false);
+  });
+
+  test('an unreachable element with no positive tabindex is still reported', () => {
+    const findings = keyboardFindings(
+      {
+        expected: ['#a', '#b'],
+        observed: ['#a'],
+        expectedDetails: [{ selector: '#b', html: '<button>b</button>' }],
+        positiveTabindex: [],
+      },
+      ctx,
+    );
+    assert.deepEqual(
+      findings.map((f) => f.ruleId),
+      ['keyboard-unreachable'],
+    );
   });
 });
 
@@ -576,6 +620,40 @@ describe('dialog behaviour', () => {
       ctx,
     );
     assert.equal(findings.length, 3);
+  });
+});
+
+describe('clickable non-interactive elements (div-button)', () => {
+  test('flags an element with a click handler and no keyboard path', () => {
+    const [finding] = divButtonFindings(
+      [{ selector: '.btn', html: '<div class="btn" onclick="x()">Continue</div>', tag: 'DIV', name: 'Continue' }],
+      ctx,
+    );
+    assert.equal(finding.ruleId, 'div-button');
+    assert.equal(finding.severity, SEVERITY.VIOLATION);
+    assert.equal(finding.wcag.sc, '2.1.1');
+    assert.equal(finding.impact, 'critical');
+    assert.match(finding.message, /no role, no.*tabindex/);
+    assert.match(finding.message, /real <button>/);
+  });
+
+  test('reports one finding per element, carrying tag and name in data', () => {
+    const findings = divButtonFindings(
+      [
+        { selector: '.a', html: '<div onclick="x()">A</div>', tag: 'DIV', name: 'A' },
+        { selector: '.b', html: '<span onclick="x()">B</span>', tag: 'SPAN', name: 'B' },
+      ],
+      ctx,
+    );
+    assert.equal(findings.length, 2);
+    assert.equal(findings[0].data.tag, 'DIV');
+    assert.equal(findings[1].data.tag, 'SPAN');
+    assert.match(findings[1].message, /<span>/);
+  });
+
+  test('an empty survey produces no findings', () => {
+    assert.deepEqual(divButtonFindings([], ctx), []);
+    assert.deepEqual(divButtonFindings(undefined, ctx), []);
   });
 });
 

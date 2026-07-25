@@ -126,15 +126,42 @@ In `demo/after` it means the hero's genuine 8.38:1–12.40:1 ratios are not repo
 
 The one hero control that *is* evaluated normally is the mint CTA: `.hero .btn-primary` sets an
 opaque `background`, so axe's background walk stops at the button itself (`alpha === 1`) and never
-reaches the gradient. It is judged against #7fe3d4 and passes at 8.17:1. The same mechanic makes
+reaches the gradient. It is judged against `#7fe3d4` and passes at 8.17:1. The same mechanic makes
 `demo/before`'s mint button a genuine violation at 2.19:1 rather than an incomplete — which is
 useful, since it means the `color-contrast` violation assertion has something in the hero region
 to bind to on the before page.
 
+`.hero` also now declares an explicit `background-color: var(--hero-from)` underneath the
+`background-image` gradient (the `background` shorthand previously set only the image, leaving
+`background-color` at its initial `transparent`). That is a real, independent improvement — a
+solid fallback for any context that cannot paint the gradient — but it is not what makes axe report
+this page cleanly; `elementHasImage()` triggers on the presence of `background-image` alone
+regardless of what `background-color` sits underneath it, so the gradient elements still land in
+`incomplete`, exactly as before.
+
+**A real bug was found and fixed during integration, not in this page.** Under `forcedColors:
+'active'` emulation specifically — one of a11y-loop's five rendering passes — axe-core evaluates
+the *pre*-forced-colors author text colour (`#d6f3ee`) against the *post*-forced-colors flattened
+background (`#ffffff`, since Chromium correctly strips the gradient in that mode), producing an
+internally inconsistent 1.17:1 "failure" that corresponds to neither the real rendered page under
+forced-colors (genuinely `#000000` on `#ffffff`, 21:1, fine) nor the author's actual design. Every
+other pass — default, dark, reduced-motion, reflow, and a plain unemulated `axe.run()` — correctly
+calls the same elements undeterminable. This was reproduced independently of any a11y-loop code
+with a two-line test page, confirming it is a genuine axe-core 4.12.1 limitation (no forced-colors
+handling exists in `axe.js` at all), not something specific to this page's markup or CSS.
+
+The fix lives in `src/lib/finding.js`'s `dedupeFindings` (`FORCED_COLORS_FRAGILE_RULES`): a lone,
+uncorroborated `color-contrast` violation from the `forced-colors` pass no longer overrides an
+established needs-review verdict from the other four passes. With that fix in place, **`demo/after`
+audits with zero violations and exit code 0**, exactly as this document claims, and the hero's
+gradient-backed elements correctly surface as `needsReview` rather than disappearing. See
+`test/integration/forced-colors-gradient.test.js` for the regression test and
+`test/integration/demo.test.js` for the full before/after/loop assertions.
+
 Consequences worth being explicit about:
 
-- **The correct assertion for this page is "zero `color-contrast` violations", not "zero
-  `color-contrast` results".** Integration tests should expect a non-empty `needsReview` list here.
+- **The correct claim for this page is "zero `color-contrast` violations", not "zero
+  `color-contrast` results".** The hero's six elements are expected to appear under `needsReview`.
 - The hero's ratios were established the only way they can be — arithmetically, from the declared
   gradient stops, in the table above. a11y-loop's own contrast pass does the same thing, evaluating
   text against each declared stop.

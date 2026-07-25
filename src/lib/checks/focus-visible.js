@@ -240,7 +240,7 @@ export const MAX_FOCUS_STEPS = 40;
 export async function surveyFocusVisibility(page) {
   const resting = await page.evaluate((watched) => {
     const helpers = window.__a11yLoop;
-    const nodes = window.tabbable ? window.tabbable.tabbable(document.body) : [];
+    const nodes = window.tabbable ? window.tabbable.tabbable(helpers.tabbableRoot()) : [];
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     const read = (el) => {
       const style = getComputedStyle(el);

@@ -173,6 +173,47 @@ describe('dedupeFindings', () => {
     assert.equal(merged[0].message, 'definitely');
   });
 
+  test('a lone forced-colors violation does not override an established needs-review verdict', () => {
+    // Verified real behaviour (not assumed): axe-core's color-contrast rule
+    // misreads the forced-colors-substituted foreground colour against a
+    // flattened gradient background, producing a false violation that every
+    // other pass (and a plain default axe.run()) correctly calls
+    // undeterminable. See the comment on FORCED_COLORS_FRAGILE_RULES.
+    const merged = dedupeFindings([
+      finding({ severity: SEVERITY.NEEDS_REVIEW, passes: ['default'], message: 'undeterminable' }),
+      finding({ severity: SEVERITY.NEEDS_REVIEW, passes: ['dark'], message: 'undeterminable' }),
+      finding({ severity: SEVERITY.VIOLATION, passes: ['forced-colors'], message: 'false positive' }),
+    ]);
+    assert.equal(merged.length, 1);
+    assert.equal(merged[0].severity, SEVERITY.NEEDS_REVIEW);
+    assert.equal(merged[0].message, 'undeterminable');
+    assert.deepEqual(merged[0].passes, ['default', 'dark', 'forced-colors']);
+  });
+
+  test('a forced-colors violation corroborated by another pass still wins', () => {
+    const merged = dedupeFindings([
+      finding({ severity: SEVERITY.NEEDS_REVIEW, passes: ['default'], message: 'undeterminable' }),
+      finding({ severity: SEVERITY.VIOLATION, passes: ['dark'], message: 'real failure' }),
+      finding({ severity: SEVERITY.VIOLATION, passes: ['forced-colors'], message: 'still failing' }),
+    ]);
+    assert.equal(merged[0].severity, SEVERITY.VIOLATION);
+  });
+
+  test('the forced-colors exception is scoped to color-contrast rules only', () => {
+    const merged = dedupeFindings([
+      finding({ ruleId: 'other-rule', severity: SEVERITY.NEEDS_REVIEW, passes: ['default'] }),
+      finding({ ruleId: 'other-rule', severity: SEVERITY.VIOLATION, passes: ['forced-colors'] }),
+    ]);
+    assert.equal(merged[0].severity, SEVERITY.VIOLATION);
+  });
+
+  test('a forced-colors-only violation with no prior sighting is still reported as a violation', () => {
+    // Nothing to compare against yet, so there is no established
+    // needs-review verdict to protect — this is the ordinary, unaffected case.
+    const merged = dedupeFindings([finding({ severity: SEVERITY.VIOLATION, passes: ['forced-colors'] })]);
+    assert.equal(merged[0].severity, SEVERITY.VIOLATION);
+  });
+
   test('suggestions survive the merge even if the first sighting had none', () => {
     const merged = dedupeFindings([
       finding({ passes: ['default'] }),

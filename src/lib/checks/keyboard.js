@@ -66,7 +66,10 @@ export function keyboardFindings(survey, ctx) {
   const findings = [];
   const { passes = [], state = null } = ctx ?? {};
 
-  for (const el of findPositiveTabindex(survey.positiveTabindex ?? [])) {
+  const positiveTabindex = findPositiveTabindex(survey.positiveTabindex ?? []);
+  const positiveTabindexSelectors = new Set(positiveTabindex.map((el) => el.selector));
+
+  for (const el of positiveTabindex) {
     findings.push(
       makeFinding({
         ruleId: 'positive-tabindex',
@@ -90,7 +93,15 @@ export function keyboardFindings(survey, ctx) {
   const detailFor = (selector) =>
     (survey.expectedDetails ?? []).find((d) => d.selector === selector)?.html ?? '';
 
-  for (const selector of diff.unreachable) {
+  // A positive-tabindex element sorts into an earlier phase of the browser's
+  // focus order than anything a forward-only walk anchored at document start
+  // can reach — the walk can never observe it, however reachable it really is,
+  // because there is no tabindex value that sorts before a positive one. That
+  // makes it look "unreachable" when the real defect (and the only one worth
+  // reporting) is already captured, more precisely, by positive-tabindex above.
+  // Reporting both would double-count the same element under two rule ids and
+  // mislabel a "reachable too early" problem as "unreachable".
+  for (const selector of diff.unreachable.filter((sel) => !positiveTabindexSelectors.has(sel))) {
     findings.push(
       makeFinding({
         ruleId: 'keyboard-unreachable',
@@ -135,13 +146,19 @@ export function keyboardFindings(survey, ctx) {
 }
 
 /**
- * Put the sequential focus navigation starting point at the top of the document.
+ * Put the sequential focus navigation starting point at the top of the
+ * currently reachable region.
  *
  * `blur()` alone is not enough: Chromium remembers the blurred element as the
  * starting point, so the next Tab continues from there and the elements BEFORE it
  * are never visited — which looks exactly like an unreachable control. This
  * matters whenever a state setup function has clicked something, which is most of
  * the time. A focused sentinel at the start of the body fixes the origin.
+ *
+ * "Top of the document" is not always `document.body`: if a native `<dialog>`
+ * is open, everything outside it is inert, so a sentinel inserted into `body`
+ * could never be focused at all. The sentinel goes into whichever element
+ * `tabbableRoot()` says is actually reachable right now.
  *
  * @param {import('playwright').Page} page
  */
@@ -153,7 +170,8 @@ export async function resetFocusToDocumentStart(page) {
     sentinel.setAttribute('data-a11y-loop-sentinel', '');
     sentinel.style.cssText =
       'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;';
-    document.body.insertBefore(sentinel, document.body.firstChild);
+    const root = window.__a11yLoop ? window.__a11yLoop.tabbableRoot() : document.body;
+    root.insertBefore(sentinel, root.firstChild);
     sentinel.focus();
   });
 }
@@ -170,7 +188,7 @@ export async function clearFocusSentinel(page) {
 export async function surveyKeyboard(page) {
   const expectedDetails = await page.evaluate(() => {
     const helpers = window.__a11yLoop;
-    const nodes = window.tabbable ? window.tabbable.tabbable(document.body) : [];
+    const nodes = window.tabbable ? window.tabbable.tabbable(helpers.tabbableRoot()) : [];
     return nodes.map((el) => ({
       selector: helpers.cssPath(el),
       html: helpers.shortHtml(el),
