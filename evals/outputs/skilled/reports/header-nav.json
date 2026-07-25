@@ -1,0 +1,137 @@
+{
+  "tool": {
+    "name": "a11y-loop",
+    "version": "0.1.0",
+    "axeCoreVersion": "4.12.1",
+    "browser": "Chromium",
+    "browserVersion": "151.0.7922.34",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "timestamp": "2026-07-25T22:56:17.064Z",
+    "passesRun": [
+      "default",
+      "dark",
+      "forced-colors",
+      "reduced-motion",
+      "reflow"
+    ],
+    "statesRun": [
+      "search-open",
+      "mobile-drawer-open"
+    ]
+  },
+  "target": {
+    "type": "file",
+    "value": "evals/outputs/skilled/header-nav.html",
+    "servedAt": "http://127.0.0.1:63509/"
+  },
+  "summary": {
+    "violations": 0,
+    "needsReview": 0,
+    "bestPractice": 0,
+    "manualChecklist": 10,
+    "byImpact": {},
+    "criteriaAffected": [],
+    "wcag22OnlyViolations": 0,
+    "verdict": "No automatically detectable failures",
+    "target": "WCAG 2.2 Level AA",
+    "coverage": {
+      "statement": "Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.",
+      "issueVolumePercent": 57,
+      "issueVolumeDenominator": "instances of individual issues found, per Deque’s 2,000-audit study",
+      "criteriaWithAnyAutomatedRulePercent": 31,
+      "criteriaWithAnyAutomatedRuleDenominator": "17 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaReliablyAutomatedPercent": 13,
+      "criteriaReliablyAutomatedDenominator": "7 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaUntestableByAnyTool": 9,
+      "criteriaRequiringHumanVerification": 13
+    }
+  },
+  "findings": {
+    "violations": [],
+    "needsReview": [],
+    "bestPractice": []
+  },
+  "manualChecklist": [
+    {
+      "id": "assistive-technology",
+      "sc": null,
+      "text": "Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).",
+      "why": "No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification."
+    },
+    {
+      "id": "focus-order-logic",
+      "sc": "2.4.3",
+      "text": "Tab through the page and confirm the focus order is logical, not merely present.",
+      "why": "a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment."
+    },
+    {
+      "id": "keyboard-only-walkthrough",
+      "sc": "2.1.1",
+      "text": "Complete the page’s main task using only the keyboard.",
+      "why": "Automated checks probe individual controls; they do not know what the user is trying to accomplish."
+    },
+    {
+      "id": "form-error-quality",
+      "sc": "3.3.3",
+      "text": "Submit the form with 1 field in an invalid state and confirm each error is announced, identifies the field, and says how to fix it.",
+      "why": "SC 3.3.1 and 3.3.3 are about whether an error message is actionable, which no tool can assess. Error states also usually only exist after interaction — audit them with --interact."
+    },
+    {
+      "id": "label-clarity",
+      "sc": "2.4.6",
+      "text": "Confirm every field label describes what to enter, not just that a label exists.",
+      "why": "A label of \"Field 1\" satisfies every automated rule and tells the user nothing."
+    },
+    {
+      "id": "link-purpose",
+      "sc": "2.4.4",
+      "text": "Read each link text out of context and confirm the destination is still clear.",
+      "why": "SC 2.4.4 permits vague link text when the surrounding context supplies the purpose — whether it does is a judgment call."
+    },
+    {
+      "id": "heading-semantics",
+      "sc": "1.3.1",
+      "text": "Confirm the heading structure describes the content hierarchy, not the visual sizes.",
+      "why": "Automation can detect skipped levels but not whether the outline reflects the actual structure of the page."
+    },
+    {
+      "id": "aria-appropriateness",
+      "sc": "4.1.2",
+      "text": "Review the 14 ARIA attributes on this page: is each one appropriate, or merely valid?",
+      "why": "Pages using ARIA average more accessibility errors than pages without it (WebAIM Million 2026: 59.1 vs 42.0). A role is a promise — role=\"button\" commits to the full keyboard behaviour of a button. No ARIA is better than bad ARIA."
+    },
+    {
+      "id": "color-not-only-cue",
+      "sc": "1.4.1",
+      "text": "Confirm colour is never the only way information is conveyed.",
+      "why": "SC 1.4.1 is one of the criteria no tool can test: recognising that \"the required fields are in red\" needs comprehension of the content."
+    },
+    {
+      "id": "focus-not-obscured",
+      "sc": "2.4.11",
+      "text": "Tab through the page and confirm the focused element is never hidden behind sticky or fixed content.",
+      "why": "SC 2.4.11 (new in WCAG 2.2) has no automated rule. This page has position:sticky or position:fixed elements, which are the usual cause."
+    }
+  ],
+  "pageInventory": {
+    "images": 0,
+    "formFields": 1,
+    "links": 12,
+    "headings": 2,
+    "videos": 0,
+    "audios": 0,
+    "tables": 0,
+    "iframes": 0,
+    "dialogs": 0,
+    "buttons": 4,
+    "ariaAttributes": 14,
+    "animations": 0,
+    "stickyElements": 2,
+    "lang": "en",
+    "title": "Header navigation demo"
+  }
+}

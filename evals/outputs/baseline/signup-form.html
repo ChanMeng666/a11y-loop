@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay in the loop — Newsletter Signup</title>
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --bg: #f5f6fb;
+    --card-bg: #ffffff;
+    --text: #1f2333;
+    --muted: #6b7280;
+    --border: #e2e4ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #eef1ff 0%, #f5f6fb 60%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    padding: 24px;
+  }
+  .card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 40px 36px;
+    box-shadow: 0 20px 50px rgba(31, 35, 51, 0.08);
+  }
+  .card h1 {
+    font-size: 1.6rem;
+    margin: 0 0 6px;
+  }
+  .card p.sub {
+    color: var(--muted);
+    margin: 0 0 28px;
+    font-size: 0.95rem;
+  }
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    margin-top: 18px;
+  }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"],
+  input[type="email"],
+  select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #fafbff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    background: #fff;
+  }
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .checkbox-row input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+  }
+  .checkbox-row label {
+    margin: 0;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  button {
+    width: 100%;
+    margin-top: 26px;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { background: var(--primary-dark); }
+  button:active { transform: scale(0.99); }
+  .success {
+    display: none;
+    margin-top: 18px;
+    padding: 12px 14px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+  .success.show { display: block; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Join our newsletter</h1>
+    <p class="sub">Product updates, tips, and the occasional discount. No spam, unsubscribe anytime.</p>
+    <form id="signupForm">
+      <label for="name">Full name</label>
+      <input type="text" id="name" name="name" placeholder="Jane Doe" required>
+
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+
+      <label for="country">Country</label>
+      <select id="country" name="country" required>
+        <option value="" disabled selected>Select your country</option>
+        <option value="us">United States</option>
+        <option value="ca">Canada</option>
+        <option value="uk">United Kingdom</option>
+        <option value="au">Australia</option>
+        <option value="de">Germany</option>
+        <option value="fr">France</option>
+        <option value="jp">Japan</option>
+        <option value="cn">China</option>
+        <option value="in">India</option>
+        <option value="other">Other</option>
+      </select>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="consent" name="consent" required>
+        <label for="consent">I agree to receive marketing emails and understand I can unsubscribe at any time.</label>
+      </div>
+
+      <button type="submit">Subscribe</button>
+      <div class="success" id="successMsg">You're in! Check your inbox for a confirmation email.</div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      document.getElementById('successMsg').classList.add('show');
+      this.reset();
+    });
+  </script>
+</body>
+</html>

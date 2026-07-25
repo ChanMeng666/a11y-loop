@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscribe to our newsletter</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7fb;
+    --surface: #ffffff;
+    --text: #1a1a2e;
+    --muted: #52526b;
+    --border: #c9c9d8;
+    --accent: #4f46e5;
+    --accent-text: #ffffff;
+    --focus-ring: #1a1a2e;
+    --error: #b3261e;
+    --error-bg: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14141f;
+      --surface: #1f1f2e;
+      --text: #f1f1f7;
+      --muted: #c3c3d6;
+      --border: #46465c;
+      --accent: #a5b4fc;
+      --accent-text: #14142b;
+      --focus-ring: #ffffff;
+      --error: #ff8a80;
+      --error-bg: #3a1c1c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  main {
+    width: 100%;
+    max-width: 30rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+  }
+  .intro {
+    margin: 0 0 1.5rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .field {
+    margin-bottom: 1.25rem;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+  }
+  input[type="text"],
+  input[type="email"],
+  select {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 1rem;
+    min-height: 2.75rem;
+  }
+  .hint {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .error-message {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    color: var(--error);
+    display: none;
+  }
+  .field.invalid .error-message {
+    display: block;
+  }
+  .field.invalid input {
+    border-color: var(--error);
+  }
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .consent input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    min-width: 24px;
+    min-height: 24px;
+    margin-top: 0.1rem;
+    accent-color: var(--accent);
+  }
+  .consent label {
+    font-weight: 400;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  button[type="submit"] {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    background-color: var(--accent);
+    color: var(--accent-text);
+    border: 2px solid var(--accent);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button[type="submit"]:hover {
+    filter: brightness(1.08);
+  }
+  @media (forced-colors: active) {
+    button[type="submit"] {
+      background-color: ButtonFace;
+      color: ButtonText;
+      border-color: ButtonText;
+    }
+  }
+  #form-status {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    background: var(--error-bg);
+    color: var(--error);
+    display: none;
+  }
+  #form-status.visible {
+    display: block;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * , *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Subscribe to our newsletter</h1>
+    <p class="intro" id="form-intro">Get product updates and tips delivered to your inbox every two weeks.</p>
+
+    <form id="signup-form" novalidate aria-describedby="form-intro">
+      <div class="field" id="name-field">
+        <label for="full-name">Full name</label>
+        <input type="text" id="full-name" name="full-name" autocomplete="name" required aria-describedby="name-error" aria-invalid="false">
+        <p class="error-message" id="name-error" role="alert">Please enter your name.</p>
+      </div>
+
+      <div class="field" id="email-field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-hint email-error" aria-invalid="false">
+        <p class="hint" id="email-hint">We'll never share your email with anyone else.</p>
+        <p class="error-message" id="email-error" role="alert">Please enter a valid email address.</p>
+      </div>
+
+      <div class="field">
+        <label for="country">Country</label>
+        <select id="country" name="country" autocomplete="country-name">
+          <option value="">Select a country</option>
+          <option value="US">United States</option>
+          <option value="CA">Canada</option>
+          <option value="GB">United Kingdom</option>
+          <option value="AU">Australia</option>
+          <option value="DE">Germany</option>
+          <option value="FR">France</option>
+          <option value="JP">Japan</option>
+          <option value="SG">Singapore</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+
+      <div class="consent">
+        <input type="checkbox" id="marketing-consent" name="marketing-consent">
+        <label for="marketing-consent">I'd like to receive marketing emails about new features and offers.</label>
+      </div>
+
+      <button type="submit">Subscribe</button>
+
+      <div id="form-status" role="alert"></div>
+    </form>
+  </div>
+</main>
+
+<script>
+  var form = document.getElementById('signup-form');
+  var nameField = document.getElementById('name-field');
+  var nameInput = document.getElementById('full-name');
+  var emailField = document.getElementById('email-field');
+  var emailInput = document.getElementById('email');
+  var status = document.getElementById('form-status');
+
+  function setInvalid(field, input, invalid) {
+    if (invalid) {
+      field.classList.add('invalid');
+      input.setAttribute('aria-invalid', 'true');
+    } else {
+      field.classList.remove('invalid');
+      input.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var nameInvalid = nameInput.value.trim() === '';
+    var emailInvalid = emailInput.value.trim() === '' || !emailInput.checkValidity();
+
+    setInvalid(nameField, nameInput, nameInvalid);
+    setInvalid(emailField, emailInput, emailInvalid);
+
+    if (nameInvalid || emailInvalid) {
+      status.textContent = 'Please fix the highlighted fields before submitting.';
+      status.classList.add('visible');
+      (nameInvalid ? nameInput : emailInput).focus();
+    } else {
+      status.textContent = 'Thanks for subscribing! Check your inbox to confirm.';
+      status.classList.remove('visible');
+      status.classList.add('visible');
+    }
+  });
+</script>
+</body>
+</html>

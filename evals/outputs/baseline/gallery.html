@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Stories</title>
+<style>
+  :root {
+    --primary: #4f46e5;
+    --bg: #f7f8fc;
+    --card-bg: #ffffff;
+    --text: #1f2333;
+    --muted: #6b7280;
+    --border: #e5e7f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 64px 24px;
+  }
+  .header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 48px;
+  }
+  .header .eyebrow {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    margin: 10px 0 12px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(31, 35, 51, 0.08);
+  }
+  .card .photo {
+    width: 100%;
+    height: 160px;
+    display: block;
+  }
+  .card-body {
+    padding: 22px 24px 26px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .quote {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--text);
+    margin: 0 0 18px;
+    flex-grow: 1;
+  }
+  .quote::before {
+    content: "\201C";
+    color: var(--primary);
+    font-weight: 800;
+  }
+  .quote::after {
+    content: "\201D";
+    color: var(--primary);
+    font-weight: 800;
+  }
+  .person {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .person .name {
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  .person .role {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .story-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  .story-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="eyebrow">Customer Stories</div>
+    <h1>Loved by teams everywhere</h1>
+    <p>See how real customers use our product to grow their business, faster.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <svg class="photo" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="160" fill="#c7d2fe"/>
+        <circle cx="200" cy="60" r="34" fill="#4f46e5"/>
+        <rect x="130" y="105" width="140" height="45" rx="22" fill="#4338ca"/>
+      </svg>
+      <div class="card-body">
+        <p class="quote">This platform cut our onboarding time in half. Our whole team was up and running in a single afternoon.</p>
+        <div class="person">
+          <div>
+            <div class="name">Amara Chen</div>
+            <div class="role">Head of Ops, Fluxbase</div>
+          </div>
+          <a href="#" class="story-link">Read story &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="photo" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="160" fill="#fde68a"/>
+        <circle cx="200" cy="60" r="34" fill="#d97706"/>
+        <rect x="130" y="105" width="140" height="45" rx="22" fill="#b45309"/>
+      </svg>
+      <div class="card-body">
+        <p class="quote">We replaced three separate tools with this one. The support team is incredibly responsive too.</p>
+        <div class="person">
+          <div>
+            <div class="name">Diego Ramirez</div>
+            <div class="role">CTO, Northline Retail</div>
+          </div>
+          <a href="#" class="story-link">Read story &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="photo" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="160" fill="#bbf7d0"/>
+        <circle cx="200" cy="60" r="34" fill="#16a34a"/>
+        <rect x="130" y="105" width="140" height="45" rx="22" fill="#15803d"/>
+      </svg>
+      <div class="card-body">
+        <p class="quote">The analytics dashboard alone paid for itself in the first month. Highly recommended.</p>
+        <div class="person">
+          <div>
+            <div class="name">Priya Nair</div>
+            <div class="role">Marketing Lead, Verdant Co.</div>
+          </div>
+          <a href="#" class="story-link">Read story &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="photo" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="160" fill="#fecaca"/>
+        <circle cx="200" cy="60" r="34" fill="#dc2626"/>
+        <rect x="130" y="105" width="140" height="45" rx="22" fill="#b91c1c"/>
+      </svg>
+      <div class="card-body">
+        <p class="quote">Rock-solid reliability during our biggest sales event of the year. Not a single hiccup.</p>
+        <div class="person">
+          <div>
+            <div class="name">Tom Whitfield</div>
+            <div class="role">Founder, Cinderloop</div>
+          </div>
+          <a href="#" class="story-link">Read story &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="photo" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="160" fill="#c4b5fd"/>
+        <circle cx="200" cy="60" r="34" fill="#7c3aed"/>
+        <rect x="130" y="105" width="140" height="45" rx="22" fill="#6d28d9"/>
+      </svg>
+      <div class="card-body">
+        <p class="quote">Setup was so easy that our non-technical staff configured most of it themselves.</p>
+        <div class="person">
+          <div>
+            <div class="name">Hana Kobayashi</div>
+            <div class="role">Ops Manager, Tsuki Studio</div>
+          </div>
+          <a href="#" class="story-link">Read story &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="photo" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="160" fill="#a5f3fc"/>
+        <circle cx="200" cy="60" r="34" fill="#0891b2"/>
+        <rect x="130" y="105" width="140" height="45" rx="22" fill="#0e7490"/>
+      </svg>
+      <div class="card-body">
+        <p class="quote">Customer support answered our questions in minutes, not days. That trust is invaluable.</p>
+        <div class="person">
+          <div>
+            <div class="name">Liam O'Connor</div>
+            <div class="role">Product Lead, Brightpath</div>
+          </div>
+          <a href="#" class="story-link">Read story &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

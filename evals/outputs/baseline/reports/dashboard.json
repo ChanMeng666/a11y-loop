@@ -1,0 +1,595 @@
+{
+  "tool": {
+    "name": "a11y-loop",
+    "version": "0.1.0",
+    "axeCoreVersion": "4.12.1",
+    "browser": "Chromium",
+    "browserVersion": "151.0.7922.34",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "timestamp": "2026-07-25T23:02:45.110Z",
+    "passesRun": [
+      "default",
+      "dark",
+      "forced-colors",
+      "reduced-motion",
+      "reflow"
+    ],
+    "statesRun": []
+  },
+  "target": {
+    "type": "file",
+    "value": "evals/outputs/baseline/dashboard.html",
+    "servedAt": "http://127.0.0.1:54823/"
+  },
+  "summary": {
+    "violations": 8,
+    "needsReview": 2,
+    "bestPractice": 2,
+    "manualChecklist": 6,
+    "byImpact": {
+      "serious": 8
+    },
+    "criteriaAffected": [
+      {
+        "sc": "1.4.3",
+        "name": "Contrast (Minimum)",
+        "level": "AA",
+        "wcag22Only": false,
+        "count": 8
+      }
+    ],
+    "wcag22OnlyViolations": 0,
+    "verdict": "8 automatically detectable failures",
+    "target": "WCAG 2.2 Level AA",
+    "coverage": {
+      "statement": "Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.",
+      "issueVolumePercent": 57,
+      "issueVolumeDenominator": "instances of individual issues found, per Deque’s 2,000-audit study",
+      "criteriaWithAnyAutomatedRulePercent": 31,
+      "criteriaWithAnyAutomatedRuleDenominator": "17 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaReliablyAutomatedPercent": 13,
+      "criteriaReliablyAutomatedDenominator": "7 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaUntestableByAnyTool": 9,
+      "criteriaRequiringHumanVerification": 13
+    }
+  },
+  "findings": {
+    "violations": [
+      {
+        "fingerprint": "cbcebeec892b",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > p:nth-child(2)",
+        "html": "<p class=\"sub\">Last updated a few minutes ago</p>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 4.47 (foreground color: #6b7280, background color: #f5f6fb, font size: 11.0pt (14.72px), font weight: normal). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#6b717f",
+            "newRatio": 4.53,
+            "newRatioDisplay": "4.53"
+          },
+          {
+            "role": "background",
+            "direction": "lighter",
+            "hex": "#f5f7fc",
+            "newRatio": 4.51,
+            "newRatioDisplay": "4.51",
+            "note": "changes the surface, which affects every element drawn on it"
+          }
+        ]
+      },
+      {
+        "fingerprint": "eac146cff9bb",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(3) > div:nth-child(1) > span:nth-child(3)",
+        "html": "<span class=\"trend up\"> <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><path d=\"M6 18L18 6M18 6H9M18 6v9\"></path></svg> 12.4% </span>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 3.57 (foreground color: #059669, background color: #ecfdf5, font size: 9.8pt (13.12px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#00835b",
+            "newRatio": 4.53,
+            "newRatioDisplay": "4.53"
+          }
+        ]
+      },
+      {
+        "fingerprint": "ff983cf82a9f",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(3) > div:nth-child(2) > span:nth-child(3)",
+        "html": "<span class=\"trend up\"> <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><path d=\"M6 18L18 6M18 6H9M18 6v9\"></path></svg> 8.1% </span>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 3.57 (foreground color: #059669, background color: #ecfdf5, font size: 9.8pt (13.12px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#00835b",
+            "newRatio": 4.53,
+            "newRatioDisplay": "4.53"
+          }
+        ]
+      },
+      {
+        "fingerprint": "226a0935a3d8",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(3) > div:nth-child(3) > span:nth-child(3)",
+        "html": "<span class=\"trend down\"> <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><path d=\"M6 6l12 12M18 18H9M18 18V9\"></path></svg> 1.2% </span>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 4.41 (foreground color: #dc2626, background color: #fef2f2, font size: 9.8pt (13.12px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#da2425",
+            "newRatio": 4.5,
+            "newRatioDisplay": "4.50"
+          },
+          {
+            "role": "background",
+            "direction": "lighter",
+            "hex": "#fff5f4",
+            "newRatio": 4.51,
+            "newRatioDisplay": "4.51",
+            "note": "changes the surface, which affects every element drawn on it"
+          }
+        ]
+      },
+      {
+        "fingerprint": "54efe5f4f42a",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(3) > div:nth-child(4) > span:nth-child(3)",
+        "html": "<span class=\"trend up\"> <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><path d=\"M6 18L18 6M18 6H9M18 6v9\"></path></svg> 3.5% </span>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 3.57 (foreground color: #059669, background color: #ecfdf5, font size: 9.8pt (13.12px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#00835b",
+            "newRatio": 4.53,
+            "newRatioDisplay": "4.53"
+          }
+        ]
+      },
+      {
+        "fingerprint": "27b64a1fdf29",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(4) > ul:nth-child(2) > li:nth-child(2) > div:nth-child(1)",
+        "html": "<div class=\"avatar\" style=\"background:#0891b2;\">DR</div>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#1e1e1e",
+            "newRatio": 4.52,
+            "newRatioDisplay": "4.52"
+          },
+          {
+            "role": "background",
+            "direction": "darker",
+            "hex": "#0081a0",
+            "newRatio": 4.51,
+            "newRatioDisplay": "4.51",
+            "note": "changes the surface, which affects every element drawn on it"
+          }
+        ]
+      },
+      {
+        "fingerprint": "04e1630314ce",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(4) > ul:nth-child(2) > li:nth-child(3) > div:nth-child(1)",
+        "html": "<div class=\"avatar\" style=\"background:#d97706;\">PN</div>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 3.18 (foreground color: #ffffff, background color: #d97706, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#2a2a2a",
+            "newRatio": 4.5,
+            "newRatioDisplay": "4.50"
+          },
+          {
+            "role": "background",
+            "direction": "darker",
+            "hex": "#b46100",
+            "newRatio": 4.51,
+            "newRatioDisplay": "4.51",
+            "note": "changes the surface, which affects every element drawn on it"
+          }
+        ]
+      },
+      {
+        "fingerprint": "e798486ba4b5",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(4) > ul:nth-child(2) > li:nth-child(4) > div:nth-child(1)",
+        "html": "<div class=\"avatar\" style=\"background:#16a34a;\">TW</div>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#272727",
+            "newRatio": 4.53,
+            "newRatioDisplay": "4.53"
+          },
+          {
+            "role": "background",
+            "direction": "darker",
+            "hex": "#00893a",
+            "newRatio": 4.52,
+            "newRatioDisplay": "4.52",
+            "note": "changes the surface, which affects every element drawn on it"
+          }
+        ]
+      }
+    ],
+    "needsReview": [
+      {
+        "fingerprint": "c8299547eaa6",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "forced-colors"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(4) > ul:nth-child(2) > li:nth-child(1) > div:nth-child(1)",
+        "html": "<div class=\"avatar\" style=\"background:#4f46e5;\">AM</div>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has a 1:1 contrast ratio with the background",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#767676",
+            "newRatio": 4.54,
+            "newRatioDisplay": "4.54"
+          }
+        ]
+      },
+      {
+        "fingerprint": "b98b7633ace2",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "forced-colors"
+        ],
+        "state": null,
+        "selector": "html > body > div > div:nth-child(4) > ul:nth-child(2) > li:nth-child(5) > div:nth-child(1)",
+        "html": "<div class=\"avatar\" style=\"background:#7c3aed;\">HK</div>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has a 1:1 contrast ratio with the background",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#767676",
+            "newRatio": 4.54,
+            "newRatioDisplay": "4.54"
+          }
+        ]
+      }
+    ],
+    "bestPractice": [
+      {
+        "fingerprint": "20805c59334e",
+        "ruleId": "landmark-one-main",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html",
+        "html": "<html lang=\"en\">",
+        "message": "Document should have one main landmark. Fix all of the following: Document does not have a main landmark",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-one-main?application=playwright"
+      },
+      {
+        "fingerprint": "c9847cc93320",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div",
+        "html": "<div class=\"wrap\">",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      }
+    ]
+  },
+  "manualChecklist": [
+    {
+      "id": "assistive-technology",
+      "sc": null,
+      "text": "Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).",
+      "why": "No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification."
+    },
+    {
+      "id": "focus-order-logic",
+      "sc": "2.4.3",
+      "text": "Tab through the page and confirm the focus order is logical, not merely present.",
+      "why": "a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment."
+    },
+    {
+      "id": "keyboard-only-walkthrough",
+      "sc": "2.1.1",
+      "text": "Complete the page’s main task using only the keyboard.",
+      "why": "Automated checks probe individual controls; they do not know what the user is trying to accomplish."
+    },
+    {
+      "id": "heading-semantics",
+      "sc": "1.3.1",
+      "text": "Confirm the heading structure describes the content hierarchy, not the visual sizes.",
+      "why": "Automation can detect skipped levels but not whether the outline reflects the actual structure of the page."
+    },
+    {
+      "id": "contrast-undeterminable",
+      "sc": "1.4.3",
+      "text": "Check the contrast of the elements axe could not measure by hand (WebAIM Contrast Checker, or a11y-loop contrast <fg> <bg>).",
+      "why": "axe gives up on background images, gradients, pseudo-element backgrounds and foreground opacity or occlusion, and reports them as incomplete. A computed ratio of 1:1 is the usual tell."
+    },
+    {
+      "id": "hover-focus-contrast",
+      "sc": "1.4.11",
+      "text": "Check the contrast of hover and focus states.",
+      "why": "No engine checks state contrast unless the state is driven and re-scanned. Use --interact to add hover and focus states to the audit."
+    }
+  ],
+  "pageInventory": {
+    "images": 0,
+    "formFields": 0,
+    "links": 0,
+    "headings": 2,
+    "videos": 0,
+    "audios": 0,
+    "tables": 0,
+    "iframes": 0,
+    "dialogs": 0,
+    "buttons": 0,
+    "ariaAttributes": 0,
+    "animations": 0,
+    "stickyElements": 0,
+    "lang": "en",
+    "title": "Analytics Dashboard"
+  }
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newsletter Modal</title>
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --text: #1f2333;
+    --muted: #6b7280;
+    --border: #e5e7f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #eef1ff 0%, #f7f8fc 60%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+  }
+  .page {
+    text-align: center;
+  }
+  .page h1 { margin-bottom: 8px; }
+  .page p { color: var(--muted); margin-bottom: 28px; }
+  .subscribe-btn {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .subscribe-btn:hover { background: var(--primary-dark); }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 17, 32, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.25);
+    position: relative;
+    transform: translateY(12px) scale(0.97);
+    transition: transform 0.2s ease;
+  }
+  .modal-overlay.open .modal {
+    transform: translateY(0) scale(1);
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f3f4f8;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    transition: background 0.15s ease;
+  }
+  .modal-close:hover { background: #e5e7f0; color: var(--text); }
+  .modal h2 {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+  }
+  .modal p.sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 22px;
+  }
+  .modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .modal input[type="email"] {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #fafbff;
+  }
+  .modal input[type="email"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    background: #fff;
+  }
+  .modal button[type="submit"] {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .modal button[type="submit"]:hover { background: var(--primary-dark); }
+  .modal-success {
+    display: none;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #059669;
+    text-align: center;
+  }
+  .modal-success.show { display: block; }
+</style>
+</head>
+<body>
+
+  <div class="page">
+    <h1>Stay up to date</h1>
+    <p>Subscribe to get the latest news straight to your inbox.</p>
+    <button class="subscribe-btn" id="openModalBtn">Subscribe</button>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="closeModalBtn" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <h2 id="modalTitle">Subscribe to our newsletter</h2>
+      <p class="sub">One email a week. No spam, ever.</p>
+      <form id="modalForm">
+        <input type="email" id="modalEmail" placeholder="you@example.com" required>
+        <button type="submit">Subscribe</button>
+      </form>
+      <div class="modal-success" id="modalSuccess">Thanks! You're subscribed.</div>
+    </div>
+  </div>
+
+  <script>
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalForm = document.getElementById('modalForm');
+    const modalSuccess = document.getElementById('modalSuccess');
+
+    function openModal() {
+      modalOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      modalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    openModalBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+    });
+
+    modalForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      modalSuccess.classList.add('show');
+      modalForm.reset();
+      setTimeout(() => {
+        closeModal();
+        modalSuccess.classList.remove('show');
+      }, 1400);
+    });
+  </script>
+
+</body>
+</html>

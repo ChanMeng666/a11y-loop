@@ -1,0 +1,238 @@
+{
+  "tool": {
+    "name": "a11y-loop",
+    "version": "0.1.0",
+    "axeCoreVersion": "4.12.1",
+    "browser": "Chromium",
+    "browserVersion": "151.0.7922.34",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "timestamp": "2026-07-25T22:57:17.761Z",
+    "passesRun": [
+      "default",
+      "dark",
+      "forced-colors",
+      "reduced-motion",
+      "reflow"
+    ],
+    "statesRun": [
+      "subscribe-dialog-open",
+      "subscribe-dialog-error"
+    ]
+  },
+  "target": {
+    "type": "file",
+    "value": "evals/outputs/skilled/newsletter-modal.html",
+    "servedAt": "http://127.0.0.1:63884/"
+  },
+  "summary": {
+    "violations": 1,
+    "needsReview": 2,
+    "bestPractice": 0,
+    "manualChecklist": 10,
+    "byImpact": {
+      "serious": 1
+    },
+    "criteriaAffected": [
+      {
+        "sc": "2.4.3",
+        "name": "Focus Order",
+        "level": "A",
+        "wcag22Only": false,
+        "count": 1
+      }
+    ],
+    "wcag22OnlyViolations": 0,
+    "verdict": "1 automatically detectable failure",
+    "target": "WCAG 2.2 Level AA",
+    "coverage": {
+      "statement": "Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.",
+      "issueVolumePercent": 57,
+      "issueVolumeDenominator": "instances of individual issues found, per Deque’s 2,000-audit study",
+      "criteriaWithAnyAutomatedRulePercent": 31,
+      "criteriaWithAnyAutomatedRuleDenominator": "17 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaReliablyAutomatedPercent": 13,
+      "criteriaReliablyAutomatedDenominator": "7 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaUntestableByAnyTool": 9,
+      "criteriaRequiringHumanVerification": 13
+    }
+  },
+  "findings": {
+    "violations": [
+      {
+        "fingerprint": "b4603ceaa3d0",
+        "ruleId": "dialog-focus-not-returned",
+        "source": "a11y-loop",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A",
+          "minVersion": "2.0",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": "subscribe-dialog-error",
+        "selector": "#subscribe-dialog",
+        "html": "<dialog id=\"subscribe-dialog\" aria-labelledby=\"subscribe-title\" open=\"\"> <div class=\"dialog-inner\"> <button type=\"button\" class=\"dialog-close\" id=\"dialog-close\" aria-label=\"Close dialog\">",
+        "message": "The dialog closed but focus did not return to the control that opened it (#subscribe-submit). Keyboard users are dropped back to the top of the document and lose their place.",
+        "helpUrl": null,
+        "data": {
+          "trigger": "#subscribe-submit"
+        }
+      }
+    ],
+    "needsReview": [
+      {
+        "fingerprint": "3d5c236b21e4",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "forced-colors"
+        ],
+        "state": null,
+        "selector": "html > body > main:nth-child(1) > button:nth-child(3)",
+        "html": "<button type=\"button\" id=\"open-subscribe\">Subscribe</button>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has a 1:1 contrast ratio with the background",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#767676",
+            "newRatio": 4.54,
+            "newRatioDisplay": "4.54"
+          }
+        ]
+      },
+      {
+        "fingerprint": "e8e855c344c6",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default"
+        ],
+        "state": "subscribe-dialog-error",
+        "selector": "html > body > dialog:nth-child(2) > div > p:nth-child(3)",
+        "html": "<p class=\"dialog-intro\">Enter your email and we'll send you a confirmation link.</p>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it partially overlaps other elements",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright"
+      }
+    ],
+    "bestPractice": []
+  },
+  "manualChecklist": [
+    {
+      "id": "assistive-technology",
+      "sc": null,
+      "text": "Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).",
+      "why": "No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification."
+    },
+    {
+      "id": "focus-order-logic",
+      "sc": "2.4.3",
+      "text": "Tab through the page and confirm the focus order is logical, not merely present.",
+      "why": "a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment."
+    },
+    {
+      "id": "keyboard-only-walkthrough",
+      "sc": "2.1.1",
+      "text": "Complete the page’s main task using only the keyboard.",
+      "why": "Automated checks probe individual controls; they do not know what the user is trying to accomplish."
+    },
+    {
+      "id": "form-error-quality",
+      "sc": "3.3.3",
+      "text": "Submit the form with 1 field in an invalid state and confirm each error is announced, identifies the field, and says how to fix it.",
+      "why": "SC 3.3.1 and 3.3.3 are about whether an error message is actionable, which no tool can assess. Error states also usually only exist after interaction — audit them with --interact."
+    },
+    {
+      "id": "label-clarity",
+      "sc": "2.4.6",
+      "text": "Confirm every field label describes what to enter, not just that a label exists.",
+      "why": "A label of \"Field 1\" satisfies every automated rule and tells the user nothing."
+    },
+    {
+      "id": "heading-semantics",
+      "sc": "1.3.1",
+      "text": "Confirm the heading structure describes the content hierarchy, not the visual sizes.",
+      "why": "Automation can detect skipped levels but not whether the outline reflects the actual structure of the page."
+    },
+    {
+      "id": "aria-appropriateness",
+      "sc": "4.1.2",
+      "text": "Review the 7 ARIA attributes on this page: is each one appropriate, or merely valid?",
+      "why": "Pages using ARIA average more accessibility errors than pages without it (WebAIM Million 2026: 59.1 vs 42.0). A role is a promise — role=\"button\" commits to the full keyboard behaviour of a button. No ARIA is better than bad ARIA."
+    },
+    {
+      "id": "dialog-behaviour",
+      "sc": "2.1.2",
+      "text": "Confirm each dialog announces itself on open and describes how to dismiss it.",
+      "why": "a11y-loop tests the focus trap, Escape, and focus return mechanically. Whether the dialog is comprehensible when announced is a screen-reader test."
+    },
+    {
+      "id": "color-not-only-cue",
+      "sc": "1.4.1",
+      "text": "Confirm colour is never the only way information is conveyed.",
+      "why": "SC 1.4.1 is one of the criteria no tool can test: recognising that \"the required fields are in red\" needs comprehension of the content."
+    },
+    {
+      "id": "contrast-undeterminable",
+      "sc": "1.4.3",
+      "text": "Check the contrast of the elements axe could not measure by hand (WebAIM Contrast Checker, or a11y-loop contrast <fg> <bg>).",
+      "why": "axe gives up on background images, gradients, pseudo-element backgrounds and foreground opacity or occlusion, and reports them as incomplete. A computed ratio of 1:1 is the usual tell."
+    }
+  ],
+  "pageInventory": {
+    "images": 0,
+    "formFields": 1,
+    "links": 0,
+    "headings": 2,
+    "videos": 0,
+    "audios": 0,
+    "tables": 0,
+    "iframes": 0,
+    "dialogs": 1,
+    "buttons": 3,
+    "ariaAttributes": 7,
+    "animations": 0,
+    "stickyElements": 0,
+    "lang": "en",
+    "title": "Newsletter modal demo"
+  }
+}

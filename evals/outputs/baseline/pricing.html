@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Plans</title>
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --bg: #0f1120;
+    --card-bg: #171a2e;
+    --card-bg-alt: #ffffff;
+    --border: #262a45;
+    --text: #f3f4f8;
+    --muted: #9497b0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 72px 24px;
+  }
+  .header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 56px;
+  }
+  .header .eyebrow {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+  .header h1 {
+    font-size: 2.4rem;
+    margin: 10px 0 12px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) {
+    .plans { grid-template-columns: 1fr; max-width: 420px; }
+  }
+  .plan {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 30px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .plan:hover {
+    transform: translateY(-4px);
+  }
+  .plan.featured {
+    background: linear-gradient(160deg, #4f46e5 0%, #4338ca 100%);
+    border: none;
+    box-shadow: 0 24px 60px rgba(79, 70, 229, 0.35);
+    transform: scale(1.04);
+  }
+  .plan.featured:hover { transform: scale(1.04) translateY(-4px); }
+  .badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fbbf24;
+    color: #1f2333;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+  .plan h2 {
+    font-size: 1.25rem;
+    margin: 0 0 4px;
+  }
+  .plan .desc {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+  }
+  .plan.featured .desc { color: rgba(255,255,255,0.8); }
+  .price {
+    font-size: 2.6rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+  }
+  .price span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .plan.featured .price span { color: rgba(255,255,255,0.75); }
+  .period {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+  }
+  .plan.featured .period { color: rgba(255,255,255,0.75); }
+  ul.features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    flex-grow: 1;
+  }
+  ul.features li {
+    padding: 9px 0;
+    font-size: 0.92rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .plan.featured ul.features li {
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  ul.features li:last-child { border-bottom: none; }
+  ul.features li svg { flex-shrink: 0; color: #22c55e; }
+  .plan.featured ul.features li svg { color: #d1fae5; }
+  .cta {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.95rem;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .cta:hover { background: var(--primary); color: #fff; }
+  .plan.featured .cta {
+    background: #fff;
+    color: var(--primary-dark);
+    border: none;
+  }
+  .plan.featured .cta:hover { background: #f0f0ff; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="eyebrow">Pricing</div>
+    <h1>Simple plans that scale with you</h1>
+    <p>Start free, upgrade when you need more power. No hidden fees, cancel anytime.</p>
+  </div>
+
+  <div class="plans">
+
+    <div class="plan">
+      <h2>Starter</h2>
+      <div class="desc">For individuals getting started</div>
+      <div class="price">$9<span>/mo</span></div>
+      <div class="period">Billed monthly</div>
+      <ul class="features">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 1 project</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 5 GB storage</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Community support</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Basic analytics</li>
+      </ul>
+      <a href="#" class="cta">Get Started</a>
+    </div>
+
+    <div class="plan featured">
+      <div class="badge">Most Popular</div>
+      <h2>Pro</h2>
+      <div class="desc">For growing teams and businesses</div>
+      <div class="price">$29<span>/mo</span></div>
+      <div class="period">Billed monthly</div>
+      <ul class="features">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Unlimited projects</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 100 GB storage</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Priority support</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Advanced analytics</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Team collaboration</li>
+      </ul>
+      <a href="#" class="cta">Start Free Trial</a>
+    </div>
+
+    <div class="plan">
+      <h2>Enterprise</h2>
+      <div class="desc">For large organizations</div>
+      <div class="price">$99<span>/mo</span></div>
+      <div class="period">Billed monthly</div>
+      <ul class="features">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Unlimited everything</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 1 TB storage</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Dedicated account manager</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Custom integrations</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> SLA guarantee</li>
+      </ul>
+      <a href="#" class="cta">Contact Sales</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

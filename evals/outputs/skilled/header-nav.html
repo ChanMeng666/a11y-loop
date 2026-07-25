@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Header navigation demo</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7fb;
+    --surface: #ffffff;
+    --text: #1a1a2e;
+    --muted: #52526b;
+    --border: #d3d3e0;
+    --accent: #4f46e5;
+    --accent-text: #ffffff;
+    --focus-ring: #1a1a2e;
+    --overlay: rgba(20, 20, 31, 0.5);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14141f;
+      --surface: #1f1f2e;
+      --text: #f1f1f7;
+      --muted: #c3c3d6;
+      --border: #46465c;
+      --accent: #a5b4fc;
+      --accent-text: #14142b;
+      --focus-ring: #ffffff;
+      --overlay: rgba(0, 0, 0, 0.6);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -3rem;
+    background: var(--surface);
+    color: var(--text);
+    padding: 0.6rem 1rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--border);
+    z-index: 100;
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+  header.site-header {
+    position: relative;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-row {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+    margin-right: auto;
+  }
+  .logo:hover {
+    text-decoration: underline;
+  }
+  .primary-nav {
+    display: none;
+  }
+  .primary-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+  }
+  .primary-nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+  }
+  .primary-nav a:hover {
+    color: var(--accent);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .icon-button:hover {
+    background: var(--bg);
+  }
+  .icon-button svg {
+    width: 22px;
+    height: 22px;
+  }
+  .hamburger {
+    display: inline-flex;
+  }
+  .search-panel {
+    display: none;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .search-panel.open {
+    display: block;
+  }
+  .search-panel form {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1rem 1.25rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .search-panel label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .search-panel input[type="search"] {
+    flex-grow: 1;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .search-panel button[type="submit"] {
+    min-height: 44px;
+    padding: 0.5rem 1.25rem;
+    background-color: var(--accent);
+    color: var(--accent-text);
+    border: 2px solid var(--accent);
+    border-radius: 0.4rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .drawer-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 40;
+  }
+  .drawer-backdrop.open {
+    display: block;
+  }
+  .mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(20rem, 85vw);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 50;
+    padding: 1.25rem;
+    overflow-y: auto;
+  }
+  .mobile-drawer.open {
+    display: block;
+  }
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .drawer-header h2 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  .mobile-drawer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .mobile-drawer a {
+    display: block;
+    padding: 0.75rem 0.5rem;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 0.4rem;
+  }
+  .mobile-drawer a:hover {
+    background: var(--bg);
+  }
+  @media (min-width: 60rem) {
+    .primary-nav {
+      display: block;
+    }
+    .hamburger {
+      display: none;
+    }
+  }
+  main {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 3rem 1.25rem;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  @media (forced-colors: active) {
+    .icon-button, .search-panel button[type="submit"] {
+      border-color: ButtonText;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    .skip-link {
+      transition: none;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="header-row">
+    <a class="logo" href="/">Northline</a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/solutions">Solutions</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/company">Company</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <button type="button" class="icon-button" id="search-toggle" aria-expanded="false" aria-controls="search-panel" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button type="button" class="icon-button hamburger" id="menu-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="search-panel" id="search-panel">
+    <form role="search" action="/search" method="get">
+      <label for="site-search">Search the site</label>
+      <input type="search" id="site-search" name="q" placeholder="Search…">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</header>
+
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile" aria-hidden="true">
+  <div class="drawer-header">
+    <h2 id="drawer-title">Menu</h2>
+    <button type="button" class="icon-button" id="drawer-close" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <ul>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/solutions">Solutions</a></li>
+    <li><a href="/pricing">Pricing</a></li>
+    <li><a href="/docs">Docs</a></li>
+    <li><a href="/company">Company</a></li>
+  </ul>
+</nav>
+
+<main id="main-content">
+  <h1>Header navigation demo</h1>
+  <p>Resize the window below the 60rem breakpoint to see the hamburger menu, or use the search icon to reveal the search field.</p>
+</main>
+
+<script>
+  var searchToggle = document.getElementById('search-toggle');
+  var searchPanel = document.getElementById('search-panel');
+  var searchInput = document.getElementById('site-search');
+
+  var menuToggle = document.getElementById('menu-toggle');
+  var drawer = document.getElementById('mobile-drawer');
+  var drawerBackdrop = document.getElementById('drawer-backdrop');
+  var drawerClose = document.getElementById('drawer-close');
+  var drawerFirstLink = drawer.querySelector('a');
+
+  function openSearch() {
+    searchPanel.classList.add('open');
+    searchToggle.setAttribute('aria-expanded', 'true');
+    searchToggle.setAttribute('aria-label', 'Close search');
+    searchInput.focus();
+  }
+  function closeSearch(returnFocus) {
+    searchPanel.classList.remove('open');
+    searchToggle.setAttribute('aria-expanded', 'false');
+    searchToggle.setAttribute('aria-label', 'Search');
+    if (returnFocus) { searchToggle.focus(); }
+  }
+  searchToggle.addEventListener('click', function () {
+    if (searchPanel.classList.contains('open')) {
+      closeSearch(false);
+    } else {
+      openSearch();
+    }
+  });
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    drawer.removeAttribute('aria-hidden');
+    drawerBackdrop.classList.add('open');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    menuToggle.setAttribute('aria-label', 'Close menu');
+    drawerFirstLink.focus();
+  }
+  function closeDrawer(returnFocus) {
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    drawerBackdrop.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Open menu');
+    if (returnFocus) { menuToggle.focus(); }
+  }
+  menuToggle.addEventListener('click', function () {
+    if (drawer.classList.contains('open')) {
+      closeDrawer(false);
+    } else {
+      openDrawer();
+    }
+  });
+  drawerClose.addEventListener('click', function () { closeDrawer(true); });
+  drawerBackdrop.addEventListener('click', function () { closeDrawer(true); });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') { return; }
+    if (drawer.classList.contains('open')) { closeDrawer(true); }
+    if (searchPanel.classList.contains('open')) { closeSearch(true); }
+  });
+
+  drawer.addEventListener('keydown', function (event) {
+    if (event.key !== 'Tab') { return; }
+    var focusable = drawer.querySelectorAll('a, button');
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+</script>
+</body>
+</html>

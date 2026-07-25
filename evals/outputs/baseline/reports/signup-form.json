@@ -1,0 +1,496 @@
+{
+  "tool": {
+    "name": "a11y-loop",
+    "version": "0.1.0",
+    "axeCoreVersion": "4.12.1",
+    "browser": "Chromium",
+    "browserVersion": "151.0.7922.34",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "timestamp": "2026-07-25T23:02:15.028Z",
+    "passesRun": [
+      "default",
+      "dark",
+      "forced-colors",
+      "reduced-motion",
+      "reflow"
+    ],
+    "statesRun": []
+  },
+  "target": {
+    "type": "file",
+    "value": "evals/outputs/baseline/signup-form.html",
+    "servedAt": "http://127.0.0.1:53791/"
+  },
+  "summary": {
+    "violations": 0,
+    "needsReview": 5,
+    "bestPractice": 10,
+    "manualChecklist": 9,
+    "byImpact": {},
+    "criteriaAffected": [],
+    "wcag22OnlyViolations": 0,
+    "verdict": "No automatically detectable failures",
+    "target": "WCAG 2.2 Level AA",
+    "coverage": {
+      "statement": "Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.",
+      "issueVolumePercent": 57,
+      "issueVolumeDenominator": "instances of individual issues found, per Deque’s 2,000-audit study",
+      "criteriaWithAnyAutomatedRulePercent": 31,
+      "criteriaWithAnyAutomatedRuleDenominator": "17 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaReliablyAutomatedPercent": 13,
+      "criteriaReliablyAutomatedDenominator": "7 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaUntestableByAnyTool": 9,
+      "criteriaRequiringHumanVerification": 13
+    }
+  },
+  "findings": {
+    "violations": [],
+    "needsReview": [
+      {
+        "fingerprint": "35ad0de60271",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#name",
+        "html": "<input type=\"text\" id=\"name\" name=\"name\" placeholder=\"Jane Doe\" required=\"\">",
+        "message": "Focus indicator present (box-shadow, background-color), but its contrast could not be computed — the colour behind it is an image, a gradient, or not resolvable. Confirm the indicator is clearly visible against its surroundings.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "box-shadow",
+            "background-color"
+          ],
+          "indicatorColor": null
+        }
+      },
+      {
+        "fingerprint": "03dc6db872bb",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#email",
+        "html": "<input type=\"email\" id=\"email\" name=\"email\" placeholder=\"jane@example.com\" required=\"\">",
+        "message": "Focus indicator present (box-shadow, background-color), but its contrast could not be computed — the colour behind it is an image, a gradient, or not resolvable. Confirm the indicator is clearly visible against its surroundings.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "box-shadow",
+            "background-color"
+          ],
+          "indicatorColor": null
+        }
+      },
+      {
+        "fingerprint": "162c649d7c42",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#country",
+        "html": "<select id=\"country\" name=\"country\" required=\"\"> <option value=\"\" disabled=\"\" selected=\"\">Select your country</option> <option value=\"us\">United States</option> <option value=\"",
+        "message": "Focus indicator present (box-shadow, background-color), but its contrast could not be computed — the colour behind it is an image, a gradient, or not resolvable. Confirm the indicator is clearly visible against its surroundings.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "box-shadow",
+            "background-color"
+          ],
+          "indicatorColor": null
+        }
+      },
+      {
+        "fingerprint": "711aabcb12ce",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#consent",
+        "html": "<input type=\"checkbox\" id=\"consent\" name=\"consent\" required=\"\">",
+        "message": "Target is 18×18 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 18,
+          "height": 18,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      },
+      {
+        "fingerprint": "38232ee5739f",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "forced-colors"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > button:nth-child(8)",
+        "html": "<button type=\"submit\">Subscribe</button>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has a 1:1 contrast ratio with the background",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+        "suggestions": [
+          {
+            "role": "foreground",
+            "direction": "darker",
+            "hex": "#767676",
+            "newRatio": 4.54,
+            "newRatioDisplay": "4.54"
+          }
+        ]
+      }
+    ],
+    "bestPractice": [
+      {
+        "fingerprint": "20805c59334e",
+        "ruleId": "landmark-one-main",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html",
+        "html": "<html lang=\"en\">",
+        "message": "Document should have one main landmark. Fix all of the following: Document does not have a main landmark",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-one-main?application=playwright"
+      },
+      {
+        "fingerprint": "97a3a0e570a2",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > h1:nth-child(1)",
+        "html": "<h1>Join our newsletter</h1>",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "702a5fd6d453",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > p:nth-child(2)",
+        "html": "<p class=\"sub\">Product updates, tips, and the occasional discount. No spam, unsubscribe anytime.</p>",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "9b8e4d3c5201",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > label:nth-child(1)",
+        "html": "<label for=\"name\">Full name</label>",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "9ae2fb3e4460",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > input:nth-child(2)",
+        "html": "<input type=\"text\" id=\"name\" name=\"name\" placeholder=\"Jane Doe\" required=\"\">",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "d12c773d6240",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > label:nth-child(3)",
+        "html": "<label for=\"email\">Email address</label>",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "e182df849a42",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > input:nth-child(4)",
+        "html": "<input type=\"email\" id=\"email\" name=\"email\" placeholder=\"jane@example.com\" required=\"\">",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "79c63596d9fe",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > label:nth-child(5)",
+        "html": "<label for=\"country\">Country</label>",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "531ed78934a9",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > select:nth-child(6)",
+        "html": "<select id=\"country\" name=\"country\" required=\"\">",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      },
+      {
+        "fingerprint": "da96c38504cd",
+        "ruleId": "region",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > div:nth-child(1) > form:nth-child(3) > div:nth-child(7)",
+        "html": "<div class=\"checkbox-row\"> <input type=\"checkbox\" id=\"consent\" name=\"consent\" required=\"\"> <label for=\"consent\">I agree to receive marketing emails and understand I can unsubscribe at any time.</label…",
+        "message": "All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=playwright"
+      }
+    ]
+  },
+  "manualChecklist": [
+    {
+      "id": "assistive-technology",
+      "sc": null,
+      "text": "Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).",
+      "why": "No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification."
+    },
+    {
+      "id": "focus-order-logic",
+      "sc": "2.4.3",
+      "text": "Tab through the page and confirm the focus order is logical, not merely present.",
+      "why": "a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment."
+    },
+    {
+      "id": "keyboard-only-walkthrough",
+      "sc": "2.1.1",
+      "text": "Complete the page’s main task using only the keyboard.",
+      "why": "Automated checks probe individual controls; they do not know what the user is trying to accomplish."
+    },
+    {
+      "id": "form-error-quality",
+      "sc": "3.3.3",
+      "text": "Submit the form with 4 fields in an invalid state and confirm each error is announced, identifies the field, and says how to fix it.",
+      "why": "SC 3.3.1 and 3.3.3 are about whether an error message is actionable, which no tool can assess. Error states also usually only exist after interaction — audit them with --interact."
+    },
+    {
+      "id": "label-clarity",
+      "sc": "2.4.6",
+      "text": "Confirm every field label describes what to enter, not just that a label exists.",
+      "why": "A label of \"Field 1\" satisfies every automated rule and tells the user nothing."
+    },
+    {
+      "id": "heading-semantics",
+      "sc": "1.3.1",
+      "text": "Confirm the heading structure describes the content hierarchy, not the visual sizes.",
+      "why": "Automation can detect skipped levels but not whether the outline reflects the actual structure of the page."
+    },
+    {
+      "id": "color-not-only-cue",
+      "sc": "1.4.1",
+      "text": "Confirm colour is never the only way information is conveyed.",
+      "why": "SC 1.4.1 is one of the criteria no tool can test: recognising that \"the required fields are in red\" needs comprehension of the content."
+    },
+    {
+      "id": "contrast-undeterminable",
+      "sc": "1.4.3",
+      "text": "Check the contrast of the elements axe could not measure by hand (WebAIM Contrast Checker, or a11y-loop contrast <fg> <bg>).",
+      "why": "axe gives up on background images, gradients, pseudo-element backgrounds and foreground opacity or occlusion, and reports them as incomplete. A computed ratio of 1:1 is the usual tell."
+    },
+    {
+      "id": "hover-focus-contrast",
+      "sc": "1.4.11",
+      "text": "Check the contrast of hover and focus states.",
+      "why": "No engine checks state contrast unless the state is driven and re-scanned. Use --interact to add hover and focus states to the audit."
+    }
+  ],
+  "pageInventory": {
+    "images": 0,
+    "formFields": 4,
+    "links": 0,
+    "headings": 1,
+    "videos": 0,
+    "audios": 0,
+    "tables": 0,
+    "iframes": 0,
+    "dialogs": 0,
+    "buttons": 1,
+    "ariaAttributes": 0,
+    "animations": 0,
+    "stickyElements": 0,
+    "lang": "en",
+    "title": "Stay in the loop — Newsletter Signup"
+  }
+}

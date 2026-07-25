@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics dashboard</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7fb;
+    --surface: #ffffff;
+    --text: #1a1a2e;
+    --muted: #52526b;
+    --border: #d3d3e0;
+    --accent: #4f46e5;
+    --focus-ring: #1a1a2e;
+    --up: #1e7d32;
+    --down: #b3261e;
+    --icon-bg: #ececf5;
+    --icon-text: #4f46e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14141f;
+      --surface: #1f1f2e;
+      --text: #f1f1f7;
+      --muted: #c3c3d6;
+      --border: #46465c;
+      --accent: #a5b4fc;
+      --focus-ring: #ffffff;
+      --up: #6fcf7a;
+      --down: #ff8a80;
+      --icon-bg: #33334a;
+      --icon-text: #c7d2fe;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  main {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+  h1 {
+    font-size: 1.75rem;
+    margin: 0 0 2rem;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  h2 {
+    font-size: 1.15rem;
+    margin: 0 0 1rem;
+  }
+  .stats-grid {
+    list-style: none;
+    margin: 0 0 3rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.25rem;
+  }
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+  .stat-label {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .stat-value {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stat-trend svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .stat-trend.up { color: var(--up); }
+  .stat-trend.down { color: var(--down); }
+  .stat-trend .period {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .activity-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+  .activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .activity-item {
+    display: flex;
+    gap: 0.85rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .activity-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .activity-icon {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: var(--icon-bg);
+    color: var(--icon-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .activity-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .activity-body p {
+    margin: 0 0 0.2rem;
+    font-size: 0.95rem;
+  }
+  .activity-body time {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  @media (forced-colors: active) {
+    .stat-tile, .activity-section {
+      border-color: CanvasText;
+    }
+    .activity-icon {
+      background-color: ButtonFace;
+      color: ButtonText;
+      border: 1px solid ButtonText;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Analytics dashboard</h1>
+
+  <section aria-labelledby="stats-heading">
+    <h2 id="stats-heading" class="visually-hidden">Key metrics</h2>
+    <ul class="stats-grid">
+      <li class="stat-tile">
+        <p class="stat-label">Total visitors</p>
+        <p class="stat-value">48,231</p>
+        <p class="stat-trend up">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 13l5-5 3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>+12.4%</span>
+          <span class="period">vs last month</span>
+        </p>
+      </li>
+
+      <li class="stat-tile">
+        <p class="stat-label">Conversion rate</p>
+        <p class="stat-value">3.82%</p>
+        <p class="stat-trend up">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 13l5-5 3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>+0.6%</span>
+          <span class="period">vs last month</span>
+        </p>
+      </li>
+
+      <li class="stat-tile">
+        <p class="stat-label">Average order value</p>
+        <p class="stat-value">$86.40</p>
+        <p class="stat-trend down">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 7l5 5 3-3 5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15h5v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>-2.1%</span>
+          <span class="period">vs last month</span>
+        </p>
+      </li>
+
+      <li class="stat-tile">
+        <p class="stat-label">Support tickets</p>
+        <p class="stat-value">142</p>
+        <p class="stat-trend down">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 7l5 5 3-3 5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15h5v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>-8.3%</span>
+          <span class="period">vs last month</span>
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="activity-section" aria-labelledby="activity-heading">
+    <h2 id="activity-heading">Recent activity</h2>
+    <ul class="activity-list">
+      <li class="activity-item">
+        <div class="activity-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="activity-body">
+          <p>New order #10482 placed by Maria Chen — $214.00</p>
+          <time datetime="2026-07-26T09:12:00">Today, 9:12 AM</time>
+        </div>
+      </li>
+      <li class="activity-item">
+        <div class="activity-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="activity-body">
+          <p>Support ticket #3021 marked resolved by David Patel</p>
+          <time datetime="2026-07-26T08:47:00">Today, 8:47 AM</time>
+        </div>
+      </li>
+      <li class="activity-item">
+        <div class="activity-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="activity-body">
+          <p>Weekly report generated and sent to 6 subscribers</p>
+          <time datetime="2026-07-26T06:00:00">Today, 6:00 AM</time>
+        </div>
+      </li>
+      <li class="activity-item">
+        <div class="activity-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 3l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="activity-body">
+          <p>Amara Okafor upgraded to the Pro plan</p>
+          <time datetime="2026-07-25T22:31:00">Yesterday, 10:31 PM</time>
+        </div>
+      </li>
+      <li class="activity-item">
+        <div class="activity-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h12M4 14h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="activity-body">
+          <p>New team member Julia Rossi added to Marketing workspace</p>
+          <time datetime="2026-07-25T17:04:00">Yesterday, 5:04 PM</time>
+        </div>
+      </li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

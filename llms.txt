@@ -1,0 +1,24 @@
+# A11y Loop
+
+> a11y-loop makes AI coding agents write accessible UI by default, then proves what it can prove with a real browser audit across the states it built — and tells you exactly what it could not check.
+
+This file follows the [llms.txt](https://llmstxt.org/) convention: a concise, machine-readable map
+of the project for large language models and AI agents.
+
+## About
+
+- Repository: https://github.com/ChanMeng666/a11y-loop
+- Primary stack: Node.js / JavaScript
+- License: MIT
+
+## Key documents
+
+- [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): overview, features, installation, usage
+- [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
+- [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
+- [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history
+
+## For agents
+
+To work effectively here: read the README and AGENTS.md first, then follow the commands and
+conventions they describe. Prefer the project's own scripts over ad-hoc commands.

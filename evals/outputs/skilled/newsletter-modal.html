@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newsletter modal demo</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7fb;
+    --surface: #ffffff;
+    --text: #1a1a2e;
+    --muted: #52526b;
+    --border: #d3d3e0;
+    --accent: #4f46e5;
+    --accent-text: #ffffff;
+    --focus-ring: #1a1a2e;
+    --error: #b3261e;
+    --error-bg: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14141f;
+      --surface: #1f1f2e;
+      --text: #f1f1f7;
+      --muted: #c3c3d6;
+      --border: #46465c;
+      --accent: #a5b4fc;
+      --accent-text: #14142b;
+      --focus-ring: #ffffff;
+      --error: #ff8a80;
+      --error-bg: #3a1c1c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  main {
+    max-width: 32rem;
+    text-align: center;
+  }
+  h1 {
+    font-size: 1.75rem;
+    margin: 0 0 0.75rem;
+  }
+  main > p {
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+  #open-subscribe {
+    min-height: 44px;
+    padding: 0.75rem 1.75rem;
+    background-color: var(--accent);
+    color: var(--accent-text);
+    border: 2px solid var(--accent);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #open-subscribe:hover {
+    filter: brightness(1.08);
+  }
+  dialog {
+    max-width: 26rem;
+    width: calc(100% - 2rem);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0;
+    background: var(--surface);
+    color: var(--text);
+  }
+  dialog::backdrop {
+    background: rgba(20, 20, 31, 0.55);
+  }
+  .dialog-inner {
+    padding: 2rem;
+    position: relative;
+  }
+  .dialog-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .dialog-close:hover {
+    background: var(--bg);
+  }
+  .dialog-close svg {
+    width: 20px;
+    height: 20px;
+  }
+  dialog h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
+    padding-right: 2.5rem;
+  }
+  dialog .dialog-intro {
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+  }
+  .field {
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+  .field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+  }
+  .field input[type="email"] {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .error-message {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    color: var(--error);
+    display: none;
+  }
+  .field.invalid .error-message {
+    display: block;
+  }
+  .field.invalid input {
+    border-color: var(--error);
+  }
+  #subscribe-submit {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    background-color: var(--accent);
+    color: var(--accent-text);
+    border: 2px solid var(--accent);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #subscribe-submit:hover {
+    filter: brightness(1.08);
+  }
+  #dialog-status {
+    margin-top: 1rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    background: var(--error-bg);
+    color: var(--error);
+    display: none;
+  }
+  #dialog-status.visible {
+    display: block;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  @media (forced-colors: active) {
+    #open-subscribe, #subscribe-submit {
+      background-color: ButtonFace;
+      color: ButtonText;
+      border-color: ButtonText;
+    }
+    .dialog-close {
+      border-color: ButtonText;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Stay in the loop</h1>
+  <p>Get occasional product updates. No spam, unsubscribe any time.</p>
+  <button type="button" id="open-subscribe" aria-haspopup="dialog" aria-controls="subscribe-dialog">Subscribe</button>
+</main>
+
+<dialog id="subscribe-dialog" aria-labelledby="subscribe-title">
+  <div class="dialog-inner">
+    <button type="button" class="dialog-close" id="dialog-close" aria-label="Close dialog">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <h2 id="subscribe-title">Subscribe to updates</h2>
+    <p class="dialog-intro">Enter your email and we'll send you a confirmation link.</p>
+
+    <form id="subscribe-form" novalidate>
+      <div class="field" id="dialog-email-field">
+        <label for="dialog-email">Email address</label>
+        <input type="email" id="dialog-email" name="email" autocomplete="email" required aria-describedby="dialog-email-error" aria-invalid="false">
+        <p class="error-message" id="dialog-email-error" role="alert">Please enter a valid email address.</p>
+      </div>
+      <button type="submit" id="subscribe-submit">Subscribe</button>
+      <div id="dialog-status" role="alert"></div>
+    </form>
+  </div>
+</dialog>
+
+<script>
+  var openButton = document.getElementById('open-subscribe');
+  var dialog = document.getElementById('subscribe-dialog');
+  var closeButton = document.getElementById('dialog-close');
+  var form = document.getElementById('subscribe-form');
+  var emailField = document.getElementById('dialog-email-field');
+  var emailInput = document.getElementById('dialog-email');
+  var status = document.getElementById('dialog-status');
+
+  openButton.addEventListener('click', function () {
+    dialog.showModal();
+  });
+
+  closeButton.addEventListener('click', function () {
+    dialog.close();
+  });
+
+  dialog.addEventListener('close', function () {
+    openButton.focus();
+  });
+
+  dialog.addEventListener('click', function (event) {
+    if (event.target === dialog) {
+      dialog.close();
+    }
+  });
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var invalid = emailInput.value.trim() === '' || !emailInput.checkValidity();
+    if (invalid) {
+      emailField.classList.add('invalid');
+      emailInput.setAttribute('aria-invalid', 'true');
+      status.textContent = 'Please fix the highlighted field before submitting.';
+      status.classList.add('visible');
+      emailInput.focus();
+    } else {
+      emailField.classList.remove('invalid');
+      emailInput.setAttribute('aria-invalid', 'false');
+      status.textContent = 'Thanks! Check your inbox to confirm your subscription.';
+      status.classList.remove('visible');
+      status.classList.add('visible');
+    }
+  });
+</script>
+</body>
+</html>
