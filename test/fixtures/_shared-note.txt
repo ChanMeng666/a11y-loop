@@ -1,0 +1,16 @@
+Every fixture in this directory shares the same hygiene rules so that each one
+isolates exactly one violation class:
+
+  - <html lang="en"> and a <title>, so html-has-lang / document-title never fire
+  - all content inside <main>, so the best-practice `region` and
+    `landmark-one-main` rules never fire
+  - exactly one <h1>, so `page-has-heading-one` never fires
+  - #1f2a33 text on #ffffff (14.61:1) and #0b5a52 links (8.08:1), so
+    `color-contrast` never fires
+  - controls at 48px and icon controls at 44px, so `target-size` never fires
+  - no positive tabindex, no animation, no fixed widths
+
+The single exception per file is the defect under test, marked with a DEFECT
+comment in the markup. fixture-no-lang.html breaks the first rule on purpose.
+
+See manifest.json for the per-fixture expectations.

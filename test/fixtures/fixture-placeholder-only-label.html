@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — placeholder standing in for a label</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  code { font-size: 0.9375rem; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  input, textarea { display: block; width: 100%; min-height: 48px;
+    padding: 0.5rem 0.625rem; margin-bottom: 1rem; background: #ffffff; color: #1f2a33;
+    border: 2px solid #5d6d78; border-radius: 6px; font: inherit; }
+  /* Placeholder colour kept at 7.12:1 so contrast is not a confounding defect. */
+  ::placeholder { color: #4a5a66; opacity: 1; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Placeholder standing in for a label</h1>
+  <p>
+    This fixture documents a coverage gap, verified against axe-core 4.12.1 in
+    Chromium rather than assumed.
+  </p>
+  <p>
+    A placeholder is a valid fallback name source in the accessible name computation,
+    so <strong>axe's <code>label</code> rule passes on every field below</strong>. The
+    best-practice <code>label-title-only</code> rule does not fire either — it covers
+    <code>title</code>, not <code>placeholder</code>. A placeholder-only form is
+    therefore reported clean by a default axe run.
+  </p>
+  <p>
+    It is still a real failure. The placeholder disappears the moment the field has
+    content, so the user loses the label exactly when they need it to check their
+    answer; it is not announced consistently across screen readers; it cannot be
+    clicked to focus the field; and it is routinely styled at unreadable contrast.
+    Placeholder-only forms are the single most common shape of the missing-label
+    failure in AI-generated markup.
+  </p>
+
+  <form>
+    <!-- DEFECT: a11y-loop `placeholder-as-label` (proposed).
+         axe `label` PASSES on all three of these. -->
+    <input type="text" name="fullname" placeholder="Full name">
+    <input type="email" name="email" placeholder="Email address">
+    <textarea name="notes" rows="3" placeholder="Anything else we should know"></textarea>
+
+    <button type="submit">Save</button>
+  </form>
+</main>
+</body>
+</html>

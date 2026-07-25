@@ -1,0 +1,20 @@
+[
+  { "query": "Create a signup page at src/signup.html with name, email, password and a country dropdown", "should_trigger": true },
+  { "query": "Add a Settings dialog to src/App.jsx that opens from a gear icon button in the header", "should_trigger": true },
+  { "query": "Build a three-tier pricing section with cards and a Choose plan button, make it look modern", "should_trigger": true },
+  { "query": "Our brand color is #7C9EC4 on white for body links — add a dark theme to src/tokens.css", "should_trigger": true },
+  { "query": "The dashboard needs tabs: Overview, Billing, Members. Add them to Dashboard.tsx", "should_trigger": true },
+  { "query": "Style the nav bar so it collapses into a hamburger menu on mobile", "should_trigger": true },
+  { "query": "Run an accessibility audit on http://localhost:3000 and tell me what's wrong", "should_trigger": true },
+  { "query": "A reviewer says the icon buttons in src/Toolbar.jsx aren't accessible, can you check and fix them", "should_trigger": true },
+  { "query": "Add alt text to all the images in src/pages/about.html", "should_trigger": true },
+  { "query": "Is this modal usable with a screen reader and the keyboard alone?", "should_trigger": true },
+  { "query": "Check whether our color palette meets WCAG AA contrast", "should_trigger": true },
+  { "query": "I fixed the contrast issues you found — did it work, and did I break anything?", "should_trigger": true },
+  { "query": "Refactor the argument parsing in bin/deploy.js to use node:util parseArgs", "should_trigger": false },
+  { "query": "This query times out, rewrite the correlated subquery as a window function", "should_trigger": false },
+  { "query": "There's a typo in README.md, 'recieve' should be 'receive'", "should_trigger": false },
+  { "query": "Add retry with exponential backoff to the S3 upload in workers/ingest.js", "should_trigger": false },
+  { "query": "Write a GitHub Actions workflow that runs the unit tests on push", "should_trigger": false },
+  { "query": "Why is my Express middleware running twice per request?", "should_trigger": false }
+]

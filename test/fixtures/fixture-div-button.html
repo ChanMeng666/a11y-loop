@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — clickable div acting as a button</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+  /* Styled to look and feel exactly like the real button above it. */
+  .pseudo-btn { display: inline-block; min-height: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border-radius: 6px; font-weight: 700;
+    cursor: pointer; user-select: none; }
+  .pseudo-link { color: #0b5a52; text-decoration: underline; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Clickable div acting as a button</h1>
+  <p>This one is a real button, reachable by keyboard and announced as a button.</p>
+  <button type="button" onclick="window.__fixtureClicked = 'real-button'">Save changes</button>
+
+  <h2>These two are not</h2>
+  <p>
+    No role, no tabindex, no keydown or keyup handler. Neither is focusable, neither
+    appears in the tab order, both are announced as plain text, and neither responds
+    to Enter or Space. They are styled to be indistinguishable from the real button,
+    so the failure is invisible unless you put the mouse down.
+  </p>
+  <p>
+    No axe rule fires on either of them. This class is the archetypal AI-codegen
+    failure and it needs a behavioural check in a real browser.
+  </p>
+
+  <!-- DEFECT: a11y-loop `div-button` -->
+  <div class="pseudo-btn" onclick="window.__fixtureClicked = 'div'">Continue to payment</div>
+
+  <!-- DEFECT: a11y-loop `div-button` -->
+  <p><span class="pseudo-link" onclick="window.__fixtureClicked = 'span'">Show more detail</span></p>
+</main>
+</body>
+</html>

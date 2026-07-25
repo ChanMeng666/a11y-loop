@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- DEFECT: the html element below has no lang attribute (axe `html-has-lang`).
+     This is the one fixture that deliberately breaks the shared convention of
+     declaring a language. Everything else on the page is clean. -->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — missing document language</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Missing document language</h1>
+  <p>
+    With no lang attribute, assistive technology falls back to the user's default
+    voice, so this English text may be read with the pronunciation model of another
+    language. It is the most trivially auto-fixable of the six most common failures
+    and still appears on around one page in eight.
+  </p>
+</main>
+</body>
+</html>

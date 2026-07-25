@@ -1,0 +1,168 @@
+{
+  "skill_name": "a11y-loop",
+  "schema_note": "skill-creator evals.json schema (skill_name + evals[] with id/prompt/expected_output/expectations). The non-standard `should_trigger` field is additive metadata for description tuning; the machine-readable trigger set the skill-creator run_eval.py script consumes is a bare array in trigger-evals.json alongside this file.",
+  "evals": [
+    {
+      "id": 1,
+      "should_trigger": true,
+      "prompt": "Create a signup page at src/signup.html with fields for full name, email, password and a country dropdown, plus a submit button. Style it with a plain stylesheet, no framework.",
+      "expected_output": "An accessible signup page whose generated markup was audited in a real browser and iterated to zero violations, reported without any conformance claim.",
+      "expectations": [
+        "Every input has an associated <label for> (or a wrapping <label>); no field relies on a placeholder as its label",
+        "Inputs carry appropriate autocomplete tokens such as name, email, current-password or new-password",
+        "The document has <html lang> set and a single <h1>",
+        "A visible :focus-visible indicator is defined in CSS and no rule sets outline: none without a replacement",
+        "An a11y-loop audit command was actually run against the generated page (--file or --url, not file://)",
+        "Any violations reported by the audit were fixed in the source file and the page was re-audited",
+        "The final summary does not claim the page is accessible, compliant, or that it passes WCAG",
+        "The final summary surfaces the manual checklist or otherwise names what still needs human review"
+      ]
+    },
+    {
+      "id": 2,
+      "should_trigger": true,
+      "prompt": "Add a Settings dialog to the React app in src/App.jsx. It should open from a gear icon button in the header and contain two toggles and a Save button.",
+      "expected_output": "A dialog implementing the APG modal-dialog contract, with the opened state driven and audited via --interact, not just the closed page.",
+      "expectations": [
+        "The gear icon button has a non-empty accessible name (aria-label or visually hidden text) and the icon itself is aria-hidden",
+        "The dialog has an accessible name via aria-labelledby or aria-label, focus moves into it on open, Escape closes it, and focus returns to the trigger on close",
+        "Focus is constrained to the dialog while it is open (native <dialog> showModal, inert, or an explicit trap)",
+        "The toggles use role=\"switch\" with aria-checked, or a native checkbox, and the state attribute is updated in the same handler as the visual change",
+        "An --interact module was written that opens the dialog, and the audit was run with it so the open state was audited",
+        "The response does not claim the dialog is accessible or compliant"
+      ]
+    },
+    {
+      "id": 3,
+      "should_trigger": true,
+      "prompt": "Build a three-tier pricing section for our marketing site: Starter, Team, Enterprise. Cards with a feature list each and a Choose plan button. Make it look modern.",
+      "expected_output": "A pricing section with a correct heading outline, named buttons, AA contrast in light and dark mode, and a clean audit including the 320px reflow pass.",
+      "expectations": [
+        "Heading levels descend without skipping (the plan names are not styled-down h4s under an h1) and visual size is set in CSS rather than by heading level",
+        "Each 'Choose plan' button has an accessible name that distinguishes which plan it selects",
+        "Feature lists use real list markup",
+        "Text and background color pairs were checked against WCAG AA, using a11y-loop contrast or the audit's contrast findings rather than being assumed",
+        "An a11y-loop audit was run and the 320x256 reflow pass produced no unresolved horizontal overflow",
+        "The final summary avoids the words compliant, guarantees, and fully accessible"
+      ]
+    },
+    {
+      "id": 4,
+      "should_trigger": true,
+      "prompt": "Our brand color is #7C9EC4 and we use it for body text links on white, and for button labels on a #F3F4F6 grey. Add a dark theme too. Update src/tokens.css.",
+      "expected_output": "Contrast-checked token values for light and dark themes, with concrete failing/passing ratios reported and candidates chosen from the CLI rather than guessed.",
+      "expectations": [
+        "a11y-loop contrast was run for the stated color pairs, including the --fix flag or the report suggestions, rather than the ratios being estimated",
+        "The reported contrast ratio for #7C9EC4 on white is identified as failing the 4.5:1 requirement for normal text",
+        "Replacement colors are applied to the design tokens rather than to individual elements",
+        "The dark theme values were contrast-checked separately, not assumed to inherit from the light theme",
+        "Link styling does not rely on color alone to distinguish links in body text",
+        "The response cites SC 1.4.3 (and 1.4.11 where UI boundaries are involved) with the ratio it measured"
+      ]
+    },
+    {
+      "id": 5,
+      "should_trigger": true,
+      "prompt": "The dashboard needs tabs: Overview, Billing, Members. Add them to src/components/Dashboard.tsx.",
+      "expected_output": "A tabs implementation following the APG contract, with each tab panel state audited.",
+      "expectations": [
+        "The implementation uses role=\"tablist\" / role=\"tab\" / role=\"tabpanel\" with aria-selected, aria-controls and aria-labelledby wired to ids that resolve",
+        "Roving tabindex is implemented: the selected tab has tabindex 0 and the others -1",
+        "Arrow key navigation between tabs plus Home and End are implemented, matching the APG keyboard contract",
+        "The apg-patterns.md reference was consulted or its contract is visibly followed rather than approximated",
+        "An audit was run covering more than the initially selected panel, for example via an --interact module that selects each tab",
+        "No conformance claim appears in the summary"
+      ]
+    },
+    {
+      "id": 6,
+      "should_trigger": true,
+      "prompt": "Run an accessibility audit on http://localhost:3000 and tell me what's wrong.",
+      "expected_output": "An audit run through the CLI with violations and needsReview both reported, coverage stated with a denominator, and the manual checklist surfaced.",
+      "expectations": [
+        "a11y-loop audit was run against the URL, producing JSON output",
+        "Both findings.violations and findings.needsReview are reported, with needsReview presented as unresolved uncertainty rather than as passes",
+        "Findings are cited by WCAG success criterion number, name and level",
+        "The coverage limitation is stated with its denominator (for example 57% of issue instances by volume, or 17 of 55 criteria having any automated rule)",
+        "The manual checklist is included in the response to the user, not only left in the JSON file",
+        "Real assistive technology testing is recommended before production",
+        "The response does not present a score or grade as a verdict"
+      ]
+    },
+    {
+      "id": 7,
+      "should_trigger": true,
+      "prompt": "A reviewer says the icon buttons in src/Toolbar.jsx aren't accessible. Can you check and fix them?",
+      "expected_output": "Accessible names added to icon-only controls, decorative icons hidden, target size checked, and the fix verified by audit rather than asserted.",
+      "expectations": [
+        "Each icon-only button receives an accessible name via aria-label or visually hidden text",
+        "The decorative svg or icon element is marked aria-hidden=\"true\"",
+        "Target size is considered against the 24x24 CSS px minimum of SC 2.5.8",
+        "The change was verified with an a11y-loop audit rather than only by inspection",
+        "Any accessible name inferred from an icon shape rather than existing text is flagged as needing human confirmation",
+        "SC 4.1.2 Name, Role, Value is cited"
+      ]
+    },
+    {
+      "id": 8,
+      "should_trigger": true,
+      "prompt": "Add alt text to all the images in src/pages/about.html.",
+      "expected_output": "Draft alt text clearly labelled as unverified, with decorative images given empty alt, and an explicit request for human confirmation.",
+      "expectations": [
+        "Every alt value the model wrote is explicitly labelled DRAFT or otherwise marked as needing human confirmation",
+        "The response states that the images were not seen and the descriptions are inferred from filename, context or surrounding copy",
+        "Images judged decorative are given alt=\"\" rather than a description or a phrase like 'decorative image'",
+        "The user is asked to confirm or replace each draft",
+        "The response does not claim the images are now accessible"
+      ]
+    },
+    {
+      "id": 9,
+      "should_trigger": true,
+      "prompt": "I fixed the contrast issues you found. Did it work, and did I break anything?",
+      "expected_output": "A re-audit plus a fingerprint diff against the previous report, reported as FIXED / NEW / REMAINING.",
+      "expectations": [
+        "A fresh audit was run to a new report file rather than reusing the earlier one",
+        "a11y-loop diff was run with --before and --after pointing at the two reports",
+        "The answer distinguishes FIXED, NEW and REMAINING findings",
+        "Any NEW findings are treated as regressions introduced by the fix and addressed rather than reported and left",
+        "The loop is only declared finished when violations is empty and diff reports no NEW"
+      ]
+    },
+    {
+      "id": 10,
+      "should_trigger": false,
+      "prompt": "Refactor the argument parsing in bin/deploy.js to use node:util parseArgs instead of the hand-rolled loop, and keep the existing flags working.",
+      "expected_output": "A straightforward CLI refactor with no accessibility work and no audit attempted.",
+      "expectations": [
+        "The refactor is completed using node:util parseArgs with the existing flags preserved",
+        "No a11y-loop command was run",
+        "No accessibility manual checklist, WCAG citation, or contrast discussion appears in the response",
+        "No unrequested ARIA, alt text, or label changes were introduced"
+      ]
+    },
+    {
+      "id": 11,
+      "should_trigger": false,
+      "prompt": "This query times out on the reports table. Can you rewrite it to use a window function instead of the correlated subquery? SELECT id, (SELECT COUNT(*) FROM events e WHERE e.report_id = r.id) AS n FROM reports r;",
+      "expected_output": "A rewritten SQL query with no accessibility content.",
+      "expectations": [
+        "A window-function rewrite of the query is provided",
+        "No a11y-loop command was run",
+        "No WCAG success criteria, contrast ratios, or accessibility checklist appear in the response"
+      ]
+    },
+    {
+      "id": 12,
+      "should_trigger": false,
+      "prompt": "There's a typo in README.md — 'recieve' should be 'receive'. Fix it.",
+      "expected_output": "A one-word documentation fix, nothing else.",
+      "expectations": [
+        "The typo is corrected in README.md",
+        "No a11y-loop command was run",
+        "No accessibility guidance, audit, or checklist appears in the response",
+        "No other files were modified"
+      ]
+    }
+  ]
+}

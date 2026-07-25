@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — focus indicator removed</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: #0b5a52; }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input { display: block; width: 100%; min-height: 48px; padding: 0.5rem 0.625rem;
+    background: #ffffff; color: #1f2a33; border: 2px solid #5d6d78;
+    border-radius: 6px; font: inherit; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+
+  /* DEFECT: a universal focus reset with no replacement indicator, covering both
+     :focus and :focus-visible so no fallback survives. */
+  *:focus,
+  *:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Focus indicator removed</h1>
+  <p>
+    Tab through the three controls below. Nothing changes visually on any of them.
+    A keyboard user has no way to tell where they are on the page.
+  </p>
+  <p>
+    No axe rule fires here. The removal is only observable by comparing computed
+    styles between the focused and unfocused states, which needs a real browser.
+  </p>
+
+  <p><button type="button">Save changes</button></p>
+
+  <p><a href="#somewhere">Read the session descriptions</a></p>
+
+  <label for="focus-email">Email address</label>
+  <input id="focus-email" name="email" type="email" autocomplete="email">
+</main>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — broken and invalid ARIA</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+  [role="heading"] { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
+  [role="menu"] { display: flex; gap: 1rem; margin: 1rem 0; padding: 0;
+    list-style: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Broken and invalid ARIA</h1>
+  <p>
+    Four defects, four different axe rules. Pages that use ARIA average more errors
+    than pages that do not, and broken ARIA references are documented as an emergent
+    failure mode specific to LLM-generated code.
+  </p>
+
+  <!-- DEFECT: axe `aria-valid-attr-value` — nothing on this page has id="save-label".
+       The accessible name falls back to the text content, so `button-name` passes and
+       this is purely a dangling-reference failure. -->
+  <button type="button" aria-labelledby="save-label">Save changes</button>
+
+  <!-- DEFECT: axe `aria-required-attr` — role="heading" requires aria-level.
+       A native <h3> would need no attributes at all. -->
+  <div role="heading">Getting here</div>
+
+  <!-- DEFECT: axe `aria-hidden-focus` — aria-hidden on a focusable element. This is
+       rule 4 of the four rules of ARIA use: it leaves a tab stop that announces
+       nothing at all. -->
+  <p><a href="#details" aria-hidden="true">Venue details</a></p>
+
+  <!-- DEFECT: axe `aria-required-children` — role="menu" requires owned menuitems.
+       With role="menu" on the ul, the li elements no longer map to listitem, so the
+       menu owns nothing. The role is also a promise of the entire APG Menu keyboard
+       contract (arrow keys, Home/End, type-ahead, a single tab stop), none of which
+       is implemented, which makes this nav worse than no ARIA would have. -->
+  <ul role="menu">
+    <li>Programme</li>
+    <li>Speakers</li>
+  </ul>
+</main>
+</body>
+</html>

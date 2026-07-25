@@ -11,8 +11,8 @@
   },
   "scripts": {
     "test": "node --test",
-    "test:unit": "node --test test/unit/",
-    "test:integration": "node --test test/integration/"
+    "test:unit": "node --test \"test/unit/*.test.js\"",
+    "test:integration": "node --test \"test/integration/*.test.js\""
   },
   "keywords": [
     "accessibility",

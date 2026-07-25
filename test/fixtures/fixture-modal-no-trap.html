@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — modal dialog with no focus management</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 0; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input { display: block; width: 100%; min-height: 48px; padding: 0.5rem 0.625rem;
+    margin-bottom: 1rem; background: #ffffff; color: #1f2a33;
+    border: 2px solid #5d6d78; border-radius: 6px; font: inherit; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+  .overlay { display: none; position: fixed; inset: 0;
+    background: rgba(8, 19, 26, 0.62); z-index: 40; }
+  .overlay.open { display: block; }
+  .fake-dialog { display: none; position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); width: min(28rem, calc(100vw - 2rem));
+    background: #ffffff; border: 1px solid #5d6d78; border-radius: 8px; z-index: 50; }
+  .fake-dialog.open { display: block; }
+  .dlg-head { display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 1rem; border-bottom: 1px solid #d9e0e5; }
+  .dlg-body { padding: 1rem; }
+  .dlg-close { min-width: 44px; min-height: 44px; padding: 0; background: #ffffff;
+    color: #0b5a52; border: 2px solid #5d6d78; font-size: 1.25rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Modal dialog with no focus management</h1>
+  <p>
+    On load there is nothing here to find: the dialog is display:none and is not in
+    the accessibility tree, so an audit that only runs on page load reports a clean
+    page. Every defect below exists only once the dialog is open.
+  </p>
+  <p>
+    To exercise it: click <code>#openDialog</code>, wait for
+    <code>#fakeDialog.open</code>, then audit. See the <code>interact</code> field for
+    this fixture in <code>manifest.json</code>.
+  </p>
+
+  <button type="button" id="openDialog">Register now</button>
+
+  <p><a href="#elsewhere">A link after the trigger, to make escaping focus observable</a></p>
+</main>
+
+<div class="overlay" id="overlay"></div>
+
+<!--
+  The dialog is deliberately given an accessible name (aria-label), a real <button>
+  close control, and a labelled input, so that the ONLY defects are in focus
+  management:
+    - no focus moved into the dialog on open
+    - no focus trap: Tab walks straight out to the page behind
+    - Escape does nothing
+    - focus is not returned to the trigger on close
+    - the background is neither inert nor aria-hidden
+-->
+<div class="fake-dialog" id="fakeDialog" role="dialog" aria-label="Register for the summit">
+  <div class="dlg-head">
+    <h2>Register</h2>
+    <button type="button" class="dlg-close" id="closeDialog" aria-label="Close dialog">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="dlg-body">
+    <label for="dlg-email">Email address</label>
+    <input id="dlg-email" name="email" type="email" autocomplete="email">
+    <button type="button" id="payDialog">Pay now</button>
+  </div>
+</div>
+
+<script>
+  var overlay = document.getElementById('overlay');
+  var dialog = document.getElementById('fakeDialog');
+
+  // DEFECT: a11y-loop `dialog-focus-trap`. Opens the dialog and does nothing else —
+  // no focus move, no trap, no Escape listener, no focus return, no inert background.
+  document.getElementById('openDialog').addEventListener('click', function () {
+    overlay.classList.add('open');
+    dialog.classList.add('open');
+  });
+
+  function close() {
+    overlay.classList.remove('open');
+    dialog.classList.remove('open');
+  }
+
+  document.getElementById('closeDialog').addEventListener('click', close);
+  document.getElementById('payDialog').addEventListener('click', close);
+  overlay.addEventListener('click', close);
+</script>
+</body>
+</html>

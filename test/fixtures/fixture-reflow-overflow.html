@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — fixed width, no reflow</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+
+  /* DEFECT: a hard 1200px width. At the 320x256 viewport WCAG specifies for the
+     400% zoom reflow test, the document scrollWidth exceeds the viewport width and
+     the page scrolls horizontally (SC 1.4.10). */
+  /* Kept text-free. Text laid out inside an element wider than the viewport produces
+     client rects with differing background stacks, which makes axe return
+     color-contrast as incomplete (elmPartiallyObscuring) — a finding unrelated to the
+     class under test. The panel carries its meaning through the prose above it. */
+  .wide {
+    width: 1200px;
+    height: 5rem;
+    background: #ffffff;
+    border: 2px solid #5d6d78;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Fixed width, no reflow</h1>
+  <p>
+    This paragraph reflows. The panel below cannot, and it drags the whole document
+    with it.
+  </p>
+  <div class="wide">
+    <p>
+      Declared at 1200px with no media query anywhere in the stylesheet. The meta
+      viewport tag above promises the layout responds, which makes the hard-coded
+      width worse rather than better.
+    </p>
+  </div>
+  <p>
+    No axe rule fires. Detecting this means loading the page at a narrow viewport and
+    measuring scrollWidth against clientWidth.
+  </p>
+</main>
+</body>
+</html>

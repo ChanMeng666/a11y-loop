@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — ambiguous link text</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ambiguous link text</h1>
+  <p>
+    This link names its destination: <a href="#programme">read the full programme</a>.
+    The four below do not. Screen reader users routinely navigate by pulling up a list
+    of a page's links, and in that list these four read as "click here", "read more",
+    "here" and "learn more".
+  </p>
+
+  <!-- DEFECT: a11y-loop `ambiguous-link` -->
+  <p>To book a place, <a href="#register">click here</a>.</p>
+
+  <!-- DEFECT: a11y-loop `ambiguous-link` -->
+  <p>Twenty-four speakers are confirmed. <a href="#speakers">Read more</a></p>
+
+  <!-- DEFECT: a11y-loop `ambiguous-link` -->
+  <p>Directions and parking are <a href="#venue">here</a>.</p>
+
+  <!-- DEFECT: a11y-loop `ambiguous-link` -->
+  <p>Sponsorship packages are available. <a href="#sponsors">Learn more</a></p>
+
+  <h2 id="programme">Programme</h2>
+  <p>
+    The check behind this is a heuristic and says so: a known phrase list plus links
+    whose accessible name is very short or is duplicated across differing
+    destinations. Whether a longer name is actually descriptive enough stays on the
+    manual checklist.
+  </p>
+</main>
+</body>
+</html>

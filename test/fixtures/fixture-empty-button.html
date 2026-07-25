@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — buttons with no accessible name</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+  /* 44px so SC 2.5.8 is satisfied and the missing name is the only defect. */
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center;
+    min-width: 44px; min-height: 44px; padding: 0; margin-right: 0.5rem;
+    background: #ffffff; color: #0b5a52; border: 2px solid #5d6d78; border-radius: 6px;
+    font-size: 1.25rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Buttons with no accessible name</h1>
+  <p>This button is fine — it has a text node.</p>
+  <button type="button">Save changes</button>
+
+  <h2>The two below have no name at all</h2>
+  <p>
+    The same icon-only root cause as empty links. Both are focusable, both are
+    announced as "button", and neither says what it does.
+  </p>
+
+  <!-- DEFECT: axe `button-name` — icon-only, and the SVG is aria-hidden -->
+  <button type="button" class="icon-btn">
+    <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      <path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2"></path>
+    </svg>
+  </button>
+
+  <!-- DEFECT: axe `button-name` — the only text is inside an aria-hidden span,
+       so the name computation has nothing to work with -->
+  <button type="button" class="icon-btn">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</main>
+</body>
+</html>

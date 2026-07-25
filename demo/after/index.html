@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!--
+  a11y-loop demo — AFTER
+  Same page, same content, same visual identity as demo/before. Every seeded
+  violation fixed. See FIXES.md for the before → after mapping and the
+  computed contrast table.
+  "Aotearoa Web Summit 2026" is a fictional event invented for this demo.
+-->
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aotearoa Web Summit 2026 — two days on the craft of the web</title>
+<meta name="description" content="Aotearoa Web Summit 2026: two days of talks and workshops on the craft of the web, 12–13 November 2026 at Te Papa, Wellington.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#top" class="logo-link">
+      <svg class="logo-mark" width="32" height="32" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+        <rect width="28" height="28" rx="6" fill="currentColor"></rect>
+        <path d="M7 19l4-11 3 8 3-8 4 11" stroke="#ffffff" stroke-width="2" fill="none"></path>
+      </svg>
+      <span class="logo-word">Aotearoa Web Summit 2026</span>
+    </a>
+
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primary-nav">
+      <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+        <path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2"></path>
+      </svg>
+      Menu
+    </button>
+
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <ul class="nav-list">
+        <li><a href="#programme">Programme</a></li>
+        <li><a href="#speakers">Speakers</a></li>
+        <li><a href="#venue">Venue</a></li>
+        <li><a href="#sponsors">Sponsors</a></li>
+        <li><a href="#register">Register</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top" aria-labelledby="hero-heading">
+    <div class="container hero-inner">
+      <p class="kicker">12–13 November 2026 · Te Papa, Wellington</p>
+      <h1 id="hero-heading">Aotearoa Web&nbsp;Summit 2026</h1>
+      <p class="hero-sub">
+        Two days with the people who build the web in Aotearoa New Zealand.
+        Twenty-four talks, four workshops, one very good coffee cart.
+      </p>
+      <div class="hero-actions">
+        <button type="button" class="btn btn-primary" id="registerTrigger">
+          Register now — $340
+        </button>
+        <a href="#programme" class="btn btn-ghost">See the programme</a>
+      </div>
+      <p class="hero-note">
+        Earlybird pricing closes 30 September.
+        <a href="#group-rates">See group booking rates</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="ticker-band" aria-labelledby="ticker-heading">
+    <div class="container ticker-inner">
+      <h2 class="ticker-heading" id="ticker-heading">Supported by</h2>
+      <div class="ticker" id="ticker">
+        <div class="ticker-track" id="tickerTrack">
+          <ul class="ticker-list">
+            <li><span lang="mi">Kōwhai</span> Digital</li>
+            <li><span lang="mi">Tūrangi</span> Cloud</li>
+            <li><span lang="mi">Mahi</span> Labs</li>
+            <li>Southerly Systems</li>
+            <li><span lang="mi">Pipiwharauroa</span> Design</li>
+            <li>Fernbird Hosting</li>
+          </ul>
+          <!-- Second copy exists only so the scroll loops seamlessly. It is the
+               same text as the list above, so it is hidden from assistive tech
+               to avoid announcing every sponsor twice. -->
+          <ul class="ticker-list" aria-hidden="true">
+            <li>Kōwhai Digital</li>
+            <li>Tūrangi Cloud</li>
+            <li>Mahi Labs</li>
+            <li>Southerly Systems</li>
+            <li>Pipiwharauroa Design</li>
+            <li>Fernbird Hosting</li>
+          </ul>
+        </div>
+      </div>
+      <button type="button" class="ticker-toggle" id="tickerToggle" aria-pressed="false">
+        <span class="ticker-toggle-label">Pause sponsor scroll</span>
+      </button>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <section id="programme" class="section" aria-labelledby="programme-heading">
+      <h2 class="section-title" id="programme-heading">Programme</h2>
+      <p class="section-lead">
+        Single track on day one, two tracks plus workshops on day two. Times are NZDT.
+        <a href="#full-programme">Read the full session descriptions</a>.
+      </p>
+
+      <div class="table-scroll" role="region" aria-labelledby="day-one-caption" tabindex="0">
+        <table class="schedule">
+          <caption class="day-title" id="day-one-caption">Day one — Thursday 12 November</caption>
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Session</th>
+              <th scope="col">Speaker</th>
+              <th scope="col">Room</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">08:30</th>
+              <td>Registration and coffee</td>
+              <td>—</td>
+              <td>Foyer</td>
+            </tr>
+            <tr>
+              <th scope="row">09:15</th>
+              <td>Opening <span lang="mi">mihi whakatau</span></td>
+              <td><span lang="mi">Te Rōpū Manaaki</span></td>
+              <td>Soundings</td>
+            </tr>
+            <tr>
+              <th scope="row">09:45</th>
+              <td>The web we keep rebuilding</td>
+              <td>Aroha Kingi</td>
+              <td>Soundings</td>
+            </tr>
+            <tr>
+              <th scope="row">10:40</th>
+              <td>Shipping design systems that outlive the redesign</td>
+              <td>Dev Ramanathan</td>
+              <td>Soundings</td>
+            </tr>
+            <tr>
+              <th scope="row">11:30</th>
+              <td>Edge rendering without the edge cases</td>
+              <td>Marika <span lang="da">Sørensen</span></td>
+              <td>Soundings</td>
+            </tr>
+            <tr>
+              <th scope="row">13:30</th>
+              <td>What we learned migrating 400 forms</td>
+              <td>Tama Whitiora</td>
+              <td>Soundings</td>
+            </tr>
+            <tr>
+              <th scope="row">15:00</th>
+              <td>Lightning talks</td>
+              <td>Eight of you</td>
+              <td>Soundings</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-scroll" role="region" aria-labelledby="day-two-caption" tabindex="0">
+        <table class="schedule">
+          <caption class="day-title" id="day-two-caption">Day two — Friday 13 November</caption>
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Session</th>
+              <th scope="col">Speaker</th>
+              <th scope="col">Room</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">09:30</th>
+              <td>Performance budgets people actually keep</td>
+              <td>Joss Ngata</td>
+              <td><span lang="mi">Rangimārie</span> 1</td>
+            </tr>
+            <tr>
+              <th scope="row">09:30</th>
+              <td>Workshop: testing without a test framework</td>
+              <td>Priya Sandhu</td>
+              <td><span lang="mi">Rangimārie</span> 2</td>
+            </tr>
+            <tr>
+              <th scope="row">11:00</th>
+              <td>Type on small screens</td>
+              <td>Marika <span lang="da">Sørensen</span></td>
+              <td><span lang="mi">Rangimārie</span> 1</td>
+            </tr>
+            <tr>
+              <th scope="row">14:00</th>
+              <td>Closing panel: the next ten years</td>
+              <td>All speakers</td>
+              <td>Soundings</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="fineprint">
+        Programme subject to change. Session recordings published four weeks after the event.
+      </p>
+    </section>
+
+    <section id="speakers" class="section" aria-labelledby="speakers-heading">
+      <h2 class="section-title" id="speakers-heading">Speakers</h2>
+      <p class="section-lead">Twenty-four speakers across two days. Here are six of them.</p>
+
+      <ul class="speaker-grid">
+        <li>
+          <a class="speaker-card" href="#speaker-aroha-kingi">
+            <img class="speaker-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23BFE8E1'/%3E%3Ccircle cx='80' cy='60' r='27' fill='%235E8F87'/%3E%3Cpath d='M22 160c0-32 26-58 58-58s58 26 58 58z' fill='%235E8F87'/%3E%3C/svg%3E" width="160" height="160">
+            <span class="speaker-name">Aroha Kingi</span>
+            <span class="speaker-role">Principal Engineer, <span lang="mi">Kōwhai</span> Digital</span>
+          </a>
+        </li>
+        <li>
+          <a class="speaker-card" href="#speaker-dev-ramanathan">
+            <img class="speaker-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23F6D9CF'/%3E%3Ccircle cx='80' cy='60' r='27' fill='%23A9705B'/%3E%3Cpath d='M22 160c0-32 26-58 58-58s58 26 58 58z' fill='%23A9705B'/%3E%3C/svg%3E" width="160" height="160">
+            <span class="speaker-name">Dev Ramanathan</span>
+            <span class="speaker-role">Design Systems Lead, <span lang="mi">Mahi</span> Labs</span>
+          </a>
+        </li>
+        <li>
+          <a class="speaker-card" href="#speaker-marika-sorensen">
+            <img class="speaker-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23D9E4F2'/%3E%3Ccircle cx='80' cy='60' r='27' fill='%235F779C'/%3E%3Cpath d='M22 160c0-32 26-58 58-58s58 26 58 58z' fill='%235F779C'/%3E%3C/svg%3E" width="160" height="160">
+            <span class="speaker-name">Marika <span lang="da">Sørensen</span></span>
+            <span class="speaker-role">Typographer, independent</span>
+          </a>
+        </li>
+        <li>
+          <a class="speaker-card" href="#speaker-tama-whitiora">
+            <img class="speaker-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23E6E1F2'/%3E%3Ccircle cx='80' cy='60' r='27' fill='%23796CA0'/%3E%3Cpath d='M22 160c0-32 26-58 58-58s58 26 58 58z' fill='%23796CA0'/%3E%3C/svg%3E" width="160" height="160">
+            <span class="speaker-name">Tama Whitiora</span>
+            <span class="speaker-role">Service Designer, <span lang="mi">Tūrangi</span> Cloud</span>
+          </a>
+        </li>
+        <li>
+          <a class="speaker-card" href="#speaker-joss-ngata">
+            <img class="speaker-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23FBE9C8'/%3E%3Ccircle cx='80' cy='60' r='27' fill='%23A0842F'/%3E%3Cpath d='M22 160c0-32 26-58 58-58s58 26 58 58z' fill='%23A0842F'/%3E%3C/svg%3E" width="160" height="160">
+            <span class="speaker-name">Joss Ngata</span>
+            <span class="speaker-role">Site Reliability Engineer, Fernbird Hosting</span>
+          </a>
+        </li>
+        <li>
+          <a class="speaker-card" href="#speaker-priya-sandhu">
+            <img class="speaker-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23D6EFD8'/%3E%3Ccircle cx='80' cy='60' r='27' fill='%2355835C'/%3E%3Cpath d='M22 160c0-32 26-58 58-58s58 26 58 58z' fill='%2355835C'/%3E%3C/svg%3E" width="160" height="160">
+            <span class="speaker-name">Priya Sandhu</span>
+            <span class="speaker-role">Staff Engineer, Southerly Systems</span>
+          </a>
+        </li>
+      </ul>
+      <p class="section-lead"><a href="#full-lineup">See all 24 speakers</a></p>
+    </section>
+
+    <section id="venue" class="section" aria-labelledby="venue-heading">
+      <h2 class="section-title" id="venue-heading">Venue</h2>
+      <p class="section-lead">
+        Te Papa Tongarewa, 55 Cable Street, Wellington. Ten minutes' walk from the railway
+        station, two minutes from the waterfront. Accessible entrances on Cable Street and
+        Wakefield Street.
+      </p>
+
+      <img class="venue-map" width="640" height="260"
+           alt="Simplified map: the venue sits on Cable Street between Wakefield Street to the north-west and the waterfront to the south-east, with the railway station about ten minutes' walk north."
+           src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 260'%3E%3Crect width='640' height='260' fill='%23E9F5F2'/%3E%3Cpath d='M0 190h640' stroke='%235D6D78' stroke-width='10'/%3E%3Cpath d='M0 70h640' stroke='%238FA6AE' stroke-width='6'/%3E%3Cpath d='M180 0v260M470 0v260' stroke='%238FA6AE' stroke-width='6'/%3E%3Crect x='250' y='108' width='150' height='64' rx='6' fill='%230D6157'/%3E%3Ccircle cx='120' cy='40' r='11' fill='%239E2A14'/%3E%3C/svg%3E">
+      <p class="figure-note">
+        The map is decorative shorthand for the description above; the full address and
+        transport detail are in the text.
+      </p>
+
+      <h3 class="subsection-title" id="getting-here">Getting here</h3>
+      <p class="section-lead">
+        Metlink buses stop on Cable Street. Paid parking under the building. Bike parks by the
+        north entrance. <a href="#venue-map-and-access">Open the venue map and access
+        information</a>.
+      </p>
+    </section>
+
+    <section id="sponsors" class="section" aria-labelledby="sponsors-heading">
+      <h2 class="section-title" id="sponsors-heading">Our sponsors</h2>
+      <ul class="sponsor-list">
+        <li><span lang="mi">Kōwhai</span> Digital</li>
+        <li><span lang="mi">Tūrangi</span> Cloud</li>
+        <li><span lang="mi">Mahi</span> Labs</li>
+        <li>Southerly Systems</li>
+        <li><span lang="mi">Pipiwharauroa</span> Design</li>
+        <li>Fernbird Hosting</li>
+      </ul>
+    </section>
+
+    <section id="register" class="section register" aria-labelledby="register-heading">
+      <h2 class="section-title" id="register-heading">Register</h2>
+      <p class="section-lead" id="group-rates">
+        Earlybird $340 until 30 September, then $420. Students $120. Groups of five or more
+        get 15% off — enter the same organisation name on each registration.
+      </p>
+
+      <form class="reg-form" id="regForm" novalidate>
+        <fieldset>
+          <legend>Your details</legend>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="reg-name">Full name <span class="req">(required)</span></label>
+              <input class="field" id="reg-name" name="name" type="text"
+                     autocomplete="name" required aria-describedby="reg-name-hint">
+              <p class="hint" id="reg-name-hint">As you would like it printed on your badge.</p>
+            </div>
+
+            <div class="field-group">
+              <label for="reg-email">Email address <span class="req">(required)</span></label>
+              <input class="field" id="reg-email" name="email" type="email"
+                     autocomplete="email" required aria-describedby="reg-email-hint">
+              <p class="hint" id="reg-email-hint">We send your ticket and one reminder. Nothing else.</p>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="reg-org">Organisation <span class="opt">(optional)</span></label>
+              <input class="field" id="reg-org" name="organisation" type="text"
+                     autocomplete="organization">
+            </div>
+
+            <div class="field-group">
+              <label for="reg-ticket">Ticket type <span class="req">(required)</span></label>
+              <select class="field" id="reg-ticket" name="ticket" required>
+                <option value="">Choose a ticket type</option>
+                <option value="earlybird">Earlybird — $340</option>
+                <option value="standard">Standard — $420</option>
+                <option value="student">Student — $120</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="reg-access">Dietary or access requirements <span class="opt">(optional)</span></label>
+            <textarea class="field" id="reg-access" name="access" rows="3"
+                      aria-describedby="reg-access-hint"></textarea>
+            <p class="hint" id="reg-access-hint">
+              Tell us anything that would make the two days work better for you. We read every one.
+            </p>
+          </div>
+        </fieldset>
+
+        <div class="check-row">
+          <input type="checkbox" class="check" id="reg-news" name="newsletter">
+          <label for="reg-news">Email me about next year's summit</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Continue to payment</button>
+        <p class="form-status" id="regFormStatus" role="status"></p>
+      </form>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-line">
+      Aotearoa Web Summit is a volunteer-run event. <span lang="mi">Kia ora</span> for being here.
+    </p>
+
+    <nav aria-label="Social">
+      <ul class="social">
+        <li>
+          <a class="icon-btn" href="#mastodon">
+            <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M9 1L1 9l8 8 8-8z" fill="currentColor"></path>
+            </svg>
+            <span class="visually-hidden">Aotearoa Web Summit on Mastodon</span>
+          </a>
+        </li>
+        <li>
+          <a class="icon-btn" href="#bluesky">
+            <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <circle cx="9" cy="9" r="8" fill="currentColor"></circle>
+            </svg>
+            <span class="visually-hidden">Aotearoa Web Summit on Bluesky</span>
+          </a>
+        </li>
+        <li>
+          <a class="icon-btn" href="#newsletter">
+            <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <rect x="1" y="1" width="16" height="16" rx="4" fill="currentColor"></rect>
+            </svg>
+            <span class="visually-hidden">Subscribe to the summit newsletter</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <p class="footer-fine">
+      © 2026 Aotearoa Web Summit · <a href="#code-of-conduct">Code of conduct</a> ·
+      <a href="#privacy">Privacy</a> · Fictional event, built as a demo page.
+    </p>
+  </div>
+</footer>
+
+<dialog class="modal" id="registerDialog" aria-labelledby="registerDialogTitle">
+  <div class="modal-head">
+    <h2 class="modal-title" id="registerDialogTitle">Register for Aotearoa Web Summit 2026</h2>
+    <button type="button" class="modal-close" id="dialogClose">
+      <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+        <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="2"></path>
+      </svg>
+      <span class="visually-hidden">Close registration dialog</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <p class="modal-copy">
+      Two days, 24 talks, four workshops. Tickets are transferable until 1 November.
+    </p>
+
+    <form id="dialogForm" novalidate>
+      <div class="field-group">
+        <label for="dlg-email">Email address <span class="req">(required)</span></label>
+        <input class="field" id="dlg-email" name="email" type="email"
+               autocomplete="email" required aria-describedby="dlg-email-hint">
+        <p class="hint" id="dlg-email-hint">Your ticket goes to this address.</p>
+      </div>
+
+      <div class="field-group">
+        <label for="dlg-code">Discount code <span class="opt">(optional)</span></label>
+        <input class="field" id="dlg-code" name="code" type="text">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Pay $340</button>
+      <p class="form-status" id="dialogFormStatus" role="status"></p>
+    </form>
+
+    <p class="modal-fine">
+      You will be redirected to our payment provider.
+      <a href="#payment-terms">Read our payment and refund terms</a>.
+    </p>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>

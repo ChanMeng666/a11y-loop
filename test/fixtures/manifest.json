@@ -1,0 +1,489 @@
+{
+  "version": 1,
+  "description": "One minimal fixture per violation class, plus a clean baseline. Each fixture isolates exactly one class so an integration test can assert that class and nothing else.",
+  "axeCore": "4.12.1",
+  "wcag": "2.2",
+  "conventions": [
+    "Every fixture declares <html lang=\"en\"> and a <title>, so html-has-lang / html-lang-valid / document-title never fire. fixture-no-lang.html breaks this on purpose.",
+    "All content sits inside a single <main>, so the best-practice `region` and `landmark-one-main` rules never fire.",
+    "Exactly one <h1> per fixture, so `page-has-heading-one` never fires.",
+    "Text is #1f2a33 on #ffffff (14.61:1) and links are #0b5a52 (8.08:1), so `color-contrast` never fires. fixture-low-contrast.html breaks this on purpose.",
+    "Buttons and inputs are >=48px and icon controls >=44px, so `target-size` never fires. fixture-target-size.html breaks this on purpose.",
+    "No positive tabindex, no animation and no fixed widths, except in the fixture testing each.",
+    "No background gradients or images anywhere, so axe can always resolve a background colour and returns pass/fail rather than incomplete.",
+    "The defect under test is marked with a DEFECT comment in the markup."
+  ],
+  "expectationFields": {
+    "ruleIdOrCheck": "axe-core rule ID, or an a11y-loop check name",
+    "detector": "\"axe\" or \"a11y-loop\"",
+    "scHint": "WCAG 2.2 success criterion number that is the source of the obligation",
+    "scName": "success criterion name",
+    "level": "conformance level of the success criterion",
+    "axeTag": "the axe tag the rule carries, or null for a11y-loop checks. Rules tagged best-practice are filtered out of a WCAG-tag-scoped run and land in the separated non-blocking bucket.",
+    "minNodes": "assert at least this many findings; tests should use >= rather than ==",
+    "allowNeedsReview": "true if the finding may legitimately land in needsReview / incomplete rather than violations",
+    "requiresPass": "the audit pass this finding needs: default, dark, forced-colors, reduced-motion, or viewport-320",
+    "requiresAxeOption": "an axe run option the finding depends on"
+  },
+  "assertAlso": "For every fixture except the one under test, no other rule in the wcag2a/wcag2aa/wcag21a/wcag21aa/wcag22aa tag set should report a violation. A new finding in an unrelated fixture means either the fixture drifted or a runner regression.",
+  "verifiedAgainst": {
+    "date": "2026-07-26",
+    "axeCore": "4.12.1",
+    "browser": "Chromium 151.0.7922.34 via playwright",
+    "method": "Served over http on 127.0.0.1 (never file://), axe.run with runOnly by tag and resultTypes ['violations','incomplete'], across the default / dark / forced-colors / reduced-motion / 320x256 passes, with the dialog fixtures also driven into their open state.",
+    "note": "Every expectation below was observed, not predicted. Where axe behaved differently from what the rule metadata suggested, the observed behaviour is what is recorded and the surprise is called out in the fixture's note."
+  },
+  "axeBehaviourNotes": [
+    "A tag-based runOnly ENABLES rules that ship with enabled:false. target-size carries enabled:false in axe-core 4.12.1, but running with runOnly {type:'tag', values:[...'wcag22aa']} reports it anyway. No explicit rules option is needed.",
+    "A placeholder is a valid fallback in the accessible name computation, so axe's `label` rule PASSES on placeholder-only inputs, and `label-title-only` does not fire either (it covers title, not placeholder). See fixture-placeholder-only-label.html.",
+    "aria-labelledby pointing at a nonexistent ID lands in `incomplete`, not `violations` — axe cannot be certain the reference is wrong.",
+    "linear-gradient backgrounds make color-contrast return incomplete with reason bgGradient. Text over a gradient is never passed or failed.",
+    "Elements extending beyond the viewport make color-contrast return incomplete with reason elmPartiallyObscured, and very short strings return shortTextContent. Both appear on otherwise-clean pages at the 320px pass and are expected."
+  ],
+  "fixtures": {
+    "fixture-clean.html": {
+      "class": "baseline",
+      "title": "Fully accessible page",
+      "expectClean": true,
+      "expect": [],
+      "note": "Verified 2026-07-26: zero violations AND zero incomplete results under both the WCAG tag set and the best-practice tag, in all five passes (default 1280x720, dark, forced-colors, reduced-motion, 320x256). A finding here means the runner is wrong, not the page — check this fixture first when other expectations drift."
+    },
+
+    "fixture-low-contrast.html": {
+      "class": "low-contrast",
+      "title": "Text below the SC 1.4.3 contrast thresholds",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "color-contrast",
+          "detector": "axe",
+          "scHint": "1.4.3",
+          "scName": "Contrast (Minimum)",
+          "level": "AA",
+          "axeTag": "wcag2aa",
+          "minNodes": 2,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "Two pairs: #999999 on #ffffff (2.84:1) and #ffffff on #5fbfb2 (2.19:1). Both backgrounds are solid, so axe resolves them and reports violations. The highest-volume failure class in the wild: 83.9% of home pages, averaging 34 instances each."
+    },
+
+    "fixture-missing-alt.html": {
+      "class": "missing-alt",
+      "title": "Images with no text alternative",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "image-alt",
+          "detector": "axe",
+          "scHint": "1.1.1",
+          "scName": "Non-text Content",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "actId": "23a2a8",
+          "minNodes": 2,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "Three images: the first has alt text and must not be reported; the other two have no alt attribute."
+    },
+
+    "fixture-unlabeled-input.html": {
+      "class": "unlabeled-input",
+      "title": "Form controls with no programmatic label",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "label",
+          "detector": "axe",
+          "scHint": "3.3.2",
+          "scName": "Labels or Instructions",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "actId": "e086e5",
+          "minNodes": 2,
+          "allowNeedsReview": false,
+          "note": "axe tags this rule wcag412; SC 1.3.1 and 3.3.2 are the other obligations. The rule's selector is `input, textarea`."
+        },
+        {
+          "ruleIdOrCheck": "select-name",
+          "detector": "axe",
+          "scHint": "4.1.2",
+          "scName": "Name, Role, Value",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "actId": "e086e5",
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "A separate rule from `label`, because `label` does not match select elements."
+        }
+      ],
+      "note": "No name source at all — deliberately including no placeholder, because a placeholder makes axe's `label` rule pass. Observed: label(2) on the input and textarea, select-name(1) on the select, nothing else. See fixture-placeholder-only-label.html for the placeholder case."
+    },
+
+    "fixture-placeholder-only-label.html": {
+      "class": "placeholder-as-label",
+      "title": "Placeholder standing in for a label — an axe coverage gap",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "placeholder-as-label",
+          "detector": "a11y-loop",
+          "scHint": "3.3.2",
+          "scName": "Labels or Instructions",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 3,
+          "allowNeedsReview": false,
+          "proposedCheck": true
+        }
+      ],
+      "axeExpectation": "ZERO violations. Verified: axe `label` PASSES on all three fields, and `label-title-only` does not fire. Assert this explicitly — it is the point of the fixture.",
+      "note": "A placeholder is a valid fallback name source in the accessible name computation, so a placeholder-only form is reported clean by axe even though it is the most common shape of the missing-label failure in generated markup. The label vanishes as soon as the field has content, is announced inconsistently, cannot be clicked to focus the field, and is usually styled at unreadable contrast. `placeholder-as-label` is a PROPOSED a11y-loop check — it is not in the agreed check list and the CLI does not implement it yet. If it is not adopted, this fixture still earns its place as a regression guard on the axe behaviour."
+    },
+
+    "fixture-empty-link.html": {
+      "class": "empty-link",
+      "title": "Links with no accessible name",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "link-name",
+          "detector": "axe",
+          "scHint": "2.4.4",
+          "scName": "Link Purpose (In Context)",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "actId": "c487ae",
+          "minNodes": 2,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "Icon-only links wrapping an aria-hidden SVG. Sized at 44px so target-size does not also fire. SC 4.1.2 is the secondary obligation."
+    },
+
+    "fixture-empty-button.html": {
+      "class": "empty-button",
+      "title": "Buttons with no accessible name",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "button-name",
+          "detector": "axe",
+          "scHint": "4.1.2",
+          "scName": "Name, Role, Value",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "actId": "97a4e1",
+          "minNodes": 2,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "One icon-only button, and one whose only text sits inside an aria-hidden span."
+    },
+
+    "fixture-no-lang.html": {
+      "class": "no-lang",
+      "title": "Missing document language",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "html-has-lang",
+          "detector": "axe",
+          "scHint": "3.1.1",
+          "scName": "Language of Page",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 1,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "The `html-lang-valid` rule must NOT also fire: there is no lang attribute to be invalid."
+    },
+
+    "fixture-div-button.html": {
+      "class": "div-button",
+      "title": "Clickable div acting as a button",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "div-button",
+          "detector": "a11y-loop",
+          "scHint": "2.1.1",
+          "scName": "Keyboard",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 2,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "No axe rule fires on this fixture at all — assert zero axe violations alongside the a11y-loop findings. A div and a span, each with onclick, no role, no tabindex and no key handler. SC 4.1.2 is the secondary obligation. The archetypal AI-codegen failure."
+    },
+
+    "fixture-heading-skip.html": {
+      "class": "heading-skip",
+      "title": "Skipped heading levels",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "heading-order",
+          "detector": "axe",
+          "scHint": "1.3.1",
+          "scName": "Info and Relationships",
+          "level": "A",
+          "axeTag": "best-practice",
+          "minNodes": 2,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "h1 then h3 then h5. Verified against axe-core 4.12.1 metadata: heading-order carries cat.semantics and best-practice only, with no wcag tag, so a WCAG-tag-scoped run will not surface it. Enable the best-practice tag to assert this fixture."
+    },
+
+    "fixture-focus-invisible.html": {
+      "class": "focus-invisible",
+      "title": "Focus indicator removed with no replacement",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "focus-visibility",
+          "detector": "a11y-loop",
+          "scHint": "2.4.7",
+          "scName": "Focus Visible",
+          "level": "AA",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false
+        }
+      ],
+      "note": "A universal reset covering both :focus and :focus-visible, so no fallback survives. Three focusable elements are affected: a button, a link and a labelled input. No axe rule fires. Detection needs computed styles read in the focused state."
+    },
+
+    "fixture-broken-aria.html": {
+      "class": "broken-aria",
+      "title": "Broken and invalid ARIA",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "aria-valid-attr-value",
+          "detector": "axe",
+          "scHint": "4.1.2",
+          "scName": "Name, Role, Value",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 1,
+          "allowNeedsReview": true,
+          "landsIn": "incomplete",
+          "note": "aria-labelledby pointing at an ID that does not exist. Observed in axe-core 4.12.1: this lands in `incomplete`, NOT `violations` — assert it there. `button-name` correctly does not fire, because the name falls back to the text content."
+        },
+        {
+          "ruleIdOrCheck": "aria-required-attr",
+          "detector": "axe",
+          "scHint": "4.1.2",
+          "scName": "Name, Role, Value",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "role=\"heading\" with no aria-level."
+        },
+        {
+          "ruleIdOrCheck": "aria-hidden-focus",
+          "detector": "axe",
+          "scHint": "4.1.2",
+          "scName": "Name, Role, Value",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "aria-hidden on a focusable link. Breaks rule 4 of the four rules of ARIA use."
+        },
+        {
+          "ruleIdOrCheck": "aria-required-children",
+          "detector": "axe",
+          "scHint": "1.3.1",
+          "scName": "Info and Relationships",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 1,
+          "allowNeedsReview": true,
+          "note": "role=\"menu\" with no owned menuitems. Observed as a violation on `ul`. The clearest 'a role is a promise' case on any fixture: the whole APG Menu keyboard contract is implied and none of it exists."
+        },
+        {
+          "ruleIdOrCheck": "listitem",
+          "detector": "axe",
+          "scHint": "1.3.1",
+          "scName": "Info and Relationships",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 2,
+          "allowNeedsReview": false,
+          "companionOf": "aria-required-children",
+          "note": "Not seeded separately — this is the same root cause. Putting role=\"menu\" on the ul strips the list role from its parent, so the li elements are no longer contained in a list and axe reports each one. Recorded here so an integration test asserting 'nothing else fires' does not trip over it."
+        }
+      ],
+      "note": "Four seeded defects across four rules, plus `listitem` as a knock-on of the role=\"menu\" defect. Broken ARIA references are documented as an emergent failure mode specific to LLM-generated code, and pages using ARIA average more errors than pages without it. Observed: aria-required-attr(1), aria-hidden-focus(1), aria-required-children(1), listitem(2) as violations; aria-valid-attr-value(1) as incomplete."
+    },
+
+    "fixture-modal-no-trap.html": {
+      "class": "modal-no-trap",
+      "title": "Modal dialog with no focus management",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "dialog-focus-trap",
+          "detector": "a11y-loop",
+          "scHint": "2.4.3",
+          "scName": "Focus Order",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false
+        }
+      ],
+      "interact": {
+        "required": true,
+        "script": "fixture-modal-no-trap.interact.mjs",
+        "stateName": "modal-open",
+        "steps": [
+          "click #openDialog",
+          "wait for #fakeDialog to have class \"open\"",
+          "run the audit with the dialog open"
+        ],
+        "onLoadIsClean": true,
+        "note": "This is the state-coverage fixture. On load the dialog is display:none and absent from the accessibility tree, so an audit that only runs on page load reports a completely clean page. Every finding exists only in the open state. The companion fixture-modal-no-trap.interact.mjs exports states['modal-open'], a Playwright page callback performing exactly the two steps above."
+      },
+      "defects": [
+        "no focus moved into the dialog on open",
+        "no focus trap: Tab walks out into the page behind",
+        "Escape does nothing — no keydown listener anywhere",
+        "focus is not returned to the trigger on close",
+        "background content is neither inert nor aria-hidden"
+      ],
+      "note": "The dialog is deliberately given an accessible name via aria-label, a real <button> close control with a name, and a labelled input, so focus management is the only defect. `aria-dialog-name` must NOT fire."
+    },
+
+    "fixture-target-size.html": {
+      "class": "target-size",
+      "title": "Targets below 24 by 24 CSS px",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "target-size",
+          "detector": "a11y-loop",
+          "scHint": "2.5.8",
+          "scName": "Target Size (Minimum)",
+          "level": "AA",
+          "axeTag": null,
+          "minNodes": 3,
+          "allowNeedsReview": false,
+          "wcag22Only": true
+        },
+        {
+          "ruleIdOrCheck": "target-size",
+          "detector": "axe",
+          "scHint": "2.5.8",
+          "scName": "Target Size (Minimum)",
+          "level": "AA",
+          "axeTag": "wcag22aa",
+          "minNodes": 3,
+          "allowNeedsReview": true,
+          "requiresAxeOption": "none — see note",
+          "note": "The rule ships with enabled:false in axe-core 4.12.1, but a tag-based runOnly turns it on: running with runOnly {type:'tag', values:[...'wcag22aa']} reported target-size(3) with no explicit rules option. Observed both ways, same result. allowNeedsReview stays true because the SC's spacing and inline exceptions are hard to evaluate mechanically and a11y-loop reports this as needs-review by design."
+        }
+      ],
+      "note": "Three 16x16 buttons with 4px spacing, so neither the size requirement nor the 24px offset alternative is met. All three have aria-label names, so geometry is the only defect. display:flex rather than inline-flex keeps them out of axe's inline-widget exception."
+    },
+
+    "fixture-reflow-overflow.html": {
+      "class": "reflow-overflow",
+      "title": "Fixed width forcing horizontal scroll",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "reflow-overflow",
+          "detector": "a11y-loop",
+          "scHint": "1.4.10",
+          "scName": "Reflow",
+          "level": "AA",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "requiresPass": "viewport-320"
+        }
+      ],
+      "note": "A 1200px panel. Detected by measuring document scrollWidth against clientWidth at 320x256, the viewport WCAG specifies for the 400% zoom reflow test. The finding should name the overflowing element (.wide). No axe rule fires; assert zero axe violations."
+    },
+
+    "fixture-reduced-motion.html": {
+      "class": "reduced-motion",
+      "title": "Infinite animation ignoring motion preference",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "reduced-motion",
+          "detector": "a11y-loop",
+          "scHint": "2.2.2",
+          "scName": "Pause, Stop, Hide",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "requiresPass": "reduced-motion",
+          "secondarySc": "2.3.3"
+        }
+      ],
+      "note": "Infinite animation, no pause control, no prefers-reduced-motion block. SC 2.2.2 (Level A) is the primary citation because the motion starts automatically and runs beyond five seconds; SC 2.3.3 (AAA) is secondary. Verified behaviourally: re-run with prefers-reduced-motion: reduce emulated and confirm the element has stopped moving, rather than checking that a media query exists."
+    },
+
+    "fixture-ambiguous-links.html": {
+      "class": "ambiguous-links",
+      "title": "Link text that conveys no purpose",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "ambiguous-link",
+          "detector": "a11y-loop",
+          "scHint": "2.4.4",
+          "scName": "Link Purpose (In Context)",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 4,
+          "allowNeedsReview": false,
+          "secondarySc": "2.4.9"
+        }
+      ],
+      "note": "\"click here\", \"Read more\", \"here\", \"Learn more\". One descriptive link is present and must not be reported. This check is a heuristic and should be reported as such — it cannot judge whether a longer name is descriptive enough, which stays on the manual checklist."
+    },
+
+    "fixture-positive-tabindex.html": {
+      "class": "positive-tabindex",
+      "title": "Positive tabindex reordering the tab sequence",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "tab-order",
+          "detector": "a11y-loop",
+          "scHint": "2.4.3",
+          "scName": "Focus Order",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "Walks the page with real Tab presses and diffs the observed sequence against DOM order, so it reports the actual traversal rather than the presence of an attribute."
+        },
+        {
+          "ruleIdOrCheck": "tabindex",
+          "detector": "axe",
+          "scHint": "2.4.3",
+          "scName": "Focus Order",
+          "level": "A",
+          "axeTag": "best-practice",
+          "minNodes": 2,
+          "allowNeedsReview": false,
+          "note": "Verified against axe-core 4.12.1 metadata: tags are cat.keyboard and best-practice only, with no wcag tag, so a WCAG-tag-scoped run will not surface it. SC 2.4.3 is still the obligation; axe simply does not assert the mapping."
+        }
+      ],
+      "note": "tabindex=\"1\" and tabindex=\"2\" on the last two controls, pulling them to the front of the document's tab order ahead of a link and a button that precede them visually."
+    }
+  }
+}

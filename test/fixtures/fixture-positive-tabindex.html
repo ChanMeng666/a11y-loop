@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — positive tabindex</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input { display: block; width: 100%; min-height: 48px; padding: 0.5rem 0.625rem;
+    margin-bottom: 1rem; background: #ffffff; color: #1f2a33;
+    border: 2px solid #5d6d78; border-radius: 6px; font: inherit; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Positive tabindex</h1>
+  <p>
+    The two fields at the bottom carry tabindex="1" and tabindex="2", which pulls them
+    to the front of the whole document's tab order. The first Tab press from the top
+    of the page lands on the name field, the second on the email field, and only then
+    does focus start at the link below. Visual order and tab order disagree.
+  </p>
+
+  <p><a href="#first">First link in document order</a></p>
+  <p><button type="button">Second control in document order</button></p>
+
+  <form>
+    <label for="pt-name">Full name</label>
+    <!-- DEFECT: axe `tabindex` (best-practice tag) / a11y-loop `tab-order` -->
+    <input id="pt-name" name="name" type="text" tabindex="1" autocomplete="name">
+
+    <label for="pt-email">Email address</label>
+    <!-- DEFECT: axe `tabindex` (best-practice tag) / a11y-loop `tab-order` -->
+    <input id="pt-email" name="email" type="email" tabindex="2" autocomplete="email">
+  </form>
+</main>
+</body>
+</html>

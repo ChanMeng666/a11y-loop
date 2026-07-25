@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — links with no accessible name</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  /* 44px so SC 2.5.8 is satisfied and the missing name is the only defect. */
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center;
+    min-width: 44px; min-height: 44px; margin-right: 0.5rem; color: #0b5a52;
+    border: 2px solid #5d6d78; border-radius: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Links with no accessible name</h1>
+  <p>This link is fine: <a href="#conventions">read the fixture conventions</a>.</p>
+  <p>
+    The two icon links below have no text node, no aria-label and no title, and their
+    only content is an aria-hidden SVG. A screen reader announces "link" and stops.
+    This is overwhelmingly the shape the failure takes in the wild.
+  </p>
+
+  <!-- DEFECT: axe `link-name` -->
+  <a class="icon-btn" href="#one">
+    <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      <path d="M9 1L1 9l8 8 8-8z" fill="currentColor"></path>
+    </svg>
+  </a>
+
+  <!-- DEFECT: axe `link-name` -->
+  <a class="icon-btn" href="#two">
+    <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      <circle cx="9" cy="9" r="8" fill="currentColor"></circle>
+    </svg>
+  </a>
+
+  <h2 id="conventions">Fixture conventions</h2>
+  <p>Everything except the defect under test is deliberately clean.</p>
+</main>
+</body>
+</html>

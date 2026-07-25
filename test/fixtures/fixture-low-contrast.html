@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — low-contrast text</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+
+  /* DEFECT: both pairs fall below the SC 1.4.3 thresholds. Solid backgrounds, so
+     axe resolves them and reports violations rather than incomplete results. */
+  .faint { color: #999999; }                          /* 2.84:1 — needs 4.5:1 */
+  .pale-btn { background: #5fbfb2; color: #ffffff; }  /* 2.19:1 — needs 4.5:1 */
+</style>
+</head>
+<body>
+<main>
+  <h1>Low-contrast text</h1>
+  <p>This paragraph is legible: #1f2a33 on #ffffff is 14.61:1.</p>
+  <p class="faint">DEFECT: this paragraph is #999999 on #ffffff, which is 2.84:1.</p>
+  <button type="button" class="pale-btn">DEFECT: white on pale mint, 2.19:1</button>
+</main>
+</body>
+</html>

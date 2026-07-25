@@ -1,0 +1,890 @@
+/* ==========================================================================
+   a11y-loop demo — AFTER stylesheet
+
+   Same visual identity as demo/before: teal-and-mint conference brand, the
+   same hero, the same grid. What changed is that the palette is legible, the
+   layout is fluid, focus is visible, targets are reachable, and motion is
+   optional.
+
+   Every ratio in the comments was computed with the WCAG 2.x relative
+   luminance formula and truncated to two decimals the way the WebAIM Contrast
+   Checker reports them. Text pairs are held at >= 6.2:1 rather than the 4.5:1
+   minimum, so future palette tweaks have room to move. Full table in FIXES.md.
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  --page: #ffffff;
+  --surface: #f2f5f7;
+  --tint: #e9f5f2;
+
+  --ink: #1f2a33;        /* 14.61:1 on --page · 13.34:1 on --surface */
+  --muted: #4a5a66;      /*  7.12:1 on --page ·  6.51:1 on --surface */
+  --brand: #0d6157;      /*  7.33:1 behind white text; 7.33:1 as a border on --page */
+  --link: #0b5a52;       /*  8.08:1 on --page ·  7.38:1 on --surface */
+  --accent: #9e2a14;     /*  7.51:1 on --page ·  6.86:1 on --surface */
+  --on-brand: #ffffff;
+
+  --border: #5d6d78;     /*  5.35:1 on --page — control boundaries, SC 1.4.11 needs 3:1 */
+  --hairline: #d9e0e5;   /* decorative rules only; carries no information */
+
+  --focus: #0a5cc7;      /*  6.23:1 on --page ·  5.69:1 on --surface */
+  --focus-halo: var(--page);
+
+  --hero-from: #0b3b36;
+  --hero-to: #0e4a57;
+  --hero-ink: #ffffff;   /* 12.40:1 → 9.83:1 across the gradient */
+  --hero-muted: #d6f3ee; /* 10.58:1 → 8.38:1 across the gradient */
+  --hero-cta: #7fe3d4;
+  --hero-cta-ink: #0b3b36; /* 8.17:1 on --hero-cta */
+  --hero-focus: #eaf6ff; /* 11.29:1 → 8.95:1 against the gradient */
+
+  --radius: 8px;
+  --gap: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #101820;
+    --surface: #18222c;
+    --tint: #12303a;
+
+    --ink: #e8eef4;      /* 15.31:1 on --page · 13.77:1 on --surface */
+    --muted: #a9bac7;    /*  8.97:1 on --page ·  8.07:1 on --surface */
+    --brand: #5fd9c7;
+    --link: #5fd9c7;     /* 10.42:1 on --page ·  9.38:1 on --surface */
+    --accent: #ff9a80;   /*  8.67:1 on --page ·  7.81:1 on --surface */
+    --on-brand: #08131a; /* 10.94:1 on --brand */
+
+    --border: #7a8b96;   /*  5.07:1 on --page ·  4.57:1 on --surface */
+    --hairline: #2b3742;
+
+    --focus: #9fc7ff;    /* 10.30:1 on --page ·  9.26:1 on --surface */
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.0625rem;   /* 17px — comfortable, and it scales with user settings */
+  line-height: 1.6;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fluid shell. No fixed width anywhere, so the page reflows to 320px with no
+   horizontal scrolling (SC 1.4.10). */
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+/* ------------------------------------------------------------------ focus --- */
+/* A two-tone ring: the halo is the page colour and sits in the 2px offset, so
+   the ring is always adjacent to the page background rather than to whatever
+   the control is filled with. That keeps the indicator at >= 3:1 (SC 1.4.11)
+   regardless of the button colour underneath it. */
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--focus-halo);
+  border-radius: 4px;
+}
+
+/* Browsers without :focus-visible get the same ring on plain :focus rather
+   than nothing at all. */
+@supports not selector(:focus-visible) {
+  :focus {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+
+/* On the dark hero, swap to a light ring measured against the gradient. */
+.hero :focus-visible {
+  outline-color: var(--hero-focus);
+  box-shadow: 0 0 0 2px var(--hero-from);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--page);
+  color: var(--link);
+  border: 2px solid var(--focus);
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 120ms ease-out;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: max(1px, 0.06em);
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  text-decoration-thickness: max(2px, 0.12em);
+}
+
+/* ----------------------------------------------------------------- header --- */
+
+.site-header {
+  border-bottom: 1px solid var(--hairline);
+  background: var(--page);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.logo-mark {
+  flex: none;
+  color: var(--brand);
+}
+
+.logo-word {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0.5rem 0.875rem;
+  background: var(--page);
+  color: var(--ink);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-nav {
+  margin-left: auto;
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;             /* SC 2.5.8: comfortably past the 24x24 minimum */
+  padding: 0.25rem 0.25rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-list a:hover,
+.nav-list a:focus-visible {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+@media (max-width: 47.5rem) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav {
+    flex-basis: 100%;
+    margin-left: 0;
+    display: none;
+  }
+
+  /* Driven by the button's own aria-expanded, so the visual state and the
+     announced state cannot drift apart. */
+  .nav-toggle[aria-expanded="true"] ~ .site-nav {
+    display: block;
+  }
+
+  .nav-list {
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* ------------------------------------------------------------------- hero --- */
+
+.hero {
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
+  color: var(--hero-ink);
+  padding: clamp(2.5rem, 7vw, 4.5rem) 0;
+}
+
+.kicker {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;         /* 15px floor for small text */
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-muted);
+}
+
+.hero h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: var(--hero-ink);
+}
+
+.hero-sub {
+  max-width: 34em;
+  margin: 0 0 1.75rem;
+  font-size: clamp(1.0625rem, 2vw, 1.25rem);
+  color: var(--hero-muted);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hero-note {
+  margin: 1.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--hero-muted);
+}
+
+.hero-note a {
+  color: var(--hero-ink);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- buttons --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;             /* SC 2.5.8 */
+  padding: 0.75rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.12);
+}
+
+.hero .btn-primary {
+  background: var(--hero-cta);
+  color: var(--hero-cta-ink);   /* 8.17:1 */
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--hero-ink);
+  color: var(--hero-ink);       /* 12.40:1 against the gradient; border 12.40:1 */
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ----------------------------------------------------------------- ticker --- */
+
+.ticker-band {
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+  padding: 1rem 0;
+}
+
+.ticker-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.ticker-heading {
+  flex: none;
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);          /* 6.51:1 on --surface */
+}
+
+.ticker {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 1.75rem;
+  width: max-content;
+  animation: ticker-scroll 26s linear infinite;
+}
+
+.ticker-list {
+  display: flex;
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.ticker-list li {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--muted);          /* 6.51:1 on --surface — was 2.16:1 */
+}
+
+.ticker-track.is-paused {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* SC 2.2.2: a real control to stop the motion, not just a media query. */
+.ticker-toggle {
+  flex: none;
+  min-height: 44px;
+  padding: 0.5rem 0.875rem;
+  background: var(--page);
+  color: var(--link);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------------------- sections --- */
+
+.section {
+  padding: clamp(2rem, 5vw, 3.5rem) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.section:last-child {
+  border-bottom: 0;
+}
+
+.section-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.subsection-title {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.section-lead {
+  max-width: 42em;
+  margin: 0 0 1rem;
+}
+
+.fineprint,
+.figure-note {
+  max-width: 42em;
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------- schedule --- */
+
+/* The table keeps its semantics and scrolls inside its own labelled, keyboard-
+   focusable region. SC 1.4.10 exempts two-dimensional data, and confining the
+   overflow here means the document itself never scrolls sideways. */
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+
+.schedule {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+}
+
+.schedule caption {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--tint);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.schedule th,
+.schedule td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.schedule thead th {
+  font-size: 0.9375rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);          /* 7.12:1 — was 2.04:1 */
+  white-space: nowrap;
+}
+
+.schedule tbody th {
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.schedule tbody tr:last-child th,
+.schedule tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* -------------------------------------------------------------- speakers --- */
+
+.speaker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 1.25rem;
+  margin: 1.75rem 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.speaker-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.speaker-card:hover {
+  background: var(--surface);
+}
+
+.speaker-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  margin-bottom: 0.4rem;
+}
+
+.speaker-name {
+  font-weight: 700;
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, 0.06em);
+  text-underline-offset: 0.15em;
+}
+
+.speaker-card:hover .speaker-name {
+  text-decoration-thickness: 2px;
+}
+
+.speaker-role {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--muted);          /* 7.12:1 — was 2.16:1 */
+}
+
+/* ----------------------------------------------------------------- venue --- */
+
+.venue-map {
+  display: block;
+  width: 100%;
+  max-width: 40rem;
+  height: auto;
+  margin: 1.5rem 0 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+
+.sponsor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ form --- */
+
+.reg-form {
+  max-width: 44rem;
+  margin: 1.75rem 0 0;
+}
+
+.reg-form fieldset {
+  margin: 0 0 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+
+.reg-form legend {
+  padding: 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.field-group {
+  flex: 1 1 15rem;
+  min-width: 0;
+  margin-bottom: 1rem;
+}
+
+.field-group label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-weight: 600;
+}
+
+.req {
+  color: var(--accent);         /* 7.51:1 — and the word "(required)" carries the
+                                   meaning, so colour is never the only cue */
+  font-weight: 600;
+}
+
+.opt {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.625rem 0.75rem;
+  background: var(--page);
+  color: var(--ink);
+  border: 2px solid var(--border);   /* 5.35:1 — SC 1.4.11 needs 3:1 */
+  border-radius: var(--radius);
+  font: inherit;
+}
+
+textarea.field {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.hint {
+  margin: 0.375rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+}
+
+.check {
+  flex: none;
+  width: 24px;                  /* SC 2.5.8 minimum, exactly */
+  height: 24px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+
+.check-row label {
+  font-weight: 500;
+}
+
+.form-status {
+  margin: 0.75rem 0 0;
+  min-height: 1.6em;
+  font-weight: 600;
+  color: var(--link);
+}
+
+/* ---------------------------------------------------------------- footer --- */
+
+.site-footer {
+  padding: clamp(2rem, 5vw, 3rem) 0;
+  background: var(--surface);
+  border-top: 1px solid var(--hairline);
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.footer-line {
+  margin: 0;
+  color: var(--muted);          /* 6.51:1 on --surface — was 2.15:1 */
+}
+
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;              /* SC 2.5.8 — was 18x18 */
+  min-height: 44px;
+  border-radius: var(--radius);
+  color: var(--link);
+}
+
+.icon-btn:hover {
+  background: var(--page);
+}
+
+.footer-fine {
+  margin: 0;
+  font-size: 0.9375rem;         /* 15px floor — was 10px */
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------------------- modal --- */
+/* Native <dialog> + showModal(): the focus trap, Escape handling, backdrop
+   inertness and focus return are the platform's job, not hand-rolled JS.
+   See app.js. */
+
+.modal {
+  width: min(32rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  overflow: auto;
+  background: var(--page);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 48px rgba(8, 19, 26, 0.35);
+}
+
+.modal::backdrop {
+  background: rgba(8, 19, 26, 0.62);
+}
+
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 1rem 1.25rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 44px;              /* SC 2.5.8 — was 18x18 */
+  min-height: 44px;
+  background: var(--page);
+  color: var(--link);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 1.25rem;
+}
+
+.modal-copy {
+  margin: 0 0 1.25rem;
+}
+
+.modal-fine {
+  margin: 1.25rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------- reduced motion --- */
+/* Honoured for real: the ticker's animation is removed, not merely slowed, so a
+   behavioural check can confirm the element has actually stopped moving. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .ticker-track {
+    animation: none !important;
+    transform: none !important;
+    width: auto;
+    flex-wrap: wrap;
+  }
+
+  .ticker-list {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+
+  /* With nothing scrolling, the duplicate copy has no purpose. */
+  .ticker-list[aria-hidden="true"] {
+    display: none;
+  }
+
+  .skip-link {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------- forced colours --- */
+/* Windows High Contrast replaces the palette wholesale. Keep the focus ring and
+   the control boundaries, which are the two things that disappear most often. */
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid CanvasText;
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
+  .btn,
+  .field,
+  .icon-btn,
+  .modal-close,
+  .nav-toggle,
+  .ticker-toggle {
+    border: 2px solid ButtonBorder;
+  }
+
+  .btn-primary {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .logo-mark {
+    forced-color-adjust: none;
+  }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — skipped heading levels</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h3 { font-size: 1.125rem; margin: 1.5rem 0 0.5rem; }
+  a { color: #0b5a52; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  /* The h5 is styled larger than the h3 above it: picked for size, not structure. */
+  .big { font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Skipped heading levels</h1>
+  <p>
+    The outline below runs h1, h3, h5. Two levels are missing, so a screen reader
+    user navigating by heading level is told the document has a structure it does
+    not have.
+  </p>
+
+  <!-- DEFECT: axe `heading-order` — h3 follows h1, skipping h2 -->
+  <h3>Programme</h3>
+  <p>Level two was never used.</p>
+
+  <!-- DEFECT: axe `heading-order` — h5 follows h3, skipping h4. It is also the
+       largest heading on the page, which is the "chosen for size" failure. -->
+  <h5 class="big">Day one</h5>
+  <p>Level four was never used either.</p>
+</main>
+</body>
+</html>

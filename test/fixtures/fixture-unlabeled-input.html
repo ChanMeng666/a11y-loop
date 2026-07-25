@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — form controls with no label</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ffffff; color: #1f2a33;
+         font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  :focus-visible { outline: 3px solid #0a5cc7; outline-offset: 2px; }
+  input, select, textarea { display: block; width: 100%; min-height: 48px;
+    padding: 0.5rem 0.625rem; margin-bottom: 1rem; background: #ffffff; color: #1f2a33;
+    border: 2px solid #5d6d78; border-radius: 6px; font: inherit; }
+  button { min-height: 48px; min-width: 48px; padding: 0.625rem 1.125rem;
+    background: #0d6157; color: #ffffff; border: 2px solid transparent;
+    border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Form controls with no label</h1>
+  <p>
+    No control below has any name source at all: no label element, no wrapping label,
+    no aria-label, no aria-labelledby, no title, and — deliberately — no placeholder
+    either. See fixture-placeholder-only-label.html for why the placeholder matters:
+    adding one makes axe's <code>label</code> rule pass.
+  </p>
+
+  <form>
+    <!-- DEFECT: axe `label` -->
+    <input type="text" name="fullname">
+
+    <!-- DEFECT: axe `label` -->
+    <textarea name="notes" rows="3"></textarea>
+
+    <!-- DEFECT: axe `select-name`. The `label` rule's selector is `input, textarea`,
+         so a select is covered by a separate rule. -->
+    <select name="size">
+      <option value="">Size</option>
+      <option value="s">Small</option>
+      <option value="l">Large</option>
+    </select>
+
+    <button type="submit">Save</button>
+  </form>
+</main>
+</body>
+</html>
