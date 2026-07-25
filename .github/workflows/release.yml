@@ -1,0 +1,50 @@
+name: Release (npm via OIDC)
+
+# Publishing only. Tests run in ci.yml on every push — they need Playwright
+# browsers, which this job deliberately does not install.
+#
+# The workflow FILENAME is part of the npm trusted-publisher contract.
+# Renaming this file breaks publishing until a human re-registers it on npmjs.com.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  id-token: write # the OIDC exchange with npm
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org' # required for the OIDC token exchange
+          cache: npm
+
+      - run: npm ci
+
+      # Trusted publishing needs npm >= 11.5.1. Pin 11.x, never @latest: npm 12
+      # defaults allowScripts off and silently skips dependency install scripts.
+      # Upgrading after `npm ci` means install scripts already ran.
+      - name: Pin npm
+        run: |
+          npm install -g npm@^11.5.1
+          npm --version
+
+      # Idempotency: skip a version already on the registry, so re-runs are safe.
+      - id: check
+        run: |
+          v=$(node -p "require('./package.json').version")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          on_reg=$(npm view "a11y-loop@$v" version 2>/dev/null || true)
+          echo "exists=$([ "$on_reg" = "$v" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm
+        if: ${{ success() && steps.check.outputs.exists != 'true' }}
+        run: npm publish --provenance --access public

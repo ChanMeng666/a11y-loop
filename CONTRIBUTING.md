@@ -47,15 +47,42 @@ npx playwright install chromium
 npm test
 ```
 
-This project is not yet published to npm and has no GitHub remote pushed yet, so `npm install`
-means installing from your local clone. If you keep Playwright browsers off the system drive, set
-`PLAYWRIGHT_BROWSERS_PATH` before running `npx playwright install chromium`.
+If you keep Playwright browsers off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
+`npx playwright install chromium`.
 
 When your change touches `demo/` or other seeded-violation fixtures, run the full
 audit-fix-re-audit loop to convergence (`a11y-loop diff` should report "Converged") before opening
 a PR — see [`AGENTS.md`](AGENTS.md) for the full discipline. Never soften the project's honesty
 language (no "compliant", "guarantees", "fully accessible", "no manual testing needed", or a single
 accessibility score) in code, docs, or output you add.
+
+## Releasing
+
+Releases are cut by pushing a version tag. There are no npm tokens anywhere in this project — not
+in CI secrets, not on a maintainer's machine.
+
+```bash
+# after the version bump + CHANGELOG entry are committed on main
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+Pushing a `vX.Y.Z` tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml),
+which publishes to npm using [trusted publishing](https://docs.npmjs.com/trusted-publishers): the
+workflow proves its own identity to npm over OIDC and receives a short-lived, publish-only
+credential, so every release is signed with build provenance and no long-lived secret exists. The
+workflow only publishes — tests run in `ci.yml` on every push. It also skips any version already on
+the registry, so a failed release is safe to re-run (`gh workflow run release.yml`).
+
+Two things to know before you touch this setup:
+
+- **Do not rename `release.yml`.** The workflow filename is part of the trust contract registered
+  on npmjs.com; renaming it breaks publishing.
+- **If publishing fails with an authentication error, never add a token.** Re-register the trusted
+  publisher on npmjs.com (package *Settings* → *Trusted Publisher* → GitHub Actions) with owner
+  `ChanMeng666`, repository `a11y-loop`, workflow filename `release.yml`, empty environment, and
+  "Allow npm publish" checked. That form requires an interactive 2FA code — it is the one step in
+  the release process that a human has to do by hand.
 
 ## Code of Conduct
 
