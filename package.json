@@ -27,6 +27,15 @@
     "contrast"
   ],
   "license": "MIT",
+  "author": "Chan Meng <chanmeng.dev@gmail.com> (https://github.com/ChanMeng666)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChanMeng666/a11y-loop.git"
+  },
+  "homepage": "https://github.com/ChanMeng666/a11y-loop#readme",
+  "bugs": {
+    "url": "https://github.com/ChanMeng666/a11y-loop/issues"
+  },
   "files": [
     "src/",
     "skill/",
