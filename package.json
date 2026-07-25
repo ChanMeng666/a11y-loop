@@ -1,0 +1,42 @@
+{
+  "name": "a11y-loop",
+  "version": "0.1.0",
+  "description": "Makes AI coding agents write accessible UI by default, then proves what it can prove with a real browser audit across the states they built — and tells you exactly what it could not check.",
+  "type": "module",
+  "bin": {
+    "a11y-loop": "src/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:unit": "node --test test/unit/",
+    "test:integration": "node --test test/integration/"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "axe-core",
+    "playwright",
+    "ai-agents",
+    "agent-skills",
+    "claude-code",
+    "audit",
+    "contrast"
+  ],
+  "license": "MIT",
+  "files": [
+    "src/",
+    "skill/",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "dependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "axe-sarif-converter": "^3.1.0",
+    "culori": "^4.0.2",
+    "playwright": "^1.62.0",
+    "tabbable": "^6.5.0"
+  }
+}
