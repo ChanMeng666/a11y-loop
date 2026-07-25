@@ -20,6 +20,7 @@ check.
 
 <!-- SHIELD GROUP -->
 
+[![npm version](https://img.shields.io/npm/v/a11y-loop?style=flat-square&logo=npm&color=CB3837)](https://www.npmjs.com/package/a11y-loop)
 [![License](https://img.shields.io/github/license/ChanMeng666/a11y-loop?style=flat-square)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/ChanMeng666/a11y-loop?style=flat-square)](https://github.com/ChanMeng666/a11y-loop/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/ChanMeng666/a11y-loop?style=flat-square)](https://github.com/ChanMeng666/a11y-loop/network/members)
