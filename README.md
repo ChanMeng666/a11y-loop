@@ -77,12 +77,13 @@ same `SKILL.md` is portable across 40+ clients — Claude Code, Cursor, GitHub C
 Gemini CLI, and more — not just one vendor's agent. The CLI runs the same checks standalone in CI
 or any other pipeline.
 
-It was built for the **My Life My Voice** accessibility challenge, run by a disability
-organization in Aotearoa New Zealand, where the NZ Government Web Accessibility Standard 1.2 has
-mandated WCAG 2.2 AA since 17 March 2025. The idea: give AI coding agents a way to build
-accessibility in from the start, instead of treating it as a compliance afterthought bolted on
-after the fact. a11y-loop has no affiliation with My Life My Voice or the NZ government beyond
-having been built for that challenge.
+a11y-loop is a personal open-source project. It exists because the same handful of failures — low
+contrast, missing alt text, empty links and buttons, unlabelled form inputs — have topped the
+WebAIM Million every year for a decade, and the reason is not that they are hard to fix. It is
+that accessibility usually arrives as an after-the-fact compliance check, once the UI is already
+built and nobody wants to touch it. The goal here is to move it earlier: make accessibility a
+default of the development workflow rather than an audit at the end — which matters more now that
+so much UI code is written by AI agents in the first place.
 
 **What this is not.** a11y-loop does not claim compliance, does not guarantee accessibility, and
 does not replace manual testing or testing with assistive technology. A clean report means "no

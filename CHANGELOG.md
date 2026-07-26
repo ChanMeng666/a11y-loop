@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-07-26
+
+### Changed
+- Project description repositioned: a11y-loop is a personal open-source project aimed at making
+  accessibility a default of the development workflow rather than an after-the-fact compliance
+  check. The README introduction now states that motivation directly.
+- Docs cleanup: neutralized framing in `docs/research/standards.md` that tied jurisdictional facts
+  to a specific audience. The standards research itself is unchanged — New Zealand still has the
+  strictest baseline (WCAG 2.2 AA, mandatory since 17 March 2025).
+
 ## [0.1.1] - 2026-07-26
 
 ### Changed
