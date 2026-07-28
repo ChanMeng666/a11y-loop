@@ -13,7 +13,8 @@ standing generation rules, and a Node CLI (`src/`) supplying `audit` / `contrast
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
 - **Repository:** https://github.com/ChanMeng666/a11y-loop
-- **Not yet published to npm; no GitHub remote pushed yet.** Work from a local clone.
+- **Published to npm as `a11y-loop`; GitHub remote is `ChanMeng666/a11y-loop`.** A local clone is
+  only needed for development — `npx a11y-loop <command>` works with no local setup.
 
 ## Commands
 

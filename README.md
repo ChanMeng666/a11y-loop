@@ -316,21 +316,25 @@ secondary format for tools that consume it.
 
 ### Installation
 
-**Not yet published to npm and this repo has no GitHub remote yet** — install from a local clone
-for now:
-
 ```bash
-# Clone and install
-git clone https://github.com/ChanMeng666/a11y-loop.git
-cd a11y-loop
-npm install
+# Run it directly, no install
+npx a11y-loop <command>
 
-# Install the Chromium build Playwright needs for audits
+# Or install the CLI globally
+npm i -g a11y-loop
+
+# Either way, install the Chromium build Playwright needs for audits
 npx playwright install chromium
 ```
 
-Once published, the intended install is `npx a11y-loop <command>` with no local setup at all —
-that comes after the first npm publish.
+Prefer working from source (e.g. to contribute)? Clone and install instead:
+
+```bash
+git clone https://github.com/ChanMeng666/a11y-loop.git
+cd a11y-loop
+npm install
+npx playwright install chromium
+```
 
 If you keep browser binaries off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
 `npx playwright install chromium` (and before running the test suite, which launches the same
