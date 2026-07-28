@@ -8,7 +8,12 @@
 
 <div align="center"><a name="readme-top"></a>
 
-# 🔁 a11y-loop
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./.github/brand/a11y-loop-logo-dark.svg">
+  <img src="./.github/brand/a11y-loop-logo-light.svg" alt="a11y-loop logo" width="88" height="88">
+</picture>
+
+# a11y-loop
 
 ### Write accessible UI by default. Verify it in a real browser. Say exactly what you couldn't check.
 
