@@ -91,6 +91,10 @@ does not replace manual testing or testing with assistive technology. A clean re
 automatically detectable failures" — see [Honest Coverage](#-honest-coverage) below for exactly
 what that does and doesn't cover.
 
+## 🎥 Promo Video
+
+https://github.com/user-attachments/assets/33ff8672-7690-4581-9ceb-d95476883c54
+
 ## 🎬 Demo
 
 ![a11y-loop fixing a seeded-violation demo page across five audit passes until it converges on zero violations](docs/demo.gif)
@@ -110,18 +114,6 @@ Converged: all 163 violations fixed, none introduced
 WCAG success criterion), is what makes that verdict checkable rather than asserted — see
 [`demo/before/VIOLATIONS.md`](demo/before/VIOLATIONS.md) and
 [`demo/after/FIXES.md`](demo/after/FIXES.md) for the finding-by-finding record.
-
-## 🎥 Promo Video
-
-<!--
-  PLACEHOLDER — promo video goes here.
-  To add it: open this file in the GitHub web editor (or a PR / issue comment), drag the video
-  file into the editor, and GitHub will upload it and generate a URL of the form
-  https://github.com/user-attachments/assets/<id> together with an embeddable video block.
-  Paste that generated embed in place of the line below, then delete this comment.
--->
-
-*(Promo video — coming soon.)*
 
 ## ✨ Key Features
 
