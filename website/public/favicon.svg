@@ -1,0 +1,16 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .mark { fill: #1D4ED8; stroke: #1D4ED8; }
+    @media (prefers-color-scheme: dark) {
+      .mark { fill: #7DA2FF; stroke: #7DA2FF; }
+    }
+  </style>
+  <g class="mark" fill="none" stroke-width="4" stroke-linecap="round">
+    <path d="M 30 70 Q 55 76, 72 58"/>
+    <path d="M 72 58 Q 68 30, 48 22"/>
+    <path d="M 48 22 Q 20 32, 30 70"/>
+  </g>
+  <circle class="mark" cx="30" cy="70" r="7"/>
+  <circle class="mark" cx="72" cy="58" r="7"/>
+  <circle class="mark" cx="48" cy="22" r="7"/>
+</svg>

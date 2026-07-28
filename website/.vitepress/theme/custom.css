@@ -1,0 +1,137 @@
+/**
+ * a11y-loop docs — visual design system
+ *
+ * Adapted from an editorial-analytics reference (warm-neutral canvas, single
+ * chromatic accent, hairline borders as primary structure, restrained
+ * weight-400/500 display type, generous spacing) with a11y-loop's own accent
+ * — a cobalt blue distinct from the reference's cyan — and its own
+ * cool-neutral canvas. Every text/background pair below was checked with
+ * `a11y-loop contrast --fix` before being committed here; see the PR
+ * description for the verified ratios.
+ */
+
+:root {
+  /* Canvas & surfaces */
+  --vp-c-bg: #f7f8fa;
+  --vp-c-bg-alt: #f1f3f6;
+  --vp-c-bg-soft: #f1f3f6;
+  --vp-c-bg-elv: #ffffff;
+
+  /* Borders — the primary structural device */
+  --vp-c-border: #c9ced9;
+  --vp-c-divider: #e3e6ec;
+  --vp-c-gutter: #e3e6ec;
+
+  /* Text */
+  --vp-c-text-1: #10141c;
+  --vp-c-text-2: #4b5565;
+  --vp-c-text-3: #676f7f;
+
+  /* Brand — cobalt, verified AA on both #ffffff and #f7f8fa */
+  --vp-c-brand-1: #1d4ed8;
+  --vp-c-brand-2: #2554e5;
+  --vp-c-brand-3: #2554e5;
+  --vp-c-brand-soft: rgba(37, 84, 229, 0.1);
+
+  /* Display typeface for hero + headings; body stays on VitePress's Inter */
+  --a11y-font-display: 'Inter Tight', var(--vp-font-family-base);
+
+  /* Shiki's bundled syntax theme is calibrated against VitePress's stock
+     code-block background, not our --vp-c-bg-alt — decoupled to keep
+     comment-token contrast intact (a11y-loop audit: color-contrast). Nudged
+     one step lighter than VitePress's own #f6f6f7 default: the theme's
+     comment-gray token (#6a737d) clears AA at 4.50:1 here, not at 4.45:1. */
+  --vp-code-block-bg: #f7f7f9;
+}
+
+.dark {
+  --vp-c-bg: #0b0d12;
+  --vp-c-bg-alt: #171b24;
+  --vp-c-bg-soft: #171b24;
+  --vp-c-bg-elv: #12151c;
+
+  --vp-c-border: #333a4d;
+  --vp-c-divider: #242938;
+  --vp-c-gutter: #242938;
+
+  --vp-c-text-1: #eef1f6;
+  --vp-c-text-2: #a6afbe;
+  --vp-c-text-3: #7a8395;
+
+  /* Lighter cobalt for AA contrast against the dark canvas */
+  --vp-c-brand-1: #7da2ff;
+  --vp-c-brand-2: #8fb0ff;
+  --vp-c-brand-3: #2554e5;
+  --vp-c-brand-soft: rgba(125, 162, 255, 0.16);
+
+  --vp-code-block-bg: #161618;
+}
+
+:root {
+  --vp-font-family-base:
+    'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --vp-font-family-mono:
+    'JetBrains Mono', ui-monospace, 'Menlo', 'Monaco', 'Consolas',
+    'Liberation Mono', 'Courier New', monospace;
+}
+
+/* Restrained editorial display type — weight 500 (never bold) at large sizes */
+.VPHero .name,
+.VPHero .text {
+  font-family: var(--a11y-font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.VPHero .text {
+  font-weight: 400;
+}
+
+.VPHero .tagline {
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+  font-family: var(--a11y-font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Pill-shaped primary action, echoing the reference's restrained CTA treatment */
+.VPButton.brand {
+  border-radius: 999px;
+}
+
+/* Windows High Contrast / forced-colors: fall back to system colors so the
+   button keeps a visible fill/text boundary instead of collapsing to 1:1. */
+@media (forced-colors: active) {
+  .VPButton.brand {
+    background-color: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+  }
+}
+
+/* Shiki's bundled dark theme uses the same #6A737D comment-gray in both
+   light and dark variants. Against any dark background that ratio tops out
+   at 4.36:1 (checked up to pure black) — background alone cannot reach AA,
+   so the token itself is lightened here (a11y-loop audit: color-contrast).
+   #77808a on our --vp-code-block-bg dark value verified at 4.50:1. */
+.dark .vp-doc [class*='language-'] span[style*='--shiki-dark:#6A737D' i] {
+  color: #77808a !important;
+}
+
+/* Mermaid's built-in dark theme renders edge labels as light-gray text
+   (#cccccc) on a 50%-alpha mid-gray box (#585858) — 4.43:1, just under AA.
+   Swapped for the design system's own verified dark surface/text pair
+   instead of hand-tuning mermaid's palette (a11y-loop audit: color-contrast). */
+.dark .vp-doc svg .edgeLabel .labelBkg {
+  background-color: var(--vp-c-bg-elv) !important;
+}
+
+.dark .vp-doc svg .edgeLabel p {
+  color: var(--vp-c-text-1) !important;
+}
