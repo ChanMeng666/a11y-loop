@@ -16,7 +16,7 @@ a11y-loop makes AI coding agents write accessible UI by default, then proves wha
 with a real browser audit across the states it built — and tells you exactly what it could not
 check.
 
-[Demo GIF][demo-link] · [SKILL.md][docs-link] · [Benchmark](evals/benchmark-results.md) · [Changelog](CHANGELOG.md) · [Report Bug](https://github.com/ChanMeng666/a11y-loop/issues) · [Request Feature](https://github.com/ChanMeng666/a11y-loop/issues)
+[Demo GIF][demo-link] · [Documentation][docs-site-link] · [SKILL.md][docs-link] · [Benchmark](evals/benchmark-results.md) · [Changelog](CHANGELOG.md) · [Report Bug](https://github.com/ChanMeng666/a11y-loop/issues) · [Request Feature](https://github.com/ChanMeng666/a11y-loop/issues)
 
 <!-- SHIELD GROUP -->
 
@@ -41,6 +41,7 @@ check.
 
 - [🌟 Introduction](#-introduction)
 - [🎬 Demo](#-demo)
+- [🎥 Promo Video](#-promo-video)
 - [✨ Key Features](#-key-features)
 - [📊 Honest Coverage](#-honest-coverage)
 - [📈 Benchmark](#-benchmark)
@@ -110,12 +111,38 @@ WCAG success criterion), is what makes that verdict checkable rather than assert
 [`demo/before/VIOLATIONS.md`](demo/before/VIOLATIONS.md) and
 [`demo/after/FIXES.md`](demo/after/FIXES.md) for the finding-by-finding record.
 
+## 🎥 Promo Video
+
+<!--
+  PLACEHOLDER — promo video goes here.
+  To add it: open this file in the GitHub web editor (or a PR / issue comment), drag the video
+  file into the editor, and GitHub will upload it and generate a URL of the form
+  https://github.com/user-attachments/assets/<id> together with an embeddable video block.
+  Paste that generated embed in place of the line below, then delete this comment.
+-->
+
+*(Promo video — coming soon.)*
+
 ## ✨ Key Features
 
 `1` **Five rendering passes per audit** — default (1280×720), dark mode, forced-colors mode,
 reduced-motion, and a 320×256 reflow viewport (the WCAG-sanctioned 400% zoom equivalent for
 SC 1.4.10) — because most real failures only show up under a specific rendering condition, not on
 a single default-viewport load.
+
+<details>
+<summary><kbd>Diagram: the five passes feeding one report</kbd></summary>
+
+```mermaid
+graph LR
+    P1["Default<br/>1280×720"] --> R["One JSON report<br/>per audited page/state"]
+    P2["Dark mode"] --> R
+    P3["Forced-colors mode"] --> R
+    P4["Reduced motion"] --> R
+    P5["320×256 reflow<br/>(400% zoom equiv., SC 1.4.10)"] --> R
+```
+
+</details>
 
 `2` **Checks axe-core can't run** — tab order, focus visibility (including focus-ring contrast),
 dialog focus trap / Escape / focus-return, target size (24×24 CSS px, SC 2.5.8), reduced-motion
@@ -156,6 +183,22 @@ rather than implying otherwise:
 - Deque's own research puts automated coverage at **~57% of accessibility issues by volume**
   across a 13,000+ page / ~300,000 issue study — but only **~31% of WCAG 2.2 AA success criteria**
   have *any* automated rule at all, and only **~13% are reliably automatable** end-to-end.
+
+<details>
+<summary><kbd>Diagram: WCAG 2.2 AA success criteria, by automation reach</kbd></summary>
+
+```mermaid
+pie showData title WCAG 2.2 AA success criteria — automation reach (Deque research)
+    "Reliably automatable end-to-end (~13%)" : 13
+    "Have some automated rule, not fully reliable (~18%)" : 18
+    "No automated rule — needs manual/AT review (~69%)" : 69
+```
+
+Illustrates the same figures cited above, not a new metric — a clean report never implies coverage
+of the other ~87%.
+
+</details>
+
 - **A clean a11y-loop report means "no automatically detectable failures were found" — it is
   never a conformance or compliance claim**, and the tool will not tell you your app is
   accessible, compliant, or free of legal risk. No single score is ever produced.
@@ -232,6 +275,31 @@ graph TD
     K --> M["Manual-review checklist"]
     K -->|violations found| B
     F --> K
+```
+
+</details>
+
+<details>
+<summary><kbd>Sequence: one audit-fix-reaudit cycle</kbd></summary>
+
+```mermaid
+sequenceDiagram
+    participant Agent
+    participant CLI as a11y-loop CLI
+    participant Browser as Playwright + Chromium
+    participant Axe as axe-core + a11y-loop's own checks
+    Agent->>CLI: a11y-loop audit (after writing UI code)
+    CLI->>Browser: render page across 5 passes<br/>(+ --interact states, if any)
+    Browser->>Axe: run checks against each rendered pass
+    Axe-->>CLI: findings (WCAG SC, ACT ID, provenance)
+    CLI-->>Agent: JSON report + manual-review checklist
+    alt violations found
+        Agent->>Agent: fix code
+        Agent->>CLI: a11y-loop audit (re-run)
+    else no violations
+        Agent->>CLI: a11y-loop diff --before --after
+        CLI-->>Agent: Converged — FIXED/NEW/REMAINING summary
+    end
 ```
 
 </details>
@@ -394,6 +462,7 @@ uses to run its checks, is separately licensed under MPL-2.0 — see
 
 [demo-link]: docs/demo.gif
 [docs-link]: skill/a11y-loop/SKILL.md
+[docs-site-link]: https://ChanMeng666.github.io/a11y-loop/
 
 ---
 
