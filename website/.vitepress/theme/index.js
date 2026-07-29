@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme';
+import Layout from './Layout.vue';
 import './custom.css';
 
 // ARIA button-role contract fix: any role="button" element must activate on
@@ -24,6 +25,7 @@ function bindButtonRoleSpaceKey() {
 
 export default {
   extends: DefaultTheme,
+  Layout,
   enhanceApp() {
     bindButtonRoleSpaceKey();
   }

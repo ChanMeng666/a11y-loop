@@ -1,6 +1,12 @@
 ---
 layout: home
 
+# The developer signature block in .vitepress/theme/DeveloperSignature.vue takes
+# over the footer on this page and carries the MIT/copyright line itself, so
+# VitePress's stock VPFooter is switched off here to avoid a second contentinfo
+# landmark. Every other page keeps the default footer.
+footer: false
+
 hero:
   name: a11y-loop
   text: Write accessible UI by default.
