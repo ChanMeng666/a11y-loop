@@ -19,6 +19,44 @@ only; nothing under `skill/` may depend on it.
 - **Published to npm as `a11y-loop`; GitHub remote is `ChanMeng666/a11y-loop`.** A local clone is
   only needed for development — `npx a11y-loop <command>` works with no local setup.
 
+## Installing this project for an end user
+
+If a user asks you to install or set up a11y-loop for them, run this — every command is
+non-interactive, idempotent, and needs no TTY, so do it yourself rather than handing it back:
+
+```bash
+npm i -g a11y-loop
+npx playwright install chromium
+mkdir -p ~/.claude/skills
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # portable skill
+claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
+```
+
+Then verify, and report the actual output rather than asserting success:
+
+```bash
+a11y-loop --version
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
+claude plugin list | grep -A2 'a11y-loop@'    # expect: Status: ✔ enabled
+```
+
+Notes that matter when scripting this:
+
+- **No `git clone` needed** — the skill ships inside the npm package at
+  `$(npm root -g)/a11y-loop/skill/a11y-loop`.
+- **Install the skill or the plugin, not both.** The plugin carries its own copy. Doing both
+  registers the skill twice — the model sees `a11y-loop` *and* the directory-qualified
+  `a11y-loop:a11y-loop`, and pays the always-on token cost twice. If you see both names, delete
+  `~/.claude/skills/a11y-loop` and keep the plugin.
+- **`--scope user` is the default choice.** `--scope project` writes a committable
+  `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`), but project-scoped plugins
+  and hooks sit behind Claude Code's workspace-trust prompt on first open. That prompt is a
+  security boundary and must not be worked around — recommend user scope instead.
+- **Teardown and management are non-interactive too:** `claude plugin disable|enable|uninstall`.
+  Only `uninstall --prune` needs `-y`.
+- A new session is required before a newly installed skill or hook takes effect.
+
 ## Commands
 
 ```bash

@@ -5,6 +5,32 @@
 - Node.js ≥ 20
 - A Chromium install for Playwright (installed below)
 
+## Everything at once (agent-runnable)
+
+Every command on this page is non-interactive, idempotent, and safe to re-run — no prompts, no TTY,
+no menus. Hand this block to your agent and it can install and verify the whole thing without asking
+you to click anything:
+
+```bash
+npm i -g a11y-loop
+npx playwright install chromium
+mkdir -p ~/.claude/skills
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/
+claude plugin marketplace add ChanMeng666/a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+```
+
+No `git clone` — the skill ships inside the npm package. Verify:
+
+```bash
+a11y-loop --version
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
+claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
+```
+
+Install the skill *or* the plugin, not both — the plugin carries its own copy, and doing both
+registers the skill twice. The rest of this page explains each piece.
+
 ## Install the CLI
 
 ```bash
@@ -48,12 +74,34 @@ layer that adds one thing a skill cannot do — enforcement during plan mode:
 
 ```bash
 claude plugin marketplace add ChanMeng666/a11y-loop
-claude plugin install a11y-loop@chanmeng-a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
-Both work as `/plugin marketplace add …` and `/plugin install …` inside Claude Code. From a local
-checkout, `claude plugin marketplace add ./` registers the working copy instead, so the plugin
-tracks your edits.
+Ordinary CLI commands — no TTY, no prompts, safe to re-run. (`/plugin marketplace add …` and
+`/plugin install …` do the same thing inside a session, but an agent should use the CLI form.)
+Managing it later is equally non-interactive: `claude plugin disable a11y-loop`, `claude plugin
+enable a11y-loop`, `claude plugin uninstall a11y-loop@chanmeng-a11y-loop` — `-y` is needed only
+alongside `--prune`, the one flag that asks for confirmation.
+
+From a local checkout, `claude plugin marketplace add ./` registers the working copy instead, so the
+plugin tracks your edits rather than the published repo.
+
+**Team-wide, declaratively.** `--scope project` writes a `.claude/settings.json` you commit, after
+which a fresh clone needs no install commands at all:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "chanmeng-a11y-loop": { "source": { "source": "github", "repo": "ChanMeng666/a11y-loop" } }
+  },
+  "enabledPlugins": { "a11y-loop@chanmeng-a11y-loop": true }
+}
+```
+
+**The one thing an agent cannot do for you.** Project-scoped plugins and hooks sit behind Claude
+Code's workspace-trust prompt the first time that directory is opened — a deliberate security
+boundary, since code from a repo should not execute just because a file said so. Nothing here
+bypasses it. `--scope user` avoids it entirely.
 
 It contributes a `PreToolUse` hook matched to `ExitPlanMode`: when a plan changes UI work and says
 nothing about accessibility, the plan is declined once and the `### Accessibility` section is handed

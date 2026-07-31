@@ -5,6 +5,27 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-08-01
+
+### Changed
+- **Installation is now something an agent can do end to end.** Every install, verify and teardown
+  instruction across the README, the docs site, `AGENTS.md` and `llms.txt` is a non-interactive CLI
+  command — no slash commands, no TTY, no prompts, no menus. Each was run verbatim with stdin
+  closed, from a clean machine, and again to confirm it is idempotent.
+  - README, the getting-started guide, `AGENTS.md` and `llms.txt` lead with a single copy-pasteable
+    block that installs the CLI, Chromium, the skill and the plugin, plus a verification block.
+  - **No `git clone` required.** The skill ships inside the npm package, so the source is
+    `$(npm root -g)/a11y-loop/skill/a11y-loop`. The old instructions assumed a checkout.
+  - `website/guide/planning.md` still carried `/plugin install .` — the form that fails with
+    "Marketplace not found". Corrected.
+  - Documented the declarative alternative: `--scope project` writes a committable
+    `.claude/settings.json`, after which a clone needs no install commands at all.
+  - Documented that installing the portable skill *and* the plugin registers the skill twice — the
+    model sees both `a11y-loop` and the directory-qualified `a11y-loop:a11y-loop` — with the fix.
+  - Documented the one step an agent cannot take: project-scoped plugins and hooks sit behind Claude
+    Code's workspace-trust prompt on first open. That is a security boundary, not a gap to work
+    around; `--scope user` avoids it.
+
 ## [0.2.1] - 2026-07-31
 
 ### Fixed
