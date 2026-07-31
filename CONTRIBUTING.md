@@ -73,6 +73,25 @@ git tag v1.2.3
 git push origin v1.2.3
 ```
 
+**The version lives in four files and nothing enforces that they agree.** Bump all of them in the
+same commit as the CHANGELOG entry, then check before tagging:
+
+| File | Field |
+|---|---|
+| `package.json` | `version` |
+| `.claude-plugin/plugin.json` | `version` |
+| `.claude-plugin/marketplace.json` | `metadata.version` **and** `plugins[0].version` |
+| `skill/a11y-loop/SKILL.md` | `metadata."a11y-loop/version"` |
+
+```bash
+node -e "console.log(require('./package.json').version, require('./.claude-plugin/plugin.json').version, require('./.claude-plugin/marketplace.json').plugins[0].version)"
+grep -o '\"a11y-loop/version\": \"[^\"]*\"' skill/a11y-loop/SKILL.md
+```
+
+Publishing is the only irreversible step here — npm unpublish is heavily restricted, so a wrong
+version is corrected by releasing another, not by withdrawing. `release.yml` skips a version already
+on the registry, so re-running a failed release is safe.
+
 Pushing a `vX.Y.Z` tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml),
 which publishes to npm using [trusted publishing](https://docs.npmjs.com/trusted-publishers): the
 workflow proves its own identity to npm over OIDC and receives a short-lived, publish-only

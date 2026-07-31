@@ -98,13 +98,17 @@ or Playwright will report a missing browser.
   `skill/a11y-loop/references/` holds the supporting docs (plan-phase guidance, AI-specific failure
   modes, APG patterns, manual-testing guidance, a WCAG 2.2 quick reference) loaded on demand, not
   upfront. `skill/a11y-loop/evals/` holds trigger-accuracy and behavior evals for the skill itself.
-- **`.claude-plugin/`, `hooks/`, `commands/`** — an *optional* Claude-Code-only layer. `hooks/
-  plan-gate.mjs` is a `PreToolUse` hook on `ExitPlanMode` that declines a plan changing UI work with
-  no accessibility content in it. Nothing in `skill/` may depend on this layer, and nothing in this
-  layer may appear in `SKILL.md` or `references/` — the skill has to stay portable across the 40+
-  clients that implement the Agent Skills standard. The hook's own invariants are documented in its
-  header comment; the load-bearing ones are that it never blocks on its own failure, defers rather
-  than allows, and declines a given plan at most once.
+- **`.claude-plugin/`, `hooks/`, `commands/`** — an *optional* Claude-Code-only layer.
+  `plugin.json` is the plugin manifest; `marketplace.json` makes the repo installable
+  (`claude plugin marketplace add ChanMeng666/a11y-loop`) and is why the marketplace is named
+  `chanmeng-a11y-loop` while the plugin inside it is `a11y-loop` — installs are
+  `a11y-loop@chanmeng-a11y-loop`. `hooks/plan-gate.mjs` is a `PreToolUse` hook on `ExitPlanMode`
+  that declines a plan changing UI work with no accessibility content in it. Nothing in `skill/`
+  may depend on this layer, and nothing in this layer may appear in `SKILL.md` or `references/` —
+  the skill has to stay portable across the 40+ clients that implement the Agent Skills standard.
+  The hook's own invariants are documented in its header comment; the load-bearing ones are that it
+  never blocks on its own failure, defers rather than allows, and declines a given plan at most
+  once.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
   `src/commands/{audit,contrast,diff}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
   `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
@@ -155,6 +159,73 @@ or Playwright will report a missing browser.
 - **Fixture tests are manifest-driven.** Adding a new seeded-violation fixture without a
   corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
   `test/integration/fixtures.test.js`.
+
+### Skill frontmatter and the plugin layer
+
+Each of these was learned the expensive way — by shipping the mistake — so they are recorded here
+rather than left to be rediscovered.
+
+- **Never re-add `paths:` to `SKILL.md`.** It reads like a filter that narrows an always-listed
+  skill. It is not: Claude Code partitions skills on load, and one declaring a non-empty `paths`
+  goes into a separate `conditionalSkills` registry, held *out* of the model-visible listing until
+  a matching file is touched (`[skills] Activated conditional skill '<name>' (matched path: …)`).
+  The frontmatter's own doc string says so — *"The skill only loads when the model touches matching
+  files."* This skill must fire while planning, before any UI file exists, and on audit requests
+  that name only a URL. `paths` made both unreachable. Solve over-triggering in the `description`'s
+  negative clauses and in `evals/trigger-evals.json` instead.
+- **A manifest component key replaces the default folder; it does not add to it.** So
+  `.claude-plugin/plugin.json` must only name *non-standard* locations. `"skills": "./skill/"` is
+  required because this repo uses `skill/`, not the conventional `skills/`. Declaring
+  `"hooks": "./hooks/hooks.json"` or `"commands": "./commands/"` re-registers what Claude Code
+  already loads by convention — the hooks case is fatal (*"Duplicate hooks file detected"*) and
+  takes the whole plugin down with it.
+- **`claude plugin validate --strict` passes on manifests that fail to load.** It validated the
+  broken manifest above cleanly. It checks shape, not loadability. Treat it as a linter, never as
+  proof: the only real check is installing the plugin and reading `claude plugin list` for
+  `Status: ✔ enabled`.
+- **The version lives in four files and they must move together:** `package.json`,
+  `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` (twice — `metadata.version` and
+  `plugins[0].version`), and `SKILL.md`'s `metadata."a11y-loop/version"`. Nothing enforces this;
+  a bump that misses one ships a lie.
+- **`ExitPlanMode` does not exist under `claude -p`.** It is absent from the toolset in print mode,
+  so the hook's full round trip — Claude Code fires the hook, the hook denies, Claude revises and
+  calls `ExitPlanMode` again — cannot be exercised headlessly, only in an interactive session.
+  What *is* covered headlessly: the hook's decision logic (`test/unit/plan-gate.test.js`, including
+  invoking the script over stdin with realistic payloads), and that the plugin loads and registers
+  the hook (`claude plugin details a11y-loop` → `Hooks (1) PreToolUse`). Don't claim the round trip
+  is verified on the strength of those.
+
+## Testing the plugin layer
+
+`npm test` covers the hook's logic but not its wiring. For the wiring, load the working copy into a
+session without installing it:
+
+```bash
+# Session-scoped: loads this checkout's plugin, skill, hook and command
+claude --plugin-dir . -p "…"
+
+# Inspect what a plugin actually contributes, plus its always-on token cost
+claude --plugin-dir . plugin details a11y-loop
+
+# Drive the hook directly with a realistic payload — expect a "deny" verdict
+echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Add a settings page in React: a modal dialog, a members table with row actions, tabs, and a dark mode toggle styled with Tailwind CSS."}}' \
+  | node hooks/plan-gate.mjs
+```
+
+Two ways that command misleads you if you are not careful:
+
+- **Silence and exit 0 is the gate's normal answer**, so an example that prints nothing proves
+  nothing. The plan has to clear 40 characters and be unambiguously about UI, or you are testing
+  the pass path by accident.
+- **The second run of the same plan returns `defer`, not `deny`** — the loop guard spends each
+  plan's hash once, on purpose. That is correct behavior, not a broken hook. Point
+  `CLAUDE_PLUGIN_DATA` at a fresh directory to get a clean verdict:
+  ```bash
+  echo "$payload" | CLAUDE_PLUGIN_DATA="$(mktemp -d)" node hooks/plan-gate.mjs
+  ```
+
+To test as a real install instead, register the checkout as a marketplace — `claude plugin
+marketplace add ./` — so the plugin tracks your edits rather than the published repo.
 
 ## Reading Order
 

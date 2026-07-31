@@ -5,6 +5,32 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-08-01
+
+### Changed
+- **Moved the plugin-layer knowledge out of this changelog and into `AGENTS.md`.** A changelog is a
+  release log; `AGENTS.md` is what an agent actually loads before working in the repo. Several
+  findings that cost real debugging were recorded only here, where nobody reads them in time. Now
+  documented as gotchas, each with the reason it is not obvious:
+  - `paths:` in `SKILL.md` gates the skill out of the model-visible listing rather than narrowing
+    it — never re-add it.
+  - A manifest component key **replaces** the default folder rather than adding to it, so
+    `plugin.json` must only name non-standard locations. Declaring `hooks/hooks.json` is fatal.
+  - `claude plugin validate --strict` **passes on manifests that fail to load**. It checks shape,
+    not loadability; the only real check is installing and reading `claude plugin list`.
+  - The version lives in **four** files that nothing keeps in sync (also added to `CONTRIBUTING.md`
+    as a pre-tag checklist).
+  - `ExitPlanMode` does not exist under `claude -p`, so the hook's full deny-and-revise round trip
+    cannot be exercised headlessly — and should not be described as verified.
+- **Added a "Testing the plugin layer" section**, since `npm test` covers the hook's logic but not
+  its wiring: `claude --plugin-dir .` to load a working copy session-scoped, `claude plugin details`
+  to see what it contributes, and driving `hooks/plan-gate.mjs` over stdin.
+- **Corrected the hook example in the README and `AGENTS.md`.** The plan it used was 38 characters,
+  below the gate's 40-character floor, so it silently demonstrated the pass path. Both now use a
+  plan that produces a `deny`, and both note the two ways the command misleads you: silence is the
+  normal answer, and re-running the same plan returns `defer` because the loop guard spends each
+  plan's hash once.
+
 ## [0.2.3] - 2026-08-01
 
 ### Added
