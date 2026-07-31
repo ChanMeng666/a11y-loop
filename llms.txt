@@ -55,8 +55,15 @@ claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Co
 Verify: `a11y-loop --version`; `test -f ~/.claude/skills/a11y-loop/references/plan-phase.md`;
 `claude plugin list | grep -A2 'a11y-loop@'` (expect `Status: ✔ enabled`).
 
+Upgrading is a different command from installing (`claude plugin install` on an already-installed
+plugin does nothing): `npm i -g a11y-loop@latest`, re-run the `cp` if using the skill, then
+`claude plugin marketplace update chanmeng-a11y-loop && claude plugin update
+a11y-loop@chanmeng-a11y-loop`. Teardown is `claude plugin disable|enable|uninstall`; only
+`uninstall --prune` needs `-y`.
+
 No `git clone` is required — the skill ships inside the npm package. Install the skill *or* the
-plugin, not both: the plugin carries its own copy. Prefer `--scope user`; `--scope project` writes a
+plugin, not both: the plugin carries its own copy, and doing both makes the model see `a11y-loop`
+and the directory-qualified `a11y-loop:a11y-loop`. Prefer `--scope user`; `--scope project` writes a
 committable `.claude/settings.json` but puts the plugin behind Claude Code's workspace-trust prompt
 on first open, which is a security boundary and must not be circumvented. A new session is needed
 before a newly installed skill or hook takes effect.

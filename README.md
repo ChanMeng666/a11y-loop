@@ -364,6 +364,16 @@ want the plugin. Do not do both: the plugin carries its own copy, so the model e
 `a11y-loop` *and* the directory-qualified `a11y-loop:a11y-loop`, paying the always-on token cost
 twice. If both names show up, delete `~/.claude/skills/a11y-loop` and keep the plugin.
 
+**Upgrading is a different command from installing** — `claude plugin install` on something already
+installed reports "already installed" and does nothing:
+
+```bash
+npm i -g a11y-loop@latest
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # if using the skill
+claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
+claude plugin update a11y-loop@chanmeng-a11y-loop
+```
+
 ### Installation (details)
 
 ```bash
