@@ -260,5 +260,6 @@ not: focus and selection are independent, and `Space` commits.
 
 ## Related
 
+[plan-phase.md](plan-phase.md) (choosing the pattern before you build it) ·
 [wcag22-quick-ref.md](wcag22-quick-ref.md) (the criteria behind these contracts) ·
 [ai-failure-modes.md](ai-failure-modes.md) · [manual-testing.md](manual-testing.md)

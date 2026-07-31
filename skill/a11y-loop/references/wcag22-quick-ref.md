@@ -219,6 +219,7 @@ normative or legal standing. Never let an APCA pass excuse a WCAG 2 failure.
 
 ## Related
 
+- Choosing which of these a project targets, before the code: [plan-phase.md](plan-phase.md)
 - ARIA and widget behavior: [apg-patterns.md](apg-patterns.md)
 - What generated code gets wrong: [ai-failure-modes.md](ai-failure-modes.md)
 - What none of this can check: [manual-testing.md](manual-testing.md)
