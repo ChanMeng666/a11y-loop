@@ -5,6 +5,28 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-07-31
+
+### Fixed
+- **The plugin manifest failed to load.** `plugin.json` declared `"hooks": "./hooks/hooks.json"`,
+  but `hooks/hooks.json` is a convention path that Claude Code loads automatically — naming it in
+  the manifest registered it twice and the whole plugin was rejected with *"Duplicate hooks file
+  detected"*. A manifest component key **replaces** the default folder rather than adding to it, so
+  it should only ever point at a non-standard location. `"commands": "./commands/"` was redundant
+  for the same reason and has also been dropped; `"skills": "./skill/"` stays, because this
+  repository keeps its skill in `skill/`, not the conventional `skills/`.
+  Anyone who installed 0.2.0 as a plugin saw `Status: ✘ failed to load`. `claude plugin validate
+  --strict` did **not** catch this — it passed on the broken manifest. The npm package and the
+  portable skill were unaffected.
+
+### Added
+- **`.claude-plugin/marketplace.json`**, so the plugin can actually be installed. Without it the
+  only route was cloning the repository and passing `--plugin-dir` per session:
+  ```bash
+  claude plugin marketplace add ChanMeng666/a11y-loop
+  claude plugin install a11y-loop@chanmeng-a11y-loop
+  ```
+
 ## [0.2.0] - 2026-07-31
 
 ### Added

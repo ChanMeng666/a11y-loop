@@ -383,9 +383,13 @@ Claude-Code-only layer that adds one thing the portable skill cannot do — enfo
 plan mode:
 
 ```bash
-# From a checkout, in Claude Code
-/plugin install .
+claude plugin marketplace add ChanMeng666/a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop
 ```
+
+Both work as `/plugin marketplace add …` and `/plugin install …` inside Claude Code. From a local
+checkout, `claude plugin marketplace add ./` registers the working copy instead, so the plugin
+tracks your edits.
 
 It contributes:
 
@@ -403,7 +407,7 @@ and a human.
 
 | | Portable skill | Plugin layer |
 |---|---|---|
-| Install | copy `skill/a11y-loop` | `/plugin install .` |
+| Install | copy `skill/a11y-loop` | `claude plugin install a11y-loop@…` |
 | Works in | 40+ Agent Skills clients | Claude Code only |
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
 | Required? | yes | no |
