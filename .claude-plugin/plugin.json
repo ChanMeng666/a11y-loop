@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "a11y-loop",
+  "displayName": "a11y-loop",
+  "version": "0.2.0",
+  "description": "Hard-gates plan mode: a plan that changes UI has to say what it decided about accessibility before it can be approved. Ships the a11y-loop skill and a /a11y-plan command alongside it.",
+  "author": {
+    "name": "Chan Meng",
+    "email": "chanmeng.dev@gmail.com",
+    "url": "https://github.com/ChanMeng666"
+  },
+  "homepage": "https://github.com/ChanMeng666/a11y-loop#readme",
+  "repository": "https://github.com/ChanMeng666/a11y-loop",
+  "license": "MIT",
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "axe-core",
+    "plan-mode",
+    "hooks",
+    "agent-skills"
+  ],
+  "skills": "./skill/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}
