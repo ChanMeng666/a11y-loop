@@ -1,6 +1,6 @@
 {
   "name": "a11y-loop",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Makes AI coding agents decide accessibility while the work is still being planned and write accessible UI by default, then proves what it can prove with a real browser audit across the states they built — and tells you exactly what it could not check.",
   "type": "module",
   "bin": {

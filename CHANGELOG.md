@@ -5,11 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — 0.2.0 in preparation
-
-> `skill/a11y-loop/SKILL.md` (`metadata."a11y-loop/version"`) and `.claude-plugin/plugin.json`
-> already carry `0.2.0`. `package.json` stays at the last published version until the release
-> commit bumps it alongside this heading — see "Releasing" in `CONTRIBUTING.md`.
+## [0.2.0] - 2026-07-31
 
 ### Added
 - **§0 Plan rules in the skill** — accessibility is now a decision made while scoping and designing,
