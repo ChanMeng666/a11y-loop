@@ -65,7 +65,8 @@ The skill is portable across any Agent Skills client, and §0 works in all of th
 only tell an agent to think about something. The optional Claude Code plugin layer can require it:
 
 ```bash
-/plugin install .
+claude plugin marketplace add ChanMeng666/a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
 It registers a `PreToolUse` hook on `ExitPlanMode`. When a plan changes UI work and says nothing

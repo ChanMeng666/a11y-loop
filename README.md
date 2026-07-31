@@ -335,7 +335,36 @@ secondary format for tools that consume it.
 - Node.js ≥ 20
 - A Chromium install for Playwright (installed in the steps below)
 
-### Installation
+> **Point your agent at this section.** Every command below is non-interactive, idempotent, and
+> safe to re-run — no prompts, no TTY, no menus. An agent can install and verify the whole thing
+> without asking you to click anything. The one exception is called out explicitly at the end.
+
+### Install everything (agent-runnable, one block)
+
+```bash
+npm i -g a11y-loop
+npx playwright install chromium
+mkdir -p ~/.claude/skills
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/
+claude plugin marketplace add ChanMeng666/a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+```
+
+That is: the CLI, its browser, the portable skill, and the optional Claude Code plugin. No `git
+clone` — the skill ships inside the npm package. Verify:
+
+```bash
+a11y-loop --version
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
+claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
+```
+
+Skip the last two lines if you only want the portable skill, or the `mkdir`/`cp` pair if you only
+want the plugin. Do not do both: the plugin carries its own copy, so the model ends up seeing
+`a11y-loop` *and* the directory-qualified `a11y-loop:a11y-loop`, paying the always-on token cost
+twice. If both names show up, delete `~/.claude/skills/a11y-loop` and keep the plugin.
+
+### Installation (details)
 
 ```bash
 # Run it directly, no install
@@ -363,18 +392,22 @@ browser) — e.g. `PLAYWRIGHT_BROWSERS_PATH=D:\playwright-browsers`.
 
 ### Installing the Agent Skill
 
-Copy the skill directory into any Agent Skills-compatible client:
+The skill is a directory. Copy it wherever your client reads skills from — no clone required, since
+`npm i -g a11y-loop` already put it on disk:
 
 ```bash
-# Personal, all projects (Claude Code and other clients that read ~/.claude/skills)
-cp -r skill/a11y-loop ~/.claude/skills/a11y-loop
+SKILL_SRC="$(npm root -g)/a11y-loop/skill/a11y-loop"
 
-# Or project-scoped
-cp -r skill/a11y-loop .claude/skills/a11y-loop
+# Personal, all projects (Claude Code and other clients that read ~/.claude/skills)
+mkdir -p ~/.claude/skills && cp -r "$SKILL_SRC" ~/.claude/skills/
+
+# Or project-scoped, committed with the repo
+mkdir -p .claude/skills && cp -r "$SKILL_SRC" .claude/skills/
 ```
 
-Any client implementing the [Agent Skills specification](https://agentskills.io/specification)
-can load it the same way — Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more.
+From a checkout, `skill/a11y-loop` is the same directory. Any client implementing the
+[Agent Skills specification](https://agentskills.io/specification) loads it the same way — Claude
+Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place.
 
 ### Optional: the Claude Code plugin layer
 
@@ -384,12 +417,35 @@ plan mode:
 
 ```bash
 claude plugin marketplace add ChanMeng666/a11y-loop
-claude plugin install a11y-loop@chanmeng-a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
-Both work as `/plugin marketplace add …` and `/plugin install …` inside Claude Code. From a local
-checkout, `claude plugin marketplace add ./` registers the working copy instead, so the plugin
-tracks your edits.
+Both are ordinary CLI commands — no TTY, no prompts, safe to re-run. (They also exist as `/plugin
+marketplace add …` and `/plugin install …` inside a session, but an agent should use the CLI form.)
+Managing it later is equally non-interactive: `claude plugin disable a11y-loop`, `claude plugin
+enable a11y-loop`, `claude plugin uninstall a11y-loop@chanmeng-a11y-loop` — add `-y` only if you
+pass `--prune`, which is the single flag that asks for confirmation.
+
+From a local checkout, `claude plugin marketplace add ./` registers the working copy instead, so the
+plugin tracks your edits rather than the published repo.
+
+**Team-wide, declaratively.** `--scope project` writes `.claude/settings.json`, which you commit —
+after that a clone needs no install commands at all:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "chanmeng-a11y-loop": { "source": { "source": "github", "repo": "ChanMeng666/a11y-loop" } }
+  },
+  "enabledPlugins": { "a11y-loop@chanmeng-a11y-loop": true }
+}
+```
+
+**The one thing an agent cannot do for you.** Project-scoped plugins and hooks are gated behind
+Claude Code's workspace-trust prompt the first time that directory is opened. That is a deliberate
+security boundary in Claude Code — code from a repo should not execute because a file said so — and
+nothing here can or should bypass it. `--scope user` avoids it entirely, which is why the
+agent-runnable block above uses user scope.
 
 It contributes:
 

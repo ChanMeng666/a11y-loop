@@ -38,6 +38,29 @@ Reference files under `skill/a11y-loop/references/` are loaded on demand, not up
 `plan-phase.md`, `wcag22-quick-ref.md`, `apg-patterns.md`, `ai-failure-modes.md`,
 `manual-testing.md`.
 
+## Installing it (for an agent acting on a user's behalf)
+
+Every command is non-interactive, idempotent, and needs no TTY. If a user asks for a11y-loop to be
+installed, run these yourself rather than handing them back:
+
+```bash
+npm i -g a11y-loop
+npx playwright install chromium
+mkdir -p ~/.claude/skills
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # portable skill, any client
+claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
+```
+
+Verify: `a11y-loop --version`; `test -f ~/.claude/skills/a11y-loop/references/plan-phase.md`;
+`claude plugin list | grep -A2 'a11y-loop@'` (expect `Status: ✔ enabled`).
+
+No `git clone` is required — the skill ships inside the npm package. Install the skill *or* the
+plugin, not both: the plugin carries its own copy. Prefer `--scope user`; `--scope project` writes a
+committable `.claude/settings.json` but puts the plugin behind Claude Code's workspace-trust prompt
+on first open, which is a security boundary and must not be circumvented. A new session is needed
+before a newly installed skill or hook takes effect.
+
 ## Key documents
 
 - [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): overview, features, honest coverage, installation, usage
