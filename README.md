@@ -550,10 +550,16 @@ npm run test:integration  # integration tests only (drives real Chromium)
 The optional plugin layer is plain Node with no dependencies. Exercise the plan gate directly:
 
 ```bash
-echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Build a React modal with Tailwind CSS."}}' \
-  | node hooks/plan-gate.mjs
-claude plugin validate . --strict
+echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Add a settings page in React: a modal dialog, a members table with row actions, tabs, and a dark mode toggle styled with Tailwind CSS."}}' \
+  | node hooks/plan-gate.mjs        # expect a "deny" verdict
+claude plugin validate . --strict   # shape only — see AGENTS.md on why this is not proof
 ```
+
+Silence and exit 0 is the gate's normal answer, so an example that prints nothing proves nothing:
+the plan has to clear 40 characters and be unambiguously about UI, or you are testing the pass path
+by accident. Re-running the *same* plan returns `defer` rather than `deny` — the loop guard spends
+each plan's hash once, deliberately — so prefix with `CLAUDE_PLUGIN_DATA="$(mktemp -d)"` for a clean
+verdict. See [`AGENTS.md`](AGENTS.md) for the rest of the plugin-layer gotchas.
 
 See [`AGENTS.md`](AGENTS.md) for AI-agent-oriented project conventions, the fixture-manifest
 testing pattern, the loop discipline expected when touching `demo/` or other UI, and the rule that
