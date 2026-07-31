@@ -22,7 +22,9 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
   behavior, descriptive quality of alt text and link text, logical reading order, caption/media
   alternative accuracy, cognitive accessibility) — the direct inverse of "no manual testing
   needed."
-- axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed.
+- axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed. See the
+  [benchmark write-up](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md)
+  for a live example of two such findings being investigated and resolved rather than dismissed.
 - **SARIF caveat, stated honestly:** GitHub Code Scanning only displays SARIF results that carry a
   file-path location. a11y-loop's findings are located by rendered URL + CSS selector, which
   Code Scanning drops on ingestion — a naive upload produces an empty Code Scanning view. SARIF

@@ -1,7 +1,7 @@
 {
   "name": "a11y-loop",
   "version": "0.1.2",
-  "description": "Makes AI coding agents write accessible UI by default, then proves what it can prove with a real browser audit across the states they built — and tells you exactly what it could not check.",
+  "description": "Makes AI coding agents decide accessibility while the work is still being planned and write accessible UI by default, then proves what it can prove with a real browser audit across the states they built — and tells you exactly what it could not check.",
   "type": "module",
   "bin": {
     "a11y-loop": "src/cli.js"
@@ -23,6 +23,8 @@
     "ai-agents",
     "agent-skills",
     "claude-code",
+    "claude-code-plugin",
+    "plan-mode",
     "audit",
     "contrast"
   ],
@@ -39,6 +41,9 @@
   "files": [
     "src/",
     "skill/",
+    ".claude-plugin/",
+    "hooks/",
+    "commands/",
     "THIRD-PARTY-NOTICES.md"
   ],
   "dependencies": {

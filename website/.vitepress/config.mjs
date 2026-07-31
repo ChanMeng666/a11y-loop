@@ -3,11 +3,11 @@ import { withMermaid } from 'vitepress-plugin-mermaid';
 const siteUrl = 'https://ChanMeng666.github.io/a11y-loop/';
 const ogImage = `${siteUrl}og-image.png`;
 const ogDescription =
-  "An Agent Skill + CLI that audits AI-generated UI against WCAG 2.2 AA in a real browser — and says exactly what it couldn't check.";
+  "An Agent Skill + CLI that puts accessibility in the plan, writes UI to WCAG 2.2 AA by default, then verifies it in a real browser — and says exactly what it couldn't check.";
 
 export default withMermaid({
   title: 'a11y-loop',
-  description: 'Write accessible UI by default. Verify it in a real browser.',
+  description: 'Decide accessibility in the plan. Write accessible UI by default. Verify it in a real browser.',
   base: '/a11y-loop/',
   cleanUrls: true,
   lastUpdated: true,
@@ -84,6 +84,7 @@ export default withMermaid({
         link: '/guide/getting-started',
         items: [
           { text: 'Getting Started', link: '/guide/getting-started' },
+          { text: 'Planning with Accessibility', link: '/guide/planning' },
           { text: 'CLI Usage', link: '/guide/cli-usage' },
           { text: 'Using it in CI', link: '/guide/ci-integration' },
           { text: 'Architecture & the Loop', link: '/guide/architecture' },

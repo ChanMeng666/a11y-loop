@@ -163,7 +163,7 @@ File references: relative paths from skill root, one level deep. **When the agen
 
 ### Claude Code extensions (use, degrade gracefully)
 
-- `paths` — glob gating for auto-activation. `paths: ["**/*.tsx","**/*.jsx","**/*.vue","**/*.svelte","**/*.html"]` solves "triggers too often" structurally.
+- ~~`paths` — glob gating for auto-activation. `paths: ["**/*.tsx","**/*.jsx","**/*.vue","**/*.svelte","**/*.html"]` solves "triggers too often" structurally.~~ **Corrected 2026-07-31 — do not act on this.** `paths` does not narrow an always-listed skill; it gates one. Claude Code partitions skills on load: a skill declaring a non-empty `paths` and not yet activated is held in a separate `conditionalSkills` registry and kept *out* of the skill listing the model can see, until a matching file is touched (`[skills] Activated conditional skill '<name>' (matched path: …)`). Its own frontmatter doc string says so: *"The skill only loads when the model touches matching files."* For a skill that must fire during planning — before any UI file exists — or on an audit request naming only a URL, that is fatal, not selective. `paths` was removed from `SKILL.md`; the `description` is the trigger, and it is the only one that works across all 40+ clients. Solve over-triggering in the description's negative clauses instead (see `evals/trigger-evals.json`).
 - `allowed-tools` with `${CLAUDE_SKILL_DIR}` substitution (v2.1.129+) — skill runs its own bundled CLI without permission prompts; degrades to a prompt on older versions:
 
 ```yaml

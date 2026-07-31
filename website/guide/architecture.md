@@ -1,12 +1,22 @@
 # Architecture & the Loop
 
-a11y-loop is two things working together: an **Agent Skill** that sets standing generation rules
-while an AI agent writes UI code, and a **Node CLI** that verifies the rendered result in a real
-browser and feeds failures back to the agent until the report converges.
+a11y-loop is two things working together: an **Agent Skill** that sets the rules — first while the
+UI work is being planned, then while the agent writes the code — and a **Node CLI** that verifies
+the rendered result in a real browser and feeds failures back to the agent until the report
+converges.
+
+The skill's phases run in that order. §0 settles the decisions that are cheap now and expensive
+later (conformance target, per-component criteria, foreclosing decisions, color tokens, structure);
+§1 governs the code as it is written; §2 is the audit loop below; §3 governs what may be claimed
+about the result. Only §2 needs a browser — see
+[Planning with Accessibility](/guide/planning) for the phase that runs before any of this exists.
 
 ```mermaid
 graph TD
-    A["Agent Skill<br/>skill/a11y-loop/SKILL.md + references/"] -->|standing generation rules| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
+    A["Agent Skill<br/>skill/a11y-loop/SKILL.md + references/"] -->|"§0 plan rules"| P["Agent plans the UI work<br/>conformance target, per-component criteria,<br/>foreclosing decisions, color tokens, structure"]
+    P -->|"contrast --fix, no browser needed"| E
+    P --> B
+    A -->|"§1 standing generation rules"| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
     B --> C["a11y-loop CLI"]
     C --> D["audit<br/>5 passes: default, dark,<br/>forced-colors, reduced-motion, 320px reflow"]
     C --> E["contrast --fix<br/>WCAG 2.x + OKLCh suggestions"]
@@ -45,6 +55,19 @@ sequenceDiagram
         CLI-->>Agent: Converged — FIXED/NEW/REMAINING summary
     end
 ```
+
+The flow in words: the skill's §0 puts the accessibility decisions in the plan, where changing them
+is still a sentence; §1 sets standing rules while the agent writes the UI; `a11y-loop audit`
+verifies the rendered result across five passes plus any built interaction states; violations feed
+back to the agent to fix; `a11y-loop diff` confirms convergence without new regressions; the JSON
+report and its manual-review checklist are the artifact of record, with SARIF offered as a
+secondary format for tools that consume it.
+
+Only the plan phase has an enforcement point outside the skill itself: in Claude Code, the
+[optional plugin layer](/guide/getting-started#optional-the-claude-code-plugin-layer) hooks
+`ExitPlanMode` and declines a UI plan with no accessibility content once. It checks that the
+question was asked, not that the answer is any good — the audit loop above and a human reviewer are
+still what judge the answer.
 
 ## Tech stack
 

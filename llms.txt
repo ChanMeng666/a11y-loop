@@ -1,6 +1,6 @@
 # a11y-loop
 
-> a11y-loop makes AI coding agents write accessible UI by default, then proves what it can prove with a real browser audit across the states it built — and tells you exactly what it could not check.
+> a11y-loop makes AI coding agents decide accessibility while the work is still being planned, write accessible UI by default, then prove what it can prove with a real browser audit across the states it built — and tell you exactly what it could not check.
 
 This file follows the [llms.txt](https://llmstxt.org/) convention: a concise, machine-readable map
 of the project for large language models and AI agents.
@@ -10,21 +10,67 @@ of the project for large language models and AI agents.
 - Repository: https://github.com/ChanMeng666/a11y-loop
 - Primary stack: Node.js / JavaScript (ESM), Playwright, axe-core
 - License: MIT (axe-core dependency is MPL-2.0 — see THIRD-PARTY-NOTICES.md)
-- Two layers: an Agent Skill (`skill/a11y-loop/`, open Agent Skills standard) for generation-time
-  rules, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff`) for browser-verified checks
+- Two layers: an Agent Skill (`skill/a11y-loop/`, open Agent Skills standard) covering the plan,
+  generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff`)
+  for browser-verified checks
+- Plus one *optional*, Claude-Code-only layer (`.claude-plugin/`, `hooks/`, `commands/`) that
+  enforces the plan phase at plan approval. Nothing under `skill/` depends on it.
+
+## What the skill covers
+
+`skill/a11y-loop/SKILL.md` is four sections, in lifecycle order:
+
+- **§0 Plan rules** — applied while scoping and designing, before any code exists: set the
+  conformance target, write accessibility as plan items rather than a trailing "accessibility
+  pass", name the product decisions that foreclose accessibility while they are still free to
+  change (drag-only reordering, hover-only menus, infinite scroll, canvas-rendered data, time
+  limits, CAPTCHA, autoplay), fix the color tokens before components exist, decide structure once,
+  and plan the verification.
+- **§1 Generation rules** — applied while writing UI code: semantic HTML first, ARIA discipline,
+  APG keyboard contracts, labels, focus visibility, AA contrast in light and dark, reduced motion,
+  24×24 targets.
+- **§2 The loop** — mandatory after any UI change: audit the states you built, fix in source,
+  re-audit, diff, repeat until it converges. Requires a real browser.
+- **§3 Honesty rules** — what may and may not be said about the result. Binding on everything in
+  this repository, including its own documentation.
+
+Reference files under `skill/a11y-loop/references/` are loaded on demand, not upfront:
+`plan-phase.md`, `wcag22-quick-ref.md`, `apg-patterns.md`, `ai-failure-modes.md`,
+`manual-testing.md`.
 
 ## Key documents
 
 - [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): overview, features, honest coverage, installation, usage
 - [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
-- [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/SKILL.md): the agent-facing generation rules and audit-loop instructions
+- [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/SKILL.md): the agent-facing plan rules, generation rules, audit loop and honesty rules
+- [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
 - [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats
 - [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history
+- [Docs site](https://ChanMeng666.github.io/a11y-loop/): the same material as a guide
+
+## Coverage, stated honestly
+
+Automated testing reaches a minority of WCAG failures, and this project says so in every report.
+Deque puts automation at ~57% of issues by volume of individual instances; only 17 of the 55 WCAG
+2.2 A/AA criteria (31%) have any ACT-approved automated rule, and accessible.org counts 7 of 55
+(13%) as reliably flagged. Nine A/AA criteria cannot be meaningfully tested by any tool. A clean
+audit means "no automatically detectable failures in the states that were driven" — never that
+anything is accessible or conformant.
 
 ## For agents
 
 To work effectively here: read the README and AGENTS.md first, then follow the commands and
-conventions they describe. Prefer the project's own scripts over ad-hoc commands. If you are being
-asked to write UI code in a project that has installed the `a11y-loop` skill, read
-`skill/a11y-loop/SKILL.md` and treat it as binding, not this file.
+conventions they describe. Prefer the project's own scripts over ad-hoc commands.
+
+Two rules carry more weight than the rest:
+
+1. **Never weaken the honesty language** (§3 of SKILL.md) anywhere — code, docs, tool output, or
+   this file.
+2. **Keep the skill portable.** Nothing under `skill/` may depend on `.claude-plugin/`, `hooks/`
+   or `commands/`, and no Claude-Code-specific mechanism may appear in `SKILL.md` or
+   `references/`. The same `SKILL.md` is meant to work in any client implementing the Agent Skills
+   standard.
+
+If you are being asked to plan or write UI code in a project that has installed the `a11y-loop`
+skill, read `skill/a11y-loop/SKILL.md` and treat it as binding, not this file.

@@ -56,6 +56,12 @@ a PR — see [`AGENTS.md`](AGENTS.md) for the full discipline. Never soften the 
 language (no "compliant", "guarantees", "fully accessible", "no manual testing needed", or a single
 accessibility score) in code, docs, or output you add.
 
+**Keep the skill portable.** `skill/a11y-loop/` is the whole product and it targets the open Agent
+Skills standard, not one client. The Claude-Code-only layer (`.claude-plugin/`, `hooks/`,
+`commands/`) is optional and additive: nothing under `skill/` may depend on it, and no
+Claude-Code-specific mechanism — hooks, plugin manifests, slash commands, `ExitPlanMode` — may
+appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked to split it.
+
 ## Releasing
 
 Releases are cut by pushing a version tag. There are no npm tokens anywhere in this project — not

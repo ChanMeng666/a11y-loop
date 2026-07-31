@@ -29,7 +29,12 @@ hero:
 features:
   - icon: '<svg width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 14V18.4C4 18.7314 4.26863 19 4.6 19H10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14V18.4C19 18.7314 18.7314 19 18.4 19H14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5H18.4C18.7314 5 19 5.26863 19 5.6V10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10V5.6C4 5.26863 4.26863 5 4.6 5H10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 19V20C14 21.1046 13.1046 22 12 22C10.8954 22 10 21.1046 10 20V19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10H5C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14H4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 10H20C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14H19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5V4C14 2.89543 13.1046 2 12 2C10.8954 2 10 2.89543 10 4V5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     title: An Agent Skill
-    details: Standing generation rules — semantic HTML, ARIA discipline, APG keyboard contracts, labels, focus visibility, AA contrast, reduced motion, 24×24 targets — that apply while an AI agent writes UI code.
+    details: Plan rules that apply while the work is still being scoped, then standing generation rules — semantic HTML, ARIA discipline, APG keyboard contracts, labels, focus visibility, AA contrast, reduced motion, 24×24 targets — that apply while an AI agent writes UI code.
+  - icon: '<svg width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 4H5.6C5.26863 4 5 4.26863 5 4.6V20.4C5 20.7314 5.26863 21 5.6 21H18.4C18.7314 21 19 20.7314 19 20.4V4.6C19 4.26863 18.7314 4 18.4 4H15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 3.6C9 3.26863 9.26863 3 9.6 3H14.4C14.7314 3 15 3.26863 15 3.6V4.6C15 4.93137 14.7314 5.2 14.4 5.2H9.6C9.26863 5.2 9 4.93137 9 4.6V3.6Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12.5L11 14.5L15 10.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    title: Accessibility enters at the plan
+    details: §0 settles the conformance target, the per-component acceptance criteria, the structure, and the color tokens — contrast --fix needs no browser and no code — and names the product choices that foreclose accessibility, like drag-only reordering (SC 2.5.7) or hover-only menus (SC 1.4.13), each with its alternative, while changing them is still a sentence rather than a rewrite.
+    link: /guide/planning
+    linkText: How the plan phase works
   - icon: '<svg width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor"/><path d="M16.5829 9.66667C15.8095 8.09697 14.043 7 11.9876 7C9.38854 7 7.25148 8.75408 7 11" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.4939 9.72222H16.4001C16.7315 9.72222 17.0001 9.45359 17.0001 9.12222V7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.41707 13.6667C8.19054 15.6288 9.95698 17 12.0124 17C14.6115 17 16.7485 14.8074 17 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5061 13.6222H7.59992C7.26855 13.6222 6.99992 13.8909 6.99992 14.2222V16.4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     title: A verification loop
     details: The a11y-loop CLI audits the rendered result in a real browser, feeds failures back to the agent to fix, and re-audits until the report converges on zero violations.
@@ -51,9 +56,13 @@ features:
 
 AI coding agents write inaccessible UI by default — 84% of AI-generated web pages carry
 accessibility issues, and telling the model to "be accessible" barely moves that number.
-a11y-loop pairs a **standing generation skill** with a **browser-verified audit loop**, so
-accessibility becomes a default of the development workflow rather than an after-the-fact
-compliance check.
+a11y-loop puts accessibility in three places instead: the **plan**, where the decisions that
+foreclose it are still a sentence to change rather than a rewrite; the **standing generation
+rules** the agent writes UI under; and a **browser-verified audit loop** that checks the rendered
+result and states plainly what it could not check. Accessibility becomes a default of the
+development workflow rather than an after-the-fact compliance check.
 
-Read the [full introduction and honest-coverage statement on GitHub](https://github.com/ChanMeng666/a11y-loop#-introduction),
-or jump straight into the [Getting Started guide](/guide/getting-started).
+Start with [Planning with Accessibility](/guide/planning) if the UI work is still being scoped, or
+the [Getting Started guide](/guide/getting-started) if there is already code. The
+[full introduction and honest-coverage statement](https://github.com/ChanMeng666/a11y-loop#-introduction)
+is on GitHub.

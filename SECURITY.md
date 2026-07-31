@@ -38,6 +38,14 @@ Security concerns most likely to apply to this project include:
   fragment you supply — treat any code path that could make it fetch or render untrusted,
   attacker-controlled targets (e.g. an internal network URL passed through from an unvalidated
   input) as in scope
+- `a11y-loop audit --interact <module>` imports and executes the JavaScript module you point it at.
+  It is your code by design, but treat any path that could cause an untrusted module to be loaded
+  as in scope
+- The optional Claude Code plugin runs `hooks/plan-gate.mjs` on every `ExitPlanMode`. It reads the
+  plan from the hook payload — including, when the payload carries only a path, from
+  `tool_input.planFilePath` — writes only a small state file under `CLAUDE_PLUGIN_DATA` (or the
+  system temp directory), makes no network calls, and executes nothing from the plan. Report
+  anything that contradicts that
 
 ## Attribution
 
