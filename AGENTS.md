@@ -53,6 +53,14 @@ Notes that matter when scripting this:
   `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`), but project-scoped plugins
   and hooks sit behind Claude Code's workspace-trust prompt on first open. That prompt is a
   security boundary and must not be worked around — recommend user scope instead.
+- **Upgrading is a different command from installing.** `claude plugin install` on an
+  already-installed plugin reports "already installed" and does nothing. Use:
+  ```bash
+  npm i -g a11y-loop@latest
+  cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # if using the skill
+  claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
+  claude plugin update a11y-loop@chanmeng-a11y-loop
+  ```
 - **Teardown and management are non-interactive too:** `claude plugin disable|enable|uninstall`.
   Only `uninstall --prune` needs `-y`.
 - A new session is required before a newly installed skill or hook takes effect.
