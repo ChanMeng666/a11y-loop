@@ -8,6 +8,12 @@ model family, and the audits are produced by a11y-loop's own engine. Read the
 numbers with that in mind; the point is to show the shape of the effect, not
 to claim a precise size.
 
+**Scope note.** This benchmark was run against the skill as it stood at v0.1.x,
+which covered generation (§1) and the audit loop (§2). It says nothing about
+§0, the plan rules added afterwards: every task here handed the model a fully
+specified component to build, so there was no planning phase to measure. These
+numbers are a record of that earlier comparison, not of the current skill.
+
 ## Method
 
 Both conditions built the same six components: a signup form, a pricing

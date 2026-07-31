@@ -219,6 +219,7 @@ also just untrue: what was checked is what was checked.
 
 ## Related
 
+- [plan-phase.md](plan-phase.md) — budgeting this work before the code exists
 - [wcag22-quick-ref.md](wcag22-quick-ref.md) — the 55 criteria and contrast thresholds
 - [apg-patterns.md](apg-patterns.md) — keyboard contracts to verify by hand
 - [ai-failure-modes.md](ai-failure-modes.md) — what to look for in generated code

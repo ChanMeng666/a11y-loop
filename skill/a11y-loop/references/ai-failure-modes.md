@@ -269,4 +269,5 @@ Then run the audit. This list is the setup, not the verification.
 
 ## Related
 
+[plan-phase.md](plan-phase.md) (the decisions that cause these before any code) ·
 [wcag22-quick-ref.md](wcag22-quick-ref.md) · [apg-patterns.md](apg-patterns.md) · [manual-testing.md](manual-testing.md)

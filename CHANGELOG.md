@@ -5,6 +5,45 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-07-31
+
+### Added
+- **§0 Plan rules in the skill** — accessibility is now a decision made while scoping and designing,
+  not only while writing UI code. §0 covers setting the conformance target, writing accessibility as
+  plan items rather than a trailing "accessibility pass", naming the product decisions that foreclose
+  accessibility while they are still free to change, fixing the color system before components exist,
+  deciding structure once, and planning the verification. It ends with the `### Accessibility` section
+  a plan touching UI is asked to carry.
+- **`skill/a11y-loop/references/plan-phase.md`** — the plan-phase companion: jurisdictional
+  conformance targets with primary sources, paste-ready acceptance criteria per component family,
+  design-time pattern selection, the expanded foreclosing-decisions list, color-token planning with
+  `contrast --fix`, a component-library vetting checklist, structural decisions, and how to size the
+  manual-testing budget. The jurisdiction research previously lived only in `docs/research/` and was
+  never shipped with the skill.
+- **Optional Claude Code plugin layer** — `.claude-plugin/plugin.json`, a `PreToolUse` hook matched
+  to `ExitPlanMode` (`hooks/plan-gate.mjs`), and a `/a11y-plan` command. When a plan changes UI work
+  and says nothing about accessibility, the gate declines it once and hands back the section to fill
+  in. It defers rather than allows on every other path, so the user's own plan approval is never
+  suppressed; it denies a given plan at most once; and `A11Y_LOOP_PLAN_GATE=off` turns it off. The
+  portable skill does not depend on any of this.
+- Plan-phase trigger and behavioral evals, including planning-shaped prompts that must *not* trigger
+  (API design, CLI tools, schema migrations, CI setup, ETL pipelines).
+
+### Changed
+- Skill `description` rewritten to add planning and design triggers without weakening the existing
+  generation and audit triggers.
+- The standing-instruction preamble now names three phases (§0 planning, §1 generation, §2
+  verification) instead of two.
+
+### Removed
+- **The `paths:` frontmatter block**, which listed UI source globs. In Claude Code it does not add
+  an activation channel — it gates one. A skill declaring `paths:` is held in a separate
+  "conditional skills" registry and kept *out* of the skill listing the model can see until a
+  matching file is touched. That is the wrong trade for this skill twice over: planning happens
+  before any UI file exists (so §0 would never be reachable on a greenfield project), and an
+  audit request naming only a URL touches no source file either. The `description` is the trigger,
+  and it works in every Agent Skills client rather than one.
+
 ## [0.1.2] - 2026-07-26
 
 ### Changed

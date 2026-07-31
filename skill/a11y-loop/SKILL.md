@@ -1,20 +1,25 @@
 ---
 name: a11y-loop
 description: >-
-  Make accessible markup the default when writing UI, then verify it in a real
-  browser instead of assuming. Use whenever generating or modifying user
-  interface code (HTML, JSX/TSX, Vue, Svelte, Astro, CSS) — forms, modals,
-  menus, tabs, tables, navigation, pricing pages, dark mode, colors — and
-  whenever the user asks for an accessibility audit, an a11y check or fix, a
-  WCAG review, a contrast fix, or help with screen readers, keyboard
-  navigation, focus order, ARIA, alt text. Supplies standing generation rules
-  (semantic HTML first, ARIA discipline, APG keyboard contracts, labels, focus
-  visibility, AA contrast in light and dark, reduced motion, 24x24 targets), a
-  mandatory audit-fix-re-audit loop driven by the `a11y-loop` CLI (axe-core in
-  Chromium across default, dark, forced-colors, reduced-motion and 320px
-  passes), and honest reporting of what automation cannot judge. Keywords:
-  accessibility, a11y, WCAG 2.2 AA, ARIA, axe-core, contrast ratio, screen
-  reader. Not for backend-only work with no UI.
+  Make accessibility a decision in the plan, accessible markup the default when
+  writing UI, then verify it in a real browser instead of assuming. Use when
+  planning, scoping or designing anything with a user interface — a new app or
+  page, a design system, a component library choice, a brand palette, a feature
+  roadmap — and whenever generating or modifying user interface code (HTML,
+  JSX/TSX, Vue, Svelte, Astro, CSS): forms, modals, menus, tabs, tables,
+  navigation, pricing pages, dark mode, colors. Also whenever the user asks for
+  an accessibility audit, an a11y check or fix, a WCAG review, a contrast fix,
+  or help with screen readers, keyboard navigation, focus order, ARIA, alt
+  text. Supplies plan-phase rules (conformance target, per-component acceptance
+  criteria, product decisions that foreclose accessibility, color-token and
+  structure planning), standing generation rules (semantic HTML first, ARIA
+  discipline, APG keyboard contracts, labels, focus visibility, AA contrast in
+  light and dark, reduced motion, 24x24 targets), a mandatory
+  audit-fix-re-audit loop driven by the `a11y-loop` CLI (axe-core in Chromium
+  across default, dark, forced-colors, reduced-motion and 320px passes), and
+  honest reporting of what automation cannot judge. Keywords: accessibility,
+  a11y, WCAG 2.2 AA, ARIA, axe-core, contrast ratio, screen reader. Not for
+  backend-only work with no UI.
 license: MIT
 compatibility: >-
   Verification needs Node.js >= 20 and Playwright Chromium. Install with
@@ -23,24 +28,17 @@ compatibility: >-
   The generation and honesty rules apply with or without the CLI; every step
   that says "audit" requires it.
 metadata:
-  "a11y-loop/version": "0.1.0"
-paths:
-  - "**/*.html"
-  - "**/*.tsx"
-  - "**/*.jsx"
-  - "**/*.vue"
-  - "**/*.svelte"
-  - "**/*.astro"
-  - "**/*.css"
+  "a11y-loop/version": "0.2.0"
 allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *) Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)'
 ---
 
 # a11y-loop
 
-These are standing instructions. **For the remainder of this session, whenever
-you write or modify UI code, apply §1 as you write it, run §2 before you call
-the work done, and speak about the result only in the terms allowed by §3.**
-They stay in force across turns — you do not need to be reminded.
+These are standing instructions. **For the remainder of this session: when you
+are planning UI work apply §0, when you write or modify UI code apply §1 as you
+write it, run §2 before you call the work done, and speak about the result only
+in the terms allowed by §3.** They stay in force across turns — you do not need
+to be reminded.
 
 Prompting alone does not work. UIs generated from accessibility-oriented
 prompts measure *slightly worse* than accessibility-agnostic ones (W4A'25,
@@ -81,6 +79,72 @@ JSON report shape: `findings.violations`, `findings.needsReview`,
 stable `fingerprint`, a `wcag` block (`sc`, `name`, `level`, `minVersion`,
 `wcag22Only`), `act[]` rule IDs, and — for contrast — concrete
 `suggestions[]` with hex values and before/after ratios.
+
+---
+
+## §0 Plan rules
+
+Apply while scoping, designing, or estimating — before any code exists.
+
+**Set the conformance target first and write it down.** Default to **WCAG 2.2
+Level AA**: 2.2 is backward compatible, so it satisfies every major jurisdiction
+at once — NZ Standard 1.2 and UK public sector at 2.2 AA, EU EN 301 549 v3.2.1
+and US ADA Title II at 2.1 AA, US Section 508 at 2.0 AA. If the user's
+jurisdiction, sector, or contract demands otherwise, ask once and record the
+answer. Version table and sources: [references/plan-phase.md](references/plan-phase.md).
+
+**Write accessibility as plan items, never as a final "accessibility pass."**
+Each UI component in the plan carries its success criteria and its keyboard
+contract alongside the rest of its scope. A plan whose last step is "then run an
+accessibility audit" is exactly the pattern this skill exists to eliminate — it
+defers the decisions §1 depends on until changing them costs a rewrite.
+
+**Name the decisions that foreclose accessibility while they are still free to
+change**, and propose the alternative in the same breath: drag-only reordering
+(SC 2.5.7 — add move up/down or a "move to" menu), hover-only menus (SC 1.4.13 —
+open on click, dismissible and hoverable), infinite scroll with no pagination
+fallback, canvas/WebGL data with no DOM or table equivalent, timed flows (SC
+2.2.1), autoplaying media (SC 1.4.2), CAPTCHA (SC 1.1.1 + 3.3.8 — a
+non-cognitive path alongside it), and any custom widget where a native element
+or an APG pattern would serve. Each is a product decision, not a CSS bug; after
+launch it is re-architecture.
+
+**Fix the color system before the components exist.** Run
+`A11Y contrast <fg> <bg> --fix` on every pair the design intends — body, muted,
+link, error, disabled, focus ring, control border — in **light and dark**, and
+let the passing values become the tokens. Unlike §2 it needs no browser, no
+render, and no code, so it is genuinely usable at plan time; low-contrast text
+is the most common failure in the wild (83.9% of pages) and the cheapest to
+never introduce.
+
+**Vet a component library before adopting it**, not after — checklist in
+[references/plan-phase.md](references/plan-phase.md).
+
+**Decide the structure once**, in the plan: heading outline, landmark map, focus
+order and keyboard map, skip links, and where focus lands on an SPA route
+change. Left to per-component decisions later, these always drift.
+
+**Plan the verification too.** List the states that will need an `--interact`
+module — every modal, error state, route, expanded menu, and async list is a
+state — say where the audit gates sit (per component, before merge, in CI), and
+budget the manual testing §3 requires. It is neither optional nor free.
+
+**Before you present a plan that touches UI, check it:** target written down?
+every component carrying its criteria and keyboard contract? foreclosing
+decisions named with alternatives? color pairs run through `contrast --fix` in
+both modes? structure decided? `--interact` states listed? manual budget stated?
+Then include this section in the plan, in this shape:
+
+```markdown
+### Accessibility
+- **Target:** WCAG 2.2 Level AA — <rationale / jurisdiction>
+- **Per-component criteria:** <component> → <SC list> + <keyboard contract source>
+- **Foreclosing decisions:** <none reviewed | list + alternatives>
+- **Color tokens:** <pairs verified with contrast --fix, light + dark>
+- **Structure:** <heading outline / landmarks / focus order>
+- **Verification:** <states needing --interact | where the audit gate sits>
+- **Manual budget:** <what automation cannot judge here>
+```
 
 ---
 
@@ -326,6 +390,7 @@ Read on demand; none of it costs context until you open it.
 
 | File | Use it when |
 |---|---|
+| [references/plan-phase.md](references/plan-phase.md) | You are planning, scoping, or estimating UI work: picking a conformance target, writing per-component acceptance criteria, reviewing a decision that might foreclose accessibility, planning color tokens or page structure, or choosing a component library |
 | [references/wcag22-quick-ref.md](references/wcag22-quick-ref.md) | You need the exact SC number, level, contrast threshold, or what is new in WCAG 2.2 |
 | [references/apg-patterns.md](references/apg-patterns.md) | You are building a dialog, tabs, accordion, menu, combobox, disclosure, radio group, switch, tooltip, or listbox |
 | [references/ai-failure-modes.md](references/ai-failure-modes.md) | Before saving generated UI code, and when a finding needs a wrong-vs-right example |

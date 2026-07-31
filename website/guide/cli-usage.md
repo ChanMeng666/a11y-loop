@@ -34,6 +34,11 @@ Checks a foreground/background pair against WCAG 2.x (1.4.3: 4.5:1 normal text /
 directions (lighter and darker) in OKLCh, so a fix stays close to the original hue instead of
 jumping to black or white.
 
+Unlike `audit`, `contrast` needs no browser, no render, and no code — which makes it the one
+command usable at plan time, before a single component exists. Run every pair the design intends
+(body, muted, link, error, disabled, focus ring, control border) in light *and* dark, and let the
+passing values become the tokens: see [Planning with Accessibility](/guide/planning).
+
 ## `diff`
 
 ```bash

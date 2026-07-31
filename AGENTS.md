@@ -5,10 +5,13 @@ Codex, etc.) working with this repository. Read it before writing or changing an
 
 ## Project Overview
 
-a11y-loop — makes AI coding agents write accessible UI by default, then proves what it can prove
-with a real browser audit across the states it built, and tells you exactly what it could not
-check. Two layers: an Agent Skill (`skill/a11y-loop/`, open Agent Skills standard) supplying
-standing generation rules, and a Node CLI (`src/`) supplying `audit` / `contrast --fix` / `diff`.
+a11y-loop — makes AI coding agents decide accessibility while the work is still being planned and
+write accessible UI by default, then proves what it can prove with a real browser audit across the
+states it built, and tells you exactly what it could not check. Two layers: an Agent Skill
+(`skill/a11y-loop/`, open Agent Skills standard) supplying plan rules, standing generation rules
+and honesty rules, and a Node CLI (`src/`) supplying `audit` / `contrast --fix` / `diff`. A third,
+*optional* layer (`.claude-plugin/`, `hooks/`, `commands/`) enforces the plan phase in Claude Code
+only; nothing under `skill/` may depend on it.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
@@ -43,11 +46,19 @@ or Playwright will report a missing browser.
 
 ## Architecture & Conventions
 
-- **`skill/a11y-loop/SKILL.md`** — the agent-facing standing instructions (generation rules +
-  the mandatory audit loop + honesty rules for talking about results). `skill/a11y-loop/references/`
-  holds the supporting docs (AI-specific failure modes, APG patterns, manual-testing guidance, a
-  WCAG 2.2 quick reference) loaded on demand, not upfront. `skill/a11y-loop/evals/` holds
-  trigger-accuracy and behavior evals for the skill itself.
+- **`skill/a11y-loop/SKILL.md`** — the agent-facing standing instructions, in four sections that
+  follow the lifecycle: §0 plan rules (decisions made while scoping, before any code), §1 generation
+  rules, §2 the mandatory audit loop, §3 honesty rules for talking about results.
+  `skill/a11y-loop/references/` holds the supporting docs (plan-phase guidance, AI-specific failure
+  modes, APG patterns, manual-testing guidance, a WCAG 2.2 quick reference) loaded on demand, not
+  upfront. `skill/a11y-loop/evals/` holds trigger-accuracy and behavior evals for the skill itself.
+- **`.claude-plugin/`, `hooks/`, `commands/`** — an *optional* Claude-Code-only layer. `hooks/
+  plan-gate.mjs` is a `PreToolUse` hook on `ExitPlanMode` that declines a plan changing UI work with
+  no accessibility content in it. Nothing in `skill/` may depend on this layer, and nothing in this
+  layer may appear in `SKILL.md` or `references/` — the skill has to stay portable across the 40+
+  clients that implement the Agent Skills standard. The hook's own invariants are documented in its
+  header comment; the load-bearing ones are that it never blocks on its own failure, defers rather
+  than allows, and declines a given plan at most once.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
   `src/commands/{audit,contrast,diff}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
   `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
@@ -104,7 +115,9 @@ or Playwright will report a missing browser.
 When onboarding to this repo, read in this order:
 1. `README.md` — what the project is and how to run it
 2. This `AGENTS.md` — how to work in it
-3. `CONTRIBUTING.md` — contribution workflow and quality gates
+3. `skill/a11y-loop/SKILL.md` — the product's actual contract with an agent; §3 also governs how
+   anything in this repo is allowed to describe its own results
+4. `CONTRIBUTING.md` — contribution workflow and quality gates
 
 ## Conventions for Changes
 

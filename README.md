@@ -72,7 +72,9 @@ accessibility-agnostic ones (W4A'25, 17.32% vs. 15.93%). Instructions alone are 
 
 a11y-loop is two things working together:
 
-1. **An Agent Skill** — standing generation rules (semantic HTML first, ARIA discipline, APG
+1. **An Agent Skill** — plan rules that apply while the work is still being scoped (conformance
+   target, per-component criteria, the product decisions that foreclose accessibility, color tokens
+   before components), then standing generation rules (semantic HTML first, ARIA discipline, APG
    keyboard contracts, labels, focus visibility, AA contrast in light and dark, reduced motion,
    24×24 targets) that apply while the agent is writing UI code.
 2. **A Node CLI** (`a11y-loop audit` / `contrast --fix` / `diff`) that verifies the result in a
@@ -90,6 +92,12 @@ that accessibility usually arrives as an after-the-fact compliance check, once t
 built and nobody wants to touch it. The goal here is to move it earlier: make accessibility a
 default of the development workflow rather than an audit at the end — which matters more now that
 so much UI code is written by AI agents in the first place.
+
+"Earlier" now reaches back past the first line of code. Some of the decisions that settle whether
+an interface can be made accessible — reordering that only works by dragging, a menu that only opens
+on hover, data that only exists as canvas pixels — are made while the work is being scoped, and they
+are nearly free to change there and a rewrite afterwards. §0 of the skill puts those decisions in
+the plan, where they are still cheap.
 
 **What this is not.** a11y-loop does not claim compliance, does not guarantee accessibility, and
 does not replace manual testing or testing with assistive technology. A clean report means "no
@@ -171,6 +179,16 @@ instead of jumping to black or white.
 
 `8` **Portable as an Agent Skill** — plain `SKILL.md` + `references/`, no proprietary format, works
 in any client implementing the open Agent Skills standard, not only Claude Code.
+
+`9` **Accessibility enters at the plan, not the pull request** — §0 gives the agent the decisions to
+settle while the work is still being scoped: the conformance target for the relevant jurisdiction,
+per-component acceptance criteria, the color tokens (verified with `contrast --fix`, which needs no
+browser and no code), the structure, and the interaction states that will need auditing. It also
+names the product choices that foreclose accessibility — drag-only reordering (SC 2.5.7), hover-only
+menus (SC 1.4.13), canvas-rendered data (SC 1.1.1), time limits (SC 2.2.1), CAPTCHA (SC 3.3.8) —
+each with the alternative, while changing them is still a sentence rather than a rewrite. In Claude
+Code, the [optional plugin layer](#optional-the-claude-code-plugin-layer) enforces it at plan
+approval.
 
 ## 📊 Honest Coverage
 
@@ -256,7 +274,10 @@ illustration of the effect's shape, not a controlled study or a precise effect s
 
 ```mermaid
 graph TD
-    A["Agent Skill<br/>skill/a11y-loop/SKILL.md + references/"] -->|standing generation rules| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
+    A["Agent Skill<br/>skill/a11y-loop/SKILL.md + references/"] -->|"§0 plan rules"| P["Agent plans the UI work<br/>conformance target, per-component criteria,<br/>foreclosing decisions, color tokens, structure"]
+    P -->|"contrast --fix, no browser needed"| E
+    P --> B
+    A -->|"§1 standing generation rules"| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
     B --> C["a11y-loop CLI"]
     C --> D["audit<br/>5 passes: default, dark,<br/>forced-colors, reduced-motion, 320px reflow"]
     C --> E["contrast --fix<br/>WCAG 2.x + OKLCh suggestions"]
@@ -355,6 +376,38 @@ cp -r skill/a11y-loop .claude/skills/a11y-loop
 Any client implementing the [Agent Skills specification](https://agentskills.io/specification)
 can load it the same way — Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more.
 
+### Optional: the Claude Code plugin layer
+
+The skill above is the whole product and it is portable. This repository also ships a thin
+Claude-Code-only layer that adds one thing the portable skill cannot do — enforcement during
+plan mode:
+
+```bash
+# From a checkout, in Claude Code
+/plugin install .
+```
+
+It contributes:
+
+- a `PreToolUse` hook matched to `ExitPlanMode`. When a plan changes UI work and says nothing about
+  accessibility, the plan is declined once and the `### Accessibility` section is handed back to fill
+  in. It names any decision already in the plan that is hard to walk back later — drag-only
+  reordering, hover-only menus, infinite scroll, canvas-rendered data, time limits, CAPTCHA, autoplay.
+- `/a11y-plan`, to ask for that section directly.
+
+Deliberate limits: it **defers** rather than allows on every non-deny path, so it never suppresses
+your own plan approval; it declines a given plan **at most once**, so it cannot loop; a plan with no
+UI in it is passed silently; and `A11Y_LOOP_PLAN_GATE=off` disables it. The gate checks that the
+question was asked — it cannot check that the answer is any good. That is still `a11y-loop audit`
+and a human.
+
+| | Portable skill | Plugin layer |
+|---|---|---|
+| Install | copy `skill/a11y-loop` | `/plugin install .` |
+| Works in | 40+ Agent Skills clients | Claude Code only |
+| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
+| Required? | yes | no |
+
 ## ⚙️ Using it in CI
 
 ```bash
@@ -424,8 +477,17 @@ npm run test:unit       # unit tests only
 npm run test:integration  # integration tests only (drives real Chromium)
 ```
 
+The optional plugin layer is plain Node with no dependencies. Exercise the plan gate directly:
+
+```bash
+echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Build a React modal with Tailwind CSS."}}' \
+  | node hooks/plan-gate.mjs
+claude plugin validate . --strict
+```
+
 See [`AGENTS.md`](AGENTS.md) for AI-agent-oriented project conventions, the fixture-manifest
-testing pattern, and the loop discipline expected when touching `demo/` or other UI.
+testing pattern, the loop discipline expected when touching `demo/` or other UI, and the rule that
+keeps `skill/` free of any Claude-Code-specific mechanism.
 
 ## 🤝 Contributing
 

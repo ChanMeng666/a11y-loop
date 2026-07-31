@@ -163,6 +163,52 @@
         "No accessibility guidance, audit, or checklist appears in the response",
         "No other files were modified"
       ]
+    },
+    {
+      "id": 13,
+      "should_trigger": true,
+      "prompt": "We're adding a team management page to the admin app: an invite form, a members table with per-row actions, and a confirmation modal for role changes. Before you write any code, give me the implementation plan.",
+      "expected_output": "A plan carrying a named conformance target, per-component success criteria, and the states that will be audited — decided at plan time, with no conformance claim attached to the outcome.",
+      "expectations": [
+        "The plan contains a dedicated Accessibility section rather than accessibility surfacing only as a final 'add ARIA' cleanup step",
+        "A target conformance level is stated explicitly (for example WCAG 2.2 Level AA) instead of being left implicit",
+        "Each planned component carries its own acceptance criteria cited by success criterion — for example the members table against SC 1.3.1, the invite form against SC 3.3.2 and 4.1.2, the confirmation modal against the APG dialog contract",
+        "The plan names the interactive states that will be driven and audited (modal open, invite form validation error, empty members table) rather than assuming a load-time scan covers them",
+        "Verification is scheduled as the a11y-loop audit-fix-re-audit loop at a named point in the build order, not deferred to an unscoped 'accessibility pass' at the end",
+        "The plan does not claim the resulting page will be accessible, compliant, or meet WCAG — it commits to a target and a check, not to an outcome",
+        "The plan was produced before any component code was written, as asked"
+      ]
+    },
+    {
+      "id": 14,
+      "should_trigger": true,
+      "prompt": "Here's the shape of the new dashboard: users drag the cards around to reorder their own layout, and the widget menu opens on hover. Sketch me the build order.",
+      "expected_output": "The drag-only reordering and the hover-only menu identified as decisions that foreclose accessibility, each cited and each given a concrete alternative folded into the plan itself.",
+      "expectations": [
+        "Drag-to-reorder is flagged as needing a single-pointer alternative, citing SC 2.5.7 Dragging Movements (Level AA) by number",
+        "A concrete alternative is specified — for example Move up / Move down buttons on each card, or a position field in a card menu — rather than recorded as a TODO, a follow-up ticket, or a 'we should also consider' aside",
+        "The alternative sits in the same build step as the drag interaction, so the plan cannot ship the drag behavior on its own",
+        "The hover-opened widget menu is flagged against SC 1.4.13 Content on Hover or Focus, with click or focus activation, or dismissible-hoverable-persistent behavior, specified in the plan",
+        "Both flags are raised while planning, before any component was written or audited",
+        "The stated interactions are not simply accepted and built as described",
+        "No conformance claim is made about the planned dashboard"
+      ]
+    },
+    {
+      "id": 15,
+      "should_trigger": true,
+      "prompt": "Before we start building I want to lock the palette for the new app: brand blue #4A90D9, #6B7280 grey for secondary text, white surfaces in light mode and #111827 in dark. Does this work?",
+      "expected_output": "Every stated pair measured through a11y-loop contrast in both light and dark, with real ratios and CLI-supplied replacements, while the palette is still a decision and no component exists.",
+      "expectations": [
+        "a11y-loop contrast was actually executed for the proposed pairs rather than the ratios being estimated or recalled",
+        "The light-mode pairs and the dark-mode pairs were each measured separately; the dark values were not assumed to inherit from the light theme",
+        "A concrete measured ratio is reported per pair with a pass or fail against the applicable threshold (4.5:1 normal text, 3:1 large text and UI boundaries)",
+        "Failing pairs receive replacement hex values taken from a11y-loop contrast --fix output or the report suggestions, not invented",
+        "The measurement happened at palette-decision time — no component or page was built and audited first in order to discover the problem",
+        "Replacements are expressed as design tokens for the light and dark themes rather than as per-element overrides",
+        "SC 1.4.3 Contrast (Minimum) is cited, and SC 1.4.11 Non-text Contrast where UI boundaries are involved",
+        "The response does not claim the palette is accessible or WCAG compliant"
+      ]
     }
   ]
 }
