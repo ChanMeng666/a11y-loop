@@ -80,6 +80,13 @@ a11y-loop is two things working together:
 2. **A Node CLI** (`a11y-loop audit` / `contrast --fix` / `diff`) that verifies the result in a
    real browser, feeds failures back to the agent to fix, and re-audits until the loop converges.
 
+**About the name.** `a11y` is the standard numeronym for *accessibility*: the first letter, the last
+letter, and the 11 letters between them replaced by their count — the same construction as `i18n`
+(internationalization) and `k8s` (Kubernetes). Spelled out it reads as "ally", which is the pun the
+accessibility community has always liked, but `11` is the conventional form. `loop` is the other half
+of the method: the CLI is not a one-shot audit but a write → audit → fix → re-audit cycle that runs
+until the report converges.
+
 The skill follows the open [Agent Skills](https://agentskills.io/specification) standard, so the
 same `SKILL.md` is portable across 40+ clients — Claude Code, Cursor, GitHub Copilot, Codex,
 Gemini CLI, and more — not just one vendor's agent. The CLI runs the same checks standalone in CI
