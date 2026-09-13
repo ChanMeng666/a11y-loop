@@ -133,6 +133,10 @@ export const HELPERS_SOURCE = `
     // this, every check that surveys "visible" elements would flood a report
     // with the rest of the page once a modal is open — not a real defect,
     // just this helper not knowing the platform already handled it.
+    //
+    // A PORTALLED dialog needs no equivalent clause here: it makes the rest of
+    // the page unreachable by marking it aria-hidden, which the check above
+    // already catches. modalDialogRoot() is what reads that shape.
     var modal = document.querySelector(':modal');
     if (modal && !modal.contains(el)) return false;
     return true;
@@ -191,14 +195,61 @@ export const HELPERS_SOURCE = `
   }
 
   /**
+   * Has the page been taken out of reach around this element? That is how a
+   * portalled dialog declares modality when it does not set aria-modal: the
+   * library marks the dialog's body-level SIBLINGS aria-hidden (or inert) and
+   * leaves its own portal alone. Base UI sets no aria-modal attribute at all
+   * and relies on this entirely, which is the currently recommended pattern.
+   */
+  function outsideIsHidden(el) {
+    var top = el;
+    while (top.parentElement && top.parentElement !== document.body) top = top.parentElement;
+    return Array.prototype.some.call(document.body.children, function (sibling) {
+      if (sibling === top || sibling.contains(el)) return false;
+      if (!isRendered(sibling)) return false;
+      return sibling.getAttribute('aria-hidden') === 'true' || sibling.hasAttribute('inert');
+    });
+  }
+
+  /**
+   * The open modal dialog, or null. The :modal pseudo-class is the cheap
+   * answer and the right one for a native <dialog> opened with showModal() —
+   * but it is ONLY that. Every React popup library (Base UI, Radix, Headless
+   * UI, floating-ui) ships a portalled <div role="dialog"> instead, which
+   * :modal never matches, so anything relying on it alone silently treats an
+   * open sheet as though no dialog were there at all.
+   *
+   * The portalled shape is recognised by what it actually does: a visible
+   * dialog-role element that is itself exposed, and that has either declared
+   * aria-modal="true" or hidden the rest of the page around itself. The LAST
+   * such element in document order wins, because a portal appends to <body> —
+   * so the most recently opened dialog is the topmost one.
+   */
+  function modalDialogRoot() {
+    var native = document.querySelector(':modal');
+    if (native) return native;
+
+    var open = Array.prototype.filter.call(
+      document.querySelectorAll('[role="dialog"], [role="alertdialog"], [aria-modal="true"]'),
+      function (el) {
+        if (el.getAttribute('aria-modal') === 'false') return false;
+        if (!isVisible(el)) return false;
+        return el.getAttribute('aria-modal') === 'true' || outsideIsHidden(el);
+      },
+    );
+    return open.length ? open[open.length - 1] : null;
+  }
+
+  /**
    * Where a forward Tab walk should be scoped: inside the open modal dialog
-   * if there is one (everything outside it is inert and cannot be reached),
-   * otherwise the whole document. tabbable() itself has no idea a native
-   * dialog element made the rest of the page inert, so callers must pass
-   * this as the container rather than always walking document.body.
+   * if there is one (everything outside it is unreachable while it is open),
+   * otherwise the whole document. tabbable() has no idea a dialog is open —
+   * it reads display and visibility, not aria-hidden, and knows nothing about
+   * :modal — so callers must pass this as the container rather than always
+   * walking document.body.
    */
   function tabbableRoot() {
-    return document.querySelector(':modal') || document.body;
+    return modalDialogRoot() || document.body;
   }
 
   /** The CSS path of whatever was last clicked, or null if nothing was. */
@@ -212,6 +263,7 @@ export const HELPERS_SOURCE = `
     accessibleName: accessibleName,
     isRendered: isRendered,
     isVisible: isVisible,
+    modalDialogRoot: modalDialogRoot,
     tabbableRoot: tabbableRoot,
     lastClickSelector: lastClickSelector,
     interactiveElements: interactiveElements,

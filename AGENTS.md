@@ -156,6 +156,28 @@ or Playwright will report a missing browser.
 - **SARIF is secondary, and deliberately so** — see `src/lib/format/sarif.js`'s own comment on why
   GitHub Code Scanning drops URL+selector-located results. Don't "fix" this by inventing fake file
   paths to satisfy Code Scanning; that would misrepresent the findings' actual location.
+- **`:modal` is not "is a dialog open".** It matches ONLY a native `<dialog>` opened with
+  `showModal()`. Every React popup library ships a portalled `<div role="dialog">` instead —
+  usually with no `aria-modal` attribute at all, hiding the rest of the page with `aria-hidden` on
+  the siblings — so anything gated on `:modal` silently treats an open sheet as no dialog at all.
+  `modalDialogRoot()` in `src/lib/browser-utils.js` is the one place that reads that shape; go
+  through it rather than adding another `:modal` query. This cost a release: the survey root fell
+  back to `document.body`, the focus sentinel landed outside the open dialog, and a perfectly
+  trapped sheet was reported `keyboard-unreachable` and `dialog-focus-not-trapped` — the better the
+  trap, the worse the report. See the 0.2.5 entry in `CHANGELOG.md`.
+- **A survey that drives the keyboard must not outrun the page, and must not judge the wreckage of
+  the survey before it.** Two lessons from the same bug. Traps built on `requestAnimationFrame`
+  (floating-ui's `enqueueFocus`, so Base UI's and Radix's) cancel a pending hand-back when another
+  arrives, so synthetic Tab presses faster than a frame keep focus parked outside the dialog and
+  the probe then reports the page for not keeping up. And the dialog probe runs last, after three
+  other surveys have each walked the page and left focus wherever they finished — on a portalled
+  dialog, focus resting outside is itself enough for the library to begin tearing the modal
+  treatment down. Re-establish the precondition before measuring, and let the page settle.
+- **Not every defensive change earns its place.** A wrap-tolerant Tab walk was written for this
+  same fix, looked obviously right, and changed no measured outcome on either the fixture matrix or
+  a live page — the symptom it targeted was a consequence of the wrong survey root and disappeared
+  with it. It was removed rather than shipped. Mutate the code and watch the test go red; if
+  nothing goes red anywhere, that is an answer, not a gap in the tests.
 - **Fixture tests are manifest-driven.** Adding a new seeded-violation fixture without a
   corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
   `test/integration/fixtures.test.js`.

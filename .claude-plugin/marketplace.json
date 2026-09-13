@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Makes AI coding agents decide accessibility while the work is still being planned and write accessible UI by default, then verify it in a real browser across the states they built — and say exactly what could not be checked. Ships the a11y-loop Agent Skill, a /a11y-plan command, and a plan-mode gate that declines a UI plan with no accessibility content in it.",
-    "version": "0.2.4"
+    "version": "0.2.5"
   },
   "plugins": [
     {
       "name": "a11y-loop",
       "source": "./",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "description": "Accessibility in the plan, not after the pull request. Adds §0 plan rules (conformance target, per-component criteria, the product decisions that foreclose accessibility, color tokens before components), standing WCAG 2.2 AA generation rules, and a PreToolUse hook on ExitPlanMode that declines a UI-touching plan with no accessibility content — once, handing back the section to fill in. Verification is the a11y-loop CLI: axe-core in Chromium across default, dark, forced-colors, reduced-motion and 320px passes.",
       "author": {
         "name": "Chan Meng",

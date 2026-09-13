@@ -155,10 +155,12 @@ export function keyboardFindings(survey, ctx) {
  * matters whenever a state setup function has clicked something, which is most of
  * the time. A focused sentinel at the start of the body fixes the origin.
  *
- * "Top of the document" is not always `document.body`: if a native `<dialog>`
- * is open, everything outside it is inert, so a sentinel inserted into `body`
- * could never be focused at all. The sentinel goes into whichever element
- * `tabbableRoot()` says is actually reachable right now.
+ * "Top of the document" is not always `document.body`: if a modal dialog is
+ * open, everything outside it is out of reach, so a sentinel inserted into
+ * `body` is either unfocusable (a native `<dialog>`) or sits in the very region
+ * the dialog's focus trap exists to keep focus out of (a portalled one — as far
+ * from the sheet as the document allows). The sentinel goes into whichever
+ * element `tabbableRoot()` says is actually reachable right now.
  *
  * @param {import('playwright').Page} page
  */
