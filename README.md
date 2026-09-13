@@ -159,7 +159,9 @@ graph LR
 `2` **Checks axe-core can't run** — tab order, focus visibility (including focus-ring contrast),
 dialog focus trap / Escape / focus-return, target size (24×24 CSS px, SC 2.5.8), reduced-motion
 effectiveness, ambiguous link text, div-as-button, and positive `tabindex`. These sit alongside
-axe-core, not instead of it.
+axe-core, not instead of it. The dialog and tab-order checks understand **portalled** dialogs —
+a `<div role="dialog">` in a portal, the way Base UI, Radix, Headless UI and anything on floating-ui
+ships one — not only a native `<dialog>` opened with `showModal()`.
 
 `3` **State coverage, not just page-load** — `--interact` drives the states an agent just built
 (a modal opened, a menu expanded, a form in its error state) through the same five passes, because
@@ -270,9 +272,9 @@ illustration of the effect's shape, not a controlled study or a precise effect s
 - **SARIF conversion:** [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter)
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 337+ tests across unit and integration suites,
-  including an 18-fixture seeded-violation matrix, a demo end-to-end run, and a forced-colors
-  gradient regression test
+- **Tests:** the built-in `node --test` runner, 378 tests across unit and integration suites,
+  including a 19-fixture matrix of seeded violations and correct-behaviour regression guards, a
+  demo end-to-end run, and a forced-colors gradient regression test
 
 ## 🏗️ Architecture
 

@@ -5,6 +5,62 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.5] - 2026-09-13
+
+### Fixed
+- **A correctly trapped portalled dialog is no longer reported as broken.** `tabbableRoot()` was
+  `document.querySelector(':modal') || document.body`, and `:modal` matches ONLY a native
+  `<dialog>` opened with `showModal()`. Every React popup library — Base UI, Radix, Headless UI,
+  anything on floating-ui — ships a portalled `<div role="dialog">` instead, usually with **no
+  `aria-modal` attribute at all**, hiding the rest of the page with `aria-hidden` on the siblings.
+  So the survey root fell back to `document.body` and the keyboard survey planted its focus
+  sentinel at `body.firstChild`: outside the open dialog, in the exact region the focus trap exists
+  to keep focus out of. The walk then spent its budget fighting the trap and reported everything it
+  had not reached as `keyboard-unreachable` — **the better the trap, the earlier the walk ended** —
+  while the trap probe reported `dialog-focus-not-trapped` on a dialog that traps perfectly.
+
+  Four changes, each one measured before and after:
+  - `modalDialogRoot()` recognises the portalled shape — a visible dialog-role element that either
+    declares `aria-modal="true"` or has hidden the page around it — and the LAST one in document
+    order wins, because a portal appends to `<body>`. `tabbableRoot()` uses it, so the survey is
+    scoped to the dialog and the sentinel lands inside it.
+  - The focus-trap probe stops asking `:modal` before forgiving the one tick every modal spends
+    outside itself while wrapping, and recognises a **focus guard** — an empty, unexposed,
+    focusable element — as well as `document.body`. Emptiness is what separates a guard from the
+    page behind the dialog, which is also `aria-hidden` but is full of real content: focus landing
+    there is still a trap that failed, and is still reported.
+  - A wrap is a CHAIN, not a single tick. Measured on a live Base UI sheet: guard → body → back
+    inside, two presses out in two runs of three. Allowing exactly one press failed a working trap
+    about two runs in three, which is what made the row look flaky rather than wrong. Now bounded
+    by `MAX_WRAP_TICKS`, and only counted once focus has been inside at least once.
+  - The probe now **starts inside the dialog**. It asks whether Tab can take focus out, so it has
+    to begin in. By the time it runs, three other surveys have each walked the page with real Tab
+    presses and left focus wherever they finished; on a portalled dialog, focus sitting outside is
+    itself enough for the library's focus-out handling to start dismantling the modal treatment,
+    after which the probe walks a page that is no longer behind a modal. Measured over ten runs:
+    four began outside, and all four reported the trap broken. With the re-entry, ten of ten began
+    inside and none did.
+
+  Measured against a live Base UI sheet (`archcanvas.uk`'s mobile menu), `mobile-menu-open` state:
+
+  | | `keyboard-unreachable` | `dialog-focus-not-trapped` | `focus-order-diverges` |
+  |---|---|---|---|
+  | 0.2.4, three runs | 2, 2, 2 | 1, 1, — | 1, 1, 1 |
+  | 0.2.5, five runs | 0 every run | 0 every run | 0 every run |
+
+  None of it weakens the checks: `fixture-modal-no-trap.html`, the dialog that manages nothing,
+  still reports all three of its failures.
+
+### Added
+- **`test/fixtures/fixture-portalled-dialog.html`** — the inverse of the no-trap fixture: a
+  portalled dialog whose focus management is correct in every respect, so no a11y-loop dialog or
+  keyboard rule may fire on it. It is a regression guard for the survey root rather than for a
+  defect. Its focus guards hand focus back on the NEXT Tab rather than one animation frame later
+  (floating-ui's `enqueueFocus`) — same shape, same code path, but deterministic where a frame is a
+  race. Reverting the root selection, the probe's guard tolerance, or the wrap bound each turns it
+  red; the probe re-entry is the one change only a real page can prove, and the numbers above are
+  that proof.
+
 ## [0.2.4] - 2026-08-01
 
 ### Changed

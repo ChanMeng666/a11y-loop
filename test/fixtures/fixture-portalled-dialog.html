@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!-- FIXTURE: portalled-dialog. The shape every React popup library ships — Base UI,
+     Radix, Headless UI, floating-ui — and the shape :modal does NOT match.
+
+     The dialog here is CORRECT. Focus moves into it on open, a guard-span focus
+     trap keeps Tab and Shift+Tab inside it, Escape closes it, and focus returns to
+     the trigger. Nothing about its focus management is a defect, so no a11y-loop
+     dialog or keyboard rule may fire in the "menu-open" state.
+
+     It exists because a11y-loop used to report it as broken anyway: tabbableRoot()
+     was `document.querySelector(':modal') || document.body`, and :modal matches only
+     a native <dialog> opened with showModal(). A portalled <div role="dialog"> fell
+     back to document.body, so the survey's focus sentinel landed OUTSIDE the open
+     dialog and the Tab walk spent its budget in the region the trap exists to keep
+     focus out of. See the "portalled-dialog" entry in manifest.json. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — correct portalled dialog</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --muted: #4a5a66;  /*  7.12:1 on --page */
+    --link: #0b5a52;   /*  8.08:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 0; }
+  a { color: var(--link); }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 19, 26, 0.62);
+  }
+  .sheet {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(22rem, 100vw);
+    padding: 1.25rem;
+    background: var(--page);
+    border-left: 1px solid var(--border);
+  }
+  .sheet ul { list-style: none; margin: 1rem 0 0; padding: 0; }
+  .sheet li { margin-bottom: 0.75rem; }
+  .sheet a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    min-width: 48px;
+  }
+  .sheet-close {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    background: var(--page);
+    color: var(--link);
+    border: 2px solid var(--border);
+  }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .note { color: var(--muted); font-size: 0.9375rem; }
+</style>
+</head>
+<body>
+<main id="page">
+  <h1>Correct portalled dialog</h1>
+  <p>
+    On load there is no dialog. Clicking <code>#openMenu</code> portals one into
+    <code>&lt;body&gt;</code> as its last child, marks the rest of the page
+    <code>aria-hidden="true"</code>, and traps focus inside it with guard spans — the
+    pattern Base UI, Radix, Headless UI and floating-ui all ship, and the pattern
+    <code>:modal</code> does not match.
+  </p>
+  <p>
+    <a href="#somewhere">A link behind the sheet, which a Tab walk must never reach while it is open</a>
+  </p>
+
+  <button type="button" id="openMenu">Open menu</button>
+
+  <p class="note">
+    Nothing here is a defect. See the <code>portalled-dialog</code> entry in
+    <code>manifest.json</code> for what may and may not fire in the open state.
+  </p>
+</main>
+
+<script>
+  (function () {
+    var trigger = document.getElementById('openMenu');
+    var page = document.getElementById('page');
+    var portal = null;
+    var startGuard = null;
+    var endGuard = null;
+
+    function tabbableInside(root) {
+      return Array.prototype.filter.call(
+        root.querySelectorAll('a[href], button, input, select, textarea, [tabindex]'),
+        function (el) { return !el.disabled && el.tabIndex >= 0; },
+      );
+    }
+
+    // Guard spans that send focus back into the dialog when Tab (or Shift+Tab) walks
+    // off either end of it. Two details are copied from floating-ui, which is what
+    // Base UI and Radix build their modals on, and both matter to this fixture:
+    //
+    //  - the guards are portalled to the FIRST and LAST child of <body>, not placed
+    //    next to the dialog, so a Tab from anywhere in the document runs into one of
+    //    them before it can reach anything behind the sheet;
+    //  - they are visually hidden AND aria-hidden, so they are never announced and
+    //    never appear as a stop to anyone. They exist only to catch a wrap.
+    //
+    // Focus therefore rests outside the dialog for a short CHAIN of ticks while the
+    // sheet wraps: first the guard, then document.body, then back inside. That chain
+    // is not invented — it is what a live Base UI sheet was measured doing, three
+    // runs, two of them spending two presses out and one spending a single press.
+    //
+    // floating-ui spends those ticks inside a requestAnimationFrame (`enqueueFocus`),
+    // which is why the row it produced upstream looked flaky rather than wrong: the
+    // frame sometimes beat the probe and sometimes did not. Here each tick is handed
+    // on by the next Tab instead. Same shape, same code path, but deterministic — a
+    // fixture that reproduced the bug only sometimes would prove nothing.
+    var wrapTarget = null;
+
+    function makeGuard(which) {
+      var guard = document.createElement('span');
+      guard.tabIndex = 0;
+      guard.setAttribute('aria-hidden', 'true');
+      guard.setAttribute('data-focus-guard', which);
+      guard.style.cssText =
+        'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;overflow:hidden;' +
+        'clip-path:inset(50%);white-space:nowrap;border:0;';
+      guard.addEventListener('keydown', function (event) {
+        if (event.key !== 'Tab') return;
+        var dialog = portal && portal.querySelector('[role="dialog"]');
+        if (!dialog) return;
+        var stops = tabbableInside(dialog);
+        if (!stops.length) return;
+        // Hand off through <body>, the way the real thing does, and remember where
+        // the next press has to land.
+        event.preventDefault();
+        wrapTarget = which === 'start' ? stops[stops.length - 1] : stops[0];
+        guard.blur();
+      });
+      return guard;
+    }
+
+    // The second half of the wrap: focus is on <body> and the next Tab puts it back
+    // inside the sheet.
+    function onWrapFromBody(event) {
+      if (event.key !== 'Tab' || !wrapTarget) return;
+      if (document.activeElement !== document.body) return;
+      event.preventDefault();
+      var target = wrapTarget;
+      wrapTarget = null;
+      target.focus();
+    }
+
+    function open() {
+      if (portal) return;
+      portal = document.createElement('div');
+      portal.setAttribute('data-portal', '');
+      portal.innerHTML =
+        '<div class="backdrop"></div>' +
+        '<div class="sheet" role="dialog" aria-label="Menu">' +
+        '  <div class="sheet-head">' +
+        '    <h2>Menu</h2>' +
+        '    <button type="button" class="sheet-close" id="closeMenu" aria-label="Close menu">' +
+        '      <span aria-hidden="true">&times;</span>' +
+        '    </button>' +
+        '  </div>' +
+        '  <ul>' +
+        '    <li><a href="#pricing">Pricing</a></li>' +
+        '    <li><a href="#docs">Documentation</a></li>' +
+        '    <li><a href="#support">Support</a></li>' +
+        '  </ul>' +
+        '</div>';
+      startGuard = makeGuard('start');
+      endGuard = makeGuard('end');
+
+      // The rest of the page is hidden from assistive technology the way the popup
+      // libraries do it: aria-hidden on the siblings, not inert, and no aria-modal
+      // on the dialog (Base UI sets none at all).
+      page.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'hidden';
+      document.body.insertBefore(startGuard, document.body.firstChild);
+      document.body.appendChild(portal);
+      document.body.appendChild(endGuard);
+
+      portal.querySelector('#closeMenu').addEventListener('click', close);
+      portal.querySelector('.backdrop').addEventListener('click', close);
+      document.addEventListener('keydown', onKeydown, true);
+      document.addEventListener('keydown', onWrapFromBody, true);
+
+      tabbableInside(portal.querySelector('[role="dialog"]'))[0].focus();
+    }
+
+    function close() {
+      if (!portal) return;
+      document.removeEventListener('keydown', onKeydown, true);
+      document.removeEventListener('keydown', onWrapFromBody, true);
+      wrapTarget = null;
+      portal.remove();
+      startGuard.remove();
+      endGuard.remove();
+      portal = null;
+      startGuard = null;
+      endGuard = null;
+      page.removeAttribute('aria-hidden');
+      document.body.style.overflow = '';
+      trigger.focus();
+    }
+
+    function onKeydown(event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+      }
+    }
+
+    trigger.addEventListener('click', open);
+  })();
+</script>
+</body>
+</html>

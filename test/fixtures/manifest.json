@@ -385,6 +385,40 @@
       "note": "The dialog is deliberately given an accessible name via aria-label, a real <button> close control with a name, and a labelled input, so focus management is the only defect. `aria-dialog-name` must NOT fire."
     },
 
+    "fixture-portalled-dialog.html": {
+      "class": "portalled-dialog",
+      "title": "A CORRECT portalled dialog — the shape :modal does not match",
+      "expectClean": true,
+      "expect": [
+        {
+          "ruleIdOrCheck": "aria-hidden-focus",
+          "detector": "axe",
+          "scHint": "4.1.2",
+          "scName": "Name, Role, Value",
+          "level": "A",
+          "axeTag": "wcag2a",
+          "minNodes": 3,
+          "allowNeedsReview": true,
+          "landsIn": "incomplete",
+          "note": "Not a seeded defect, and not something the fixture could avoid: it is what the portal pattern itself costs. Two of the three are the focus guards, which are focusable AND aria-hidden by design (Base UI ships exactly this); the third is the page behind the sheet, hidden from assistive technology with aria-hidden rather than inert. Observed in axe-core 4.12.1 as incomplete, not violations - axe cannot determine focusability here and says so."
+        }
+      ],
+      "interact": {
+        "required": true,
+        "script": "fixture-portalled-dialog.interact.mjs",
+        "stateName": "menu-open",
+        "steps": [
+          "click #openMenu",
+          "wait for [data-portal] [role=\"dialog\"]",
+          "run the audit with the sheet open"
+        ],
+        "onLoadIsClean": true,
+        "note": "There is no dialog in the document at all until the menu is opened - it is portalled in on click, as the last child of <body>."
+      },
+      "defects": [],
+      "note": "The INVERSE of fixture-modal-no-trap.html: this dialog's focus management is correct in every respect, so no a11y-loop dialog or keyboard rule may fire on it. It is a regression guard for the survey root, not for a defect. Before the fix, tabbableRoot() was \"document.querySelector(':modal') || document.body\", and :modal matches ONLY a native <dialog> opened with showModal(). This dialog is a portalled <div role=\"dialog\"> with no aria-modal attribute, hiding the page behind it with aria-hidden on its siblings - the shape Base UI, Radix, Headless UI and everything else built on floating-ui ships, and the currently recommended pattern. So the root fell back to document.body and the survey put its focus sentinel at body.firstChild: outside the open dialog, in the one region the focus trap exists to keep focus out of. Measured on this fixture at 0.2.4, three runs, identical every time: keyboard-unreachable(3) on the start guard, on the link behind the sheet and on the trigger, plus dialog-focus-not-trapped(1) on the sheet, plus focus-order-diverges(1) in needsReview. All five are artifacts of the survey, not of the page. The guards hand focus back on the NEXT Tab rather than one animation frame later, which is what floating-ui's enqueueFocus does. Same shape and the same code path - focus rests outside the dialog for exactly one tick - but a keypress is deterministic where a frame is a race, and a fixture that reproduced the bug only sometimes would prove nothing. See the fixture's own comments."
+    },
+
     "fixture-target-size.html": {
       "class": "target-size",
       "title": "Targets below 24 by 24 CSS px",

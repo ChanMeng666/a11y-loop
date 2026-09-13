@@ -17,6 +17,28 @@ import { makeFinding, SEVERITY } from '../finding.js';
 export const TRAP_PROBE_STEPS = 12;
 
 /**
+ * How many consecutive presses may land outside the dialog on something no user
+ * can act on before it stops counting as a wrap and starts counting as an escape.
+ *
+ * Not a fudge factor — it is the length of a real wrap, measured. A portalled
+ * dialog wraps through a CHAIN: floating-ui (Base UI, Radix) renders a focus
+ * guard beside the floating element and another pair at the edges of <body>, and
+ * hands focus back an animation frame later, so a forward Tab off the end of the
+ * sheet goes guard → body → back inside. Observed on a live Base UI sheet, three
+ * runs: two of them spent two presses out (guard, then body) and one spent a
+ * single press. Allowing exactly one press, as this check used to, therefore
+ * reported a perfectly trapped dialog as broken about two runs in three — which
+ * is what made the row look flaky rather than wrong.
+ *
+ * It stays small on purpose, and it only applies AFTER focus has been inside the
+ * dialog at least once: presses spent outside before that are the probe finding
+ * its way in from wherever the earlier surveys left focus, not a wrap. Landing on
+ * a genuine, exposed element outside the dialog is an escape on the first press
+ * either way, whatever this bound says.
+ */
+export const MAX_WRAP_TICKS = 3;
+
+/**
  * @param {object} observation
  * @param {string} observation.selector
  * @param {string} observation.html
@@ -196,11 +218,36 @@ export async function captureDialogInitialState(page, opts = {}) {
         selector: helpers.cssPath(dialog),
         html: helpers.shortHtml(dialog),
         trigger,
+        // Was this dialog MODAL at the moment it opened? Recorded now because
+        // it is the only way to tell, later, between a dialog that never
+        // trapped anything and one whose modal treatment was torn down while
+        // the probe was running. See surveyDialog.
+        modal: helpers.modalDialogRoot() === dialog,
         focusMovedIntoDialog: Boolean(active && dialog.contains(active)),
         initialFocus: active ? helpers.cssPath(active) : null,
       };
     },
     { selector: DIALOG_SELECTOR, presumed: presumedTrigger },
+  );
+}
+
+/**
+ * Let the page finish reacting to a key before reading where focus went.
+ *
+ * A focus trap built on requestAnimationFrame — floating-ui's enqueueFocus, and
+ * so Base UI's and Radix's — hands focus back one frame after a guard receives
+ * it, and cancels a pending hand-back when another arrives. Synthetic Tab
+ * presses can be dispatched faster than a frame, which cancels the redirect over
+ * and over and leaves focus parked outside the dialog: the probe outruns the
+ * page and then reports the page for not keeping up. No keyboard user can press
+ * Tab twice inside one frame, so waiting two frames does not weaken the check —
+ * it stops it measuring itself.
+ *
+ * @param {import('playwright').Page} page
+ */
+async function settleFrames(page) {
+  await page.evaluate(
+    () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
   );
 }
 
@@ -217,22 +264,66 @@ export async function captureDialogInitialState(page, opts = {}) {
 export async function surveyDialog(page, found) {
   if (!found) return null;
 
+  // The probe asks exactly one question: with focus INSIDE this dialog, can Tab
+  // take it out? So it has to start inside. By the time it runs, three other
+  // surveys have each walked the page with real Tab presses and left focus
+  // wherever they happened to finish — and on a portalled dialog, focus sitting
+  // outside is itself enough for the library's focus-out handling to begin
+  // dismantling the modal treatment it put up. The probe would then walk a page
+  // that is no longer behind a modal and report a working trap as broken.
+  //
+  // Measured on a live Base UI sheet, ten runs: without this, four began outside
+  // the dialog and every one of those four reported the trap broken. With it,
+  // ten of ten began inside and none did.
+  const enteredDialog = await page.evaluate(
+    ({ selector }) => {
+      const helpers = window.__a11yLoop;
+      const dialog = Array.from(document.querySelectorAll(selector)).find((el) =>
+        helpers.isVisible(el),
+      );
+      if (!dialog) return false;
+      if (dialog.contains(document.activeElement)) return true;
+      const stops = window.tabbable ? window.tabbable.tabbable(dialog) : [];
+      if (!stops.length) return false;
+      stops[0].focus();
+      return dialog.contains(document.activeElement);
+    },
+    { selector: DIALOG_SELECTOR },
+  );
+
   // Focus trap: Tab repeatedly and watch for focus leaving the dialog.
   //
-  // Real Chromium, for a genuinely native <dialog> opened with showModal(),
-  // transiently moves document.activeElement to document.body for exactly
-  // one Tab press when wrapping past the dialog's last (or before its first)
-  // focusable descendant, then redirects back inside on the very next press —
-  // body itself stays inert throughout, so nothing is actually reachable
-  // there. Treating that single step as an escape would flag a correctly
-  // trapped native dialog as broken. It is only a real failure if landing
-  // outside the dialog is on a genuine element, or if it does not recover on
-  // the immediately following press.
-  let focusTrapped = true;
+  // Every modal dialog spends one tick outside itself when it wraps, and the
+  // shape of that tick depends on who implements the trap:
+  //
+  //  - Real Chromium, for a genuinely native <dialog> opened with showModal(),
+  //    transiently moves document.activeElement to document.body for exactly
+  //    one Tab press when wrapping past the dialog's last (or before its first)
+  //    focusable descendant, then redirects back inside on the very next press.
+  //    Body itself stays inert throughout, so nothing is reachable there.
+  //  - A portalled <div role="dialog"> — Base UI, Radix, Headless UI, anything
+  //    on floating-ui — wraps through a focus guard instead: a focusable span
+  //    outside the dialog, hidden from assistive technology, whose whole job is
+  //    to catch the wrap and hand focus back. Nothing is reachable there either.
+  //
+  // Treating either as an escape flags a correctly trapped dialog as broken,
+  // and that is precisely what happened to portalled dialogs while this gate
+  // asked `:modal` — which matches only the native case. It is a real failure
+  // if focus lands outside the dialog on a genuine, exposed element, or if it
+  // does not come back within MAX_WRAP_TICKS presses: a portalled dialog wraps
+  // through a chain of those ticks, not a single one.
+
+  // A dialog focus cannot be placed inside is a dialog whose trap this check
+  // cannot judge, so it says so with null rather than guessing — dialogFindings
+  // reports only on an explicit false.
+  let focusTrapped = enteredDialog ? true : null;
   let escapedTo = null;
-  let sawUnconfirmedTransient = false;
-  for (let i = 0; i < TRAP_PROBE_STEPS; i++) {
+  let insideAtLeastOnce = false;
+  let consecutiveWrapTicks = 0;
+  let tornDownMidProbe = false;
+  for (let i = 0; enteredDialog && i < TRAP_PROBE_STEPS; i++) {
     await page.keyboard.press('Tab');
+    await settleFrames(page);
     const check = await page.evaluate(
       ({ selector }) => {
         const helpers = window.__a11yLoop;
@@ -240,13 +331,31 @@ export async function surveyDialog(page, found) {
           helpers.isVisible(el),
         );
         const active = document.activeElement;
-        if (!dialog || !active) return { inside: false, transient: false, label: null };
-        if (dialog.contains(active)) return { inside: true, transient: false, label: null };
+        if (!dialog || !active) {
+          return { inside: false, transient: false, label: null, stillModalRoot: false };
+        }
+        if (dialog.contains(active)) {
+          return { inside: true, transient: false, label: null, stillModalRoot: true };
+        }
         const isBodyOrRoot = active === document.body || active === document.documentElement;
-        const stillModal = typeof dialog.matches === 'function' && dialog.matches(':modal');
+        // A focus guard is an EMPTY element that is not exposed to assistive
+        // technology — every library builds one the same way, as a bare
+        // aria-hidden span with nothing in it. Emptiness is what separates it
+        // from the page behind the dialog, which is also aria-hidden but is
+        // full of real content: focus landing THERE is a trap that failed, and
+        // must still be reported.
+        const isFocusGuard =
+          !isBodyOrRoot &&
+          !helpers.isVisible(active) &&
+          active.children.length === 0 &&
+          !(active.textContent || '').trim();
+        const stillModal =
+          (typeof dialog.matches === 'function' && dialog.matches(':modal')) ||
+          helpers.modalDialogRoot() === dialog;
         return {
           inside: false,
-          transient: isBodyOrRoot && stillModal,
+          transient: (isBodyOrRoot || isFocusGuard) && stillModal,
+          stillModalRoot: helpers.modalDialogRoot() === dialog,
           label: isBodyOrRoot ? 'the browser UI / document root' : helpers.cssPath(active),
         };
       },
@@ -254,16 +363,38 @@ export async function surveyDialog(page, found) {
     );
 
     if (check.inside) {
-      sawUnconfirmedTransient = false;
+      insideAtLeastOnce = true;
+      consecutiveWrapTicks = 0;
       continue;
     }
-    if (check.transient && !sawUnconfirmedTransient) {
-      sawUnconfirmedTransient = true;
+    if (check.transient && (!insideAtLeastOnce || consecutiveWrapTicks < MAX_WRAP_TICKS)) {
+      if (insideAtLeastOnce) consecutiveWrapTicks += 1;
       continue;
+    }
+    // The dialog was modal when it opened and is not any more: the page took
+    // the modal treatment down — the backdrop, the aria-hidden on everything
+    // behind it — while this probe was running, usually because the sheet is
+    // closing. Focus is free to walk the page because the page let it, not
+    // because a trap failed. There is nothing to judge here, so judge nothing:
+    // reporting a trap failure off a dialog that stopped being modal mid-probe
+    // is how a correctly trapped sheet ends up accused about one run in seven.
+    if (found.modal && !check.stillModalRoot) {
+      tornDownMidProbe = true;
+      break;
     }
     focusTrapped = false;
     escapedTo = check.label;
     break;
+  }
+
+  if (tornDownMidProbe) {
+    return {
+      ...found,
+      focusTrapped: null,
+      escapedTo: null,
+      escapeClosed: null,
+      focusReturnedToTrigger: null,
+    };
   }
 
   await page.keyboard.press('Escape');
