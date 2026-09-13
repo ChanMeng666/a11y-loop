@@ -5,6 +5,60 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2026-09-13
+
+Documentation only. No behaviour change, no change to the report shape.
+
+### Added
+- **Field notes from production use** — a new README section (mirrored as a docs-site page and
+  indexed in `llms.txt`) for the rows a real report produces that are not defects. Each was
+  reproduced from a checkout before being written down:
+  - **`color-contrast` in the forced-colors pass.** axe-core 4.12.1 reads an element's foreground
+    from `-webkit-text-fill-color` before `color` (`getTextColor()`), and Chromium's forced-colors
+    emulation forces `color` and the background but leaves `-webkit-text-fill-color` at the
+    author's value — on every element, including ones that never declared it. So the pass compares
+    the author's foreground against the forced background. Dark-on-light text survives that;
+    light-on-dark text collapses. Measured on a two-paragraph fixture: `#6d6975` on `#ffffff`
+    stays silent, while `#e8e6ef` on a `#141218` card reports 1.23:1, *"foreground color:
+    #e8e6ef, background color: #ffffff"* — and the suggestion derived from that pair proposes a
+    color that fails in the default pass. On one production page this cluster was the large majority
+    of a 153-finding run.
+  - **`div-button` on `<body>` or a portal root** is how popup libraries dismiss on an outside
+    press. The keyboard equivalent is Escape, wired separately, so `dialog-escape-does-not-close`
+    is the row that actually answers the question.
+  - **Contrast sampled mid-animation measures one frame.** `#6d6975` at opacity 0.917 reads as
+    `#797580`. `openPage()` waits 120 ms for webfonts and short entrance animations; a longer
+    reveal outlives it.
+  - **`keyboard-unreachable` can mean the Tab budget ran out** — the walk is bounded at
+    `MAX_TAB_STEPS` (60), and past that the tail of the document is reported unreachable because
+    the walk ended.
+  - **Invoking the CLI through a Windows junction silently does nothing.** Node resolves
+    `import.meta.url` through the junction to the real path while `process.argv[1]` keeps the
+    literal path, so `src/cli.js`'s entry guard is false and the process exits 0 with no output —
+    which reads like a pass. Use the real path or the exported `main(argv, io)`.
+- **Automating a screen-reader pass** — a new subsection in
+  `skill/a11y-loop/references/manual-testing.md`: drive a portable screen reader with its language
+  pinned and a `silence` synthesizer, and take live-region claims from the screen reader's own
+  debug log rather than a driver's relay log, which carries focus speech only. Copy the log out
+  before stopping the screen reader — `nvda.stop()` deletes the config directory it lives in. It
+  buys a detectable regression and a quotable transcript, not a judgment about usability.
+
+### Changed
+- **The docs now describe the 0.2.5 dialog survey root.** The README's own-checks feature, the
+  architecture diagrams in the README and on the docs site, and the docs-site home page all said
+  "dialog focus trap" without saying which dialogs; they now name the portalled shape that 0.2.5
+  taught the survey to recognise. `SKILL.md` §2 gains the consequence an agent can see: while a
+  modal dialog is open the keyboard survey is scoped to that dialog, so the page behind it needs
+  its own `--interact` state to be audited.
+- **`SKILL.md` §2 and `references/manual-testing.md` now say that not every row is a defect** —
+  with the tell for each of the four above, and the rule that checking a row against its
+  explanation is part of the loop while disabling a rule never is. §3 is unchanged: nothing here
+  permits suppressing a finding, and no row may be called verified without saying how.
+- **`AGENTS.md`** records the two maintainer-facing findings: the forced-colors false positive
+  together with the existing per-rule downgrade mechanism (`findingsFromAxeResult()` already
+  downgrades `target-size` to `needsReview` by id) as a *recommendation* rather than a decision,
+  since routing rows to needs-review changes the exit code; and the junction entry-guard no-op.
+
 ## [0.2.5] - 2026-09-13
 
 ### Fixed

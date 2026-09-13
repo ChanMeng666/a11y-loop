@@ -23,7 +23,7 @@ graph TD
     C --> F["diff<br/>FIXED / NEW / REMAINING"]
     D --> G["Playwright + Chromium"]
     G --> H["axe-core"]
-    G --> I["a11y-loop's own checks<br/>focus, dialog trap, target size,<br/>reduced motion, link text, div-button"]
+    G --> I["a11y-loop's own checks<br/>focus, dialog trap (native and portalled),<br/>target size, reduced motion,<br/>link text, div-button"]
     D -->|--interact| J["Drive built states:<br/>modal open, menu expanded, form error"]
     H --> K["JSON report<br/>WCAG SC + ACT IDs + provenance"]
     I --> K

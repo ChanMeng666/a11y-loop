@@ -181,6 +181,25 @@ or Playwright will report a missing browser.
 - **Fixture tests are manifest-driven.** Adding a new seeded-violation fixture without a
   corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
   `test/integration/fixtures.test.js`.
+- **Known false positives are documented, never suppressed — and if that ever changes, the
+  mechanism already exists.** README § Field Notes and
+  `skill/a11y-loop/references/manual-testing.md` carry the rows a production run produces that are
+  not defects. The loudest by far is `color-contrast` in the forced-colors pass: axe-core 4.12.1
+  reads an element's foreground from `-webkit-text-fill-color` before `color` (`getTextColor()`),
+  and Chromium's forced-colors emulation forces `color` and the background but leaves
+  `-webkit-text-fill-color` at the author's value, so light-on-dark text is compared against a
+  forced white background and every line on a dark surface is reported. If this is ever to be
+  handled in code rather than in prose, `findingsFromAxeResult()` in `src/lib/axe-runner.js`
+  already downgrades one rule (`target-size`) to `needsReview` by id; the same shape keyed on rule
+  id **and** `passName === 'forced-colors'` would route these to needs-review. That is a
+  recommendation, not a decision — it changes what counts as a violation and therefore the exit
+  code, so it needs its own measurement and its own release note.
+- **An entry guard on `import.meta.url === process.argv[1]` silently no-ops through a junction.**
+  `src/cli.js` ends with that guard so tests can import `main` freely. Node resolves
+  `import.meta.url` through a junction or symlink to the real path while `process.argv[1]` keeps
+  the literal path, so running the CLI from a checkout reached through a junction — a Windows
+  worktree, most often — exits **0 with no output**, which reads like a pass. Run it by its real
+  path, or import `main(argv, io)` and call it.
 
 ### Skill frontmatter and the plugin layer
 

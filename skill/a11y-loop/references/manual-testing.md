@@ -112,6 +112,44 @@ content is any good.
   notwithstanding"), which means it stays silent wherever it is unsure. Silence
   is not a pass.
 
+### Rows with a known non-defect explanation
+
+Four of these have been seen on a production app. Check a row against them
+before changing code for it — fixing a false positive breaks working UI — and
+then say in the report which rows you verified and how. Verifying a row is not
+the same as suppressing it, and nothing here is a reason to disable a rule.
+
+- **`color-contrast` in the forced-colors pass is usually not a defect.** axe
+  reads an element's foreground from `-webkit-text-fill-color` before `color`.
+  Chromium's forced-colors emulation forces `color` and the background but
+  leaves `-webkit-text-fill-color` at the author's value, on every element,
+  so the pass compares the author's foreground against the forced background.
+  Dark-on-light text survives that; light-on-dark text reads near 1:1 and every
+  line on a dark surface is reported. The tell is a finding whose foreground is
+  a color you can find in your source and whose background is `#ffffff` or
+  `#000000`. Confirm the pair in the default and dark passes, check forced
+  colors by eye or with the OS setting, and report it as reviewed rather than
+  measured. **Never apply the suggested color** — it is derived from the same
+  mismatched pair and fails in the default pass.
+- **A click handler on `<body>` or on a portal root is how popup libraries
+  dismiss on an outside press**, and a keyboard-path check sees a clickable
+  element with no role, no `tabindex` and no keyboard handling. The keyboard
+  equivalent of "press outside" is Escape, wired separately. Check that Escape
+  closes the popup; if it does, the row on the body is explained.
+- **Contrast measured while something is animating is a measurement of one
+  frame.** An element fading in is composited at partial opacity and flattened
+  against what is behind it: at opacity 0.917, `#6d6975` was read as `#797580`.
+  That is enough to move a value near 4.5:1 across the line and enough for two
+  runs of the same page to disagree. If a finding names a color that is nowhere
+  in your source, this is usually why. Let entrance animations finish before
+  the state returns, or read the number from the reduced-motion pass if the
+  page honors the preference.
+- **A Tab walk has a budget** — 60 presses. Anything the walk did not reach
+  inside it is reported unreachable because the budget ended, not because focus
+  could not get there. A contiguous cluster at the end of document order is the
+  signature; confirm it by hand with the keyboard test below, and audit
+  narrower states so each walk fits.
+
 ---
 
 ## A five-minute keyboard test anyone can run
@@ -167,6 +205,39 @@ Do not run one screen reader and generalise. They diverge from each other and
 from the specification, which is why the APG says outright that testing with
 real assistive technology is essential and that its own examples target spec
 compliance rather than AT bug workarounds.
+
+### Automating a screen-reader pass
+
+A screen-reader pass can be scripted — [Guidepup](https://www.guidepup.dev/)
+drives NVDA on Windows and VoiceOver on macOS — and it is worth doing, because
+it turns "focus moves somewhere and something is announced" into a transcript
+you can quote and re-run. Four conditions, each of which decides whether the
+output is evidence or decoration:
+
+- **Drive a portable copy of the screen reader, not the installed one**, so a
+  run cannot inherit a person's own settings. Pin its language explicitly
+  (NVDA: `general.language`, e.g. `en`) — it otherwise follows the OS locale,
+  and a transcript in an unexpected language is unreadable as evidence.
+- **Set the synthesizer to `silence`.** The spoken text is what you are
+  capturing; the audio is not, and rendering it makes runs slow and
+  machine-dependent.
+- **A driver's relay log is focus speech, not everything spoken.** Guidepup's
+  `spokenPhraseLog()` reports what it was handed as focus moved. Live-region
+  announcements — `role="status"`, `role="alert"`, `aria-live` — do not
+  reliably appear there, so their absence proves nothing. A claim that a live
+  region spoke has to come from the screen reader's own debug log (NVDA:
+  `nvda.log` at DEBUG level), where the announcement is recorded by the screen
+  reader itself. Anything less is an assumption about the one mechanism most
+  likely to silently not fire.
+- **Copy the log out before stopping the screen reader.** `nvda.stop()` removes
+  the temporary config directory the log lives in; read it afterwards and you
+  will find nothing.
+
+What this buys you is a regression you can detect and a transcript you can
+quote. What it does not buy you is a judgment about whether the interface is
+usable — that is still answered only by people who use a screen reader every
+day. Report an automated pass as what it is: one screen reader, one version,
+one set of states.
 
 ---
 

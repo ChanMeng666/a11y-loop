@@ -88,7 +88,8 @@ export default withMermaid({
           { text: 'CLI Usage', link: '/guide/cli-usage' },
           { text: 'Using it in CI', link: '/guide/ci-integration' },
           { text: 'Architecture & the Loop', link: '/guide/architecture' },
-          { text: 'Honest Coverage', link: '/guide/honest-coverage' }
+          { text: 'Honest Coverage', link: '/guide/honest-coverage' },
+          { text: 'Field Notes', link: '/guide/field-notes' }
         ]
       }
     ],
