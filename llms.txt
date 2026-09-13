@@ -74,6 +74,7 @@ before a newly installed skill or hook takes effect.
 - [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
 - [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/SKILL.md): the agent-facing plan rules, generation rules, audit loop and honesty rules
 - [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
+- [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget — and what to check before dismissing one
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
 - [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats
 - [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history
@@ -87,6 +88,11 @@ Deque puts automation at ~57% of issues by volume of individual instances; only 
 (13%) as reliably flagged. Nine A/AA criteria cannot be meaningfully tested by any tool. A clean
 audit means "no automatically detectable failures in the states that were driven" — never that
 anything is accessible or conformant.
+
+The engine is also wrong in a few known places, and those are documented rather than suppressed.
+Read Field Notes (above) before concluding that a forced-colors `color-contrast` cluster, a
+`div-button` row on `<body>`, or a run of `keyboard-unreachable` findings is a defect. Checking a
+row against its explanation is part of the loop; dropping rules is not, and a11y-loop drops none.
 
 ## For agents
 

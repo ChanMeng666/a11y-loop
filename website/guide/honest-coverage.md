@@ -25,6 +25,10 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
 - axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed. See the
   [benchmark write-up](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md)
   for a live example of two such findings being investigated and resolved rather than dismissed.
+- **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
+  a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
+  written up in [Field Notes](/guide/field-notes), with what to check before dismissing one.
+  Verifying a row is not the same as suppressing it, and a11y-loop suppresses nothing.
 - **SARIF caveat, stated honestly:** GitHub Code Scanning only displays SARIF results that carry a
   file-path location. a11y-loop's findings are located by rendered URL + CSS selector, which
   Code Scanning drops on ingestion — a naive upload produces an empty Code Scanning view. SARIF

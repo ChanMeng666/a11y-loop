@@ -28,7 +28,7 @@ compatibility: >-
   The generation and honesty rules apply with or without the CLI; every step
   that says "audit" requires it.
 metadata:
-  "a11y-loop/version": "0.2.5"
+  "a11y-loop/version": "0.2.6"
 allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *) Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)'
 ---
 
@@ -274,6 +274,13 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    Opened a modal? Added an error state? Added a route, a tab panel, an
    expanded menu, an async list? Each one is a state. Audit it.
 
+   While a modal dialog is open the keyboard survey is scoped to that dialog —
+   a native `<dialog>` opened with `showModal()`, or a portalled
+   `<div role="dialog">` that has hidden the page around it, which is what
+   every popup library ships. That is deliberate: inside an open modal, the
+   page behind it is not supposed to be reachable. Give the page behind it its
+   own state if you need it audited.
+
    ```
    A11Y audit http://localhost:5173 --interact .a11y/states.mjs --json --out .a11y/run-1.json
    ```
@@ -282,6 +289,17 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    needsReview item is a place the engine knows it could not decide — usually
    contrast over a gradient, image, or translucent layer. Resolve it by
    reasoning about the source, not by ignoring it.
+
+   A few rows have a known non-defect explanation: a `color-contrast` cluster
+   in the forced-colors pass, a `div-button` on `<body>` while a popup is open,
+   a contrast value sampled while something was animating, a run of
+   `keyboard-unreachable` after a long Tab walk.
+   [references/manual-testing.md](references/manual-testing.md) lists each with
+   its tell. Check a row against it before changing code — fixing a false
+   positive breaks working UI, and the suggested color on a forced-colors
+   contrast row fails in the default pass. Verifying a row is not suppressing
+   it: never disable a rule, and say in your report which rows you verified and
+   how.
 4. **Fix in the source files**, never in the report or by suppressing a rule.
    For contrast findings, use the report's `suggestions[]` or
    `A11Y contrast <fg> <bg> --fix`, which returns both a lighter and a darker
