@@ -9,7 +9,7 @@ If you need help with a11y-loop, here are the available channels:
 
 ## Before You Ask
 
-- Check the [README](README.md) for setup and usage instructions.
+- Check the [README](README.md) and the [full overview](docs/overview.md) for setup and usage instructions.
 - Review the [Contributing Guide](CONTRIBUTING.md) for development and build steps.
 - Search existing [issues](https://github.com/ChanMeng666/a11y-loop/issues) and [discussions](https://github.com/ChanMeng666/a11y-loop/discussions) — your question may already be answered.
 

@@ -182,7 +182,7 @@ or Playwright will report a missing browser.
   corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
   `test/integration/fixtures.test.js`.
 - **Known false positives are documented, never suppressed — and if that ever changes, the
-  mechanism already exists.** README § Field Notes and
+  mechanism already exists.** `docs/overview.md` § Field Notes and
   `skill/a11y-loop/references/manual-testing.md` carry the rows a production run produces that are
   not defects. The loudest by far is `color-contrast` in the forced-colors pass: axe-core 4.12.1
   reads an element's foreground from `-webkit-text-fill-color` before `color` (`getTextColor()`),
@@ -271,7 +271,7 @@ marketplace add ./` — so the plugin tracks your edits rather than the publishe
 ## Reading Order
 
 When onboarding to this repo, read in this order:
-1. `README.md` — what the project is and how to run it
+1. `README.md` (one screen), then `docs/overview.md` — what the project is and how to run it
 2. This `AGENTS.md` — how to work in it
 3. `skill/a11y-loop/SKILL.md` — the product's actual contract with an agent; §3 also governs how
    anything in this repo is allowed to describe its own results

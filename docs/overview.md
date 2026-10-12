@@ -1,0 +1,699 @@
+<!-- AGENT-FIRST NOTICE -->
+> [!IMPORTANT]
+> ### 🤖 Read this with your AI agent — don't read it by hand.
+> This repo is written agent-first. Point Claude Code, GitHub Copilot, Cursor, or any agent at it:
+> *"Read the README and AGENTS.md, then help me run / extend this."*
+> Structure + [`AGENTS.md`](../AGENTS.md) are optimized for agent comprehension.
+<!-- /AGENT-FIRST NOTICE -->
+
+> This is the full overview: everything the README carried before it was cut to one screen.
+> The short version is the [README](../README.md).
+
+<div align="center"><a name="readme-top"></a>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../.github/brand/a11y-loop-logo-dark.svg">
+  <img src="../.github/brand/a11y-loop-logo-light.svg" alt="a11y-loop logo" width="88" height="88">
+</picture>
+
+# a11y-loop
+
+### Write accessible UI by default. Verify it in a real browser. Say exactly what you couldn't check.
+
+a11y-loop makes AI coding agents write accessible UI by default, then proves what it can prove
+with a real browser audit across the states it built — and tells you exactly what it could not
+check.
+
+[Demo GIF][demo-link] · [Documentation][docs-site-link] · [SKILL.md][docs-link] · [Benchmark](../evals/benchmark-results.md) · [Changelog](../CHANGELOG.md) · [Report Bug](https://github.com/ChanMeng666/a11y-loop/issues) · [Request Feature](https://github.com/ChanMeng666/a11y-loop/issues)
+
+</div>
+
+<details>
+<summary><kbd>📑 Table of Contents</kbd></summary>
+
+- [🌟 Introduction](#-introduction)
+- [🎬 Demo](#-demo)
+- [🎥 Promo Video](#-promo-video)
+- [✨ Key Features](#-key-features)
+- [📊 Honest Coverage](#-honest-coverage)
+- [🔬 Field Notes](#-field-notes)
+- [📈 Benchmark](#-benchmark)
+- [🛠️ Tech Stack](#-tech-stack)
+- [🏗️ Architecture](#-architecture)
+- [🚀 Getting Started](#-getting-started)
+- [⚙️ Using it in CI](#-using-it-in-ci)
+- [📖 Usage Guide](#-usage-guide)
+- [⌨️ Development](#-development)
+- [🤝 Contributing](#-contributing)
+- [❤️ Sponsor](#-sponsor)
+- [📄 License](#-license)
+- [🙋‍♀️ Author](#-author)
+
+</details>
+
+## 🌟 Introduction
+
+AI coding agents write inaccessible UI by default — 84% of AI-generated web pages carry
+accessibility issues (W4A'24), and telling the model to "be accessible" barely moves that number:
+accessibility-oriented prompts have measured a *slightly higher* violation rate than
+accessibility-agnostic ones (W4A'25, 17.32% vs. 15.93%). Instructions alone are not the fix.
+
+a11y-loop is two things working together:
+
+1. **An Agent Skill** — plan rules that apply while the work is still being scoped (conformance
+   target, per-component criteria, the product decisions that foreclose accessibility, color tokens
+   before components), then standing generation rules (semantic HTML first, ARIA discipline, APG
+   keyboard contracts, labels, focus visibility, AA contrast in light and dark, reduced motion,
+   24×24 targets) that apply while the agent is writing UI code.
+2. **A Node CLI** (`a11y-loop audit` / `contrast --fix` / `diff`) that verifies the result in a
+   real browser, feeds failures back to the agent to fix, and re-audits until the loop converges.
+
+**About the name.** `a11y` is the standard numeronym for *accessibility*: the first letter, the last
+letter, and the 11 letters between them replaced by their count — the same construction as `i18n`
+(internationalization) and `k8s` (Kubernetes). Spelled out it reads as "ally", which is the pun the
+accessibility community has always liked, but `11` is the conventional form. `loop` is the other half
+of the method: the CLI is not a one-shot audit but a write → audit → fix → re-audit cycle that runs
+until the report converges.
+
+The skill follows the open [Agent Skills](https://agentskills.io/specification) standard, so the
+same `SKILL.md` is portable across 40+ clients — Claude Code, Cursor, GitHub Copilot, Codex,
+Gemini CLI, and more — not just one vendor's agent. The CLI runs the same checks standalone in CI
+or any other pipeline.
+
+a11y-loop is a personal open-source project. It exists because the same handful of failures — low
+contrast, missing alt text, empty links and buttons, unlabelled form inputs — have topped the
+WebAIM Million every year for a decade, and the reason is not that they are hard to fix. It is
+that accessibility usually arrives as an after-the-fact compliance check, once the UI is already
+built and nobody wants to touch it. The goal here is to move it earlier: make accessibility a
+default of the development workflow rather than an audit at the end — which matters more now that
+so much UI code is written by AI agents in the first place.
+
+"Earlier" now reaches back past the first line of code. Some of the decisions that settle whether
+an interface can be made accessible — reordering that only works by dragging, a menu that only opens
+on hover, data that only exists as canvas pixels — are made while the work is being scoped, and they
+are nearly free to change there and a rewrite afterwards. §0 of the skill puts those decisions in
+the plan, where they are still cheap.
+
+**What this is not.** a11y-loop does not claim compliance, does not guarantee accessibility, and
+does not replace manual testing or testing with assistive technology. A clean report means "no
+automatically detectable failures" — see [Honest Coverage](#-honest-coverage) below for exactly
+what that does and doesn't cover.
+
+## 🎥 Promo Video
+
+https://github.com/user-attachments/assets/33ff8672-7690-4581-9ceb-d95476883c54
+
+## 🎬 Demo
+
+![a11y-loop fixing a seeded-violation demo page across five audit passes until it converges on zero violations](demo.gif)
+
+The demo page ([`demo/before/`](../demo/before)) is a fictional conference site seeded with
+**163 detectable failures** spanning the WebAIM Million's top six failure classes plus the
+failure modes documented for LLM-generated UI: clickable divs, hidden focus indicators, skipped
+heading levels, broken ARIA references, and ignored `prefers-reduced-motion`. Running the loop
+against it converges on [`demo/after/`](../demo/after) — **0 violations** — and
+`a11y-loop diff --before demo/before/report.json --after demo/after/report.json` reports:
+
+```
+Converged: all 163 violations fixed, none introduced
+```
+
+`FIXED` / `NEW` / `REMAINING` status per finding, matched by stable fingerprint (rule + selector +
+WCAG success criterion), is what makes that verdict checkable rather than asserted — see
+[`demo/before/VIOLATIONS.md`](../demo/before/VIOLATIONS.md) and
+[`demo/after/FIXES.md`](../demo/after/FIXES.md) for the finding-by-finding record.
+
+## ✨ Key Features
+
+`1` **Five rendering passes per audit** — default (1280×720), dark mode, forced-colors mode,
+reduced-motion, and a 320×256 reflow viewport (the WCAG-sanctioned 400% zoom equivalent for
+SC 1.4.10) — because most real failures only show up under a specific rendering condition, not on
+a single default-viewport load.
+
+<details>
+<summary><kbd>Diagram: the five passes feeding one report</kbd></summary>
+
+```mermaid
+graph LR
+    P1["Default<br/>1280×720"] --> R["One JSON report<br/>per audited page/state"]
+    P2["Dark mode"] --> R
+    P3["Forced-colors mode"] --> R
+    P4["Reduced motion"] --> R
+    P5["320×256 reflow<br/>(400% zoom equiv., SC 1.4.10)"] --> R
+```
+
+</details>
+
+`2` **Checks axe-core can't run** — tab order, focus visibility (including focus-ring contrast),
+dialog focus trap / Escape / focus-return, target size (24×24 CSS px, SC 2.5.8), reduced-motion
+effectiveness, ambiguous link text, div-as-button, and positive `tabindex`. These sit alongside
+axe-core, not instead of it. The dialog and tab-order checks understand **portalled** dialogs —
+a `<div role="dialog">` in a portal, the way Base UI, Radix, Headless UI and anything on floating-ui
+ships one — not only a native `<dialog>` opened with `showModal()`.
+
+`3` **State coverage, not just page-load** — `--interact` drives the states an agent just built
+(a modal opened, a menu expanded, a form in its error state) through the same five passes, because
+axe running once on page load finds nothing in a dialog that only misbehaves once it's open.
+
+`4` **Stable fingerprints power regression detection** — `a11y-loop diff` matches findings across
+two reports by rule + selector + WCAG success criterion and classifies each as FIXED, NEW
+(a regression — this fails the command even if the total count went down), or REMAINING.
+
+`5` **Structured, honest output** — JSON is the primary format: every finding carries its WCAG
+success criterion, ACT rule ID where one exists, and a provenance block (axe-core version, browser,
+URL, viewport, timestamp, states exercised). SARIF v2.1 is available as a secondary format with
+[a documented limitation](#-honest-coverage) rather than a silent gap. A generated manual-review
+checklist, scoped to what was actually built, ships with every run.
+
+`6` **Exit codes are the loop's contract** — `0` no violations / threshold met / no regression,
+`1` violations found / regression introduced, `2` tool error — so a CI pipeline or an agent's own
+control flow can branch on the result without parsing prose.
+
+`7` **`contrast --fix`** — checks a foreground/background pair against WCAG 2.x (1.4.3: 4.5:1
+normal text / 3:1 large text; 1.4.11: 3:1 for UI components) and, on failure, suggests passing
+colors in both directions (lighter and darker) in OKLCh, so a fix stays close to the original hue
+instead of jumping to black or white.
+
+`8` **Portable as an Agent Skill** — plain `SKILL.md` + `references/`, no proprietary format, works
+in any client implementing the open Agent Skills standard, not only Claude Code.
+
+`9` **Accessibility enters at the plan, not the pull request** — §0 gives the agent the decisions to
+settle while the work is still being scoped: the conformance target for the relevant jurisdiction,
+per-component acceptance criteria, the color tokens (verified with `contrast --fix`, which needs no
+browser and no code), the structure, and the interaction states that will need auditing. It also
+names the product choices that foreclose accessibility — drag-only reordering (SC 2.5.7), hover-only
+menus (SC 1.4.13), canvas-rendered data (SC 1.1.1), time limits (SC 2.2.1), CAPTCHA (SC 3.3.8) —
+each with the alternative, while changing them is still a sentence rather than a rewrite. In Claude
+Code, the [optional plugin layer](#optional-the-claude-code-plugin-layer) enforces it at plan
+approval.
+
+## 📊 Honest Coverage
+
+Automated accessibility testing has a real, bounded scope, and a11y-loop says so in every report
+rather than implying otherwise:
+
+- Deque's own research puts automated coverage at **~57% of accessibility issues by volume**
+  across a 13,000+ page / ~300,000 issue study — but only **~31% of WCAG 2.2 AA success criteria**
+  have *any* automated rule at all, and only **~13% are reliably automatable** end-to-end.
+
+<details>
+<summary><kbd>Diagram: WCAG 2.2 AA success criteria, by automation reach</kbd></summary>
+
+```mermaid
+pie showData title WCAG 2.2 AA success criteria — automation reach (Deque research)
+    "Reliably automatable end-to-end (~13%)" : 13
+    "Have some automated rule, not fully reliable (~18%)" : 18
+    "No automated rule — needs manual/AT review (~69%)" : 69
+```
+
+Illustrates the same figures cited above, not a new metric — a clean report never implies coverage
+of the other ~87%.
+
+</details>
+
+- **A clean a11y-loop report means "no automatically detectable failures were found" — it is
+  never a conformance or compliance claim**, and the tool will not tell you your app is
+  accessible, compliant, or free of legal risk. No single score is ever produced.
+- Every run emits a **generated manual-review checklist**, scoped to the components actually
+  built, naming the criteria that need a human and/or assistive-technology testing (screen reader
+  behavior, descriptive quality of alt text and link text, logical reading order, caption/media
+  alternative accuracy, cognitive accessibility) — the direct inverse of "no manual testing
+  needed."
+- axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed. See
+  `evals/benchmark-results.md` for a live example of two such findings being investigated and
+  resolved rather than dismissed.
+- **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
+  a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
+  written up in [Field Notes](#-field-notes), with what to check before dismissing one. Verifying a
+  row is not the same as suppressing it, and a11y-loop suppresses nothing.
+- **SARIF caveat, stated honestly:** GitHub Code Scanning only displays SARIF results that carry a
+  file-path location. a11y-loop's findings are located by rendered URL + CSS selector, which
+  Code Scanning drops on ingestion — a naive upload produces an empty Code Scanning view. SARIF
+  output is provided for the Azure DevOps SARIF viewer, the VS Code SARIF extension, and other
+  SARIF-consuming tooling; the JSON report remains the primary, complete format.
+- Findings are tagged with the **lowest WCAG version** that contains them (2.0 / 2.1 / 2.2), so you
+  can filter to the subset a given jurisdiction actually enforces — e.g. US ADA Title II and
+  Section 508 to the 2.0/2.1 AA subset, EU EN 301 549 to 2.1 AA (moving to 2.2 AA around October
+  2026), NZ and UK to the full 2.2 AA set.
+
+## 🔬 Field Notes
+
+Things a report says that are not what they look like. These came out of running a11y-loop against
+a production app across a full audit-fix cycle; each one cost an hour to work out from the report
+alone, so it is written down here. Every number below is reproducible from a checkout at axe-core
+4.12.1.
+
+### `color-contrast` in the forced-colors pass is usually not a defect
+
+axe-core reads an element's foreground from `-webkit-text-fill-color`, falling back to `color` only
+when that is unset. Chromium's forced-colors emulation forces `color` and the background, and
+leaves `-webkit-text-fill-color` at the author's value — on every element, including ones that
+never declared it. So in the forced-colors pass axe compares the author's foreground against the
+forced background.
+
+Dark-on-light text survives that comparison. Light-on-dark text collapses:
+
+| Element | Default pass | forced-colors pass |
+|---|---|---|
+| `#6d6975` text on `#ffffff` | 4.9:1, silent | silent |
+| `#e8e6ef` text on a `#141218` card | 14:1, silent | `color-contrast`, 1.23:1 — *"foreground color: #e8e6ef, background color: #ffffff"* |
+
+The tell is inside the finding: the reported foreground is the author's color while the background
+is the forced `#ffffff` or `#000000`. On a page with any dark surface this arrives as a cluster
+covering every line of text on it. On one production page it accounted for the large majority of a
+153-finding run.
+
+**Do not apply the suggestion.** It is computed from the same mismatched pair: for the row above it
+proposes darkening `#e8e6ef` to `#77757d`, which then fails in the default pass. **Do not suppress
+the rule either.** Confirm the pair in the default and dark passes, check forced colors by eye or
+with the OS setting, and say in the hand-off that forced colors was reviewed rather than measured.
+
+### `div-button` on `<body>` or a portal root is an outside-press handler
+
+Popup libraries dismiss on a press outside the popup by attaching a click handler to the document
+body or to the portal container. `div-button` looks for exactly that shape — a click handler on an
+element with no role, no `tabindex` and no keyboard path — so while a popup is open it reports
+`html > body` and the portal root.
+
+The keyboard equivalent of "press outside to dismiss" is Escape, which those libraries wire
+separately. So the question the row should send you to is `dialog-escape-does-not-close`: if
+Escape dismisses the popup, the `div-button` row on the body is a false positive of this check.
+It is a real failure only when that handler is the only way to activate something.
+
+### Contrast sampled mid-animation measures a frame, not the design
+
+An element fading in is composited at partial opacity, and axe flattens that against what is behind
+it. Measured on a production page: `#6d6975` text at opacity 0.917 was read as `#797580`. The
+difference is small, but it is enough to move a value that sits near 4.5:1 across the line, and
+enough for two runs of the same page to disagree.
+
+If a contrast finding names a color you cannot find anywhere in the source, this is usually why.
+`openPage()` waits 120 ms after load for webfonts and short entrance animations; a longer reveal
+outlives it. Re-run, have the `--interact` state wait for the animation to settle before it
+returns, or read the number off the reduced-motion pass — which is the stable one, provided the
+app honors the preference rather than ignoring it.
+
+### `keyboard-unreachable` can mean the Tab budget ran out
+
+The keyboard survey presses Tab up to `MAX_TAB_STEPS` (60) times, then reports everything
+`tabbable()` expected but the walk never reached. Past 60 tab stops in one state, the tail of the
+document is reported unreachable because the budget ended, not because focus could not get there.
+The rule's own message names the budget.
+
+A cluster of unreachable findings that is contiguous and sits at the end of document order is the
+signature. Confirm by hand with the five-minute keyboard test in
+[`references/manual-testing.md`](../skill/a11y-loop/references/manual-testing.md), and audit narrower
+states so each walk fits.
+
+### Invoking the CLI through a Windows junction silently does nothing
+
+`src/cli.js` runs `main()` only when `import.meta.url === pathToFileURL(process.argv[1]).href`.
+Node resolves `import.meta.url` through a junction to the real path while `process.argv[1]` keeps
+the literal path you typed, so the guard is false, nothing runs, and the process exits **0 with no
+output** — which reads like a pass:
+
+```bash
+node D:\link-to-repo\src\cli.js --version   # prints nothing, exit 0
+node D:\github_repository\a11y-loop\src\cli.js --version   # 0.2.6
+```
+
+This bites git worktrees and any checkout reached through a junction or symlink. Use the real path,
+the installed `a11y-loop` binary, or import the entry point and call it directly — `main` is
+exported for this:
+
+```js
+import { main } from './src/cli.js';
+process.exitCode = await main(['audit', 'http://localhost:3000', '--json']);
+```
+
+## 📈 Benchmark
+
+A small, illustrative comparison in [`evals/benchmark-results.md`](../evals/benchmark-results.md):
+the same six UI components, built by the same model (Claude Sonnet 5, as a Claude Code subagent),
+once with no accessibility guidance and once following the skill and running the audit loop to
+convergence.
+
+- **Baseline (no guidance): 35 violations across 6 components.** With the skill, **1 violation on
+  first generation** — before any audit ran.
+- **After the loop: 0 violations**, at an average of **1.67 completed audit iterations** per
+  component.
+
+Read this with its stated caveats: **N = 6 components, a single run per condition, one model
+family, and the audits are produced by a11y-loop's own engine** (mitigated, not eliminated, by
+every finding being grounded in axe-core, a third-party rules engine) — a small, self-audited
+illustration of the effect's shape, not a controlled study or a precise effect size.
+
+## 🛠️ Tech Stack
+
+- **Runtime:** Node.js ≥ 20, ESM (`"type": "module"`)
+- **Browser automation:** [Playwright](https://playwright.dev/) (Chromium)
+- **Accessibility engine:** [axe-core](https://github.com/dequelabs/axe-core) via
+  `@axe-core/playwright` (MPL-2.0 — see [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md))
+- **Color math:** [culori](https://github.com/Evercoder/culori) (OKLCh contrast fixes)
+- **Focus order:** [tabbable](https://github.com/focus-trap/tabbable)
+- **SARIF conversion:** [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter)
+- **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
+  `SKILL.md` + `references/`, no client-proprietary format
+- **Tests:** the built-in `node --test` runner, 378 tests across unit and integration suites,
+  including a 19-fixture matrix of seeded violations and correct-behaviour regression guards, a
+  demo end-to-end run, and a forced-colors gradient regression test
+
+## 🏗️ Architecture
+
+<details>
+<summary><kbd>System overview</kbd></summary>
+
+```mermaid
+graph TD
+    A["Agent Skill<br/>skill/a11y-loop/SKILL.md + references/"] -->|"§0 plan rules"| P["Agent plans the UI work<br/>conformance target, per-component criteria,<br/>foreclosing decisions, color tokens, structure"]
+    P -->|"contrast --fix, no browser needed"| E
+    P --> B
+    A -->|"§1 standing generation rules"| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
+    B --> C["a11y-loop CLI"]
+    C --> D["audit<br/>5 passes: default, dark,<br/>forced-colors, reduced-motion, 320px reflow"]
+    C --> E["contrast --fix<br/>WCAG 2.x + OKLCh suggestions"]
+    C --> F["diff<br/>FIXED / NEW / REMAINING"]
+    D --> G["Playwright + Chromium"]
+    G --> H["axe-core"]
+    G --> I["a11y-loop's own checks<br/>focus, dialog trap (native and portalled),<br/>target size, reduced motion,<br/>link text, div-button"]
+    D -->|--interact| J["Drive built states:<br/>modal open, menu expanded, form error"]
+    H --> K["JSON report<br/>WCAG SC + ACT IDs + provenance"]
+    I --> K
+    J --> K
+    K --> L["SARIF v2.1<br/>(secondary format)"]
+    K --> M["Manual-review checklist"]
+    K -->|violations found| B
+    F --> K
+```
+
+</details>
+
+<details>
+<summary><kbd>Sequence: one audit-fix-reaudit cycle</kbd></summary>
+
+```mermaid
+sequenceDiagram
+    participant Agent
+    participant CLI as a11y-loop CLI
+    participant Browser as Playwright + Chromium
+    participant Axe as axe-core + a11y-loop's own checks
+    Agent->>CLI: a11y-loop audit (after writing UI code)
+    CLI->>Browser: render page across 5 passes<br/>(+ --interact states, if any)
+    Browser->>Axe: run checks against each rendered pass
+    Axe-->>CLI: findings (WCAG SC, ACT ID, provenance)
+    CLI-->>Agent: JSON report + manual-review checklist
+    alt violations found
+        Agent->>Agent: fix code
+        Agent->>CLI: a11y-loop audit (re-run)
+    else no violations
+        Agent->>CLI: a11y-loop diff --before --after
+        CLI-->>Agent: Converged — FIXED/NEW/REMAINING summary
+    end
+```
+
+</details>
+
+The loop, in words: the skill sets standing rules while the agent writes UI; `a11y-loop audit`
+verifies the rendered result across five passes plus any built interaction states; violations feed
+back to the agent to fix; `a11y-loop diff` confirms convergence without new regressions; the JSON
+report (and its manual-review checklist) is the artifact of record, with SARIF offered as a
+secondary format for tools that consume it.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 20
+- A Chromium install for Playwright (installed in the steps below)
+
+> **Point your agent at this section.** Every command below is non-interactive, idempotent, and
+> safe to re-run — no prompts, no TTY, no menus. An agent can install and verify the whole thing
+> without asking you to click anything. The one exception is called out explicitly at the end.
+
+### Install everything (agent-runnable, one block)
+
+```bash
+npm i -g a11y-loop
+npx playwright install chromium
+mkdir -p ~/.claude/skills
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/
+claude plugin marketplace add ChanMeng666/a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+```
+
+That is: the CLI, its browser, the portable skill, and the optional Claude Code plugin. No `git
+clone` — the skill ships inside the npm package. Verify:
+
+```bash
+a11y-loop --version
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
+claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
+```
+
+Skip the last two lines if you only want the portable skill, or the `mkdir`/`cp` pair if you only
+want the plugin. Do not do both: the plugin carries its own copy, so the model ends up seeing
+`a11y-loop` *and* the directory-qualified `a11y-loop:a11y-loop`, paying the always-on token cost
+twice. If both names show up, delete `~/.claude/skills/a11y-loop` and keep the plugin.
+
+**Upgrading is a different command from installing** — `claude plugin install` on something already
+installed reports "already installed" and does nothing:
+
+```bash
+npm i -g a11y-loop@latest
+cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # if using the skill
+claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
+claude plugin update a11y-loop@chanmeng-a11y-loop
+```
+
+### Installation (details)
+
+```bash
+# Run it directly, no install
+npx a11y-loop <command>
+
+# Or install the CLI globally
+npm i -g a11y-loop
+
+# Either way, install the Chromium build Playwright needs for audits
+npx playwright install chromium
+```
+
+Prefer working from source (e.g. to contribute)? Clone and install instead:
+
+```bash
+git clone https://github.com/ChanMeng666/a11y-loop.git
+cd a11y-loop
+npm install
+npx playwright install chromium
+```
+
+If you keep browser binaries off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
+`npx playwright install chromium` (and before running the test suite, which launches the same
+browser) — e.g. `PLAYWRIGHT_BROWSERS_PATH=D:\playwright-browsers`.
+
+### Installing the Agent Skill
+
+The skill is a directory. Copy it wherever your client reads skills from — no clone required, since
+`npm i -g a11y-loop` already put it on disk:
+
+```bash
+SKILL_SRC="$(npm root -g)/a11y-loop/skill/a11y-loop"
+
+# Personal, all projects (Claude Code and other clients that read ~/.claude/skills)
+mkdir -p ~/.claude/skills && cp -r "$SKILL_SRC" ~/.claude/skills/
+
+# Or project-scoped, committed with the repo
+mkdir -p .claude/skills && cp -r "$SKILL_SRC" .claude/skills/
+```
+
+From a checkout, `skill/a11y-loop` is the same directory. Any client implementing the
+[Agent Skills specification](https://agentskills.io/specification) loads it the same way — Claude
+Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place.
+
+### Optional: the Claude Code plugin layer
+
+The skill above is the whole product and it is portable. This repository also ships a thin
+Claude-Code-only layer that adds one thing the portable skill cannot do — enforcement during
+plan mode:
+
+```bash
+claude plugin marketplace add ChanMeng666/a11y-loop
+claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+```
+
+Both are ordinary CLI commands — no TTY, no prompts, safe to re-run. (They also exist as `/plugin
+marketplace add …` and `/plugin install …` inside a session, but an agent should use the CLI form.)
+Managing it later is equally non-interactive: `claude plugin disable a11y-loop`, `claude plugin
+enable a11y-loop`, `claude plugin uninstall a11y-loop@chanmeng-a11y-loop` — add `-y` only if you
+pass `--prune`, which is the single flag that asks for confirmation.
+
+From a local checkout, `claude plugin marketplace add ./` registers the working copy instead, so the
+plugin tracks your edits rather than the published repo.
+
+**Team-wide, declaratively.** `--scope project` writes `.claude/settings.json`, which you commit —
+after that a clone needs no install commands at all:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "chanmeng-a11y-loop": { "source": { "source": "github", "repo": "ChanMeng666/a11y-loop" } }
+  },
+  "enabledPlugins": { "a11y-loop@chanmeng-a11y-loop": true }
+}
+```
+
+**The one thing an agent cannot do for you.** Project-scoped plugins and hooks are gated behind
+Claude Code's workspace-trust prompt the first time that directory is opened. That is a deliberate
+security boundary in Claude Code — code from a repo should not execute because a file said so — and
+nothing here can or should bypass it. `--scope user` avoids it entirely, which is why the
+agent-runnable block above uses user scope.
+
+It contributes:
+
+- a `PreToolUse` hook matched to `ExitPlanMode`. When a plan changes UI work and says nothing about
+  accessibility, the plan is declined once and the `### Accessibility` section is handed back to fill
+  in. It names any decision already in the plan that is hard to walk back later — drag-only
+  reordering, hover-only menus, infinite scroll, canvas-rendered data, time limits, CAPTCHA, autoplay.
+- `/a11y-plan`, to ask for that section directly.
+
+Deliberate limits: it **defers** rather than allows on every non-deny path, so it never suppresses
+your own plan approval; it declines a given plan **at most once**, so it cannot loop; a plan with no
+UI in it is passed silently; and `A11Y_LOOP_PLAN_GATE=off` disables it. The gate checks that the
+question was asked — it cannot check that the answer is any good. That is still `a11y-loop audit`
+and a human.
+
+| | Portable skill | Plugin layer |
+|---|---|---|
+| Install | copy `skill/a11y-loop` | `claude plugin install a11y-loop@…` |
+| Works in | 40+ Agent Skills clients | Claude Code only |
+| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
+| Required? | yes | no |
+
+## ⚙️ Using it in CI
+
+```bash
+a11y-loop audit http://localhost:3000 --json --out report.json
+```
+
+exits `1` if any violation is found (`2` on a tool error such as a missing browser), so a build
+step can gate on it directly:
+
+```bash
+a11y-loop audit http://localhost:3000 --json --out report.json || exit 1
+```
+
+`a11y-loop diff --before base.json --after head.json` in a PR check turns that into a regression
+gate: it fails only on genuinely `NEW` violations, so a PR that fixes ten and introduces none
+passes even though the raw count changed.
+
+## 📖 Usage Guide
+
+### Basic Usage
+
+```bash
+# Audit a running page (five passes: default, dark, forced-colors, reduced-motion, reflow)
+a11y-loop audit http://localhost:3000
+
+# Audit an HTML file (served locally, never over file://)
+a11y-loop audit --file ./dist/index.html
+
+# Audit an HTML fragment directly — the usual entry point for an agent mid-generation
+a11y-loop audit --html "<button class=\"icon-btn\"><svg .../></button>"
+
+# Audit an interactive state (e.g. a modal after it opens)
+a11y-loop audit http://localhost:3000 --interact ./states/modal-open.mjs
+
+# Check a color pair against WCAG 2.x and get OKLCh fix suggestions
+a11y-loop contrast "#767676" "#ffffff" --fix
+
+# Compare two audit reports for regressions
+a11y-loop diff --before base.json --after head.json
+```
+
+### Advanced Configuration
+
+| Flag | Applies to | Effect |
+|---|---|---|
+| `--json` | audit, contrast | machine-readable output on stdout |
+| `--out <path>` | audit | write the JSON report to a file |
+| `--sarif <path>` | audit | also write SARIF v2.1 (see [Honest Coverage](#-honest-coverage)) |
+| `--interact <path.mjs>` | audit | export `const states = { name: async (page) => {} }` to drive built states |
+| `--headed` | audit | run a visible browser, for debugging |
+| `--no-best-practice` | audit | omit axe best-practice rules (never blocking either way) |
+| `--quiet` | audit | one-line summary only |
+| `--large` | contrast | large-scale text thresholds (≥24px, or ≥18.5px bold) |
+| `--ui` | contrast | non-text / UI component threshold, 3:1, SC 1.4.11 |
+| `--fix` | contrast | suggest passing colors, lighter and darker, in OKLCh |
+
+Run `a11y-loop --help` for the full, current reference.
+
+## ⌨️ Development
+
+```bash
+npm install
+npx playwright install chromium   # once, or after a Playwright version bump
+
+npm test                # full suite
+npm run test:unit       # unit tests only
+npm run test:integration  # integration tests only (drives real Chromium)
+```
+
+The optional plugin layer is plain Node with no dependencies. Exercise the plan gate directly:
+
+```bash
+echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Add a settings page in React: a modal dialog, a members table with row actions, tabs, and a dark mode toggle styled with Tailwind CSS."}}' \
+  | node hooks/plan-gate.mjs        # expect a "deny" verdict
+claude plugin validate . --strict   # shape only — see AGENTS.md on why this is not proof
+```
+
+Silence and exit 0 is the gate's normal answer, so an example that prints nothing proves nothing:
+the plan has to clear 40 characters and be unambiguously about UI, or you are testing the pass path
+by accident. Re-running the *same* plan returns `defer` rather than `deny` — the loop guard spends
+each plan's hash once, deliberately — so prefix with `CLAUDE_PLUGIN_DATA="$(mktemp -d)"` for a clean
+verdict. See [`AGENTS.md`](../AGENTS.md) for the rest of the plugin-layer gotchas.
+
+See [`AGENTS.md`](../AGENTS.md) for AI-agent-oriented project conventions, the fixture-manifest
+testing pattern, the loop discipline expected when touching `demo/` or other UI, and the rule that
+keeps `skill/` free of any Claude-Code-specific mechanism.
+
+## 🤝 Contributing
+
+Contributions make the open-source community an amazing place to learn and create. Please read the
+[Contributing Guide](../CONTRIBUTING.md) and the [Code of Conduct](../CODE_OF_CONDUCT.md) before you start,
+and use the provided issue / pull-request templates.
+
+## ❤️ Sponsor
+
+If this project helps you, please consider supporting its development:
+
+[Sponsor on GitHub](https://github.com/sponsors/ChanMeng666) · [Buy Me a Coffee](https://buymeacoffee.com/chanmeng66u)
+
+For questions and help, see [SUPPORT.md](../SUPPORT.md). For security issues, see [SECURITY.md](../SECURITY.md).
+
+## 📄 License
+
+This project is released under the [MIT](../LICENSE) license. axe-core, a dependency this project
+uses to run its checks, is separately licensed under MPL-2.0 — see
+[`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) for full attribution.
+
+## 🙋‍♀️ Author
+
+**Chan Meng** · [chanmeng.dev@gmail.com](mailto:chanmeng.dev@gmail.com) · [github.com/ChanMeng666](https://github.com/ChanMeng666)
+
+[demo-link]: demo.gif
+[docs-link]: ../skill/a11y-loop/SKILL.md
+[docs-site-link]: https://ChanMeng666.github.io/a11y-loop/
+
+---
+
+<!-- CHAN MENG PERSONAL BRAND -->
+<div align="center">
+  <a href="https://github.com/ChanMeng666" target="_blank">
+    <img src="../.github/brand/chan-meng-logo.svg" alt="Chan Meng" width="160" />
+  </a>
+
+  <p><strong>Chan Meng</strong><br/>Need a custom app like this one? I build them — let's talk.</p>
+
+  <a href="mailto:chanmeng.dev@gmail.com">chanmeng.dev@gmail.com</a> · <a href="https://github.com/ChanMeng666">github.com/ChanMeng666</a>
+</div>
+<!-- /CHAN MENG PERSONAL BRAND -->

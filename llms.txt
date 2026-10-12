@@ -70,11 +70,12 @@ before a newly installed skill or hook takes effect.
 
 ## Key documents
 
-- [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): overview, features, honest coverage, installation, usage
+- [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): one-screen introduction for people
+- [Full overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md): features, honest coverage, field notes, installation, usage
 - [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
 - [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/SKILL.md): the agent-facing plan rules, generation rules, audit loop and honesty rules
 - [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
-- [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget — and what to check before dismissing one
+- [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget — and what to check before dismissing one
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
 - [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats
 - [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history
@@ -96,7 +97,7 @@ row against its explanation is part of the loop; dropping rules is not, and a11y
 
 ## For agents
 
-To work effectively here: read the README and AGENTS.md first, then follow the commands and
+To work effectively here: read docs/overview.md and AGENTS.md first, then follow the commands and
 conventions they describe. Prefer the project's own scripts over ad-hoc commands.
 
 Two rules carry more weight than the rest:

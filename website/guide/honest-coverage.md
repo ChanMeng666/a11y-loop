@@ -45,4 +45,4 @@ a11y-loop does not claim compliance, does not guarantee accessibility, and does 
 testing or testing with assistive technology.
 
 For the full, current statement (kept in sync with the project's own claim-honesty rules), see the
-[README's Honest Coverage section](https://github.com/ChanMeng666/a11y-loop#-honest-coverage).
+[overview's Honest Coverage section](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-honest-coverage).

@@ -79,5 +79,5 @@ still what judge the answer.
 - **SARIF conversion:** [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter)
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard
 
-See the [README's Tech Stack section](https://github.com/ChanMeng666/a11y-loop#%EF%B8%8F-tech-stack)
+See the [overview's Tech Stack section](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#%EF%B8%8F-tech-stack)
 for licensing details (axe-core is MPL-2.0, separate from this project's MIT license).
