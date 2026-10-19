@@ -69,6 +69,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Logs from `demo/before` (200 results), the new fixture, an `--html` fragment and an `--interact`
   dialog fixture validate against the SARIF 2.1.0 schema, with no empty messages.
 
+- **`route-change-focus-lost` (SC 2.4.3), a check on focus after a client-side route change.** In
+  an `--interact` state, a11y-loop now notices when the action changed the route without a page
+  load (the path, the query or a hash route changed, or every child of `<main>` was replaced) and
+  checks where focus went. It reports when focus was on a control the new view removed and fell to
+  `<body>`, or was moved off a surviving control to `<body>`, and no live region that was already
+  in the page announced the change. A changed URL makes the row a violation, evidence `inferred`; a
+  view swapped with the URL unchanged is needs-review, because a tab set or a wizard step can look
+  the same. Out of scope, on purpose: a real navigation (a full load resets focus), an in-page
+  `#anchor`, a route changed from script with nothing focused or clicked, and focus left on a nav
+  link that survives the change. New fixtures `fixture-route-focus-lost.html` (reports the row) and
+  `fixture-route-focus-managed.html` (moves focus to the new `<h1>`, reports nothing).
+- **Status-message checks (SC 4.1.3).** `status-message-not-announced`: text that appeared after a
+  state's action, outside any `aria-live`, `role="status"`, `role="alert"`, `role="log"` or
+  `<output>` region that was in the page beforehand, with focus not moved to it or to a field that
+  names it with `aria-describedby` or `aria-errormessage`. It is a violation, evidence `inferred`,
+  only when the text is short, reads like a status in English ("saved", "error", "required",
+  "3 results") and appeared next to the control the state activated; anything weaker is
+  needs-review. Text inside a dialog that just opened, disclosed content (`aria-expanded` with
+  `aria-controls`, menus, listboxes, tab panels, open `<details>`, popovers), anything with a
+  heading, landmark, table or two controls in it, and every state that changed the route are not
+  reported. `live-region-injected-late`: a live region inserted already holding its text, seen by a
+  `MutationObserver` installed before the state runs. Always needs-review, because whether its
+  first text is read out depends on the browser and screen reader. New fixtures
+  `fixture-status-not-announced.html`, `fixture-status-announced.html` (a live region and a
+  disclosure, reports nothing) and `fixture-live-region-late.html`. A new `mustNotReport` field in
+  `test/fixtures/manifest.json` makes a fixture fail when a named rule produces a row in any
+  bucket. Measured at axe-core 4.14.0: `demo/before` and `demo/after`, with their `--interact`
+  states, report the same counts in every bucket as before, so the demo still reports 159
+  violations and still converges to 0. These checks only run on `--interact` states; a page-load
+  audit cannot see what an action did.
+
 ### Changed
 - **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
   `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
@@ -135,6 +166,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Field Note figures corrected.** The forced-colors table gave 4.9:1 and 14:1 for the two
   default-pass pairs; a11y-loop's own contrast math gives 5.34:1 and 15.04:1, which the new
   fixture now pins.
+
+### Fixed
+- **`dialog-focus-not-returned` no longer treats a button inside the dialog as its trigger.** Up to
+  0.3.2 the trigger was the last clicked element. A state that opened a dialog and clicked the
+  dialog's own Submit made Submit the "trigger", so when Escape closed the dialog and focus
+  correctly went back to the opener, the row was reported anyway. The 2026-10 benchmark found it
+  on every newsletter-modal run. The trigger is now the last control activated or focused outside
+  the dialog before it opened, recorded while the state runs, and focus is compared by element
+  identity rather than CSS path. When nothing identifies the opener and focus falls to the body,
+  the row is needs-review rather than a violation. A dialog that the state's own action closes is
+  now checked as well: focus left on the body is reported (a violation when the opener is known,
+  needs-review when it is not), and focus on the opener or anywhere else real is not. With the old
+  rule restored, the new `fixture-dialog-submit-inside.html` reports one false violation; with the
+  fix it reports none. `fixture-dialog-focus-lost.html`, where Submit removes the dialog and focus
+  really is lost, still reports the row.
 
 ## [0.3.2] - 2026-10-19
 

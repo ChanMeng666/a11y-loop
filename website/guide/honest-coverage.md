@@ -38,7 +38,8 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
   off the rendered page and compared with a threshold or a required attribute (every axe
   violation, and a11y-loop's static checks), `inferred` when the failure is a conclusion from what
   a driven, bounded probe did or did not see (a Tab walk that never reached an element, a dialog
-  that let focus out, Escape that did not close it, a click handler with no keyboard path), and
+  that let focus out, Escape that did not close it, a click handler with no keyboard path, focus
+  left on the body after a route change, a status message outside any live region), and
   `needs-review` for every `needsReview` row. An `inferred` row is still a blocking violation. When
   the probe behind it ran out of budget, the row also carries `confidence: { level: "reduced",
   reason }`. Evidence never changes the exit code.

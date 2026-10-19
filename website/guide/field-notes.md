@@ -86,6 +86,41 @@ signature. Confirm by hand with the five-minute keyboard test in
 [`manual-testing.md`](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/manual-testing.md),
 and audit narrower states so each walk fits.
 
+## `dialog-focus-not-returned` used to name the dialog's own Submit button (fixed on `main`, unreleased)
+
+Up to 0.3.x the dialog check took the last clicked element as the dialog's trigger. An
+`--interact` state that opened a dialog and then clicked the dialog's own Submit (to reach its
+validation-error state) made Submit the "trigger". Escape then closed the dialog, focus went back
+to the real opener, and the probe reported `dialog-focus-not-returned` because focus did not land
+on Submit. The 2026-10 benchmark found this on every newsletter-modal run, and agents worked around
+it by calling `requestSubmit()` instead of clicking.
+
+The trigger is now the last control activated or focused outside the dialog before it opened, as
+recorded while the state runs. A button inside the dialog is never its trigger. When nothing
+identifies the opener (the dialog was open on load, or a state opened it from script) and focus
+falls to the body, the row is `needsReview`, not a violation. When the state's own action closes
+the dialog, focus on the opener or anywhere real passes; only focus left on the body is reported.
+A report from 0.3.x with this row on a state that clicked inside the dialog is worth re-running.
+
+## `status-message-not-announced` is a judgement about new text
+
+The check looks at text that appeared after a state's action, outside any live region that was in
+the page beforehand, with focus not moved to it. New text is also what a disclosure, a tab panel,
+a menu or a new view looks like, so the check skips text inside a dialog that just opened, text an
+`aria-expanded="true"` control names with `aria-controls`, menus, listboxes, tab panels, open
+`<details>`, popovers, anything with a heading, landmark, table or two controls in it, and
+everything when the state changed the route. What is left is reported as a violation only when the
+text is short, reads like a status ("saved", "error", "required", "3 results") and appeared next
+to the control the state activated. Anything else is `needsReview`.
+
+So a needs-review row here usually means "this text appeared and nobody was told; was it a status
+message?". If it was content the user asked to see, it is not one, and the row is answered. The
+status wording list is English only, so on a page in another language nearly every row is
+needs-review. `live-region-injected-late` is needs-review every time: the region carries the right
+role, and whether its first text is read out depends on the browser and screen reader
+(`role="alert"` often is). Confirm both with a screen reader, per
+[`manual-testing.md`](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/manual-testing.md).
+
 ## Up to 0.2.x, invoking the CLI through a link silently did nothing (fixed in 0.3.0)
 
 `src/cli.js` runs its entry point only when it is the program being run. Up to 0.2.x it decided

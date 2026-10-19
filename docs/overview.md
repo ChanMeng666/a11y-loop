@@ -161,7 +161,12 @@ dialog focus trap / Escape / focus-return, target size (24×24 CSS px, SC 2.5.8)
 effectiveness, ambiguous link text, div-as-button, and positive `tabindex`. These sit alongside
 axe-core, not instead of it. The dialog and tab-order checks understand **portalled** dialogs —
 a `<div role="dialog">` in a portal, the way Base UI, Radix, Headless UI and anything on floating-ui
-ships one — not only a native `<dialog>` opened with `showModal()`.
+ships one — not only a native `<dialog>` opened with `showModal()`. Three more judge what an
+`--interact` state's action did: where focus went after a client-side route change
+(`route-change-focus-lost`, SC 2.4.3), whether text that appeared reached a live region that was
+already in the page (`status-message-not-announced`, SC 4.1.3), and whether a live region arrived
+already holding its text (`live-region-injected-late`, SC 4.1.3, always needs-review). A dialog the
+state closed itself, with a submit inside it, is checked for focus return too.
 
 `3` **State coverage, not just page-load** — `--interact` drives the states an agent just built
 (a modal opened, a menu expanded, a form in its error state) through the same five passes, because
@@ -245,7 +250,8 @@ of the other ~87%.
   off the rendered page and compared with a threshold or a required attribute (every axe
   violation, and a11y-loop's static checks), `inferred` when the failure is a conclusion from what
   a driven, bounded probe did or did not see (a Tab walk that never reached an element, a dialog
-  that let focus out, Escape that did not close it, a click handler with no keyboard path), and
+  that let focus out, Escape that did not close it, a click handler with no keyboard path, focus
+  left on the body after a route change, a status message outside any live region), and
   `needs-review` for every `needsReview` row. An `inferred` row is still a blocking violation. When
   the probe behind it ran out of budget, the row also carries `confidence: { level: "reduced",
   reason }`. Evidence never changes the exit code.
@@ -353,6 +359,44 @@ signature. Confirm by hand with the five-minute keyboard test in
 [`references/manual-testing.md`](../skills/a11y-loop/references/manual-testing.md), and audit narrower
 states so each walk fits.
 
+### `dialog-focus-not-returned` used to name the dialog's own Submit button (fixed on `main`, unreleased)
+
+Up to 0.3.x the dialog check took the last clicked element as the dialog's trigger. An
+`--interact` state that opened a dialog and then clicked the dialog's own Submit (to reach its
+validation-error state) made Submit the "trigger". Escape then closed the dialog, focus went back
+to the real opener, and the probe reported `dialog-focus-not-returned` because focus did not land
+on Submit. The 2026-10 benchmark found this on every newsletter-modal run (see
+`evals/benchmark-results.md`), and agents worked around it by calling `requestSubmit()` instead of
+clicking.
+
+The trigger is now the last control activated or focused outside the dialog before it opened, as
+recorded while the state runs. A button inside the dialog is never its trigger. When nothing
+identifies the opener (the dialog was open on load, or a state opened it from script) and focus
+falls to the body, the row is `needsReview`, not a violation. When the state's own action closes
+the dialog, focus on the opener or anywhere real passes; only focus left on the body is reported.
+`test/fixtures/fixture-dialog-submit-inside.html` reproduces the benchmark scenario and must
+produce no row. A report from 0.3.x with this row on a state that clicked inside the dialog is
+worth re-running.
+
+### `status-message-not-announced` is a judgement about new text
+
+The check looks at text that appeared after a state's action, outside any live region that was in
+the page beforehand, with focus not moved to it. New text is also what a disclosure, a tab panel,
+a menu or a new view looks like, so the check skips text inside a dialog that just opened, text an
+`aria-expanded="true"` control names with `aria-controls`, menus, listboxes, tab panels, open
+`<details>`, popovers, anything with a heading, landmark, table or two controls in it, and
+everything when the state changed the route. What is left is reported as a violation only when the
+text is short, reads like a status ("saved", "error", "required", "3 results") and appeared next
+to the control the state activated. Anything else is `needsReview`.
+
+So a needs-review row here usually means "this text appeared and nobody was told; was it a status
+message?". If it was content the user asked to see, it is not one, and the row is answered. The
+status wording list is English only, so on a page in another language nearly every row is needs-review.
+`live-region-injected-late` is needs-review every time: the region carries the right role, and
+whether its first text is read out depends on the browser and screen reader (`role="alert"` often
+is). Confirm both with a screen reader, per
+[`references/manual-testing.md`](../skills/a11y-loop/references/manual-testing.md).
+
 ### Up to 0.2.x, invoking the CLI through a link silently did nothing (fixed in 0.3.0)
 
 `src/cli.js` runs `main()` only when it is the program being run. Up to 0.2.x it decided that with
@@ -439,7 +483,7 @@ graph TD
     C --> F["diff<br/>FIXED / NEW / REMAINING"]
     D --> G["Playwright + Chromium"]
     G --> H["axe-core"]
-    G --> I["a11y-loop's own checks<br/>focus, dialog trap (native and portalled),<br/>target size, reduced motion,<br/>link text, div-button"]
+    G --> I["a11y-loop's own checks<br/>focus, dialog trap (native and portalled),<br/>target size, reduced motion,<br/>link text, div-button,<br/>route-change focus, status messages"]
     D -->|--interact| J["Drive built states:<br/>modal open, menu expanded, form error"]
     H --> K["JSON report<br/>WCAG SC + ACT IDs + provenance"]
     I --> K
