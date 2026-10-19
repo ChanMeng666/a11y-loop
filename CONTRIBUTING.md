@@ -73,15 +73,18 @@ git tag v1.2.3
 git push origin v1.2.3
 ```
 
-**The version lives in four files and nothing enforces that they agree.** Bump all of them in the
-same commit as the CHANGELOG entry, then check before tagging:
+**The version lives in six files.** Bump all of them in the same commit as the CHANGELOG entry,
+then check before tagging. `test/unit/plugin-sync.test.js` fails when the first, third, fourth and
+fifth rows disagree, or when the plugin's copy of `SKILL.md` drifts; nothing checks the lockfile.
 
 | File | Field |
 |---|---|
 | `package.json` | `version` |
+| `package-lock.json` | `version` **and** `packages[""].version` |
 | `plugin/.claude-plugin/plugin.json` | `version` |
 | `.claude-plugin/marketplace.json` | `metadata.version` **and** `plugins[0].version` |
 | `skills/a11y-loop/SKILL.md` | `metadata."a11y-loop/version"` |
+| `plugin/skills/a11y-loop/SKILL.md` | generated: run `npm run sync-plugin`, don't edit |
 
 ```bash
 node -e "console.log(require('./package.json').version, require('./plugin/.claude-plugin/plugin.json').version, require('./.claude-plugin/marketplace.json').plugins[0].version)"
