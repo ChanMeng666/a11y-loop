@@ -15,15 +15,19 @@ import { pathToFileURL } from 'node:url';
 import { readFile } from 'node:fs/promises';
 import { realpathSync } from 'node:fs';
 
-import { runAuditCommand } from './commands/audit.js';
+import { runAuditCommand, resolveAuditTarget } from './commands/audit.js';
 import { runContrastCommand } from './commands/contrast.js';
 import { runDiffCommand } from './commands/diff.js';
 import { runDoctorCommand } from './commands/doctor.js';
 import { runInstallBrowserCommand } from './commands/install-browser.js';
+import { runMcpCommand } from './commands/mcp.js';
 import { runPlanCheckCommand } from './commands/plan-check.js';
 import { ToolError } from './lib/axe-runner.js';
 
 export const EXIT = { OK: 0, FINDINGS: 1, ERROR: 2 };
+
+// Kept importable from here: tests and callers predate its move to audit.js.
+export { resolveAuditTarget };
 
 const OPTIONS = {
   json: { type: 'boolean', default: false },
@@ -59,6 +63,7 @@ USAGE
   a11y-loop install-browser          install the Chromium build a11y-loop's own Playwright needs
   a11y-loop plan-check --file plan.md   check a plan names its accessibility decisions before UI is built
   a11y-loop plan-check --text "<plan>"  the same, plan given inline (or piped on stdin)
+  a11y-loop mcp                      serve these commands as MCP tools over stdio
 
 AUDIT OPTIONS
   --json                 machine-readable report on stdout
@@ -87,6 +92,12 @@ PLAN-CHECK OPTIONS
                          missing items, and the plan rule each one stands for
   Stateless: the same plan always gets the same answer. It checks that the questions
   were asked, not that the answers are any good.
+
+MCP
+  Speaks the Model Context Protocol on stdin/stdout for MCP-only clients. Tools:
+  a11y_loop_audit, a11y_loop_diff, a11y_loop_contrast_fix, a11y_loop_plan_check,
+  a11y_loop_doctor, a11y_loop_manual_checklist. Each returns the same report the
+  matching command writes with --json. Exits 0 when the client closes stdin.
 
 INSTALL-BROWSER OPTIONS
   Extra arguments go to Playwright's installer unchanged, e.g. --with-deps or --dry-run.
@@ -127,44 +138,6 @@ export function parseCli(argv) {
   delete flags['no-best-practice'];
 
   return { command: positionals[0] ?? null, positionals: positionals.slice(1), flags };
-}
-
-/**
- * Work out what `audit` should audit.
- * @returns {{type:'url'|'file'|'html', value:string}}
- */
-export function resolveAuditTarget(positionals, flags) {
-  const given = [
-    positionals[0] ? { type: 'url', value: positionals[0] } : null,
-    flags.file ? { type: 'file', value: flags.file } : null,
-    flags.html !== undefined ? { type: 'html', value: flags.html } : null,
-  ].filter(Boolean);
-
-  if (given.length === 0) {
-    throw new ToolError('audit needs a target.', {
-      hint: 'Use one of:\n  a11y-loop audit http://localhost:3000\n  a11y-loop audit --file page.html\n  a11y-loop audit --html "<button></button>"',
-    });
-  }
-  if (given.length > 1) {
-    throw new ToolError(
-      `audit takes exactly one target, but got ${given.map((g) => g.type).join(' and ')}.`,
-    );
-  }
-
-  const target = given[0];
-  if (target.type === 'url' && !/^https?:\/\//i.test(target.value)) {
-    if (/^file:\/\//i.test(target.value)) {
-      throw new ToolError('file:// URLs are not supported.', {
-        hint:
-          'A null origin breaks axe frame injection, ES modules and fetch. Use --file <path> ' +
-          'instead — a11y-loop serves it over http on 127.0.0.1.',
-      });
-    }
-    throw new ToolError(`"${target.value}" is not an http(s) URL.`, {
-      hint: 'Did you mean --file or --html?',
-    });
-  }
-  return target;
 }
 
 /**
@@ -235,6 +208,10 @@ export async function main(argv, io) {
 
     if (command === 'plan-check') {
       return await runPlanCheckCommand({ flags }, out);
+    }
+
+    if (command === 'mcp') {
+      return await runMcpCommand({ flags }, out);
     }
 
     out.writeError(`a11y-loop: unknown command "${command}"\n\n${USAGE}`);

@@ -13,6 +13,11 @@ of the project for large language models and AI agents.
 - Two layers: an Agent Skill (`skills/a11y-loop/`, open Agent Skills standard) covering the plan,
   generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff` /
   `plan-check` / `doctor` / `install-browser`) for browser-verified checks and the plan gate
+- `a11y-loop mcp` serves the same commands as MCP tools over stdio for MCP-only clients
+  (`a11y_loop_audit`, `a11y_loop_diff`, `a11y_loop_contrast_fix`, `a11y_loop_plan_check`,
+  `a11y_loop_doctor`, `a11y_loop_manual_checklist`). Each result is the report the matching command
+  writes with `--json`, with the same coverage statement and manual checklist. Setup:
+  https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#mcp-server
 - GitHub Actions: the repository root is a composite action (`action.yml`):
   `uses: ChanMeng666/a11y-loop@<tag>` with `target`, optional `baseline`, `fail-on`
   (`violations` | `new` | `never`) and `pr-comment`. It writes a step summary and an optional sticky
@@ -30,8 +35,9 @@ of the project for large language models and AI agents.
   `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hooks run only in
   Claude Code: on Cowork and the Claude apps, where the plugin directory also lists it, only the
   skill's rules apply and nothing is verified.
-- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items (an MCP
-  server) do not exist yet; do not describe them as if they did
+- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items do not
+  exist yet; do not describe them as if they did. Items marked "on main" are not in a tagged
+  release until the CHANGELOG has a version section for them
 - Privacy: nothing is collected or sent anywhere; see PRIVACY.md
   (https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md)
 

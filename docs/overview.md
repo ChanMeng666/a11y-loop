@@ -816,6 +816,79 @@ was; version 2 adds `evidence` and, when they apply, `confidence`, `note`, `note
 `summary.evidence`, `summary.clusters` and `summary.colourPairs`. SARIF results carry a message
 built from the finding, its measured values and its evidence tier.
 
+### MCP server
+
+`a11y-loop mcp` serves the same commands as [Model Context Protocol](https://modelcontextprotocol.io/) tools over stdio, for clients that load MCP servers but not Agent Skills or a shell. It is the CLI's own code behind a thin protocol layer, not a separate engine: each tool result is the report the matching command writes with `--json`, trimmed for a model's context where noted.
+
+| Tool | Same as | Returns |
+|---|---|---|
+| `a11y_loop_audit` | `audit --json` | a run id, the verdict and counts, violations / needs-review / best-practice findings (fingerprint, rule, WCAG criterion, selector, passes, message, help URL, contrast suggestions; at most 50 per list), the manual checklist and the coverage statement. `out` writes the full report to disk; `timeoutMs` stops a long audit and returns an error |
+| `a11y_loop_diff` | `diff --json` | FIXED / NEW / REMAINING by fingerprint, plus `converged` and `regression`. Takes two run ids from this session or two report paths |
+| `a11y_loop_contrast_fix` | `contrast --fix --json` | the ratio, the verdict per level, and passing candidates in OKLCh |
+| `a11y_loop_plan_check` | `plan-check --json` | the verdict, the missing plan items and the template section |
+| `a11y_loop_doctor` | `doctor --json` | the environment facts, and the fix for each failing one |
+| `a11y_loop_manual_checklist` | the report's `manualChecklist` | what a person must still verify for a run |
+
+The full report and the checklist of each run are also resources, at `a11y-loop://runs/<runId>/report` and `a11y-loop://runs/<runId>/checklist`. Runs live in memory for the life of the connection, the last 20 at most. The audit reports progress after each rendering pass when the client sends a progress token. A missing browser comes back within seconds as a tool error that names `a11y-loop install-browser`. It never hangs.
+
+The server needs what the CLI needs: Node 20 or later, and Chromium from `a11y-loop install-browser`. With a global install (`npm i -g a11y-loop`) the command is `a11y-loop mcp`. Without one, it is `npx -y a11y-loop mcp`, which resolves the package on every launch. Paths given to `file`, `interact` and `out` resolve against the server's working directory, so pass absolute paths. If you keep browsers outside the default location, set `PLAYWRIGHT_BROWSERS_PATH` in the server's `env`, since many clients do not pass your shell's environment through.
+
+**Claude Code**
+
+```bash
+claude mcp add a11y-loop --scope user -- a11y-loop mcp
+claude mcp list            # expect: a11y-loop: a11y-loop mcp - ✔ Connected
+```
+
+**Codex** (`~/.codex/config.toml`)
+
+```toml
+[mcp_servers.a11y-loop]
+command = "a11y-loop"
+args = ["mcp"]
+```
+
+**Cursor** (`~/.cursor/mcp.json`, or `.cursor/mcp.json` in a project)
+
+```json
+{
+  "mcpServers": {
+    "a11y-loop": { "command": "a11y-loop", "args": ["mcp"] }
+  }
+}
+```
+
+On Windows, a client that spawns commands without a shell cannot run the `a11y-loop.cmd` shim directly. Use `"command": "cmd", "args": ["/c", "a11y-loop", "mcp"]` there.
+
+The honesty rules apply to tool results exactly as to CLI output. The tools return the same reports, with the same coverage statement and manual checklist, and nothing in the protocol layer turns a finding count into a verdict about the page. An agent that relays only the violation count has dropped the half of the result that says what was not checked.
+
+**Publishing to the MCP registry.** `package.json` carries the registry's ownership marker, `"mcpName": "io.github.ChanMeng666/a11y-loop"`. The registry needs no file in the repository; `server.json` only has to exist when `mcp-publisher publish` runs, after the npm release. It must carry the fixed `mcp` argument, which `mcp-publisher init` does not know about:
+
+```json
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ChanMeng666/a11y-loop",
+  "description": "Browser accessibility audit across five passes, diff, contrast fixes and a plan check.",
+  "repository": { "url": "https://github.com/ChanMeng666/a11y-loop", "source": "github" },
+  "version": "<package.json version>",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "a11y-loop",
+      "version": "<package.json version>",
+      "runtimeHint": "npx",
+      "transport": { "type": "stdio" },
+      "packageArguments": [{ "type": "positional", "value": "mcp" }]
+    }
+  ]
+}
+```
+
+```bash
+mcp-publisher login github
+mcp-publisher publish
+```
+
 ## ⌨️ Development
 
 ```bash
