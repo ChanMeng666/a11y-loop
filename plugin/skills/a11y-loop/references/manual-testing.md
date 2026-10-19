@@ -155,6 +155,36 @@ the same as suppressing it, and nothing here is a reason to disable a rule.
   `confidence` field. Confirm it by hand with the keyboard test below, and
   audit narrower states so each walk fits.
 
+### Rows from the state checks that a human has to settle
+
+These come from checks that judge what an `--interact` state's action did. The
+engine can see that text appeared or that focus fell to the body; it cannot
+hear what a screen reader said.
+
+- **`status-message-not-announced` in needsReview** means text appeared after
+  the action, outside any live region that was in the page first, and focus did
+  not go to it, but the text was long, did not read like a status, or was not
+  next to the control the state pressed. Decide whether it is a status message
+  (a result, a confirmation, an error, a count) or content the user asked to
+  see. If it is a status message, put it in a `role="status"` (or
+  `role="alert"`) container that exists before the text arrives. If not, the
+  row is answered; say so. The wording list is English only.
+- **`live-region-injected-late`** is always needsReview: a live region arrived
+  holding its text. Trigger the action with a screen reader running and listen.
+  If it is silent, keep the empty region in the page and change only its text.
+  `role="alert"` is often announced on insertion, but not by every pair.
+- **`route-change-focus-lost` in needsReview** means the main content was
+  replaced without the URL changing and focus fell to the body. Decide whether
+  that was a new view (then move focus to its heading) or a tab set or wizard
+  step with its own pattern.
+- **`dialog-focus-not-returned` in needsReview** means a dialog closed with
+  focus on the body and the engine could not tell which control opened it
+  (it was open on load, or the state opened it from script). Open it from its
+  real control, close it, and check where focus goes. As a violation, the
+  opener was known: still on the page, or removed with focus left on the body.
+  An opener that was removed while focus went to a heading or another real
+  element is never reported.
+
 ---
 
 ## A five-minute keyboard test anyone can run

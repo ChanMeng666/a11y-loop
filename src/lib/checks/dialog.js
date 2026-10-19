@@ -121,6 +121,7 @@ export function dialogFindings(observation, ctx) {
   }
 
   if (observation.escapeClosed === true && observation.focusReturnedToTrigger === false) {
+    const triggerGone = observation.triggerConnected === false;
     findings.push(
       makeFinding({
         ...base,
@@ -128,16 +129,181 @@ export function dialogFindings(observation, ctx) {
         severity: SEVERITY.VIOLATION,
         impact: 'serious',
         sc: '2.4.3',
+        message: triggerGone
+          ? `Escape closed the dialog, the control that opened it (${observation.trigger}) is no ` +
+            'longer in the page, and focus was left on the document body. When the opener is gone, ' +
+            'move focus to the next logical place, such as the heading of the section it was in.'
+          : `Escape closed the dialog but focus did not return to the control that opened it ` +
+            `(${observation.trigger ?? 'unknown trigger'}). Keyboard users are dropped back to ` +
+            'the top of the document and lose their place.',
+        data: { trigger: observation.trigger ?? null, closedBy: 'escape' },
+      }),
+    );
+  }
+
+  // Escape closed the dialog and focus fell to the body, but nothing says which
+  // control opened it: the dialog was already open when the page loaded, or the
+  // state opened it from script. Focus on the body is still worth a look, but
+  // without an opener the engine cannot say where focus should have gone.
+  if (
+    observation.escapeClosed === true &&
+    observation.focusReturnedToTrigger === null &&
+    !observation.trigger &&
+    observation.focusOnBodyAfterClose === true
+  ) {
+    findings.push(
+      makeFinding({
+        ...base,
+        ruleId: 'dialog-focus-not-returned',
+        severity: SEVERITY.NEEDS_REVIEW,
+        impact: 'serious',
+        sc: '2.4.3',
         message:
-          `The dialog closed but focus did not return to the control that opened it ` +
-          `(${observation.trigger ?? 'unknown trigger'}). Keyboard users are dropped back to ` +
-          'the top of the document and lose their place.',
-        data: { trigger: observation.trigger ?? null },
+          'Escape closed this dialog and focus was left on the document body. a11y-loop could not ' +
+          'identify the control that opened it (no aria-controls, and no click or key press opened ' +
+          'it during the audit), so it cannot say where focus belonged. Open the dialog from its ' +
+          'real control, press Escape, and check that focus goes back to that control.',
+        data: { trigger: null, closedBy: 'escape' },
       }),
     );
   }
 
   return findings;
+}
+
+/**
+ * Judge one dialog that an --interact state closed by itself, typically by
+ * submitting the dialog's own form. Pure: the browser half is
+ * surveyClosedDialogs.
+ *
+ * WAI-ARIA APG (Dialog (Modal) pattern): on close, focus returns to the
+ * element that invoked the dialog, unless it no longer exists or a different
+ * place is more logical for the workflow. So the only verdict this can reach
+ * from where focus ended up is the one that is never logical: the body.
+ * Focus on the opener, or anywhere else real, is not reported.
+ *
+ * @param {{selector:string, html:string, openerKnown:boolean, openerPath:string|null,
+ *   openerUsable:boolean, focusLost:boolean}} closed focusLost means focus never
+ *   landed on a rendered element outside the dialog within the settle window
+ * @returns {null | {severity:string, reason:'opener-present'|'opener-gone'|'opener-unknown'}}
+ */
+export function judgeClosedDialog(closed) {
+  if (!closed || !closed.focusLost) return null;
+  if (!closed.openerKnown) return { severity: SEVERITY.NEEDS_REVIEW, reason: 'opener-unknown' };
+  if (closed.openerUsable) return { severity: SEVERITY.VIOLATION, reason: 'opener-present' };
+  return { severity: SEVERITY.VIOLATION, reason: 'opener-gone' };
+}
+
+/**
+ * Findings for dialogs a state's own action closed.
+ *
+ * @param {Array} closedDialogs from surveyClosedDialogs
+ * @param {{passes:string[], state:string|null}} ctx
+ */
+export function closedDialogFindings(closedDialogs = [], ctx) {
+  const { passes = [], state = null } = ctx ?? {};
+  const findings = [];
+  for (const closed of closedDialogs) {
+    const verdict = judgeClosedDialog(closed);
+    if (!verdict) continue;
+    const opener = closed.openerPath ?? 'unknown';
+    const message = {
+      'opener-present':
+        `This dialog was closed by the state's own action (a submit or save inside it), and focus ` +
+        `was left on the document body instead of going back to the control that opened it ` +
+        `(${opener}), which is still on the page. Keyboard and screen reader users lose their place.`,
+      'opener-gone':
+        `This dialog was closed by the state's own action, the control that opened it (${opener}) ` +
+        'is no longer on the page, and focus was left on the document body. Move focus to the next ' +
+        'logical place, such as the heading of the section the opener was in, or a confirmation message.',
+      'opener-unknown':
+        "This dialog was closed by the state's own action and focus was left on the document body. " +
+        'a11y-loop could not identify the control that opened it (it was open before the state ran, ' +
+        'or was opened from script), so it cannot say where focus belonged. Check by hand that focus ' +
+        'returns to the opener after the dialog closes.',
+    }[verdict.reason];
+    findings.push(
+      makeFinding({
+        ruleId: 'dialog-focus-not-returned',
+        source: 'a11y-loop',
+        severity: verdict.severity,
+        impact: 'serious',
+        sc: '2.4.3',
+        selector: closed.selector,
+        html: closed.html,
+        message,
+        passes,
+        state,
+        data: { trigger: closed.openerPath ?? null, closedBy: 'state-action', opener: verdict.reason },
+      }),
+    );
+  }
+  return findings;
+}
+
+/**
+ * Where focus went after each dialog the --interact state's own action closed.
+ * Read-only, and called straight after the state returns, before any survey
+ * moves focus. Needs the state recorder armed (see armStateRecorder in
+ * browser-utils.js); without it, returns an empty list.
+ *
+ * @param {import('playwright').Page} page
+ */
+export async function surveyClosedDialogs(page) {
+  // Each close carries its own focus snapshot, retaken until focus lands or
+  // the recorder's settle window (1 s) passes, and frozen by the state's next
+  // activation. Wait for every snapshot to be final before reading them.
+  await page
+    .waitForFunction(
+      () => {
+        const rec = window.__a11yLoop.recorder();
+        return !rec || rec.closed.every((closed) => closed.settled);
+      },
+      null,
+      { timeout: CLOSE_SETTLE_WAIT_MS, polling: 50 },
+    )
+    .catch(() => {});
+  return page.evaluate(() => {
+    const rec = window.__a11yLoop.recorder();
+    if (!rec) return [];
+    const bySelector = new Map();
+    for (const closed of rec.closed) {
+      bySelector.set(closed.selector, {
+        selector: closed.selector,
+        html: closed.html,
+        openerKnown: Boolean(closed.opener),
+        openerPath: closed.openerPath,
+        openerUsable: Boolean(closed.openerUsable),
+        focusLost: closed.focusLost !== false,
+      });
+    }
+    return [...bySelector.values()];
+  });
+}
+
+/** Upper bound on waiting for the recorder's close snapshots (its own window is 1 s). */
+const CLOSE_SETTLE_WAIT_MS = 1500;
+
+/**
+ * How long focus may take to leave <body> after a close or a route change
+ * before the engine judges where it went. A page that focuses its new heading
+ * after a data fetch, or restores focus after a close transition, is not
+ * losing focus; one that leaves it on <body> for a second is.
+ */
+export const FOCUS_SETTLE_MS = 1000;
+
+/** Wait up to FOCUS_SETTLE_MS for focus to be somewhere other than <body>. */
+export async function settleFocusOffBody(page, timeout = FOCUS_SETTLE_MS) {
+  await page
+    .waitForFunction(
+      () => {
+        const active = document.activeElement;
+        return Boolean(active && active !== document.body && active !== document.documentElement);
+      },
+      null,
+      { timeout, polling: 50 },
+    )
+    .catch(() => {});
 }
 
 /**
@@ -216,14 +382,30 @@ export async function captureDialogInitialState(page, opts = {}) {
       );
       if (!dialog) return null;
 
-      // Prefer an explicit relationship over the presumed trigger.
-      let trigger = presumed;
+      // The trigger, in order of how much it can be trusted: a declared
+      // relationship; the opener the state recorder saw (the last activation
+      // or focus OUTSIDE this dialog before it opened); and, only when the
+      // recorder was not armed, the presumed trigger from the caller (the last
+      // click, read when the probe runs). That fall-back is what 0.3.x used for
+      // every state, and it is why a state that clicked the dialog's own
+      // Submit had Submit taken for the trigger: the recorder takes the opener
+      // at the moment the dialog opened instead, before Submit was ever clicked.
+      let triggerEl = null;
       if (dialog.id) {
-        const declared = document.querySelector(
+        triggerEl = document.querySelector(
           `[aria-controls="${dialog.id}"], [data-dialog-target="${dialog.id}"]`,
         );
-        if (declared) trigger = helpers.cssPath(declared);
       }
+      if (!triggerEl) triggerEl = helpers.dialogOpener(dialog);
+      if (!triggerEl && presumed && !helpers.recorder()) {
+        try {
+          triggerEl = document.querySelector(presumed);
+        } catch {
+          triggerEl = null;
+        }
+      }
+      window.__a11yLoopDialogTrigger = triggerEl;
+      const trigger = triggerEl ? helpers.cssPath(triggerEl) : null;
 
       const active = document.activeElement;
       return {
@@ -417,14 +599,30 @@ export async function surveyDialog(page, found) {
   const stillOpen = await hasVisibleDialog(page);
   const escapeClosed = !stillOpen;
 
+  // Compared by element identity, not by CSS path: a path can change when the
+  // dialog closing removes a sibling, and two paths can name one element.
   let focusReturnedToTrigger = null;
-  if (escapeClosed && found.trigger) {
-    const activeSelector = await page.evaluate(() => {
+  let triggerConnected = null;
+  let focusOnBodyAfterClose = null;
+  if (escapeClosed) {
+    // Give a focus restore that runs after a close transition time to land.
+    await settleFocusOffBody(page);
+    const after = await page.evaluate(() => {
       const active = document.activeElement;
-      if (!active || active === document.body) return null;
-      return window.__a11yLoop.cssPath(active);
+      const onBody = !active || active === document.body || active === document.documentElement;
+      const trigger = window.__a11yLoopDialogTrigger ?? null;
+      return {
+        onBody,
+        triggerConnected: trigger ? trigger.isConnected : null,
+        onTrigger: Boolean(trigger && active && (active === trigger || trigger.contains(active))),
+      };
     });
-    focusReturnedToTrigger = activeSelector === found.trigger;
+    focusOnBodyAfterClose = after.onBody;
+    triggerConnected = after.triggerConnected;
+    if (found.trigger) {
+      // With the opener gone, anywhere real is acceptable and only the body is not.
+      focusReturnedToTrigger = after.triggerConnected ? after.onTrigger : !after.onBody;
+    }
   }
 
   return {
@@ -433,6 +631,8 @@ export async function surveyDialog(page, found) {
     escapedTo,
     escapeClosed,
     focusReturnedToTrigger,
+    triggerConnected,
+    focusOnBodyAfterClose,
     wrapBudgetExhausted,
   };
 }

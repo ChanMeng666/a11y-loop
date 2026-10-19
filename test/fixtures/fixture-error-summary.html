@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!-- FIXTURE: error-summary. CORRECT form validation, in the two shapes the
+     GOV.UK Design System documents. Nothing here is a defect, so
+     status-message-not-announced may not fire in either state.
+
+     Submitting the empty form shows an inline error above each field, marks the
+     field aria-invalid and links the error with aria-describedby. Then:
+      - govuk-summary: the error summary is shown and receives focus;
+      - focus-first-invalid: focus moves to the first invalid field instead.
+     Either way the page moved focus on purpose, and every inline error is read
+     when its field gets focus. A third state, blur-validation, types a bad
+     address and tabs on: the email error appears, linked from its field, while
+     focus is on the password field. That state is the one that depends on the
+     "referenced by any element" exclusion; the other two are already covered
+     by focus having moved.
+
+     From the PR #39 review (2026-10-20): the check used to look only at what the
+     FOCUSED element references, so the summary state reported both inline
+     errors and the first-invalid state reported the second one. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — error summary and linked inline errors</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --link: #0b5a52;   /*  8.08:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+    --error: #9b1c1c;  /*  7.98:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 0 0 0.5rem; }
+  a { color: var(--link); display: inline-block; padding: 0.75rem 0; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  .summary { border: 3px solid var(--error); padding: 1rem; margin-bottom: 1rem; }
+  .err { color: var(--error); margin: 0 0 0.25rem; font-weight: 600; }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 1rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  [hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Create an account</h1>
+  <div id="summary" class="summary" tabindex="-1" hidden>
+    <h2>There is a problem</h2>
+    <ul>
+      <li><a href="#email">Enter your email address</a></li>
+      <li><a href="#pw">Enter a password</a></li>
+    </ul>
+  </div>
+  <form id="f" novalidate>
+    <div>
+      <label for="email">Email address</label>
+      <p id="email-err" class="err" hidden>Enter your email address</p>
+      <input id="email" type="email" autocomplete="email">
+    </div>
+    <div>
+      <label for="pw">Password</label>
+      <p id="pw-err" class="err" hidden>Enter a password</p>
+      <input id="pw" type="password" autocomplete="new-password">
+    </div>
+    <button id="go">Continue</button>
+  </form>
+</main>
+<script>
+  // Validation on leaving the email field: the error is linked from the field
+  // it belongs to, and focus has moved on to the next field.
+  document.getElementById('email').addEventListener('blur', (event) => {
+    const input = event.target;
+    if (!input.value || input.value.includes('@')) return;
+    const err = document.getElementById('email-err');
+    err.textContent = 'Enter an email address in the correct format, like name@example.com';
+    err.hidden = false;
+    input.setAttribute('aria-invalid', 'true');
+    input.setAttribute('aria-describedby', 'email-err');
+  });
+  document.getElementById('f').addEventListener('submit', (event) => {
+    event.preventDefault();
+    for (const [id, err] of [['email', 'email-err'], ['pw', 'pw-err']]) {
+      const input = document.getElementById(id);
+      if (input.value) continue;
+      document.getElementById(err).hidden = false;
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', err);
+    }
+    if (document.body.dataset.mode === 'first') {
+      document.getElementById('email').focus();
+    } else {
+      const summary = document.getElementById('summary');
+      summary.hidden = false;
+      summary.focus();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!-- FIXTURE: query-state. A filter that writes its state to the query string and
+     reports its result count where no screen reader hears it.
+
+     "Show red only" filters the list in place, records the filter with
+     history.replaceState('?color=red'), and writes "2 results" into a plain
+     paragraph next to the button. <main> is not replaced. That is page state,
+     not a route, so route-change-focus-lost may not fire, and the status-message
+     check must still run: the unannounced count is the one defect.
+
+     From the PR #39 review (2026-10-20): a changed query string used to count as
+     a route change on its own, which stood the status-message and closed-dialog
+     checks down for the whole state. A changed query string or an unmatched hash
+     now counts only when <main> was replaced as well. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — filter state in the query string</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  [hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Mugs</h1>
+  <div id="filters">
+    <button type="button" id="red">Show red only</button>
+  </div>
+  <ul id="items">
+    <li data-color="red">Red mug, 300 ml</li>
+    <li data-color="blue">Blue mug, 300 ml</li>
+    <li data-color="red">Red mug, 450 ml</li>
+  </ul>
+</main>
+<script>
+  document.getElementById('red').addEventListener('click', () => {
+    let shown = 0;
+    for (const item of document.querySelectorAll('#items li')) {
+      item.hidden = item.dataset.color !== 'red';
+      if (!item.hidden) shown += 1;
+    }
+    history.replaceState({}, '', '?color=red');
+    // DEFECT: the result count is a status message in a plain paragraph.
+    const count = document.createElement('p');
+    count.textContent = shown + ' results';
+    document.getElementById('filters').append(count);
+  });
+</script>
+</body>
+</html>

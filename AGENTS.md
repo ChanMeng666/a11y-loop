@@ -233,7 +233,10 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   change would make it a thinner axe wrapper than that, the July note applies again.
 - **`src/lib/`** — the engine: `axe-runner.js` (Playwright + axe-core orchestration across the
   five rendering passes), `checks/` (a11y-loop's own checks that axe can't run — dialog focus
-  trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size),
+  trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size, and
+  two that judge what an `--interact` state's action did: `route-focus.js` for focus after a
+  client-side route change and `live-region.js` for status messages; both read the state recorder
+  that `armStateRecorder()` in `browser-utils.js` starts just before the state runs),
   `contrast-math.js` + `suggest-color.js` (WCAG contrast + OKLCh fix suggestions), `fingerprint.js`
   (stable finding IDs for `diff`), `diff.js` (FIXED/NEW/REMAINING classification), `finding.js`
   (the shared finding shape, including the `evidence` tier), `cluster.js` (root-cause clusters:
@@ -260,8 +263,12 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   `FIXES.md` are the finding-by-finding record — keep them in sync with the actual markup if you
   touch these files.
 - **`test/fixtures/manifest.json`** — the fixture matrix driving `test/integration/fixtures.test.js`:
-  one seeded-violation HTML fixture per failure class (19 today), declared in the manifest rather
-  than hardcoded per-test, so adding a fixture means adding a manifest entry plus the HTML file.
+  one seeded-violation HTML fixture per failure class, plus correct-behaviour counterparts (32
+  entries today), declared in the manifest rather than hardcoded per-test, so adding a fixture
+  means adding a manifest entry plus the HTML file. A fixture driven by `--interact` states names
+  its `<fixture>.interact.mjs` module in `interact.script`. `mustNotReport` lists rule ids that may
+  produce no row in any bucket, which is how a correct counterpart pins a check's false-positive
+  shape.
 - **`test/`** — `node --test`, unit and integration. Besides the engine's own tests, several guard
   the release itself and are worth knowing by name: `unit/plugin-sync.test.js` (copies, versions,
   no `../` or `package.json` in `plugin/`), `unit/skill-frontmatter.test.js` (Agent Skills spec
@@ -327,6 +334,20 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   a live page — the symptom it targeted was a consequence of the wrong survey root and disappeared
   with it. It was removed rather than shipped. Mutate the code and watch the test go red; if
   nothing goes red anywhere, that is an answer, not a gap in the tests.
+- **A dialog's trigger is never inside the dialog.** Up to 0.3.x the engine took the last clicked
+  element as a dialog's trigger, so an `--interact` state that clicked the dialog's own Submit made
+  the Escape probe expect focus to return to Submit and report `dialog-focus-not-returned` when it
+  correctly went to the opener (the 2026-10 benchmark's newsletter-modal artifact). The opener now
+  comes from the state recorder in `browser-utils.js`, taken at the moment the dialog opens, which
+  is before any Submit inside it has been clicked; that timing is the fix. Focus is compared by
+  element identity, not CSS path. Without a known opener the row is needsReview, never a violation.
+  What each fixture guards, measured by mutation: `fixture-dialog-submit-inside.html`'s
+  `submit-invalid` goes red if states fall back on the presumed trigger (the last click, the 0.3.x
+  rule); its `reopen-from-script` goes red if `pickOpener` stops skipping elements inside the
+  dialog, which matters only when a dialog reopens with no new activation outside it. A closed
+  dialog is judged from a focus snapshot (settled for up to 1 s, frozen by the next activation),
+  never from focus at the end of the state: `fixture-dialog-sequences.html` and
+  `fixture-dialog-focus-lost.html`'s `submit-then-click` go red otherwise.
 - **Fixture tests are manifest-driven.** Adding a new seeded-violation fixture without a
   corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
   `test/integration/fixtures.test.js`.

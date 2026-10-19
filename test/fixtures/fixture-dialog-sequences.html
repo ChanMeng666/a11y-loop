@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!-- FIXTURE: dialog-sequences. CORRECT dialogs, driven through sequences that a
+     single end-of-state focus reading gets wrong. Nothing here is a defect, so
+     dialog-focus-not-returned may not fire in any state.
+
+     Every dialog is a native <dialog> opened with showModal(), and its close
+     handler returns focus to the control that opened it. "Delete" removes its
+     row and moves focus to the "Members" heading, a sensible place now that the
+     opener is gone. "Archive" is a custom <div role="dialog"> that restores focus 300 ms after
+     it closes, the way a library does after a close transition.
+
+     From the PR #39 review (2026-10-20): up to that review, a closed dialog was
+     judged from wherever focus was when the state returned, so a state that
+     closed "Rename" (focus correctly back on its opener) and then clicked plain
+     text (Chromium moves focus to <body>) was reported. Each close is now judged
+     from a focus snapshot that settles for up to 1 s and is frozen by the
+     state's next activation. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — dialog sequences</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 1rem 0 0.5rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 1rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    margin: 0 0.5rem 0.5rem 0;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  dialog {
+    max-width: 28rem;
+    padding: 1.5rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+  }
+  dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+  ul { padding-left: 1.25rem; }
+  .sheet { margin-top: 1rem; padding: 1.5rem; border: 2px solid var(--border); border-radius: 8px; }
+  [hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Team</h1>
+  <p id="note">Members of your team are listed below.</p>
+  <button type="button" id="openA">Rename team</button>
+  <button type="button" id="openB">Invite member</button>
+  <button type="button" id="openD">Archive team</button>
+  <h2 id="membersHeading" tabindex="-1">Members</h2>
+  <ul id="rows">
+    <li id="r1">Ana <button type="button" class="del" data-row="r1">Delete Ana</button></li>
+    <li id="r2">Ben <button type="button" class="del" data-row="r2">Delete Ben</button></li>
+  </ul>
+
+  <dialog id="dA" aria-labelledby="tA">
+    <h2 id="tA">Rename team</h2>
+    <label for="nA">Team name</label>
+    <input id="nA" type="text">
+    <button type="button" id="saveA">Save</button>
+  </dialog>
+  <dialog id="dB" aria-labelledby="tB">
+    <h2 id="tB">Invite member</h2>
+    <label for="nB">Email address</label>
+    <input id="nB" type="email" autocomplete="email">
+    <button type="button" id="saveB">Send invite</button>
+  </dialog>
+  <dialog id="dC" aria-labelledby="tC">
+    <h2 id="tC">Delete member?</h2>
+    <button type="button" id="confirmC">Delete</button>
+    <button type="button" id="cancelC">Cancel</button>
+  </dialog>
+  <div id="dD" class="sheet" role="dialog" aria-modal="true" aria-labelledby="tD" hidden>
+    <h2 id="tD">Archive team?</h2>
+    <button type="button" id="saveD">Archive</button>
+  </div>
+</main>
+<script>
+  const wire = (openerId, dialogId, saveId) => {
+    const opener = document.getElementById(openerId);
+    const dialog = document.getElementById(dialogId);
+    opener.addEventListener('click', () => dialog.showModal());
+    dialog.addEventListener('close', () => opener.focus());
+    document.getElementById(saveId).addEventListener('click', () => dialog.close());
+  };
+  wire('openA', 'dA', 'saveA');
+  wire('openB', 'dB', 'saveB');
+  // "Archive" is a <div role="dialog">, not a native one: Chromium's
+  // <dialog>.close() restores focus synchronously by itself, so only a custom
+  // dialog can show a late restore. It hides itself and puts focus back on its
+  // opener 300 ms later, the way a library does after a close transition.
+  const openD = document.getElementById('openD');
+  const dD = document.getElementById('dD');
+  openD.addEventListener('click', () => {
+    dD.hidden = false;
+    document.getElementById('saveD').focus();
+  });
+  document.getElementById('saveD').addEventListener('click', () => {
+    dD.hidden = true;
+    setTimeout(() => openD.focus(), 300);
+  });
+
+  let pending = null;
+  const dC = document.getElementById('dC');
+  document.querySelectorAll('.del').forEach((button) =>
+    button.addEventListener('click', () => {
+      pending = button;
+      dC.showModal();
+    }),
+  );
+  document.getElementById('cancelC').addEventListener('click', () => {
+    dC.close();
+    pending.focus();
+  });
+  document.getElementById('confirmC').addEventListener('click', () => {
+    const row = document.getElementById(pending.dataset.row);
+    dC.close();
+    row.remove();
+    // The opener went with its row, so focus goes to the list's heading.
+    document.getElementById('membersHeading').focus();
+  });
+</script>
+</body>
+</html>

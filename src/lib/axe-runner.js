@@ -34,7 +34,12 @@ import {
   dialogFindings,
   surveyRoleButtons,
   roleButtonFindings,
+  surveyClosedDialogs,
+  closedDialogFindings,
+  settleFocusOffBody,
 } from './checks/dialog.js';
+import { armRouteFocus, surveyRouteFocus, routeFocusFindings } from './checks/route-focus.js';
+import { armLiveRegions, surveyLiveRegions, liveRegionFindings } from './checks/live-region.js';
 
 export const DEFAULT_VIEWPORT = { width: 1280, height: 720 };
 
@@ -452,17 +457,47 @@ export async function runAudit({ target, options = {} }) {
       const page = await openPage(context, served.url);
       const ctx = { passes: ['default'], state: name };
       try {
+        // Start watching before the state acts: which control opens a dialog,
+        // whether the route changes, what text appears and where. Recording
+        // only; nothing here touches the page.
+        await page.evaluate(() => window.__a11yLoop.armStateRecorder());
+        await armRouteFocus(page);
+        await armLiveRegions(page);
+
         await setup(page);
         await page.waitForTimeout(150);
 
-        // The last element clicked, not whatever currently has focus: a
-        // well-behaved dialog moves focus into itself as soon as it opens,
-        // which would overwrite the one clue that identifies the trigger by
-        // the time anything looked at document.activeElement.
+        // What the action did, read before any survey moves focus. A route
+        // change is reported once, by its own check: the dialog and
+        // status-message checks stand down for that state rather than
+        // describe the same new view a second time.
+        const actionFindings = [];
+        let route = await surveyRouteFocus(page).catch(() => null);
+        if (route?.routeChanged && route.focusOnBody && !route.announced) {
+          // A router that focuses the new heading after a data fetch is not
+          // losing focus. Give focus up to FOCUS_SETTLE_MS to leave <body>,
+          // then look again.
+          await settleFocusOffBody(page);
+          route = await surveyRouteFocus(page).catch(() => null);
+        }
+        const routeChanged = Boolean(route?.routeChanged);
+        actionFindings.push(...routeFocusFindings(route, ctx));
+        if (!routeChanged) {
+          const closedDialogs = await surveyClosedDialogs(page).catch(() => []);
+          actionFindings.push(...closedDialogFindings(closedDialogs, ctx));
+        }
+        const live = await surveyLiveRegions(page).catch(() => null);
+        actionFindings.push(...liveRegionFindings(live, { ...ctx, routeChanged }));
+
+        // Kept for a page where the recorder could not arm. When it did arm,
+        // the dialog check takes the opener from the recorder instead and
+        // ignores this, because the last click can be a button INSIDE the
+        // dialog (its own Submit), which never opened it.
         const presumedTrigger = await page.evaluate(() => window.__a11yLoop.lastClickSelector());
 
         const axeResults = await buildAxe(page, { includeBestPractice: bestPractice }).analyze();
         const stateFindings = [
+          ...actionFindings,
           ...findingsFromAxeResults(axeResults, { passName: 'default', state: name }),
           ...(await runDefaultPassChecks(page, { ...ctx, presumedTrigger })),
         ];

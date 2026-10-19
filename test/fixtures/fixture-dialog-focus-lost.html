@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!-- FIXTURE: dialog-focus-lost. A modal dialog that drops focus when its own
+     Submit button closes it.
+
+     "Subscribe" builds a <div role="dialog" aria-modal="true"> and moves focus to
+     its field. Submitting a valid address removes the dialog from the page and
+     does nothing about focus, so focus falls to <body>. That is the one defect.
+     The opener is still on the page, so focus belonged back on it.
+
+     The inverse of fixture-dialog-submit-inside.html: the same interaction, a
+     click on the dialog's own Submit, but here focus really is lost, and
+     dialog-focus-not-returned must still be reported. The submit-then-click
+     state clicks "Help" straight after, which puts focus on Help: the verdict
+     must come from the snapshot frozen at that click, not from where the click
+     left focus. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — dialog closed by its own submit loses focus</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 0 0 0.75rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 1rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .sheet {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: var(--page);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Newsletter</h1>
+  <p>One email a month about new releases.</p>
+  <button type="button" id="openSub">Subscribe</button>
+  <button type="button" id="help">Help</button>
+  <div id="dialogHost"></div>
+</main>
+<script>
+  const opener = document.getElementById('openSub');
+  const host = document.getElementById('dialogHost');
+
+  opener.addEventListener('click', () => {
+    host.innerHTML =
+      '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="subTitle" id="subDialog">' +
+      '<h2 id="subTitle">Subscribe to the newsletter</h2>' +
+      '<label for="subEmail">Email address</label>' +
+      '<input id="subEmail" type="email" autocomplete="email">' +
+      '<button type="button" id="submitSub">Submit</button>' +
+      '</div>';
+    document.getElementById('subEmail').focus();
+    document.getElementById('submitSub').addEventListener('click', () => {
+      // DEFECT: the dialog is removed with focus inside it, and focus is not
+      // moved back to the opener, so it falls to <body>.
+      host.innerHTML = '';
+    });
+  });
+</script>
+</body>
+</html>

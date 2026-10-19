@@ -109,6 +109,18 @@ describe('fixture matrix (test/fixtures/manifest.json, real engine)', () => {
           );
         }
 
+        // mustNotReport: rule ids that may not appear in any bucket at all.
+        // This is how a fixture pins a check's known false-positive shape,
+        // which expectClean cannot, because it only looks at violations.
+        for (const ruleId of entry.mustNotReport ?? []) {
+          const rows = result.findings.filter((f) => f.ruleId === ruleId);
+          assert.deepEqual(
+            rows.map((f) => `${f.severity} ${f.state ?? '-'} ${f.selector}`),
+            [],
+            `${file}: "${ruleId}" must not be reported in any bucket`,
+          );
+        }
+
         // Every documented expectation must be met, in the bucket it's
         // documented to land in, with at least its minimum node count.
         // proposedCheck entries describe a check the CLI does not implement

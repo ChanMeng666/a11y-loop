@@ -310,10 +310,17 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    template), not each element; every member row is still in `findings`.
 
    Every finding has an `evidence` tier. `measured`: a value read off the page
-   against a threshold. `inferred`: a conclusion from a bounded keyboard or
-   dialog probe, still a blocking violation; a `confidence` field means the
-   probe ran out of budget, so confirm that row by hand. `needs-review`: every
-   needsReview row.
+   against a threshold. `inferred`: a conclusion from a bounded keyboard,
+   dialog, route-change or status-message probe, still a blocking violation; a
+   `confidence` field means the probe ran out of budget, so confirm that row by
+   hand. `needs-review`: every needsReview row.
+
+   A state that changes the route, closes a dialog from inside it, or makes
+   text appear is also checked for what that did to focus and to screen reader
+   users: `route-change-focus-lost`, `dialog-focus-not-returned`,
+   `status-message-not-announced`, `live-region-injected-late`. Drive the real
+   control in the state (click the link, the Submit), not a script call, or
+   there is no focus for these checks to follow.
 
    A few rows have a known non-defect explanation: contrast in the
    forced-colors pass (a11y-loop already reports these under needsReview with

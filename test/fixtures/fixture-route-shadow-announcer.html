@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!-- FIXTURE: route-shadow-announcer. CORRECT client-side routing, announced in
+     the two ways real routers do it. Nothing here is a defect, so
+     route-change-focus-lost may not fire in either state.
+
+      - shadow-announcer: focus stays where it was and the route is announced
+        through an aria-live region inside an open shadow root, which is how the
+        Next.js App Router's <next-route-announcer> is built;
+      - focus-after-fetch: the router focuses the new view's h1 300 ms after the
+        view appears, the way a route that waits for its data does.
+
+     From the PR #39 review (2026-10-20): live regions were collected with
+     document.querySelectorAll, which does not reach into shadow roots, so the
+     announcer was missed; and focus was read 150 ms after the state, before
+     the late focus move. Live regions are now collected from open shadow roots
+     too, and focus gets up to 1 s to leave <body>. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — route announced from a shadow root</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --link: #0b5a52;   /*  8.08:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  nav, main { max-width: 34rem; padding: 0 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0.75rem 0; }
+  a { color: var(--link); display: inline-block; padding: 0.75rem 0; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+</style>
+</head>
+<body>
+<nav aria-label="Main"><a href="/" class="go">Home</a></nav>
+<main id="view">
+  <h1>Your orders</h1>
+  <ul><li><a href="/orders/1042" class="go">Order 1042, placed 1 October</a></li></ul>
+</main>
+<route-announcer></route-announcer>
+<script>
+  customElements.define(
+    'route-announcer',
+    class extends HTMLElement {
+      connectedCallback() {
+        const root = this.attachShadow({ mode: 'open' });
+        root.innerHTML =
+          '<p aria-live="assertive" id="ann" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)"></p>';
+      }
+    },
+  );
+  const announcer = () => document.querySelector('route-announcer').shadowRoot.getElementById('ann');
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a.go[href^="/orders/"]');
+    if (!link) return;
+    event.preventDefault();
+    history.pushState({}, '', link.getAttribute('href'));
+    document.getElementById('view').innerHTML =
+      '<h1 tabindex="-1" id="viewHeading">Order 1042</h1><p>Shipped on 3 October by tracked post.</p>';
+    document.title = 'Order 1042';
+    if (document.body.dataset.mode === 'late') {
+      setTimeout(() => document.getElementById('viewHeading').focus(), 300);
+    } else {
+      announcer().textContent = 'Order 1042';
+    }
+  });
+</script>
+</body>
+</html>

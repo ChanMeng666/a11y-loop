@@ -109,7 +109,7 @@ before a newly installed skill or hook takes effect.
 - [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
 - [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/SKILL.md): the agent-facing plan rules, generation rules, audit loop and honesty rules
 - [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
-- [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget — and what to check before dismissing one
+- [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget, the status-message heuristic — and what to check before dismissing one
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
 - [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats; run against the v0.1.x skill, and a 2026-10 re-run is in progress
 - [Roadmap](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/roadmap.md): what is shipped, in progress and planned
@@ -137,7 +137,7 @@ a11y-loop drops none.
 
 JSON reports are `schemaVersion: 2` and only add to version 1. Each finding has `evidence`:
 `measured` (a value read off the page against a threshold), `inferred` (concluded from a bounded
-keyboard or dialog probe, still a blocking violation, with `confidence` when the probe ran out of
+keyboard, dialog, route-change or status-message probe, still a blocking violation, with `confidence` when the probe ran out of
 budget) or `needs-review`. The top-level `clusters` array groups rows by shared cause (a colour
 pair for contrast, a selector pattern otherwise) and gives the fix once; every row also stays in
 `findings`. Count failures in rows, not clusters. The terminal output prints the summary and the

@@ -86,6 +86,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Logs from `demo/before` (200 results), the new fixture, an `--html` fragment and an `--interact`
   dialog fixture validate against the SARIF 2.1.0 schema, with no empty messages.
 
+- **`route-change-focus-lost` (SC 2.4.3), a check on focus after a client-side route change.** In
+  an `--interact` state, a11y-loop now notices when the action changed the route without a page
+  load and checks where focus went. A changed path is a route change. A changed query string or a
+  hash with no matching id counts only when every child of `<main>` was also replaced, because on
+  its own it is usually page state (`?tab=`, `?color=`) written with `replaceState`. `<main>`
+  replaced with the URL unchanged counts too. The check reports when focus was on a control the new
+  view removed and fell to `<body>`, or was moved off a surviving control to `<body>`, and no live
+  region that was already in the page announced the change. Live regions are collected from open
+  shadow roots as well, which is where the Next.js App Router's route announcer keeps its
+  `aria-live` region. Focus gets up to 1 s to leave `<body>` before it is judged, so a router that
+  focuses the new heading after a data fetch is not reported. A route change with a URL change is
+  a violation, evidence `inferred`; `<main>` replaced with the URL unchanged is needs-review,
+  because a tab set or a wizard step can look the same. Out of scope, on purpose: a real
+  navigation (a full load resets focus), an in-page `#anchor`, a route changed from script with
+  nothing focused or clicked, and focus left on a nav link that survives the change. Fixtures:
+  `fixture-route-focus-lost.html` reports the row; `fixture-route-focus-managed.html` (focus moves
+  to the new `<h1>`) and `fixture-route-shadow-announcer.html` (a shadow-root announcer, and focus
+  moved 300 ms after the view appears) report nothing; `fixture-query-state.html` writes
+  `?color=red` and is not treated as a route.
+- **Status-message checks (SC 4.1.3).** `status-message-not-announced`: text that appeared after a
+  state's action, outside any `aria-live`, `role="status"`, `role="alert"`, `role="log"` or
+  `<output>` region that was in the page beforehand, with focus not moved to it. It is a violation,
+  evidence `inferred`, only when the text is short, reads like a status in English ("saved",
+  "error", "required", "3 results") and appeared next to the control the state activated;
+  anything weaker is needs-review. Never reported: text that any element names with
+  `aria-describedby` or `aria-errormessage` (an inline error linked from its field); any new text
+  at all when, after the action, focus is on something other than the control the state activated
+  (the page moved the user on purpose, to an error summary or the first invalid field); text
+  inside a dialog that just opened; disclosed content (`aria-expanded` with `aria-controls`,
+  menus, listboxes, tab panels, open `<details>`, popovers); anything with a heading, landmark,
+  table or two controls in it; and every state that changed the route.
+  `live-region-injected-late`: a live region inserted already holding its text, seen by a
+  `MutationObserver` installed before the state runs. Always needs-review, because whether its
+  first text is read out depends on the browser and screen reader. Fixtures:
+  `fixture-status-not-announced.html` and `fixture-query-state.html` report the row;
+  `fixture-status-announced.html` (a live region, a disclosure, and a note with focus moved to the
+  total) and `fixture-error-summary.html` (the GOV.UK error summary, focus on the first invalid
+  field, and validation on blur) report nothing; `fixture-live-region-late.html` reports the
+  late-region row. A new `mustNotReport` field in
+  `test/fixtures/manifest.json` makes a fixture fail when a named rule produces a row in any
+  bucket. Measured at axe-core 4.14.0: `demo/before` and `demo/after`, with their `--interact`
+  states, report the same counts in every bucket as before, so the demo still reports 159
+  violations and still converges to 0. These checks only run on `--interact` states; a page-load
+  audit cannot see what an action did.
+
 ### Changed
 - `runAudit` accepts an optional `signal` and `onProgress`. The CLI passes neither, so its
   behaviour is unchanged. `resolveAuditTarget` moved to `src/commands/audit.js` and is still
@@ -155,6 +200,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Field Note figures corrected.** The forced-colors table gave 4.9:1 and 14:1 for the two
   default-pass pairs; a11y-loop's own contrast math gives 5.34:1 and 15.04:1, which the new
   fixture now pins.
+
+### Fixed
+- **`dialog-focus-not-returned` no longer treats a button inside the dialog as its trigger.** Up to
+  0.3.2 the trigger was the last clicked element. A state that opened a dialog and clicked the
+  dialog's own Submit made Submit the "trigger", so when Escape closed the dialog and focus
+  correctly went back to the opener, the row was reported anyway. The 2026-10 benchmark found it
+  on every newsletter-modal run. The opener is now recorded at the moment the dialog opens, as
+  the last control activated or focused outside it, and focus is compared by element identity
+  rather than CSS path. A dialog that the state's own action closes is now checked as well, and
+  each close is judged from a focus snapshot: it is taken when focus lands on a rendered element
+  outside the dialog, or when 1 s has passed, and frozen early by the state's next click or key
+  press, so whatever the state does afterwards does not count. The verdicts, for the Escape probe
+  and for a close by the state alike: focus back on the opener is silent; the opener unknown and
+  focus on `<body>` is needs-review; the opener still on the page and focus on `<body>` is a
+  violation; the opener gone and focus on `<body>` is a violation (evidence `inferred`, because
+  the APG Dialog (Modal) pattern never treats the body as the next logical place); the opener gone
+  and focus on a heading, `main` or another real element is silent. The one place the two differ:
+  with the opener still on the page and focus on some other real element, the Escape probe
+  reports a violation (dismissing should go back to the opener), and a close by the state's own
+  action is silent (after a save, the APG allows a more logical place). Fixtures: with the
+  presumed-trigger fall-back (the 0.3.x rule) forced back on, `fixture-dialog-submit-inside.html`
+  reports one false violation, and with the fix none; its `reopen-from-script` state is what goes
+  red if the opener filter stops skipping elements inside the dialog.
+  `fixture-dialog-sequences.html` (plain text clicked after a close, keyboard use, two dialogs in
+  a row, an opener deleted with focus moved to a heading, focus restored 300 ms late) reports
+  nothing. `fixture-dialog-focus-lost.html` and `fixture-dialog-opener-removed.html`, where focus
+  really is lost, report the row.
 
 ## [0.3.2] - 2026-10-19
 
