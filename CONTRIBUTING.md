@@ -40,15 +40,24 @@ Have an idea? [Open a feature request](https://github.com/ChanMeng666/a11y-loop/
 # Install dependencies
 npm install
 
-# Install the Chromium build the audit engine needs (required before tests or the CLI)
-npx playwright install chromium
+# Install the Chromium build the audit engine needs (required before tests or the CLI).
+# This runs the checkout's own Playwright; inside a checkout `npx playwright install chromium`
+# resolves the same one.
+node src/cli.js install-browser
+node src/cli.js doctor          # exit 0 when an audit can run here
 
-# Run the test suite
+# Run the test suite (unit tests need no browser: npm run test:unit)
 npm test
 ```
 
-If you keep Playwright browsers off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
-`npx playwright install chromium`.
+If you keep Playwright browsers off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before the
+browser install and keep it set when you run the tests.
+
+If you change anything under `website/`, build the docs site before opening the PR:
+`cd website && npm ci && npm run docs:build`.
+
+Before starting on a feature, check [`docs/roadmap.md`](docs/roadmap.md): it lists what is shipped,
+what is being built and what is planned.
 
 When your change touches `demo/` or other seeded-violation fixtures, run the full
 audit-fix-re-audit loop to convergence (`a11y-loop diff` should report "Converged") before opening
@@ -64,9 +73,17 @@ appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked t
 
 **Don't edit the generated copies in `plugin/`.** `plugin/skills/a11y-loop/` (from
 `skills/a11y-loop/`, minus `evals/`), `plugin/hooks/lib/plan-gate.mjs` (from
-`src/lib/plan-gate.js`) and `plugin/LICENSE` (from `LICENSE`) are copies. Edit the original and run
+`src/lib/plan-gate.js`), `plugin/hooks/lib/audit-gate.mjs` (from `src/lib/audit-gate.js`) and
+`plugin/LICENSE` (from `LICENSE`) are copies. Edit the original and run
 `npm run sync-plugin`. `test/unit/plugin-sync.test.js` fails while any copy differs from its
 source. `plugin/README.md` is not generated: edit it directly.
+
+### Skill evals
+
+A change to the skill's `description` or to `SKILL.md` §0-§3 should be measured, not guessed: run
+`npm run eval:skill` (real API spend, not part of CI) and put the with/without numbers in the PR. A
+change to `trigger-evals.json` or `skills/a11y-loop/evals/native/` needs `npm run sync-plugin`;
+`npm test` checks the suite's structure without a model.
 
 ## Releasing
 
@@ -78,6 +95,9 @@ in CI secrets, not on a maintainer's machine.
 git tag v1.2.3
 git push origin v1.2.3
 ```
+
+The full sequence, including the checks after publishing (the Anthropic plugin directory, which
+README npm shows, skills.sh), is the release checklist in [`AGENTS.md`](AGENTS.md#release-checklist).
 
 **The version lives in six files.** Bump all of them in the same commit as the CHANGELOG entry,
 then check before tagging. `test/unit/plugin-sync.test.js` fails when the first, third, fourth and
@@ -105,9 +125,20 @@ on the registry, so re-running a failed release is safe.
 Pushing a `vX.Y.Z` tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml),
 which publishes to npm using [trusted publishing](https://docs.npmjs.com/trusted-publishers): the
 workflow proves its own identity to npm over OIDC and receives a short-lived, publish-only
-credential, so every release is signed with build provenance and no long-lived secret exists. The
-workflow only publishes — tests run in `ci.yml` on every push. It also skips any version already on
-the registry, so a failed release is safe to re-run (`gh workflow run release.yml`).
+credential, so every release is signed with build provenance and no long-lived secret exists. After
+publishing it creates the GitHub Release from the matching `## [x.y.z]` section of `CHANGELOG.md`,
+and fails if that section is missing, then fast-forwards the `release` branch that the Anthropic
+plugin directory can track. Tests run in `ci.yml` on every push and PR, not here. The
+workflow skips any version already on the registry and still creates a missing Release, so a failed
+release is safe to re-run (`gh workflow run release.yml`).
+
+**Marketplace listing for the GitHub Action.** `action.yml` at the root is what makes
+`uses: ChanMeng666/a11y-loop@vX.Y.Z` work; the tag is the release. Listing it in the GitHub Marketplace
+is a manual step that needs the repository owner: on the first release that contains `action.yml`,
+open the release on GitHub, tick "Publish this Action to the GitHub Marketplace", choose the category
+and accept the Marketplace agreement. The `branding` block in `action.yml` is required for the
+listing. Later releases only need the box ticked again. Also push or move a major tag if you want
+`@v0` to work, and keep the version in the docs' `uses:` snippets in step with the release.
 
 Two things to know before you touch this setup:
 

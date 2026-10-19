@@ -1,0 +1,27 @@
+{
+  "note": "Wall time and tokens as reported by the harness. Agent-tool runs: Claude Code Agent tool, model 'sonnet' (claude-sonnet-5-5), fresh subagent per run; tokens are the harness's subagent_tokens. Clean runs: `claude -p --model sonnet` (Claude Code 2.1.303) from an empty directory outside the repository; tokens and cost from --output-format json (list-price cost basis).",
+  "runs": [
+    { "arm": "agent-tool/baseline", "run": 1, "duration_ms": 107630, "subagent_tokens": 61006, "tool_uses": 9 },
+    { "arm": "agent-tool/baseline", "run": 2, "duration_ms": 104409, "subagent_tokens": 58477, "tool_uses": 6 },
+    { "arm": "agent-tool/baseline", "run": 3, "duration_ms": 90224, "subagent_tokens": 59106, "tool_uses": 8 },
+    { "arm": "agent-tool/skilled", "run": 1, "duration_ms": 924857, "subagent_tokens": 125920, "tool_uses": 55 },
+    { "arm": "agent-tool/skilled", "run": 2, "duration_ms": 374147, "subagent_tokens": 101852, "tool_uses": 30 },
+    { "arm": "agent-tool/skilled", "run": 3, "duration_ms": 471909, "subagent_tokens": 105722, "tool_uses": 31 },
+    { "arm": "baseline", "run": 1, "duration_ms": 67774, "num_turns": 7, "output_tokens": 12263, "cache_read_tokens": 43739, "cache_creation_tokens": 22990, "cost_usd": 0.219 },
+    { "arm": "baseline", "run": 2, "duration_ms": 72066, "num_turns": 7, "output_tokens": 12917, "cache_read_tokens": 43739, "cache_creation_tokens": 23626, "cost_usd": 0.228 },
+    { "arm": "baseline", "run": 3, "duration_ms": 59994, "num_turns": 7, "output_tokens": 10351, "cache_read_tokens": 43743, "cache_creation_tokens": 21054, "cost_usd": 0.192 },
+    { "arm": "skilled", "run": 1, "duration_ms": 307677, "num_turns": 22, "output_tokens": 27127, "cache_read_tokens": 984997, "cache_creation_tokens": 61638, "cost_usd": 0.616 },
+    { "arm": "skilled", "run": 2, "duration_ms": 275235, "num_turns": 25, "output_tokens": 28137, "cache_read_tokens": 1275063, "cache_creation_tokens": 64982, "cost_usd": 0.669 },
+    { "arm": "skilled", "run": 3, "duration_ms": 382791, "num_turns": 34, "output_tokens": 31562, "cache_read_tokens": 1631269, "cache_creation_tokens": 81210, "cost_usd": 0.804 },
+    { "arm": "contamination-probe (Agent tool)", "duration_ms": 6119, "subagent_tokens": 43820 },
+    { "arm": "model-review (Agent tool, opus)", "duration_ms": 65873, "subagent_tokens": 71812, "tool_uses": 3 }
+  ],
+  "skilled_loop_iterations_self_reported": {
+    "agent-tool/skilled run-1": { "signup-form": 3, "pricing": 3, "gallery": 1, "header-nav": 2, "newsletter-modal": 6, "dashboard": 1 },
+    "agent-tool/skilled run-2": { "signup-form": 3, "pricing": 3, "gallery": 1, "header-nav": 1, "newsletter-modal": 3, "dashboard": 1 },
+    "agent-tool/skilled run-3": { "signup-form": 1, "pricing": 2, "gallery": 1, "header-nav": 1, "newsletter-modal": 3, "dashboard": 1 },
+    "skilled run-1": { "signup-form": 1, "pricing": 2, "gallery": 1, "header-nav": 2, "newsletter-modal": 3, "dashboard": 1 },
+    "skilled run-2": { "signup-form": 2, "pricing": 2, "gallery": 2, "header-nav": 2, "newsletter-modal": 3, "dashboard": 2 },
+    "skilled run-3": { "signup-form": 1, "pricing": 1, "gallery": 1, "header-nav": 1, "newsletter-modal": 4, "dashboard": 1 }
+  }
+}

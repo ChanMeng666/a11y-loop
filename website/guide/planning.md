@@ -49,7 +49,7 @@ and UK public sector at 2.2 AA, EU EN 301 549 v3.2.1 and US ADA Title II at 2.1 
 2.0 AA. The version table with primary sources is in the skill's `references/plan-phase.md`.
 
 **Color tokens.** `a11y-loop contrast --fix` needs no browser, no render, and no code, which makes it
-the one part of the CLI that is genuinely usable at plan time:
+usable at plan time, along with `plan-check` (below):
 
 ```bash
 a11y-loop contrast "#6B7280" "#FFFFFF" --fix
@@ -59,23 +59,45 @@ a11y-loop contrast "#6B7280" "#111827" --fix   # the dark theme is a separate qu
 Settle the palette here and every component inherits a passing pair. Settle it later and every
 component inherits a fix.
 
-## Enforcing it in Claude Code
+## Checking a plan from any agent or CI job
 
 The skill is portable across any Agent Skills client, and §0 works in all of them — but a skill can
-only tell an agent to think about something. The optional Claude Code plugin layer can require it:
+only tell an agent to think about something. `a11y-loop plan-check` is the check an agent or a CI
+job can run on the written plan, in any client:
 
 ```bash
+a11y-loop plan-check --file plan.md          # or --text "<plan>", or pipe the plan on stdin
+a11y-loop plan-check --file plan.md --json   # verdict, isUiWork, hasA11yContent, missing items
+```
+
+It exits `0` when the plan carries accessibility content, is not UI work, or is too short to
+assess; `1` when a UI plan has thin or absent accessibility content, naming what is missing and the
+§0 rule each item stands for; and `2` on a usage or input error. It never prompts and keeps no
+state, so the same plan always gets the same answer. §0 ends with this step: run `plan-check` on
+the written plan and address what it names before building.
+
+## Enforcing it in Claude Code
+
+The optional Claude Code plugin layer turns the same decision into a gate on plan mode:
+
+```bash
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # Claude Code 2.1.292 or later
+
+# Older Claude Code:
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
 It registers a `PreToolUse` hook on `ExitPlanMode`. When a plan changes UI work and says nothing
 about accessibility, the plan is declined once and the section above is handed back to fill in,
-along with any foreclosing decision already visible in the plan.
+along with any foreclosing decision already visible in the plan. The hook runs only in interactive
+Claude Code: `ExitPlanMode` does not exist under `claude -p`, and hooks do not run in Cowork or the
+Claude apps. Everywhere else, `plan-check` is the check.
 
 Its limits are deliberate:
 
-- It **defers** rather than allows on every other path, so your own plan approval is never suppressed.
+- It never returns `allow`. Off the deny path it sends at most a reminder with no permission
+  decision, so your own plan approval is never suppressed.
 - It declines a given plan **at most once** — a gate that can fire twice on one plan is a trap.
 - A plan with no UI in it passes silently.
 - `A11Y_LOOP_PLAN_GATE=off` turns it off.

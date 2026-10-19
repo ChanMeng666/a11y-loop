@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics overview</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f5fb;--text:#1a1a2e;--muted:#4b5563;--accent:#4338ca;--on-accent:#fff;--border:#6b7280;--line:#d1d5db;--ok:#166534;--bad:#b91c1c;--focus:#1d4ed8}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#e5e7eb;--muted:#a8b0be;--accent:#a5b4fc;--on-accent:#0f172a;--border:#94a3b8;--line:#334155;--ok:#86efac;--bad:#fca5a5;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--accent);color:var(--on-accent);padding:.6rem 1rem;border-radius:.4rem;z-index:100}
+.skip:focus{top:.5rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.6rem 1.25rem;border-radius:.6rem;border:2px solid var(--accent);background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+@media (forced-colors:active){.btn{border-color:ButtonText}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:70rem;margin:0 auto;padding:2.5rem 1.25rem}
+h1{font-size:2rem;margin:0 0 1.5rem}
+h2{font-size:1.25rem;margin:2rem 0 1rem}
+.stats{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:1rem;padding:1.25rem}
+.num{font-size:2rem;font-weight:800;margin:0}
+.label{color:var(--muted);margin:0}
+.ar{margin-right:.35rem}
+.trend{font-weight:600;margin:.4rem 0 0}
+.trend.up{color:var(--ok)}
+.trend.down{color:var(--bad)}
+.activity{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:1rem}
+.activity li{display:flex;justify-content:space-between;gap:1rem;padding:.9rem 1.25rem;border-top:1px solid var(--line)}
+.activity li:first-child{border-top:0}
+.activity time{color:var(--muted);white-space:nowrap}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <h1>Analytics overview</h1>
+  <section aria-labelledby="stats-h">
+    <h2 id="stats-h">Last 30 days</h2>
+    <ul class="stats">
+      <li class="tile"><p class="num">24,812</p><p class="label">Visitors</p><p class="trend up"><svg class="ar" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false"><path d="M5 1l5 8H0z" fill="currentColor"/></svg> Up 12.4% vs previous period</p></li>
+      <li class="tile"><p class="num">3.8%</p><p class="label">Conversion rate</p><p class="trend up"><svg class="ar" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false"><path d="M5 1l5 8H0z" fill="currentColor"/></svg> Up 0.6 points</p></li>
+      <li class="tile"><p class="num">$48,290</p><p class="label">Revenue</p><p class="trend down"><svg class="ar" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false"><path d="M5 9L0 1h10z" fill="currentColor"/></svg> Down 3.1% vs previous period</p></li>
+      <li class="tile"><p class="num">1m 42s</p><p class="label">Avg. session</p><p class="trend up"><svg class="ar" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false"><path d="M5 1l5 8H0z" fill="currentColor"/></svg> Up 8 seconds</p></li>
+    </ul>
+  </section>
+  <section aria-labelledby="act-h">
+    <h2 id="act-h">Recent activity</h2>
+    <ul class="activity">
+      <li><span>Maria Lopez upgraded to the Pro plan</span><time datetime="2026-10-20T09:12">9:12 am</time></li>
+      <li><span>New signup from Wellington, NZ</span><time datetime="2026-10-20T08:47">8:47 am</time></li>
+      <li><span>Invoice #1042 paid</span><time datetime="2026-10-19T17:30">Yesterday, 5:30 pm</time></li>
+      <li><span>Kenji Tanaka left a 5-star review</span><time datetime="2026-10-19T14:05">Yesterday, 2:05 pm</time></li>
+      <li><span>Weekly report exported</span><time datetime="2026-10-19T09:00">Yesterday, 9:00 am</time></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

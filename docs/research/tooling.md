@@ -355,3 +355,77 @@ axe config: `withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22a','wcag22
 ---
 
 *Source URLs: see the session research; key ones — axe-core repo/docs, Deque 57% study, Roselli "Automated WCAG Testing Is Grrreat!" (2025-04), accessible.org 13% analysis, playwright.dev docs, guidepup.dev, tabbable npm, culori npm, axe-sarif-converter repo, GitHub SARIF support docs, Mozilla MPL-2.0 FAQ.*
+
+---
+
+## Update 2026-10
+
+*Researched 2026-10-19, written 2026-10-20. Baseline: the July 2026 text above (verified 2026-07-26), left unedited; where the two differ, this section is later. Flags: **[V]** read from a release page, registry or repo, or by running it; **[V-log]** from the 2026-10-19 research log, not re-fetched on 2026-10-20; **[I]** inferred.*
+
+### axe-core 4.14.0
+
+| Fact | Value |
+|---|---|
+| Release | **4.14.0, 2026-10-05**; previous 4.13.0 (2026-08-05), 4.12.1 (2026-06-10) [V] |
+| Rule enabled by default | **`label-content-name-mismatch`**, WCAG 2.1/2.2 SC **2.5.3 Label in Name** (Level A). The release notes list the feature as "label-content-name-mismatch: Enable rule by default" [V] |
+| Not a new rule | The rule has existed since the 3.x line. Deque University's pages for axe 4.6 to 4.11 list it under "WCAG 2.1 Experimental" (2.5.3); the 4.14 page lists it under WCAG 2.1 (A), WCAG 2.2 (A), EN 301 549 and RGAA. So 4.14.0 promotes an existing experimental rule rather than adding one. Sources: <https://github.com/dequelabs/axe-core/releases/tag/v4.14.0>, <https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch> [V] |
+| Fixes to the same rule | Compares visible label to accessible name by word; ignores parenthesised content; marks value-text roles incomplete; normalises CJK and full-width text and splits CJK words [V] |
+| Other features | `EN-301-549v4` tags added to `target-size`; Azerbaijani locale [V] |
+| Other changes of note | `color-contrast` treats empty low-contrast text inputs as `incomplete`; `target-size` ignores overlapping links with the same destination; `scrollable-region-focusable` sends negative-`tabindex` content to review instead of failing it; many failure and incomplete messages reworded [V] |
+| Speed | Reported 20 to 40% faster on most pages, up to 15x on very large pages [V-log] |
+| 4.13.0 (2026-08-05) | ElementInternals support on by default, Swedish locale, ten false positives closed [V-log] |
+| Default rules executed | A bare `axe.run()` on 4.14.0 in Chromium executes **90 rules** (89 at 4.12.1, section 1 above). Total registered rules still 105; `target-size` is still off by default [V-log, local run] |
+| Forced-colors quirk | 4.14.0 still reads `-webkit-text-fill-color` before `color` (`axe.js` line 29610 in the 4.14.0 package), so the documented forced-colors `color-contrast` false positives remain [V-log, local source inspection] |
+| MPL-2.0 | Unchanged |
+
+Consequence for reports: axe-core's own numbers move between minors, and the release notes say issue totals will move. Quote a count with its axe-core version and its denominator.
+
+### What a11y-loop pins
+
+`package.json` pins `axe-core` **4.14.0**, `@axe-core/playwright` **4.14.0** and `playwright` **1.64.1**, each exactly. Before the pin, `axe-core` was `^4.12.1` and `@axe-core/playwright` itself pins `axe-core` with a tilde, so a fresh `npm i -g a11y-loop` resolved 4.14.0 anyway, and the demo's headline count changed under the project without a code change [V-log].
+
+**Demo count.** The seeded `demo/before` page reports **159 detectable failures at axe-core 4.14.0**, against **163 at 4.12.1** (the figure the demo GIF showed until it was re-rendered at 4.14.0, after 0.3.2). The loop still converges to 0 at either version. [`docs/overview.md`](../overview.md) carries the same note; always quote the count with the version.
+
+**Playwright.** 1.63.0 (2026-09-04) added `page.ariaSnapshotJSON()` and standalone `reducedMotion`, `forcedColors` and `contrast` test options; 1.64.0 (2026-10-07) added `page.getByRef()` and `page.webmcp`; 1.64.1 (2026-10-14) needs Chromium build 1248 (156.0.8078.4 in the doctor run of 2026-10-19). Anyone upgrading must re-run the browser install [V-log]. An accessibility-tree digest per state is now a built-in call; whether a11y-loop uses it is a product decision, not decided here.
+
+### Chrome DevTools MCP
+
+`ChromeDevTools/chrome-devtools-mcp` 1.11.0 (2026-10-15): 53,806 stars, 1.44 million downloads a week. Its `lighthouse_audit` tool covers accessibility with a snapshot mode that audits the **current** page state, and it ships an `a11y-debugging` skill [V-log]. Source: <https://github.com/ChromeDevTools/chrome-devtools-mcp>.
+
+Relevance to this document's architecture (section 8 above): it is a second, Google-maintained route to "real browser plus agent", built on Lighthouse's accessibility audit, which is itself axe-core based, so its detections are largely the same engine's. Two things it does not do are the reasons the five-pass, multi-state design in section 3 stays worth building: it audits one live state per call and does not drive the states the agent built through dark mode, forced colors, reduced motion and a 320 px reflow viewport, and it reports a score where a11y-loop reports findings plus a not-checked list. The claim that Lighthouse's accessibility audit runs axe-core is from general knowledge, not re-verified in this pass [I]. Comparison and positioning are in [market.md](market.md) (2026-10 update).
+
+### Other engines, checked 2026-10-19
+
+| Tool | State | Effect on section 2 |
+|---|---|---|
+| Pa11y | 10.0.0 (2026-08-28), still LGPL-3.0-only; depends on `axe-core ~4.13.0`, Puppeteer 25, Node 22.13 or later | The July note about a stale pinned axe no longer holds. LGPL and a second Chromium remain the reasons to skip it |
+| Lighthouse | 13.5.0 (2026-09-18); new "agent discovery" audits (`ard-schema`, WebMCP); no accessibility rule changes in 13.4.0 or 13.5.0 | A sibling category (making sites usable by agents), not a competitor for UI generation |
+| Guidepup | `@guidepup/guidepup` 0.36.4 (npm modified 2026-10-17); `@guidepup/virtual-screen-reader` 0.33.0 | Far more active than the 0.29.2 and "last publish 2025-05-19" in section 3b |
+| `eslint-plugin-jsx-a11y` | still 6.10.2; last GitHub release 2025-01-05, last push 2026-01-06 | Effectively dormant; was "slowing" in section 4 |
+| `@storybook/addon-a11y` | 10.6.2, about 7.1 million downloads a week | Largest installed base of component-level axe; a route to per-story states |
+
+All from the 2026-10-19 research log [V-log].
+
+### Further versions and numbers (2026-10-19)
+
+All [V-log] unless marked: read from npm, GitHub or release pages on 2026-10-19 and not re-fetched on 2026-10-20.
+
+| Item | Value |
+|---|---|
+| `@axe-core/playwright`, `@axe-core/cli` | 4.14.0 (`@axe-core/playwright` npm modified 2026-10-15) |
+| axe-core repository | 7,668 stars, 441 open issues, pushed 2026-10-15; 47.5 million downloads in the week 2026-10-10 to 2026-10-16 (7,337 stars and 461 open issues in July) |
+| `@playwright/mcp` | 0.0.83 (2026-09-28), 3.43 million downloads a week; accessibility-snapshot driven, no audit capability |
+| Chrome DevTools MCP | 1.11.0 (2026-10-15); 1.0.0 was 2026-05-18; 53,806 stars; 1.44 million downloads a week |
+| Pa11y | 10.0.0 (2026-08-28), LGPL-3.0-only, 144k downloads a week |
+| IBM Equal Access `accessibility-checker` | 4.0.34 (2026-09-08), 13.6k downloads a week; verdict unchanged, optional second opinion only |
+| Microsoft Accessibility Insights (web) | 2.49.0 (2026-09-08); no MCP or agent product found |
+| `@storybook/addon-a11y` | 10.6.2, 7.11 million downloads a week; 10.6.1 (2026-09-29) fixed vision-simulator filters; 11.0.0-alpha.1 (2026-09-19) |
+| `eslint-plugin-jsx-a11y` | 6.10.2, 29.7 million downloads a week; Next.js still ships it enabled by default |
+| Biome | 2.5.15 (2026-09-30), 10.9 million downloads a week; a11y rule group maintained; delegate static rules to it |
+| Guidepup | `@guidepup/guidepup` 0.36.4, 32.8k a week; `@guidepup/virtual-screen-reader` 0.33.0 (npm modified 2026-09-20), 31.8k a week |
+| Lighthouse | 13.5.0 (2026-09-18) |
+| Next.js | Default route announcer reads `document.title`, then the `<h1>`, then the pathname [V-sec: <https://nextjs.org/docs/accessibility>]. A future route-change check must know a framework announcer exists or it will report false positives |
+| Node and browser at the 0.3.0 doctor run | Node 24.15.0 (a11y-loop needs 20 or later); Playwright 1.64.1; Chromium build 1248 (156.0.8078.4), headless launch succeeded |
+| Node requirements elsewhere | `axe-mcp-server` needs Node 22.19 or later; Pa11y 10 needs Node 22.13 or later |
+
+Claude Code platform facts relevant to enforcement, from the same research (v2.1.303 installed, released 2026-10-18): a `Stop` hook can refuse to let the agent finish (exit 2, with a `stop_hook_active` loop guard); `claude plugin eval` (v2.1.269 or later, 2026-09-11) runs a with-plugin against without-plugin baseline and can gate CI; Codex's `Stop` and Cursor's `stop` (`followup_message`) can also force continuation; whether Copilot's `agentStop` can is not documented. The plan gate exists in the plugin; an audit gate is a separate piece of work [V-log].

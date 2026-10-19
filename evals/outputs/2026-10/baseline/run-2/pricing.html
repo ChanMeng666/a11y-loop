@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #111827; background: #f9fafb; }
+  section { max-width: 1040px; margin: 0 auto; padding: 72px 24px; }
+  .head { text-align: center; margin-bottom: 48px; }
+  .head h1 { margin: 0 0 8px; font-size: 2.2rem; }
+  .head p { margin: 0; color: #6b7280; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+  .tier { position: relative; display: flex; flex-direction: column; background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 16px; padding: 32px 28px; }
+  .tier.pro { border: 2px solid #4f46e5; box-shadow: 0 16px 40px rgba(79, 70, 229, .18); transform: translateY(-8px); }
+  .badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: #4f46e5; color: #fff;
+    font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
+  h2 { margin: 0; font-size: 1.2rem; }
+  .desc { margin: 6px 0 20px; color: #6b7280; font-size: .92rem; }
+  .price { font-size: 2.6rem; font-weight: 800; line-height: 1; }
+  .price small { font-size: 1rem; font-weight: 500; color: #6b7280; }
+  ul { list-style: none; padding: 0; margin: 24px 0 28px; flex: 1; }
+  li { position: relative; padding-left: 26px; margin-bottom: 12px; font-size: .95rem; }
+  li::before { content: ""; position: absolute; left: 0; top: 4px; width: 14px; height: 8px;
+    border-left: 2px solid #4f46e5; border-bottom: 2px solid #4f46e5; transform: rotate(-45deg) scale(.9); }
+  .cta { display: block; text-align: center; text-decoration: none; font-weight: 600; padding: 12px; border-radius: 8px;
+    border: 1px solid #4f46e5; color: #4f46e5; transition: background .15s, color .15s; }
+  .cta:hover { background: #eef2ff; }
+  .pro .cta { background: #4f46e5; color: #fff; }
+  .pro .cta:hover { background: #4338ca; }
+  .cta:focus-visible { outline: 3px solid #c7d2fe; outline-offset: 2px; }
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+    .tier.pro { transform: none; order: -1; }
+  }
+</style>
+</head>
+<body>
+<section aria-labelledby="pricing-title">
+  <div class="head">
+    <h1 id="pricing-title">Simple, transparent pricing</h1>
+    <p>Start free for 14 days. Cancel anytime.</p>
+  </div>
+  <div class="grid">
+    <article class="tier">
+      <h2>Starter</h2>
+      <p class="desc">For individuals and side projects.</p>
+      <div class="price">$9<small>/month</small></div>
+      <ul>
+        <li>1 project</li>
+        <li>Basic analytics</li>
+        <li>Community support</li>
+        <li>1 GB storage</li>
+      </ul>
+      <a class="cta" href="#starter">Get started</a>
+    </article>
+    <article class="tier pro">
+      <span class="badge">Most popular</span>
+      <h2>Pro</h2>
+      <p class="desc">For growing teams that need more.</p>
+      <div class="price">$29<small>/month</small></div>
+      <ul>
+        <li>Unlimited projects</li>
+        <li>Advanced analytics</li>
+        <li>Priority email support</li>
+        <li>100 GB storage</li>
+        <li>Team collaboration</li>
+      </ul>
+      <a class="cta" href="#pro">Start free trial</a>
+    </article>
+    <article class="tier">
+      <h2>Enterprise</h2>
+      <p class="desc">For organizations with custom needs.</p>
+      <div class="price">Custom</div>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>SSO &amp; audit logs</li>
+        <li>Dedicated account manager</li>
+        <li>99.99% uptime SLA</li>
+        <li>Custom integrations</li>
+      </ul>
+      <a class="cta" href="#contact">Contact sales</a>
+    </article>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,5 @@
+a11y-loop diff · before: D:\.claude-scratch\2026-10-20\bench\skilled-clean\run-2\reports\header-nav.run1.json · after: D:\.claude-scratch\2026-10-20\bench\skilled-clean\run-2\reports\header-nav.run2.json
+
+No violations in either report.
+
+No violations in either report

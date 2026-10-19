@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site header</title>
+<style>
+:root{--bg:#f3f4fb;--surface:#fff;--text:#1a1d29;--muted:#4a5068;--primary:#4338ca;--border:#6b7088;--soft:#e4e6f5;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1220;--surface:#181c2e;--text:#eef0f8;--muted:#b4b9d0;--primary:#a5b4fc;--border:#8a90ac;--soft:#2a2f4d;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:1rem/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--surface);border-bottom:1px solid var(--border);position:relative}
+.bar{max-width:72rem;margin:0 auto;padding:.5rem 1rem;display:flex;align-items:center;gap:1rem}
+.logo{font-weight:800;font-size:1.4rem;color:var(--primary);text-decoration:none;margin-right:auto;padding:.25rem 0}
+.desktop-nav ul{list-style:none;margin:0;padding:0;display:flex;gap:.25rem}
+.desktop-nav a{display:flex;align-items:center;min-height:2.75rem;padding:.5rem .85rem;color:var(--text);text-decoration:none;font-weight:600;border-radius:.5rem}
+.desktop-nav a:hover{background:var(--soft)}
+.desktop-nav a[aria-current=page]{color:var(--primary);text-decoration:underline;text-underline-offset:6px}
+.icon-btn{width:2.75rem;height:2.75rem;display:inline-grid;place-items:center;background:transparent;color:var(--text);border:2px solid transparent;border-radius:.5rem;cursor:pointer}
+.icon-btn:hover{background:var(--soft)}
+.icon-btn svg{width:1.4rem;height:1.4rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.menu-btn{display:none}
+.search{display:none;max-width:72rem;margin:0 auto;padding:.5rem 1rem 1rem}
+.search.open{display:block}
+.search input{width:100%;min-height:2.75rem;padding:.5rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:2px solid var(--border);border-radius:.5rem}
+.drawer{display:none;border-top:1px solid var(--border);background:var(--surface);padding:.5rem 1rem 1rem}
+.drawer.open{display:block}
+.drawer ul{list-style:none;margin:0;padding:0}
+.drawer a{display:block;padding:.75rem .5rem;color:var(--text);font-weight:600;text-decoration:none;border-radius:.5rem}
+.drawer a:hover{background:var(--soft)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+main{max-width:72rem;margin:0 auto;padding:2rem 1rem}
+h1{margin-top:0}
+.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:var(--surface);padding:.5rem;z-index:9}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:48rem){.desktop-nav{display:none}.menu-btn{display:inline-grid}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+<div class="bar">
+<a class="logo" href="#home">Acme</a>
+<nav class="desktop-nav" aria-label="Main">
+<ul>
+<li><a href="#home" aria-current="page">Home</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+<button type="button" class="icon-btn" id="search-btn" aria-expanded="false" aria-controls="search">
+<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="vh">Search</span>
+</button>
+<button type="button" class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="drawer">
+<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="vh">Menu</span>
+</button>
+</div>
+<div class="search" id="search" role="search">
+<label for="q" class="vh">Search the site</label>
+<input type="search" id="q" name="q" placeholder="Search the site">
+</div>
+<nav class="drawer" id="drawer" aria-label="Mobile">
+<ul>
+<li><a href="#home" aria-current="page">Home</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+</header>
+<main id="main">
+<h1>Welcome to Acme</h1>
+<p>Page content goes here.</p>
+</main>
+<script>
+function wire(btn,panel,onOpen){
+ btn.addEventListener('click',()=>{const o=btn.getAttribute('aria-expanded')!=='true';
+  btn.setAttribute('aria-expanded',String(o));panel.classList.toggle('open',o);if(o&&onOpen)onOpen()});
+ panel.addEventListener('keydown',e=>{if(e.key==='Escape'){btn.setAttribute('aria-expanded','false');panel.classList.remove('open');btn.focus()}});
+}
+wire(document.getElementById('search-btn'),document.getElementById('search'),()=>document.getElementById('q').focus());
+wire(document.getElementById('menu-btn'),document.getElementById('drawer'));
+</script>
+</body>
+</html>

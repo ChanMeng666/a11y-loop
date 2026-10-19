@@ -121,7 +121,7 @@ Converged: all 159 violations fixed, none introduced
 ```
 
 That count is for axe-core 4.14.0, the version a11y-loop pins, and it is the same on every run.
-The GIF above was recorded at axe-core 4.12.1, when the count was 163. Up to and including 0.3.0
+The GIF above is rendered from the literal output of a11y-loop 0.3.2 at that axe-core version: the 159 failures, the quiet runs and the diff above. Its source and how to regenerate it are in [`docs/demo-gif-src/`](demo-gif-src). Up to and including 0.3.0
 the count also moved by one between runs, 159 or 160, and the cause was the page, not the engine.
 One of its seeded failures is a scrolling sponsor ticker, and whether its tenth name was inside
 the viewport when axe read the page depended on how far the animation had got. The ticker now
@@ -376,20 +376,29 @@ process.exitCode = await main(['audit', 'http://localhost:3000', '--json']);
 
 ## 📈 Benchmark
 
-A small, illustrative comparison in [`evals/benchmark-results.md`](../evals/benchmark-results.md):
-the same six UI components, built by the same model (Claude Sonnet 5, as a Claude Code subagent),
-once with no accessibility guidance and once following the skill and running the audit loop to
-convergence.
+A small, repeated comparison in [`evals/benchmark-results.md`](../evals/benchmark-results.md)
+(2026-10). Claude Sonnet 5.5 built the same six UI components three times without guidance and
+three times following the skill, running the audit loop to convergence. Every file was then
+checked by a11y-loop, IBM Equal Access and Lighthouse.
 
-- **Baseline (no guidance): 35 violations across 6 components.** With the skill, **1 violation on
-  first generation** — before any audit ran.
-- **After the loop: 0 violations**, at an average of **1.67 completed audit iterations** per
-  component.
+- **Baseline: 45 a11y-loop violations across 18 files** (13 to 18 per run), plus 61 IBM
+  violations and 13 failed Lighthouse audits. **After the loop: 0 a11y-loop violations and 0
+  failed Lighthouse audits**, at 1.5 to 2.2 audit iterations per file on average.
+- **What the loop leaves, by the independent engine:** one IBM finding in every converged file,
+  a skip link placed outside any landmark. IBM's needs-review items barely moved. Lighthouse runs
+  the same axe-core rules as a11y-loop, so its agreement is weak evidence.
+- **Context mattered too.** Baseline runs that could see this repository's `AGENTS.md` produced
+  0 a11y-loop violations, so the headline arms were run from a clean directory.
 
-Read this with its stated caveats: **N = 6 components, a single run per condition, one model
-family, and the audits are produced by a11y-loop's own engine** (mitigated, not eliminated, by
-every finding being grounded in axe-core, a third-party rules engine) — a small, self-audited
-illustration of the effect's shape, not a controlled study or a precise effect size.
+Read it with its stated caveats: **three runs per condition, one model family, and only one of
+the three engines (IBM) independent of axe-core.** It is not a controlled study or a precise
+effect size. The 2026-07 single-run comparison is kept in
+[`evals/benchmark-results-2026-07.md`](../evals/benchmark-results-2026-07.md).
+
+It was also run against the skill as it stood at v0.1.x, before the §0 plan rules existed, so it
+says nothing about planning. A 2026-10 re-run against the current skill, scored against an
+independent oracle, is in progress in `evals/`; until it lands, these numbers describe the older
+skill only. See [`roadmap.md`](roadmap.md).
 
 ## 🛠️ Tech Stack
 
@@ -404,9 +413,12 @@ illustration of the effect's shape, not a controlled study or a precise effect s
   [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 424 tests across unit and integration suites,
-  including a 19-fixture matrix of seeded violations and correct-behaviour regression guards, a
-  demo end-to-end run, and a forced-colors gradient regression test
+- **Tests:** the built-in `node --test` runner, 481 tests across unit and integration suites
+  (0.3.2), including a 19-fixture matrix of seeded violations and correct-behaviour regression
+  guards, a demo end-to-end run, a forced-colors gradient regression test, and release guards:
+  plugin-copy sync and version agreement, skill frontmatter against the Agent Skills spec, text
+  encoding, every subcommand run with stdin closed, the CLI and hook run through a symlink and a
+  junction, and a missing-browser audit that must exit rather than hang
 
 ## 🏗️ Architecture
 
@@ -485,22 +497,27 @@ secondary format for tools that consume it.
 ```bash
 npm i -g a11y-loop
 a11y-loop install-browser
-npx skills add ChanMeng666/a11y-loop -g -y
-claude plugin marketplace add ChanMeng666/a11y-loop
-claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+a11y-loop doctor                                   # exit 0 when an audit can run here
+
+# Then ONE of these:
+npx skills add ChanMeng666/a11y-loop -g -y         # the portable skill, any Agent Skills client
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # OR the Claude Code plugin (2.1.292+)
 ```
 
-That is: the CLI, its browser, the portable skill, and the optional Claude Code plugin. No `git
-clone`: `npx skills add` fetches the skill, which also ships inside the npm package for a manual copy. Verify:
+That is: the CLI, its browser, and either the portable skill or the optional Claude Code plugin.
+On Claude Code older than 2.1.292 the plugin takes two commands, `claude plugin marketplace add
+ChanMeng666/a11y-loop` and then `claude plugin install a11y-loop@chanmeng-a11y-loop --scope user`.
+On Codex it is `codex plugin marketplace add ChanMeng666/a11y-loop` and then `codex plugin add
+a11y-loop@chanmeng-a11y-loop`. No `git clone`: `npx skills add` fetches the skill, which also ships
+inside the npm package for a manual copy. Verify:
 
 ```bash
 a11y-loop --version
-test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
-claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"   # skill route
+claude plugin list | grep -A2 'a11y-loop@'   # plugin route; expect: Status: ✔ enabled
 ```
 
-Skip the last two lines if you only want the portable skill, or the `npx skills add` line if you only
-want the plugin. Do not do both: the plugin carries its own copy, so the model ends up seeing
+Install the skill or the plugin, not both: the plugin carries its own copy, so the model ends up seeing
 `a11y-loop` *and* the directory-qualified `a11y-loop:a11y-loop`, paying the always-on token cost
 twice. If both names show up, delete `~/.claude/skills/a11y-loop` and keep the plugin.
 
@@ -533,7 +550,7 @@ Prefer working from source (e.g. to contribute)? Clone and install instead:
 git clone https://github.com/ChanMeng666/a11y-loop.git
 cd a11y-loop
 npm install
-npx playwright install chromium
+node src/cli.js install-browser   # the checkout's own Playwright; npx playwright resolves the same one here
 ```
 
 If you keep browser binaries off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
@@ -559,7 +576,11 @@ mkdir -p .claude/skills && cp -r "$SKILL_SRC" .claude/skills/
 
 From a checkout, `skills/a11y-loop` is the same directory. Any client implementing the
 [Agent Skills specification](https://agentskills.io/specification) loads it the same way — Claude
-Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place.
+Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place,
+except over a skill that `npx skills add` installed: that one is a symlink, the copy fails on it, and
+re-running `npx skills add` is the upgrade. On Windows, use PowerShell (`New-Item -ItemType Directory
+-Force "$HOME\.claude\skills"`, then `Copy-Item -Recurse -Force "$(npm root -g)\a11y-loop\skills\a11y-loop"
+"$HOME\.claude\skills\"`) or Git Bash; cmd.exe is not supported.
 
 ### Optional: the Claude Code plugin layer
 
@@ -568,12 +589,15 @@ Claude-Code-only layer that adds one thing the portable skill cannot do — enfo
 plan mode:
 
 ```bash
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # Claude Code 2.1.292 or later
+
+# Older Claude Code:
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
-Both are ordinary CLI commands — no TTY, no prompts, safe to re-run. (They also exist as `/plugin
-marketplace add …` and `/plugin install …` inside a session, but an agent should use the CLI form.)
+These are ordinary CLI commands — no TTY, no prompts, safe to re-run. (They also exist as `/plugin
+install …` and `/plugin marketplace add …` inside a session, but an agent should use the CLI form.)
 Managing it later is equally non-interactive: `claude plugin disable a11y-loop`, `claude plugin
 enable a11y-loop`, `claude plugin uninstall a11y-loop@chanmeng-a11y-loop` — add `-y` only if you
 pass `--prune`, which is the single flag that asks for confirmation.
@@ -582,11 +606,11 @@ From a local checkout, `claude plugin marketplace add ./` registers the working 
 plugin tracks your edits rather than the published repo.
 
 **What installing it copies.** The plugin is the repository's `plugin/` folder, not the whole
-repository: the skill, the `/a11y-plan` command, the hook and its decision logic, a README and the
-license. That folder has no `package.json`, so the install fetches no packages. Up to 0.3.0 the
+repository: the skill, the `/a11y-plan` command, the two hooks and their decision logic, a README
+and the license. That folder has no `package.json`, so the install fetches no packages. Up to 0.3.0 the
 plugin was the repository root, and its `package.json` and `package-lock.json` made Claude Code run
 a scripts-disabled `npm ci` in the plugin cache, about 24 MB of packages the plugin never used.
-`skills/a11y-loop/` and `src/lib/plan-gate.js` stay the canonical sources; `npm run sync-plugin`
+`skills/a11y-loop/`, `src/lib/plan-gate.js` and `src/lib/audit-gate.js` stay the canonical sources; `npm run sync-plugin`
 copies them into `plugin/`, and a unit test fails while a copy differs.
 
 **Team-wide, declaratively.** `--scope project` writes `.claude/settings.json`, which you commit —
@@ -613,6 +637,11 @@ It contributes:
   accessibility, the plan is declined once and the `### Accessibility` section is handed back to fill
   in. It names any decision already in the plan that is hard to walk back later — drag-only
   reordering, hover-only menus, infinite scroll, canvas-rendered data, time limits, CAPTCHA, autoplay.
+- a `Stop` hook. When Claude is about to finish a session that wrote UI files (`.html`, `.jsx`,
+  `.tsx`, `.vue`, `.svelte`, `.astro`, `.css`, `.scss`, `.mdx`, or `.js`/`.ts` whose new
+  content touches the DOM) and has not run `a11y-loop audit` since the last such write, the stop is
+  declined once. Claude is handed the files and the exact `audit` and `diff` commands to run. This
+  is how the skill's §2 is enforced in Claude Code, including headless `claude -p` runs.
 - `/a11y-plan`, to ask for that section directly.
 
 Deliberate limits: it never returns `allow`, and on every non-deny path it returns at most a reminder with no
@@ -621,12 +650,24 @@ UI in it is passed silently; and `A11Y_LOOP_PLAN_GATE=off` disables it. The gate
 question was asked — it cannot check that the answer is any good. That is still `a11y-loop audit`
 and a human.
 
+The audit gate has the same shape of limits. It declines a stop **at most once per session**, and
+never while `stop_hook_active` is true, which Claude Code sets when it is already continuing because
+of a stop hook. Any failure (no transcript, a shape it does not recognise, a state file it cannot
+write) lets the session end as it would have. `A11Y_LOOP_AUDIT_GATE=off` disables it. It checks
+that an audit ran after the last UI edit, not that the audit was clean or covered the states that
+changed.
+
 | | Portable skill | Plugin layer |
 |---|---|---|
 | Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
-| Works in | 40+ Agent Skills clients | Claude Code only |
-| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
+| Works in | 40+ Agent Skills clients | the hooks and `/a11y-plan` in Claude Code; on Cowork and the Claude apps only the skill's rules |
+| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, §2 enforcement at Stop, `/a11y-plan` |
 | Required? | yes | no |
+
+**Where the hooks do not run.** The Anthropic plugin directory also lists the plugin on Cowork and
+the Claude apps (web, desktop, mobile). Hooks do not run there, and there is no Node or browser for
+the audit, so those surfaces get the skill's plan, generation and reporting rules, and nothing is
+verified.
 
 **Plan gate without Claude Code.** The hook only exists inside Claude Code's interactive plan mode:
 it fires on `ExitPlanMode`, and that tool is absent under `claude -p` and in every other client.
@@ -647,9 +688,43 @@ hook's interactive round trip remains unverifiable headlessly; that is now immat
 decision is identical and fully tested, and the part only the hook adds (the stdin/stdout protocol,
 the once-per-plan guard) is tested by driving the script directly.
 
+**Audit gate without Claude Code.** The Stop hook reads Claude Code's own session transcript, so it
+has no portable equivalent: Codex, Cursor, Copilot and other clients rely on the skill's §2 text.
+What enforces the loop for every client is CI. Run `a11y-loop audit` on the pages a change touches;
+it exits `1` when it finds violations, which fails the job (see below).
+
 ## ⚙️ Using it in CI
 
-Install the CLI and its browser once per job, then audit:
+The quickest route is the composite GitHub Action. It installs the CLI and the browser, audits,
+writes the result to the job summary, can diff against a baseline report and can keep one sticky
+comment on the pull request. It is merged on `main` but in no release yet: 0.3.2 does not contain
+it, so the `uses:` line below resolves only once the release that contains it is tagged.
+
+```yaml
+- uses: actions/setup-node@v4          # Node 20 or newer must be on the runner first
+  with:
+    node-version: 22
+- uses: actions/cache@v4               # optional: keep the browser between runs
+  with:
+    path: ${{ runner.temp }}/pw-browsers
+    key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+- uses: ChanMeng666/a11y-loop@v0.4.0
+  with:
+    target: http://localhost:3000      # a URL, or the path of an HTML file
+    fail-on: violations                # violations | new | never
+```
+
+Inputs: `target`, `interact`, `baseline`, `fail-on`, `sarif`, `pr-comment`, `version`, `browser`,
+`playwright-browsers-path`. Outputs: `violations`, `needs-review`, `manual`, `new`, `fixed`,
+`remaining`, `report-path`, `sarif-path`, `exit-code`. A tool error (exit code 2) always fails the
+step. `baseline` points at a JSON report from an earlier run; a missing file is a notice, not an
+error. `pr-comment: 'true'` needs `pull-requests: write` and edits one comment in place.
+[`examples/github-action/audit.yml`](../examples/github-action/audit.yml) is a complete workflow with
+the browser cache, a baseline taken from the latest run on `main`, and the comment. The action
+never posts a score or badge, and its summary says what a clean report does and does not mean.
+
+Without the action, the same thing in plain shell. Install the CLI and its browser once per job,
+then audit:
 
 ```bash
 npm i -g a11y-loop
@@ -743,7 +818,7 @@ built from the finding, its measured values and its evidence tier.
 
 ```bash
 npm install
-npx playwright install chromium   # once, or after a Playwright version bump
+node src/cli.js install-browser   # once, or after a Playwright version bump
 
 npm test                # full suite
 npm run test:unit       # unit tests only

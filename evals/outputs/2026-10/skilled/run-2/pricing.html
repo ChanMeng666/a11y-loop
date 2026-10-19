@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pricing</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f5fb;--text:#1a1a2e;--muted:#4b5563;--accent:#4338ca;--on-accent:#fff;--border:#6b7280;--line:#d1d5db;--ok:#166534;--bad:#b91c1c;--focus:#1d4ed8}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#e5e7eb;--muted:#a8b0be;--accent:#a5b4fc;--on-accent:#0f172a;--border:#94a3b8;--line:#334155;--ok:#86efac;--bad:#fca5a5;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--accent);color:var(--on-accent);padding:.6rem 1rem;border-radius:.4rem;z-index:100}
+.skip:focus{top:.5rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.6rem 1.25rem;border-radius:.6rem;border:2px solid var(--accent);background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+@media (forced-colors:active){.btn{border-color:ButtonText}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:70rem;margin:0 auto;padding:3rem 1.25rem}
+header.intro{text-align:center;margin-bottom:2.5rem}
+h1{font-size:2.2rem;margin:0 0 .5rem}
+.intro p{color:var(--muted);margin:0}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1.5rem;list-style:none;padding:0;margin:0;align-items:stretch}
+.tier{background:var(--surface);border:2px solid var(--line);border-radius:1rem;padding:2rem;display:flex;flex-direction:column;position:relative}
+.tier.featured{border-color:var(--accent);box-shadow:0 12px 32px rgb(67 56 202/.25)}
+.badge{align-self:flex-start;background:var(--accent);color:var(--on-accent);font-size:.85rem;font-weight:700;padding:.2rem .7rem;border-radius:99px;margin-bottom:.5rem}
+h2{margin:0 0 .25rem;font-size:1.4rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.price{font-size:2.5rem;font-weight:800;margin:.5rem 0}
+.price small{font-size:1rem;font-weight:400;color:var(--muted)}
+.desc{color:var(--muted);margin:0 0 1rem}
+.features{list-style:none;padding:0;margin:0 0 1.5rem;flex:1}
+.features li{padding:.4rem 0 .4rem 1.75rem;position:relative}
+.features li::before{content:"\2713";position:absolute;left:0;color:var(--ok);font-weight:700}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <header class="intro">
+    <h1>Simple, transparent pricing</h1>
+    <p>Pick the plan that fits your team. Change or cancel any time.</p>
+  </header>
+  <ul class="tiers">
+    <li class="tier">
+      <h2 id="t-starter">Starter</h2>
+      <p class="desc">For individuals getting going.</p>
+      <p class="price">$9 <small>per month</small></p>
+      <ul class="features"><li>1 project</li><li>Basic analytics</li><li>Community support</li><li>1 GB storage</li></ul>
+      <a class="btn secondary" href="#starter">Get started<span class="sr"> with Starter</span></a>
+    </li>
+    <li class="tier featured">
+      <span class="badge">Most popular</span>
+      <h2 id="t-pro">Pro</h2>
+      <p class="desc">For growing teams.</p>
+      <p class="price">$29 <small>per month</small></p>
+      <ul class="features"><li>Unlimited projects</li><li>Advanced analytics</li><li>Priority email support</li><li>100 GB storage</li><li>Team collaboration</li></ul>
+      <a class="btn" href="#pro">Start free trial<span class="sr"> on Pro</span></a>
+    </li>
+    <li class="tier">
+      <h2 id="t-ent">Enterprise</h2>
+      <p class="desc">For organisations at scale.</p>
+      <p class="price">Custom</p>
+      <ul class="features"><li>Everything in Pro</li><li>Single sign-on (SSO)</li><li>Dedicated account manager</li><li>99.99% uptime SLA</li><li>Unlimited storage</li></ul>
+      <a class="btn secondary" href="#enterprise">Contact sales<span class="sr"> about Enterprise</span></a>
+    </li>
+  </ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site header</title>
+<style>
+:root{--bg:#fff;--surface:#f1f5f9;--text:#111827;--muted:#4b5563;--line:#cbd5e1;--primary:#4338ca;--on-primary:#fff;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--line:#334155;--primary:#a5b4fc;--on-primary:#0f172a;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+header{border-bottom:1px solid var(--line);background:var(--bg);position:relative}
+.bar{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:1.4rem;color:var(--primary);text-decoration:none;margin-right:auto;padding:6px 0}
+.links{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.links a,.drawer a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;color:var(--text);text-decoration:none;font-weight:500;border-radius:8px}
+.links a:hover,.drawer a:hover{background:var(--surface)}
+.links a[aria-current=page],.drawer a[aria-current=page]{color:var(--primary);font-weight:700;text-decoration:underline;text-underline-offset:6px}
+.icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--text);border-radius:8px;cursor:pointer}
+.icon-btn:hover{background:var(--surface)}
+.icon-btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.menu-btn{display:none}
+.drawer{display:none;border-top:1px solid var(--line);background:var(--bg);padding:8px 20px 16px}
+.drawer ul{list-style:none;margin:0;padding:0}
+.drawer a{display:flex}
+.search{display:none;max-width:1200px;margin:0 auto;padding:0 20px 12px}
+.search.open{display:block}
+.search label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.search input{width:100%;min-height:44px;padding:8px 12px;font:inherit;color:var(--text);background:var(--bg);border:2px solid var(--muted);border-radius:10px}
+main{max-width:1200px;margin:0 auto;padding:48px 20px}
+@media (max-width:760px){.links{display:none}.menu-btn{display:inline-flex}.drawer.open{display:block}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+<div class="bar">
+<a class="logo" href="#home">Acme</a>
+<nav aria-label="Main" class="links-nav">
+<ul class="links">
+<li><a href="#home" aria-current="page">Home</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+<button type="button" class="icon-btn" id="search-btn" aria-expanded="false" aria-controls="search"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr-only">Search</span></button>
+<button type="button" class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="sr-only">Menu</span></button>
+</div>
+<div class="search" id="search" role="search"><label for="q">Search the site</label><input type="search" id="q" name="q" autocomplete="off"></div>
+<nav class="drawer" id="drawer" aria-label="Mobile">
+<ul>
+<li><a href="#home" aria-current="page">Home</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+</header>
+<main id="main">
+<h1>Welcome to Acme</h1>
+<p>Page content goes here. Use the navigation above to explore.</p>
+</main>
+<script>
+const mb=document.getElementById('menu-btn'),dr=document.getElementById('drawer'),sb=document.getElementById('search-btn'),sr=document.getElementById('search');
+function setMenu(o){mb.setAttribute('aria-expanded',o);dr.classList.toggle('open',o)}
+mb.addEventListener('click',()=>setMenu(mb.getAttribute('aria-expanded')!=='true'));
+sb.addEventListener('click',()=>{const o=sb.getAttribute('aria-expanded')!=='true';sb.setAttribute('aria-expanded',o);sr.classList.toggle('open',o);if(o)document.getElementById('q').focus()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+if(mb.getAttribute('aria-expanded')==='true'){setMenu(false);mb.focus()}
+else if(sb.getAttribute('aria-expanded')==='true'){sb.setAttribute('aria-expanded','false');sr.classList.remove('open');sb.focus()}});
+</script>
+</body>
+</html>

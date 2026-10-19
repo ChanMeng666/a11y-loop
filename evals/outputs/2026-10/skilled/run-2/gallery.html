@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer stories</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f5fb;--text:#1a1a2e;--muted:#4b5563;--accent:#4338ca;--on-accent:#fff;--border:#6b7280;--line:#d1d5db;--ok:#166534;--bad:#b91c1c;--focus:#1d4ed8}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#e5e7eb;--muted:#a8b0be;--accent:#a5b4fc;--on-accent:#0f172a;--border:#94a3b8;--line:#334155;--ok:#86efac;--bad:#fca5a5;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--accent);color:var(--on-accent);padding:.6rem 1rem;border-radius:.4rem;z-index:100}
+.skip:focus{top:.5rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.6rem 1.25rem;border-radius:.6rem;border:2px solid var(--accent);background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+@media (forced-colors:active){.btn{border-color:ButtonText}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:72rem;margin:0 auto;padding:3rem 1.25rem}
+h1{font-size:2.2rem;margin:0 0 .5rem;text-align:center}
+.sub{text-align:center;color:var(--muted);margin:0 0 2.5rem}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:1.5rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column;height:100%}
+.card svg{display:block;width:100%;height:auto}
+.body{padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;flex:1}
+h2{margin:0;font-size:1.15rem}
+blockquote{margin:0;color:var(--muted);flex:1}
+blockquote p{margin:0}
+.card a{color:var(--accent);font-weight:600;display:inline-block;padding:.5rem 0;min-height:24px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <h1>Customer stories</h1>
+  <p class="sub">See how teams like yours get results.</p>
+  <ul class="grid" id="grid"></ul>
+</main>
+<script>
+const people=[
+ ['Maria Lopez','Setup took an afternoon and our support tickets dropped by a third.','#6d28d9'],
+ ['Kenji Tanaka','The reporting alone paid for the subscription in the first month.','#0f766e'],
+ ['Amara Okafor','Our whole team was productive from day one. No training needed.','#b45309'],
+ ['Liam O’Connor','Reliable, fast, and the support team actually answers.','#be123c'],
+ ['Sofia Rossi','We moved our entire workflow over in a weekend.','#1d4ed8'],
+ ['Priya Nair','Finally a tool that scales with us instead of against us.','#4d7c0f']];
+const g=document.getElementById('grid');
+people.forEach(([n,q,c],i)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<article class="card">
+  <svg viewBox="0 0 320 180" role="img" aria-label="DRAFT: placeholder portrait for ${n}"><rect width="320" height="180" fill="${c}"/><circle cx="160" cy="75" r="34" fill="#fff" opacity=".9"/><path d="M90 180c0-45 31-65 70-65s70 20 70 65z" fill="#fff" opacity=".9"/></svg>
+  <div class="body"><h2>${n}</h2><blockquote><p>“${q}”</p></blockquote>
+  <a href="#story-${i+1}">Read ${n}’s full story</a></div></article>`;
+  g.appendChild(li);
+});
+</script>
+</body>
+</html>

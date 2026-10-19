@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer stories</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#111827;--muted:#4b5563;--line:#d1d5db;--link:#4338ca;--focus:#4338ca}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--line:#475569;--link:#a5b4fc;--focus:#a5b4fc}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+.skip{position:absolute;left:-999px;top:0;background:var(--card);color:var(--text);padding:.5rem 1rem;z-index:10}
+.skip:focus{left:1rem;top:1rem}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+main{max-width:72rem;margin:0 auto;padding:3rem 1rem}
+h1{font-size:2.25rem;margin:0 0 .5rem;line-height:1.2;text-align:center}
+.sub{text-align:center;color:var(--muted);margin:0 0 2.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(18rem,100%),1fr));gap:1.5rem;list-style:none;padding:0;margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column;height:100%;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.15)}
+.card svg.photo{display:block;width:100%;height:11rem}
+.body{padding:1.25rem;display:flex;flex-direction:column;flex:1}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+blockquote{margin:0 0 1rem;color:var(--muted);flex:1}
+.more{color:var(--link);font-weight:700;text-underline-offset:.2em;display:inline-block;min-height:1.5rem}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <h1>Customer stories</h1>
+  <p class="sub">See how teams around the world use our product.</p>
+  <ul class="grid">
+    <li><article class="card">
+      <svg class="photo" viewBox="0 0 320 176" aria-hidden="true" focusable="false"><rect width="320" height="176" fill="#6366f1"/><circle cx="160" cy="72" r="32" fill="#e0e7ff"/><path d="M90 176c0-44 32-64 70-64s70 20 70 64z" fill="#e0e7ff"/></svg>
+      <div class="body">
+        <h2 id="s1">Amara Okafor</h2>
+        <blockquote><p>We cut our onboarding time in half within the first month.</p></blockquote>
+        <a class="more" id="m1" href="#story-amara" aria-labelledby="m1 s1">Read full story</a>
+      </div>
+    </article></li>
+    <li><article class="card">
+      <svg class="photo" viewBox="0 0 320 176" aria-hidden="true" focusable="false"><rect width="320" height="176" fill="#0d9488"/><circle cx="160" cy="72" r="32" fill="#ccfbf1"/><path d="M90 176c0-44 32-64 70-64s70 20 70 64z" fill="#ccfbf1"/></svg>
+      <div class="body">
+        <h2 id="s2">Liam Chen</h2>
+        <blockquote><p>Support is fast and the dashboards finally make sense to our whole team.</p></blockquote>
+        <a class="more" id="m2" href="#story-liam" aria-labelledby="m2 s2">Read full story</a>
+      </div>
+    </article></li>
+    <li><article class="card">
+      <svg class="photo" viewBox="0 0 320 176" aria-hidden="true" focusable="false"><rect width="320" height="176" fill="#d97706"/><circle cx="160" cy="72" r="32" fill="#fef3c7"/><path d="M90 176c0-44 32-64 70-64s70 20 70 64z" fill="#fef3c7"/></svg>
+      <div class="body">
+        <h2 id="s3">Sofia Martins</h2>
+        <blockquote><p>Migrating took one weekend. We have not looked back since.</p></blockquote>
+        <a class="more" id="m3" href="#story-sofia" aria-labelledby="m3 s3">Read full story</a>
+      </div>
+    </article></li>
+    <li><article class="card">
+      <svg class="photo" viewBox="0 0 320 176" aria-hidden="true" focusable="false"><rect width="320" height="176" fill="#be185d"/><circle cx="160" cy="72" r="32" fill="#fce7f3"/><path d="M90 176c0-44 32-64 70-64s70 20 70 64z" fill="#fce7f3"/></svg>
+      <div class="body">
+        <h2 id="s4">Hiroshi Tanaka</h2>
+        <blockquote><p>The reporting alone paid for the subscription in a single quarter.</p></blockquote>
+        <a class="more" id="m4" href="#story-hiroshi" aria-labelledby="m4 s4">Read full story</a>
+      </div>
+    </article></li>
+    <li><article class="card">
+      <svg class="photo" viewBox="0 0 320 176" aria-hidden="true" focusable="false"><rect width="320" height="176" fill="#15803d"/><circle cx="160" cy="72" r="32" fill="#dcfce7"/><path d="M90 176c0-44 32-64 70-64s70 20 70 64z" fill="#dcfce7"/></svg>
+      <div class="body">
+        <h2 id="s5">Priya Raman</h2>
+        <blockquote><p>Our customers noticed the difference right away, and so did our revenue.</p></blockquote>
+        <a class="more" id="m5" href="#story-priya" aria-labelledby="m5 s5">Read full story</a>
+      </div>
+    </article></li>
+    <li><article class="card">
+      <svg class="photo" viewBox="0 0 320 176" aria-hidden="true" focusable="false"><rect width="320" height="176" fill="#1d4ed8"/><circle cx="160" cy="72" r="32" fill="#dbeafe"/><path d="M90 176c0-44 32-64 70-64s70 20 70 64z" fill="#dbeafe"/></svg>
+      <div class="body">
+        <h2 id="s6">Jack Thompson</h2>
+        <blockquote><p>Simple to set up, powerful when you need it. Exactly what we wanted.</p></blockquote>
+        <a class="more" id="m6" href="#story-jack" aria-labelledby="m6 s6">Read full story</a>
+      </div>
+    </article></li>
+  </ul>
+</main>
+</body>
+</html>

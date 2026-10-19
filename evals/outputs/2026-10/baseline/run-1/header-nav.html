@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header Navigation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #0f172a; min-height: 100vh; background: #f8fafc; }
+  header { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .bar { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 24px; }
+  .logo { font-weight: 800; font-size: 1.35rem; color: #4f46e5; text-decoration: none; letter-spacing: -.02em; }
+  nav.desktop { margin-left: auto; }
+  nav ul { list-style: none; margin: 0; padding: 0; }
+  nav.desktop ul { display: flex; gap: 28px; }
+  nav a { color: #334155; text-decoration: none; font-weight: 500; }
+  nav.desktop a:hover { color: #4f46e5; }
+  .icon-btn { background: none; border: 0; width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; cursor: pointer; color: #334155; }
+  .icon-btn:hover { background: #f1f5f9; }
+  a:focus-visible, button:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 2px; }
+  .icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+  .burger { display: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(15,23,42,.45); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; z-index: 30; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(80vw, 320px); background: #fff; z-index: 40; padding: 16px 24px; transform: translateX(100%); visibility: hidden; transition: transform .25s, visibility .25s; box-shadow: -10px 0 30px rgba(0,0,0,.15); }
+  .drawer .close { margin-left: auto; display: grid; }
+  .drawer ul { margin-top: 16px; }
+  .drawer a { display: block; padding: 14px 0; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; }
+  body.open .scrim { opacity: 1; visibility: visible; }
+  body.open .drawer { transform: none; visibility: visible; }
+  @media (max-width: 760px) {
+    nav.desktop { display: none; }
+    .burger { display: grid; }
+    .search { margin-left: auto; }
+  }
+  main { max-width: 1120px; margin: 0 auto; padding: 48px 24px; color: #64748b; }
+  @media (prefers-reduced-motion: reduce) { .drawer, .scrim { transition: none; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="logo" href="#">Acme</a>
+    <nav class="desktop" aria-label="Main">
+      <ul>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="icon-btn search" type="button" aria-label="Search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </button>
+    <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Mobile menu">
+  <button class="icon-btn close" id="close" type="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+  <nav aria-label="Mobile">
+    <ul>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#solutions">Solutions</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main><p>Page content goes here. Resize the window below 760px to see the hamburger menu.</p></main>
+
+<script>
+  const body = document.body, burger = document.getElementById('burger'), drawer = document.getElementById('drawer');
+  function setOpen(open) {
+    body.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    drawer.inert = !open;
+    (open ? document.getElementById('close') : burger).focus();
+  }
+  drawer.inert = true;
+  burger.addEventListener('click', () => setOpen(true));
+  document.getElementById('close').addEventListener('click', () => setOpen(false));
+  document.getElementById('scrim').addEventListener('click', () => setOpen(false));
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && body.classList.contains('open')) setOpen(false); });
+  matchMedia('(min-width: 761px)').addEventListener('change', e => { if (e.matches && body.classList.contains('open')) { body.classList.remove('open'); burger.setAttribute('aria-expanded', false); drawer.inert = true; } });
+</script>
+</body>
+</html>

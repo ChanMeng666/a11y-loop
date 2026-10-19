@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acme Blog</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#111827;--muted:#4b5563;--border:#6b7280;--primary:#4338ca;--on-primary:#fff;--error:#b91c1c;--ok:#166534;--focus:#4338ca;--hover:#e0e7ff}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--border:#94a3b8;--primary:#a5b4fc;--on-primary:#1e1b4b;--error:#fca5a5;--ok:#86efac;--focus:#a5b4fc;--hover:#334155}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+.skip{position:absolute;left:-999px;top:0;background:var(--card);color:var(--text);padding:.5rem 1rem;z-index:10}
+.skip:focus{left:1rem;top:1rem}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+main{max-width:42rem;margin:0 auto;padding:4rem 1rem;text-align:center}
+h1{font-size:2.25rem;margin:0 0 .75rem;line-height:1.2}
+main p{color:var(--muted);margin:0 0 2rem}
+.btn{min-height:2.75rem;padding:.6rem 1.5rem;border:0;border-radius:.5rem;font:inherit;font-weight:700;background:var(--primary);color:var(--on-primary);cursor:pointer}
+dialog{width:min(26rem,calc(100% - 2rem));border:0;border-radius:1rem;padding:2rem;background:var(--card);color:var(--text);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog[open]{animation:pop .2s ease-out}
+@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+dialog h2{margin:0 2rem .5rem 0;font-size:1.4rem}
+dialog p{margin:0 0 1.25rem}
+.close{position:absolute;top:.75rem;right:.75rem;width:2.75rem;height:2.75rem;display:grid;place-items:center;border:0;border-radius:.5rem;background:transparent;color:var(--text);cursor:pointer}
+.close:hover{background:var(--hover)}
+.close svg{width:1.25rem;height:1.25rem}
+label{display:block;font-weight:600;margin-bottom:.35rem}
+input[type=email]{width:100%;min-height:2.75rem;padding:.55rem .75rem;font:inherit;color:var(--text);background:var(--card);border:2px solid var(--border);border-radius:.5rem}
+input[aria-invalid=true]{border-color:var(--error)}
+.error{margin:.3rem 0 0;font-size:.875rem;color:var(--error);font-weight:600}
+dialog .btn{width:100%;margin-top:1rem}
+.status{margin-top:1rem;font-weight:600;color:var(--ok)}
+@media (prefers-reduced-motion:reduce){dialog[open]{animation:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <h1>Stay in the loop</h1>
+  <p>Get our best articles delivered to your inbox every week.</p>
+  <button type="button" class="btn" id="open" aria-controls="dlg">Subscribe</button>
+  <p class="status" id="page-status" role="status"></p>
+</main>
+
+<dialog id="dlg" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+  <button type="button" class="close" id="close" aria-label="Close dialog">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+  <h2 id="dlg-title">Subscribe to our newsletter</h2>
+  <p id="dlg-desc">Enter your email and we will send you a confirmation link.</p>
+  <form id="form" novalidate>
+    <label for="email">Email address</label>
+    <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-err">
+    <p class="error" id="email-err"></p>
+    <button type="submit" class="btn">Subscribe</button>
+  </form>
+</dialog>
+
+<script>
+const dlg=document.getElementById('dlg'),opener=document.getElementById('open'),form=document.getElementById('form');
+const email=document.getElementById('email'),err=document.getElementById('email-err'),ps=document.getElementById('page-status');
+opener.addEventListener('click',()=>{ps.textContent='';dlg.showModal()});
+document.getElementById('close').addEventListener('click',()=>dlg.close());
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+dlg.addEventListener('close',()=>{err.textContent='';email.removeAttribute('aria-invalid');form.reset();opener.focus()});
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value)){
+    err.textContent='Enter a valid email address, like name@example.com.';
+    email.setAttribute('aria-invalid','true');email.focus();return;
+  }
+  const v=email.value;dlg.close();
+  ps.textContent='Thanks! A confirmation link is on its way to '+v+'.';
+});
+</script>
+</body>
+</html>

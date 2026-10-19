@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer Stories</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f6f7fb;color:#1b1f2a;padding:48px 16px}
+h1{text-align:center;margin:0 0 32px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:1040px;margin:auto}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(20,30,80,.1);display:flex;flex-direction:column}
+.card svg{width:100%;height:170px;display:block}.body{padding:20px;display:flex;flex-direction:column;flex:1}
+h2{margin:0 0 8px;font-size:1.1rem}blockquote{margin:0 0 16px;color:#3c4458;flex:1}
+a{color:#2540d9;font-weight:600}a:focus-visible{outline:3px solid #2540d9;outline-offset:2px}
+</style></head><body>
+<h1>Customer stories</h1>
+<div class="grid" id="g"></div>
+<script>
+const data=[["Maya Patel","Setup took ten minutes and our team never looked back.","#6c8cff"],["Jonas Weber","We cut reporting time in half in the first month.","#ff8a65"],["Aiko Tanaka","Support is the best we have ever experienced.","#4dd0a0"],["Luis Ortega","It scaled with us from 3 people to 300.","#b37cff"],["Sara Johansson","Finally a tool our whole company actually uses.","#ffc24d"],["Omar Haddad","The ROI was obvious by the end of the quarter.","#4db8ff"]];
+document.getElementById('g').innerHTML=data.map(([n,q,c])=>`<article class="card"><svg viewBox="0 0 300 170" role="img" aria-label="Photo of ${n}"><rect width="300" height="170" fill="${c}"/><circle cx="150" cy="70" r="30" fill="#fff" opacity=".85"/><path d="M90 170c0-40 25-60 60-60s60 20 60 60z" fill="#fff" opacity=".85"/></svg><div class="body"><h2>${n}</h2><blockquote>&ldquo;${q}&rdquo;</blockquote><a href="#">Read ${n}'s full story</a></div></article>`).join('');
+</script></body></html>

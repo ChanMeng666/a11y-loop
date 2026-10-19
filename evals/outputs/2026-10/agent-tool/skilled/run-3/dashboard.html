@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics dashboard</title>
+<style>
+:root{--bg:#f6f7fb;--surface:#fff;--text:#1a1d23;--muted:#4b5563;--border:#6b7280;--line:#d6dae2;--accent:#1d4ed8;--on-accent:#fff;--accent-soft:#e8eefc;--error:#b42318;--ok:#0a6b3d;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b23;--text:#eceef2;--muted:#b0b8c5;--border:#8d96a5;--line:#2c333f;--accent:#8fb0ff;--on-accent:#0b1020;--accent-soft:#1d2740;--error:#ff9b8f;--ok:#6fdc9f;--focus:#8fb0ff}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:1100px;margin:0 auto;padding:40px 16px}
+h1{font-size:2rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 28px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;list-style:none;padding:0;margin:0 0 36px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;height:100%}
+.tile .num{font-size:2.1rem;font-weight:800;margin:0;line-height:1.2}
+.tile .lbl{color:var(--muted);margin:2px 0 12px}
+.trend{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem;padding:3px 10px;border-radius:99px}
+.trend svg{width:16px;height:16px}
+.up{color:var(--ok);background:var(--accent-soft)}
+.down{color:var(--error);background:var(--accent-soft)}
+h2{font-size:1.3rem;margin:0 0 14px}
+.activity{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.activity li{display:flex;gap:14px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
+.activity li:last-child{border-bottom:0}
+.av{flex:none;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:700}
+.act{flex:1}
+.act p{margin:0}
+.act .t{color:var(--muted);font-size:.875rem}
+</style></head><body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<h1>Analytics overview</h1><p class="sub">Last 30 days compared with the previous 30 days.</p>
+<section aria-labelledby="sh"><h2 id="sh">Key metrics</h2>
+<ul class="stats">
+<li class="tile"><p class="num">48,210</p><p class="lbl">Visitors</p><span class="trend up"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 13V3M3 7l5-5 5 5"/></svg>Up 12.4%</span></li>
+<li class="tile"><p class="num">3,482</p><p class="lbl">Sign-ups</p><span class="trend up"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 13V3M3 7l5-5 5 5"/></svg>Up 5.1%</span></li>
+<li class="tile"><p class="num">$18,940</p><p class="lbl">Revenue</p><span class="trend down"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3v10M3 9l5 5 5-5"/></svg>Down 2.3%</span></li>
+<li class="tile"><p class="num">2.8%</p><p class="lbl">Churn rate</p><span class="trend up"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3v10M3 9l5 5 5-5"/></svg>Down 0.4 points (better)</span></li>
+</ul></section>
+<section aria-labelledby="ah"><h2 id="ah">Recent activity</h2>
+<ul class="activity">
+<li><span class="av" aria-hidden="true">AO</span><div class="act"><p>Amara Okafor upgraded to the Pro plan</p><p class="t">12 minutes ago</p></div></li>
+<li><span class="av" aria-hidden="true">LC</span><div class="act"><p>Liam Chen invited 3 teammates</p><p class="t">1 hour ago</p></div></li>
+<li><span class="av" aria-hidden="true">SA</span><div class="act"><p>Sofia Alvarez exported the monthly report</p><p class="t">3 hours ago</p></div></li>
+<li><span class="av" aria-hidden="true">NF</span><div class="act"><p>Noah Fischer connected a new data source</p><p class="t">Yesterday</p></div></li>
+<li><span class="av" aria-hidden="true">PN</span><div class="act"><p>Priya Nair cancelled a subscription</p><p class="t">Yesterday</p></div></li>
+</ul></section></main></body></html>

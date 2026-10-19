@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acme - Home</title>
+<style>
+:root{--bg:#f8fafc;--bar:#fff;--text:#111827;--muted:#4b5563;--line:#d1d5db;--primary:#4338ca;--on-primary:#fff;--focus:#4338ca;--hover:#e0e7ff}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--bar:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--line:#475569;--primary:#a5b4fc;--on-primary:#1e1b4b;--focus:#a5b4fc;--hover:#334155}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+.skip{position:absolute;left:-999px;top:0;background:var(--bar);color:var(--text);padding:.5rem 1rem;z-index:100}
+.skip:focus{left:1rem;top:1rem}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+header{background:var(--bar);border-bottom:1px solid var(--line);position:relative}
+.bar{max-width:72rem;margin:0 auto;padding:.5rem 1rem;display:flex;align-items:center;gap:1rem}
+.logo{font-weight:800;font-size:1.4rem;color:var(--primary);text-decoration:none;margin-right:auto;padding:.25rem 0}
+.nav-list{display:flex;gap:.25rem;list-style:none;margin:0;padding:0}
+.nav-list a{display:block;padding:.6rem .9rem;border-radius:.5rem;color:var(--text);text-decoration:none;font-weight:600;min-height:2.75rem}
+.nav-list a:hover{background:var(--hover)}
+.nav-list a[aria-current=page]{box-shadow:inset 0 -3px 0 var(--primary)}
+.icon-btn{display:inline-grid;place-items:center;width:2.75rem;height:2.75rem;border:0;border-radius:.5rem;background:transparent;color:var(--text);cursor:pointer}
+.icon-btn:hover{background:var(--hover)}
+.icon-btn svg{width:1.4rem;height:1.4rem}
+#menu-btn{display:none}
+.drawer{display:none}
+.search{display:none;border-top:1px solid var(--line);padding:.75rem 1rem}
+.search.open{display:block}
+.search form{max-width:72rem;margin:0 auto;display:flex;gap:.5rem}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.search input{flex:1;min-height:2.75rem;padding:.5rem .75rem;font:inherit;color:var(--text);background:var(--bar);border:2px solid var(--muted);border-radius:.5rem}
+.search button{min-height:2.75rem;padding:0 1rem;border:0;border-radius:.5rem;background:var(--primary);color:var(--on-primary);font:inherit;font-weight:700;cursor:pointer}
+main{max-width:72rem;margin:0 auto;padding:3rem 1rem}
+h1{font-size:2rem;margin:0 0 .5rem}
+main p{color:var(--muted)}
+@media (max-width:48rem){
+  .nav-list{display:none}
+  #menu-btn{display:inline-grid}
+  .drawer.open{display:block;border-top:1px solid var(--line);background:var(--bar)}
+  .drawer ul{list-style:none;margin:0;padding:.5rem 1rem 1rem}
+  .drawer a{display:block;padding:.8rem .5rem;color:var(--text);text-decoration:none;font-weight:600;border-radius:.5rem;min-height:2.75rem}
+  .drawer a:hover{background:var(--hover)}
+  .drawer a[aria-current=page]{box-shadow:inset 4px 0 0 var(--primary)}
+}
+@media (min-width:48.01rem){.drawer.open{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header>
+  <div class="bar">
+    <a class="logo" href="#home">Acme</a>
+    <nav aria-label="Main" id="main-nav">
+      <ul class="nav-list">
+        <li><a href="#home" aria-current="page">Home</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button type="button" class="icon-btn" id="search-btn" aria-label="Search" aria-expanded="false" aria-controls="search-panel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="drawer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div class="search" id="search-panel" role="search">
+    <form action="#" onsubmit="return false">
+      <label for="q" class="vh">Search the site</label>
+      <input type="search" id="q" name="q" autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <nav class="drawer" id="drawer" aria-label="Mobile">
+    <ul>
+      <li><a href="#home" aria-current="page">Home</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+<main id="main">
+  <h1>Welcome to Acme</h1>
+  <p>Resize the window below 768px to see the hamburger menu and mobile drawer.</p>
+</main>
+<script>
+const menuBtn=document.getElementById('menu-btn'),drawer=document.getElementById('drawer');
+const searchBtn=document.getElementById('search-btn'),panel=document.getElementById('search-panel'),q=document.getElementById('q');
+function setMenu(open){drawer.classList.toggle('open',open);menuBtn.setAttribute('aria-expanded',open)}
+function setSearch(open){panel.classList.toggle('open',open);searchBtn.setAttribute('aria-expanded',open);if(open)q.focus()}
+menuBtn.addEventListener('click',()=>setMenu(menuBtn.getAttribute('aria-expanded')!=='true'));
+searchBtn.addEventListener('click',()=>setSearch(searchBtn.getAttribute('aria-expanded')!=='true'));
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if(menuBtn.getAttribute('aria-expanded')==='true'){setMenu(false);menuBtn.focus()}
+  else if(searchBtn.getAttribute('aria-expanded')==='true'){setSearch(false);searchBtn.focus()}
+});
+matchMedia('(min-width:48.01rem)').addEventListener('change',e=>{if(e.matches)setMenu(false)});
+</script>
+</body>
+</html>

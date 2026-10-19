@@ -1,0 +1,15 @@
+ruleArchive: latest
+policies:
+  - IBM_Accessibility
+failLevels:
+  - violation
+reportLevels:
+  - violation
+  - potentialviolation
+  - recommendation
+  - potentialrecommendation
+  - manual
+outputFormat:
+  - json
+outputFolder: results
+headless: shell

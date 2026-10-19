@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics Dashboard</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f1f5f9;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#0f172a}
+  section{max-width:1000px;margin:0 auto;padding:48px 24px}
+  h1{margin:0 0 4px;font-size:1.7rem}
+  .sub{margin:0 0 28px;color:#64748b}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+  .tile{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(15,23,42,.08)}
+  .label{color:#64748b;font-size:.85rem;margin-bottom:6px}
+  .num{font-size:2rem;font-weight:700;margin-bottom:6px}
+  .trend{font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+  .up{color:#15803d}
+  .down{color:#b91c1c}
+  .trend span{font-weight:400;color:#64748b}
+  .panel{background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 1px 4px rgba(15,23,42,.08)}
+  h2{margin:0 0 12px;font-size:1.1rem}
+  ul{list-style:none;margin:0;padding:0}
+  li{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #f1f5f9}
+  li:first-child{border-top:0}
+  .avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;font-size:.85rem;flex:none}
+  .txt{flex:1;font-size:.95rem}
+  time{color:#94a3b8;font-size:.8rem;white-space:nowrap}
+</style>
+</head>
+<body>
+<section>
+  <h1>Overview</h1>
+  <p class="sub">Last 30 days</p>
+  <div class="stats">
+    <div class="tile">
+      <div class="label">Total revenue</div>
+      <div class="num">$48,290</div>
+      <div class="trend up">▲ 12.4% <span>vs last month</span></div>
+    </div>
+    <div class="tile">
+      <div class="label">Active users</div>
+      <div class="num">8,421</div>
+      <div class="trend up">▲ 5.1% <span>vs last month</span></div>
+    </div>
+    <div class="tile">
+      <div class="label">Conversion rate</div>
+      <div class="num">3.8%</div>
+      <div class="trend down">▼ 0.6% <span>vs last month</span></div>
+    </div>
+    <div class="tile">
+      <div class="label">Churn</div>
+      <div class="num">1.9%</div>
+      <div class="trend up">▼ 0.3% <span>improved</span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Recent activity</h2>
+    <ul>
+      <li><div class="avatar" style="background:#6366f1">MA</div><div class="txt"><strong>Maria Alvarez</strong> upgraded to Pro</div><time>2 min ago</time></li>
+      <li><div class="avatar" style="background:#0ea5e9">DO</div><div class="txt"><strong>Daniel Okafor</strong> invited 3 teammates</div><time>18 min ago</time></li>
+      <li><div class="avatar" style="background:#10b981">PN</div><div class="txt"><strong>Priya Nair</strong> exported a report</div><time>1 hr ago</time></li>
+      <li><div class="avatar" style="background:#f59e0b">LW</div><div class="txt"><strong>Lukas Weber</strong> cancelled a subscription</div><time>3 hr ago</time></li>
+      <li><div class="avatar" style="background:#ec4899">AT</div><div class="txt"><strong>Aiko Tanaka</strong> signed up</div><time>Yesterday</time></li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f3f4f8;color:#1b1f2a;padding:32px 16px}
+.wrap{max-width:960px;margin:auto}h1{margin:0 0 20px}h2{font-size:1.1rem;margin:0 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.tile,.panel{background:#fff;border-radius:14px;padding:20px;box-shadow:0 3px 12px rgba(20,30,80,.08)}
+.num{font-size:2rem;font-weight:800}.lbl{color:#4a5163;margin:2px 0 8px}
+.up{color:#0b6b2e}.down{color:#b3261e}.trend{font-weight:600;font-size:.9rem}
+ul{list-style:none;margin:0;padding:0}li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #e3e6ef}li:first-child{border-top:0}
+time{color:#4a5163;font-size:.85rem;white-space:nowrap}
+</style></head><body><div class="wrap">
+<h1>Analytics overview</h1>
+<section class="tiles" aria-label="Key stats">
+<div class="tile"><div class="num">12,480</div><div class="lbl">Visitors</div><div class="trend up">&#9650; 12.4% <span>up from last week</span></div></div>
+<div class="tile"><div class="num">3.8%</div><div class="lbl">Conversion rate</div><div class="trend up">&#9650; 0.6% <span>up from last week</span></div></div>
+<div class="tile"><div class="num">$24.1k</div><div class="lbl">Revenue</div><div class="trend down">&#9660; 2.1% <span>down from last week</span></div></div>
+<div class="tile"><div class="num">142</div><div class="lbl">Open tickets</div><div class="trend down">&#9660; 8 <span>down from last week</span></div></div>
+</section>
+<section class="panel" aria-labelledby="ra"><h2 id="ra">Recent activity</h2>
+<ul><li><span>Maya Patel upgraded to Pro</span><time datetime="2026-10-20T09:14">9:14 AM</time></li>
+<li><span>New signup from Berlin</span><time datetime="2026-10-20T08:52">8:52 AM</time></li>
+<li><span>Invoice #1042 paid</span><time datetime="2026-10-19T17:30">Yesterday</time></li>
+<li><span>Support ticket #381 resolved</span><time datetime="2026-10-19T14:05">Yesterday</time></li>
+<li><span>Weekly report generated</span><time datetime="2026-10-19T06:00">Yesterday</time></li></ul></section>
+</div></body></html>
