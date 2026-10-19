@@ -258,7 +258,7 @@ The July text above (section A3) and some other repo files describe W4A'25 as sh
 
 - Abstract: "accessibility-oriented prompts increase success counts and reduce violation rates in WCAG criteria, but persistent barriers remain, particularly in semantic structure."
 - Expert evaluation (two accessibility experts, ten WCAG criteria): violation rate 58.0% with accessibility-agnostic prompts against 19.0% with accessibility-oriented prompts; average severity score 1.53 to 0.30 (-80.4%).
-- One automated tool (MAUVE++) reported 17.32% for the oriented condition against 15.93% for the agnostic one, beside higher success counts in the same table. That single sub-measure is the figure the July text quoted.
+- The 17.32% against 15.93% figure is a single cell of Table 2: the "Violation Rate (VR)" row of the automated MAUVE++ run, 17.32% for the oriented condition and 15.93% for the agnostic one, beside higher success counts for focus visibility, info and relationships, and parsing in the same table (section 4.1.1). The July text quoted this one sub-measure as if it were the paper's conclusion. The authors' own reading (section 5.1) is that "the stark difference in violation rates in our experiment indicates the effectiveness of explicit accessibility guidance integrated into prompts", and also that prompting "does not automatically translate into comprehensive implementation across all criteria".
 - Scope: one task ("design the homepage of a banking app"), two models (Claude 3.5 Haiku and GPT-4-turbo), 10 UIs per model and prompt cell (40 first-pass UIs; 80 with the self-reflection rewrites), a February 2025 snapshot. The oriented condition was a one-line prompt naming WCAG 2.1 AA requirements, not a skill and not followed by any audit.
 - No verification loop was measured, so the paper can neither show nor rule out that a loop is needed.
 
@@ -272,3 +272,47 @@ Full text and quotes are in [standards.md](standards.md) section 5.
 - **HHS Section 504.** The July text says HHS did not match the extension. It did: 91 FR 25496, published 2026-05-11, effective 2026-05-07; recipients with 15 or more employees move to **11 May 2027** and those with fewer than 15 to **10 May 2028**. Primary: <https://www.federalregister.gov/documents/2026/05/11/2026-09266/extension-of-compliance-dates-for-nondiscrimination-on-the-basis-of-disability-accessibility-of-web>.
 - **EN 301 549 V4.1.1** (WCAG 2.2 AA): online publication 2 September 2026; binding with a presumption of conformity only after citation in the Official Journal, expected 16 December 2026 per the Irish NDA (<https://nda.ie/news/en301549-published>) or about 30 November 2026 per Deque. Both dates are recorded in [standards.md](standards.md); no primary source seen settles which is right.
 - None of this supports an outcome claim about legal exposure. The honest use is a jurisdiction note with dates and an "as of" stamp.
+
+### Further competitor and platform detail (2026-10-19)
+
+Counts are GitHub stars and npm downloads for the week 2026-10-10 to 2026-10-16, read on 2026-10-19 [V] unless marked. The source research report is no longer on disk; this section preserves its figures.
+
+| Project | Detail | Source |
+|---|---|---|
+| AccessLint ecosystem | Claude plugin `accesslint@accesslint`; install `npx skills add AccessLint/skills`; hosted connector at `mcp.accesslint.com`; `@accesslint/core` 7,684 a week, `@accesslint/mcp` 654 a week, `@accesslint/cli` 0.13.0; also Jest, Vitest and Playwright matchers, a Storybook addon and `@accesslint/source` (static JSX audit). Licence type not verified | <https://github.com/AccessLint/skills> |
+| masuP9/a11y-specialist-skills | `@a11y-skills/audit` 0.15.0, 1,273 a week | <https://github.com/masuP9/a11y-specialist-skills> |
+| squirrelscan | 286 stars, 1,301 downloads a week; general website QA for agents, 300+ rules of which 61 are accessibility | <https://github.com/squirrelscan/squirrelscan> |
+| real-a11y/real-a11y-dev | 2 stars, beta; semantic tree as data: CLI, testing library, MCP, Storybook addon, Chrome extension | <https://github.com/real-a11y/real-a11y-dev> |
+| Gemini CLI extension | `gemini-cli-extensions/web-accessibility`: 85 stars, created 2025-12-12, last push 2026-02-20; dormant | <https://github.com/gemini-cli-extensions/web-accessibility> |
+| github/awesome-copilot | 40.2k stars; carries `accessibility.agent.md`, `accessibility-runtime-tester.agent.md` and `a11y.instructions.md` | <https://github.com/github/awesome-copilot> |
+| anthropics/skills, anthropics/claude-plugins-official | 182k and 42.8k stars; no accessibility skill or plugin in either on 2026-10-19 | repository trees |
+| Older axe MCP wrappers | `ronantakizawa/a11ymcp` 93 stars, `JustasMonkev/mcp-accessibility-scanner` 57, `priyankark/a11y-mcp` 53 | GitHub |
+| Adjacent UI-quality skills | `addyosmani/web-quality-skills` 2,961 stars (Lighthouse-based), `plugin87/ux-ui-agent-skills` 2,310 ("WCAG 2.2 AA-AAA"), `miqdadbadjuber/anti-slop` 6,456. Descriptions read only | GitHub |
+| MCP Registry examples that sell a score | `com.lazynext/accessibility-checker` ("weighted score"), `com.ratedwithai/accessibility-checker` ("score, grade"), `io.github.groundlogic-ai-source/accessibility-ai` ("VPAT 2.5 compliance reports"); the last is the registry entry's own wording | <https://registry.modelcontextprotocol.io> |
+| Cypress Cloud MCP | Accessibility triage support announced 2026-04-08 [V-sec] | <https://www.cypress.io/releases/cypress-cloud-mcp-accessibility-support> |
+| Evinced, Stark, Level Access, Allyant | Searches returned nothing for 2026 agent launches. Not researched beyond search; do not read this as "nothing happened" | web search |
+
+Where a11y-loop is weaker than the closest competitors, per that research: AccessLint has an independent calibration benchmark, WCAG-EM site sampling, `file:line` source mapping, test-runner matchers and hosted persistence; smukh has regression-test generation, specialist component skills, a GitHub Action and an MCP server; masuP9 has a Japanese localisation, a per-criterion knowledge base and a text-spacing check. GitHub Copilot's first-party material ("Optimizing GitHub Copilot for Accessibility with Custom Instructions", "Copilot Custom Agents for Accessibility") remains prompt-only with no verification, as the July text says.
+
+A plan-phase gate was not found in any competitor README that was read [I]; Community-Access's "enforced dispatch" is the nearest and works at the agent-routing level.
+
+### Research since July
+
+| Paper | Date | Finding | Source |
+|---|---|---|---|
+| "From Blind Edits to Verified Repair", arXiv:2608.24913 | submitted 2026-07-26 | Unverified LLM edits: 24 improvements against 20 regressions in 100 trials. A repair loop that accepts a change only if violations strictly decrease detected 57 of 57 seeded violations and rejected 126 of 126 harmful candidates. Small 7B to 14B models. Supports the design in which `diff` flags NEW findings | <https://arxiv.org/abs/2608.24913> |
+| "Agentic Web Accessibility Auditing", arXiv:2609.09379 | 2026-09-08 | Per-criterion vision-language agents on 40 WCAG requirements: recall 86% (67 of 78) against axe-core's 36%, precision only 56%; found 9 of 10 keyboard-trap cases both baselines missed. The ceiling and the precision cost of agentic audit; supports a labelled heuristic tier, not a verdict tier | <https://arxiv.org/abs/2609.09379> |
+| "LLM Based Web Accessibility Repair", arXiv:2605.27716 | 2026-05-26 | Kimi K2.5: 99.7% of fixes syntactically valid; violations per file 3.98 to 1.7; fewer than 26% fully resolved; about 30% of patches changed structure; iterative refinement cost 52% more with no gain. Argues for bounded loops and oscillation detection | <https://arxiv.org/abs/2605.27716> |
+| A11YRepair, arXiv:2606.21926 | 2026-06-20 | Clusters violations by root cause with WCAG-driven knowledge; A11YBench of 60 GitHub projects; patches merged upstream | <https://arxiv.org/abs/2606.21926> |
+| Calo, Gurita, De Russis, CHI EA '26 | 2026-04 | 541 semantic violations in 300 LLM-generated UIs; LLM-as-judge recall 80 to 92% in fault injection [V-sec] | <https://dl.acm.org/doi/10.1145/3772363.3799364> |
+| arXiv:2608.05116 and arXiv:2606.10311 | 2026-08 and 2026-06 | Visual accessibility of AI developer tools themselves; how developers engage with accessibility in LLM-assisted development. Abstracts not read | <https://arxiv.org/pdf/2608.05116>, <https://arxiv.org/html/2606.10311> |
+| WebAIM Million 2026 (February 2026 data) | 2026 | 95.9% of home pages with failures; 56.1 errors per page; low contrast 83.9%; empty links 46.3%; empty buttons 30.6%; missing form labels 51%. Pages with ARIA averaged 59.1 errors against 42.0 without, with WebAIM's own caveat that pages with more ARIA are also more complex (so the comparison is not causal). Mentions "vibe coding" as a possible contributor | <https://webaim.org/projects/million/> |
+
+No 2026 study of axe results on Lovable, v0 or Bolt output was found [I].
+
+### Regulation, further detail
+
+- **EAA enforcement.** In force since 2025-06-28. As of early October 2026 no confirmed fine under the EAA anywhere in the EU was found; enforcement so far is court orders, regulator action and private warning letters in Germany [V-sec, vendor blogs: <https://accessdrum.com/en/one-year-of-eaa-enforcement-measured-in-court-orders/>]. France: a Carrefour court order of 2026-06-04 to make site and app accessible within six months or face daily penalties (EUR 500 a day reported), rejecting a "71% compliant" defence on the reasoning that a standard is met in full or not at all; Auchan dismissed in 2026-05 on procedural grounds (turnover threshold) with the court recording that the site does not meet the standard, appeal reported. Spain: a EUR 90,000 fine on Vueling upheld (predates the EAA deadline). Norway: an inspection-based penalty of NOK 50,000 a day since 2025-12-19 (not a court order, not EAA). No case naming AI-generated code or overlays was found [I].
+- **DOJ's stated reasoning.** The DOJ said it "overestimated the capabilities (whether staffing or technology) of covered entities" and that automated remediation tools are not yet reliable enough [V-sec: <https://www.duanemorris.com/alerts/doj_extends_ada_title_ii_digital_accessibility_deadlines_one_year_0426.html>]. Litigation challenging the rule is reported by Lainey Feingold (<https://www.lflegal.com/2026/03/title-ii-action-needed/>); not confirmed here. A GAO report of 2026-05-05 treats the DOJ rule as a major rule under the Congressional Review Act (search result summary, not read).
+- **WCAG 3.0.** Latest W3C Working Draft is dated 2026-09-10 (<https://www.w3.org/TR/2026/WD-wcag-3.0-20260910/>); it "does not deprecate WCAG 2". Candidate Recommendation timing remains third-party speculation (Q4 2027 per AbilityNet); the conformance tier names could not be confirmed.
+- **EN 301 549 V4.1.1** secondary sources: <https://www.dwt.com/insights/2026/09/european-accessibility-act-ict-standards-update>, <https://www.deque.com/fr/blog/en-301-549-v4-1-1-is-final-what-changed-what-it-means-and-what-you-should-do/>.

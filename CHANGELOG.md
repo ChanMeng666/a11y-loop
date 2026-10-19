@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Stop` fires under `claude -p`, so unlike the plan gate its full round trip runs headlessly.
   The decision lives in `src/lib/audit-gate.js`, copied into the plugin by `npm run sync-plugin`.
   It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
+- **Native plugin evals.** `plugin/evals/` is a suite for `claude plugin eval` (Claude Code 2.1.269 or later): one trigger case per prompt in `trigger-evals.json` (21 should-trigger, 11 should-not) and 7 behaviour cases with graders for the plan, the APG modal and tabs contracts, the audit loop, and the honesty rules. Hand-written cases live in `skills/a11y-loop/evals/native/`; `npm run sync-plugin` generates the rest. `npm run eval:skill` runs it with and without the plugin and prints the delta. First measured results are in `evals/skill-eval-report-2026-10.md`.
 - **A composite GitHub Action** (`action.yml` at the repository root, usable as
   `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version and the
   headless-shell browser, runs `doctor` and `audit`, and writes a step summary with the totals, the
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
   `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
   run was lost. The skill's own examples use that path.
+- **The skill description now names planning and discussion, small edits, and alt text.** Measured on the new eval suite, should-trigger prompts fire the skill 74% of the time (31 of 42 runs) instead of 52% (11 of 21), with no false trigger on the should-not prompts.
 - **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
 - **Documentation synchronised with 0.3.2, read end to end against the code.** `AGENTS.md` now
   describes the three layers, every CLI subcommand with its exit codes, the CI workflows, the

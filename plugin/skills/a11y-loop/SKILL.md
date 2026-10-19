@@ -3,17 +3,16 @@ name: a11y-loop
 description: >-
   Make accessibility a decision in the plan, accessible markup the default when
   writing UI, then verify it in a real browser instead of assuming. Use when
-  planning, scoping or designing anything with a user interface — a new app or
-  page, a design system, a component library choice, a brand palette, a feature
-  roadmap — and whenever generating or modifying user interface code (HTML,
-  JSX/TSX, Vue, Svelte, Astro, CSS): forms, modals, menus, tabs, tables,
-  navigation, pricing pages, dark mode, colors. Also whenever the user asks for
-  an accessibility audit, an a11y check or fix, a WCAG review, a contrast fix,
-  or help with screen readers, keyboard navigation, focus order, ARIA, alt
-  text. Runs an audit-fix-re-audit loop with the `a11y-loop` CLI (axe-core in
-  Chromium) and reports what automation cannot judge. Keywords: accessibility,
-  a11y, WCAG 2.2 AA, ARIA, axe-core, contrast ratio, screen reader. Not for
-  backend-only work with no UI.
+  planning, scoping, designing or discussing anything with a user interface, even
+  before any code exists and even for a small edit — a new app or page, a design
+  system, a component library choice, a brand palette, a roadmap, a rewrite — and
+  whenever generating or modifying user interface code (HTML, JSX/TSX, Vue,
+  Svelte, Astro, CSS): forms, modals, menus, navigation, tabs, tables, images and
+  alt text, pricing pages, dark mode, colors. Also whenever the user asks for an
+  accessibility audit, an a11y check or fix, a WCAG review, a contrast fix, or
+  help with screen readers, keyboard navigation, focus order, ARIA. Runs an
+  audit-fix-re-audit loop with the `a11y-loop` CLI (axe-core in Chromium) and
+  reports what automation cannot judge. Not for backend-only work with no UI.
 license: MIT
 compatibility: >-
   Verification needs Node.js >= 20 and Playwright Chromium. Install with

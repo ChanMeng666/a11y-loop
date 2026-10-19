@@ -405,3 +405,27 @@ Relevance to this document's architecture (section 8 above): it is a second, Goo
 | `@storybook/addon-a11y` | 10.6.2, about 7.1 million downloads a week | Largest installed base of component-level axe; a route to per-story states |
 
 All from the 2026-10-19 research log [V-log].
+
+### Further versions and numbers (2026-10-19)
+
+All [V-log] unless marked: read from npm, GitHub or release pages on 2026-10-19 and not re-fetched on 2026-10-20.
+
+| Item | Value |
+|---|---|
+| `@axe-core/playwright`, `@axe-core/cli` | 4.14.0 (`@axe-core/playwright` npm modified 2026-10-15) |
+| axe-core repository | 7,668 stars, 441 open issues, pushed 2026-10-15; 47.5 million downloads in the week 2026-10-10 to 2026-10-16 (7,337 stars and 461 open issues in July) |
+| `@playwright/mcp` | 0.0.83 (2026-09-28), 3.43 million downloads a week; accessibility-snapshot driven, no audit capability |
+| Chrome DevTools MCP | 1.11.0 (2026-10-15); 1.0.0 was 2026-05-18; 53,806 stars; 1.44 million downloads a week |
+| Pa11y | 10.0.0 (2026-08-28), LGPL-3.0-only, 144k downloads a week |
+| IBM Equal Access `accessibility-checker` | 4.0.34 (2026-09-08), 13.6k downloads a week; verdict unchanged, optional second opinion only |
+| Microsoft Accessibility Insights (web) | 2.49.0 (2026-09-08); no MCP or agent product found |
+| `@storybook/addon-a11y` | 10.6.2, 7.11 million downloads a week; 10.6.1 (2026-09-29) fixed vision-simulator filters; 11.0.0-alpha.1 (2026-09-19) |
+| `eslint-plugin-jsx-a11y` | 6.10.2, 29.7 million downloads a week; Next.js still ships it enabled by default |
+| Biome | 2.5.15 (2026-09-30), 10.9 million downloads a week; a11y rule group maintained; delegate static rules to it |
+| Guidepup | `@guidepup/guidepup` 0.36.4, 32.8k a week; `@guidepup/virtual-screen-reader` 0.33.0 (npm modified 2026-09-20), 31.8k a week |
+| Lighthouse | 13.5.0 (2026-09-18) |
+| Next.js | Default route announcer reads `document.title`, then the `<h1>`, then the pathname [V-sec: <https://nextjs.org/docs/accessibility>]. A future route-change check must know a framework announcer exists or it will report false positives |
+| Node and browser at the 0.3.0 doctor run | Node 24.15.0 (a11y-loop needs 20 or later); Playwright 1.64.1; Chromium build 1248 (156.0.8078.4), headless launch succeeded |
+| Node requirements elsewhere | `axe-mcp-server` needs Node 22.19 or later; Pa11y 10 needs Node 22.13 or later |
+
+Claude Code platform facts relevant to enforcement, from the same research (v2.1.303 installed, released 2026-10-18): a `Stop` hook can refuse to let the agent finish (exit 2, with a `stop_hook_active` loop guard); `claude plugin eval` (v2.1.269 or later, 2026-09-11) runs a with-plugin against without-plugin baseline and can gate CI; Codex's `Stop` and Cursor's `stop` (`followup_message`) can also force continuation; whether Copilot's `agentStop` can is not documented. The plan gate exists in the plugin; an audit gate is a separate piece of work [V-log].
