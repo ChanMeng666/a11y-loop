@@ -36,7 +36,7 @@ All behaviour numbers and the final trigger numbers are from the shipped descrip
 | Description | Runs per case | Should-trigger hit rate | False triggers |
 |---|---|---|---|
 | Before (0.3.2) | 1 | 11 of 21 (52%) | 0 of 11 |
-| After (this PR) | 2 | 31 of 42 (74%) | 0 of 22 |
+| After (shipped in 0.4.0) | 2 | 31 of 42 (74%) | 0 of 22 |
 
 Still missing on both runs: the settings dialog in `src/App.jsx`, tabs in `Dashboard.tsx`, adding
 alt text, "is this modal usable with a screen reader", and the checkout planning prompt with a

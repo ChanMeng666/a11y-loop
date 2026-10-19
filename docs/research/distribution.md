@@ -328,3 +328,8 @@ Facts recorded on 2026-10-20. They are listings and queue states, not measures o
 - **Anthropic plugin directory: in review.** The submission is In review for v0.3.2. The tracked ref cannot be changed while it is under review, so the switch from a tag to the `release` branch (see section (f)) waits for the outcome. The `release` branch itself is at v0.4.1.
 - **awesome-accessibility: merged.** Pull request #113 was merged.
 - **Still open:** the awesome-a11y pull request #341, and the ruanyf/weekly issue <https://github.com/ruanyf/weekly/issues/12549>. No outcome yet.
+- **Anthropic directory, how it picks up a ref** (portal, read by the maintainer on 2026-10-20 [M]): auto-publish is on, and there is no webhook; the portal checks the tracked ref on a schedule, about every 6 hours.
+- **The `release` branch reached v0.4.1 by hand.** The v0.4.1 workflow run checked out the tag shallow, its fast-forward push was refused with "fetch first", and the step only warned. `release` was then pushed to v0.4.1 from the maintainer's account at 22:52 UTC on 2026-10-19 [V: GitHub branch activity]. The workflow fix (full checkout, and a failure instead of a warning for a true fast-forward) is on `main` and first runs on the next tag.
+- **skills.sh: still indexed** (HTTP 200 on 2026-10-20 [V]).
+- **MCP registry: not submitted.** `a11y-loop mcp` shipped in 0.4.0, so the server that section (f) and the awesome-mcp-servers row said was missing now exists. A registry search for `a11y-loop` returned no server on 2026-10-20 [V]. The `server.json` to publish with is in `docs/overview.md`.
+- **Unchanged:** the W3C list, awesome-copilot and axe-con were submitted by hand by the maintainer [M], with no outcome recorded; HelloGitHub stays declined.

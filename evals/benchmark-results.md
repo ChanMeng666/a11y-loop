@@ -224,7 +224,9 @@ Six first-audit violations appeared across the 18 headline skilled files.
   submit button therefore makes the probe expect focus to return to that
   button. All three agents traced this and changed their states module rather
   than the page, by calling `requestSubmit()` or tabbing out of the field. The
-  2026-07 skilled log records the same artifact.
+  2026-07 skilled log records the same artifact. The engine was fixed in 0.4.0:
+  the opener is now recorded when the dialog opens, so a click on the dialog's
+  own submit button no longer counts as its trigger (see the CHANGELOG).
 
 The same artifact hit the benchmark operator's own baseline states module. Its
 first version clicked the submit button and produced one false violation per

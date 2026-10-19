@@ -16,17 +16,24 @@ states it built, and tells you exactly what it could not check. Three layers:
    (see [CLI subcommands](#cli-subcommands)).
 3. **An *optional* Claude Code plugin** (`plugin/`, published through the root
    `.claude-plugin/marketplace.json`) that carries a copy of the skill, the `/a11y-plan` command and
-   a plan-mode hook. Nothing under `skills/` may depend on it.
+   two hooks: a plan gate on `ExitPlanMode` and an audit gate on `Stop`. Nothing under `skills/` may
+   depend on it.
 
-The hook runs only in Claude Code (CLI and desktop). The Anthropic plugin directory also lists the
+Beside the three layers, the repository root is a composite **GitHub Action** (`action.yml`,
+`uses: ChanMeng666/a11y-loop@v0.4.1`), listed on the GitHub Marketplace as "a11y-loop audit".
+
+The hooks run only in Claude Code (CLI and desktop). The Anthropic plugin directory also lists the
 plugin on Cowork and the Claude apps, where hooks do not run and there is no Node or browser for
 the audit: there the skill's rules apply, but nothing is verified. `plugin/README.md`, section
 "Where each part works", says this to users.
 
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
 describe a planned or in-progress item as existing, and do not describe something merged on `main`
-but not yet tagged as usable from a release. The GitHub Action, the Stop-hook audit gate and
-`a11y-loop mcp` ship in 0.4.0; nothing is merged-but-untagged at the time of this release.
+but not yet tagged as usable from a release. The latest release is 0.4.1 (2026-10-20). The GitHub
+Action, the Stop-hook audit gate and `a11y-loop mcp` shipped in 0.4.0. As of 2026-10-20 the only
+change merged on `main` but untagged is the `release.yml` full-checkout fix (CHANGELOG
+`[Unreleased]`), which takes effect from the next tag. The current state of every release and
+channel, and what is pending on whom, is the "State as of" section of `docs/roadmap.md`.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
@@ -146,12 +153,12 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
 
 | Subcommand | What it does | Exit 0 | Exit 1 | Exit 2 |
 |---|---|---|---|---|
-| `audit <url>`, `--file`, `--html` | axe-core plus a11y-loop's own checks across five rendering passes; `--interact` drives built states; `--json`, `--out`, `--sarif`, `--quiet` | no violations | violations found | tool error, e.g. no browser |
+| `audit <url>`, `--file`, `--html` | axe-core plus a11y-loop's own checks across five rendering passes; `--interact` drives built states; `--json`, `--out`, `--sarif`, `--quiet`, `--verbose` | no violations | violations found | tool error, e.g. no browser |
 | `contrast <fg> <bg>` | WCAG 2.x ratio; `--large`, `--ui`, `--fix` (OKLCh suggestions); no browser | threshold met | threshold missed | usage error |
-| `diff --before a.json --after b.json` | FIXED / NEW / REMAINING by fingerprint | no regression | a NEW violation | usage or input error |
+| `diff --before a.json --after b.json` | FIXED / NEW / REMAINING by fingerprint, plus RECLASSIFIED for a violation a documented routing moved to needs-review (never counted as fixed) | no regression | a NEW violation | usage or input error |
 | `plan-check` with `--file`, `--text` or piped stdin | the plan gate's decision; stateless, never prompts; `--json` | plan carries a11y content, is not UI work, or is too short to assess | UI plan with thin or absent a11y content | usage or input error, or stdin held open with no data for 3 s (`A11Y_LOOP_STDIN_IDLE_MS`) |
 | `doctor` | Node, the bundled Playwright and its Chromium (judged by a real headless launch), `PLAYWRIGHT_BROWSERS_PATH`, axe-core version, skill copies, plugin, double registration; `--json` | an audit can run here | never | an audit cannot run here |
-| `mcp` | stdio MCP server: the commands above as six tools, each returning the matching `--json` report (see `src/commands/mcp.js` below); stdout is the protocol channel | the client closed stdin | never | never; a tool failure is an `isError` tool result |
+| `mcp` | stdio MCP server: the commands above as six tools, each returning the matching `--json` report (see `src/commands/mcp.js` below); stdout is the protocol channel | the client closed stdin | never | the server could not start, e.g. the MCP SDK is missing; a failed tool call is an `isError` tool result, not an exit code |
 | `install-browser` | runs the *bundled* Playwright's installer for Chromium; extra arguments pass through (`--only-shell`, `--with-deps`, `--dry-run`); stdin ignored | installed | never | installer failed |
 
 `A11Y_LOOP_DEBUG=1` prints a stack trace on a tool error.
@@ -168,9 +175,14 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   provenance, no token anywhere), skipping a version already on the registry, then creates the
   GitHub Release from the matching `## [x.y.z]` section of `CHANGELOG.md` and fails loudly if that
   section is missing, then fast-forwards the `release` branch to the tag for the plugin directory.
+  It checks out with `fetch-depth: 0`, because a shallow checkout cannot prove the push is a
+  fast-forward. The step fails when the tag descends from the branch tip and the push is still
+  refused, and only warns for an older tag. That rule is on `main` and first runs on the tag after
+  0.4.1; the v0.4.1 run used a shallow checkout, only warned, and `release` was pushed by hand.
   Do not rename the file: its name is part of the npm trusted-publisher contract.
-- **`.github/workflows/action-selftest.yml`** — runs the composite action (`uses: ./`) on Ubuntu and
-  Windows against the demo pages and asserts its outputs. A release PR runs it before the version is
+- **`.github/workflows/action-selftest.yml`** — on every push to `main` and every PR, runs the
+  composite action (`uses: ./`) on Ubuntu and Windows against the demo pages and asserts its
+  outputs. A release PR runs it before the version is
   published, so, when no `version` input is given, the action's install step falls back to its own checkout if
   `npm view` does not find the version (an explicit `version` that is missing still fails); without that fallback the self-test could never pass on a release PR.
 - **`.github/workflows/deploy-docs.yml`** — builds the VitePress site in `website/` and deploys it to
@@ -186,7 +198,8 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   upfront. `skills/a11y-loop/evals/` holds the skill's own evals: `trigger-evals.json` (the prompts that should and should not trigger it) and `evals.json` (skill-creator behaviour cases) are the readable sources, and `native/` holds the hand-written behaviour cases of the native `claude plugin eval` suite.
 - **`plugin/`** — an *optional* Claude-Code-only layer, and the plugin root: an installed plugin
   gets this folder and nothing else. `plugin/.claude-plugin/plugin.json` (+ `icon.png`) is the
-  manifest, `plugin/hooks/` the hook, `plugin/commands/` the `/a11y-plan` command. The root
+  manifest, `plugin/hooks/` the two hooks (`hooks.json` registers them, loaded by convention),
+  `plugin/evals/` the native eval suite, `plugin/commands/` the `/a11y-plan` command. The root
   `.claude-plugin/marketplace.json` makes the repo installable
   (`claude plugin marketplace add ChanMeng666/a11y-loop`) with `plugins[0].source` = `./plugin`,
   and is why the marketplace is named `chanmeng-a11y-loop` while the plugin inside it is
@@ -206,7 +219,8 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   `claude plugin details` read. Nothing in `skills/`
   may depend on this layer, and nothing in this layer may appear in `SKILL.md` or `references/` —
   the skill has to stay portable across the 40+ clients that implement the Agent Skills standard.
-  The hook's own invariants are documented in its header comment; the load-bearing ones are that it
+  The plan-gate hook's own invariants are documented in its header comment (the audit gate's are
+  in its own); the load-bearing ones are that it
   never blocks on its own failure, never returns `allow` (off the deny path it returns
   `additionalContext` with no `permissionDecision` at all, so the user's plan-approval prompt still
   appears), and declines a given plan at most once. The hook holds none of the decision itself: it
@@ -216,7 +230,7 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   `src/commands/{audit,contrast,diff,doctor,install-browser,mcp,plan-check}.js` (table under
   [CLI subcommands](#cli-subcommands)). It ends with an entry guard, `isEntryPoint()`, so tests can
   import `main(argv, io)` without running it (see Gotchas).
-- **`scripts/sync-plugin.mjs`** — writes the three generated copies inside `plugin/` (above).
+- **`scripts/sync-plugin.mjs`** — writes the five generated copies inside `plugin/` (above).
   `npm run sync-plugin` writes them; `node scripts/sync-plugin.mjs --check` reports drift and
   exits 1.
 - **`src/commands/mcp.js`** — `a11y-loop mcp`, a stdio MCP server on `@modelcontextprotocol/server`
@@ -250,16 +264,22 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   content), shared by `plugin/hooks/plan-gate.mjs` (through its copy) and `a11y-loop plan-check`.
   It may import only `node:` built-ins, because the copy has to run on its own. No I/O, no state, nothing
   Claude-Code-specific: the loop guard, session cap and kill switch stay in the hook, and the CLI
-  is stateless.
+  is stateless. `audit-gate.js` is the audit gate's decision (does a transcript show UI files
+  written after the last `a11y-loop audit`), under the same rule, because
+  `plugin/hooks/lib/audit-gate.mjs` is a copy of it that runs on its own.
 - **`action.yml`, `action/`, `examples/github-action/`** — the composite GitHub Action. `action.yml`
   sits at the repo root so `uses: ChanMeng666/a11y-loop@vX.Y.Z` works; it installs the published CLI
-  at the ref's own `package.json` version (so the action and the CLI release together), audits, and
+  at the ref's own `package.json` version (so the action and the CLI release together; with no
+  `version` input and that version not on npm yet, it packs its own checkout and installs the
+  tarball instead), audits, and
   hands the JSON report to `action/report.mjs`, which writes the step summary, the PR comment body and
   the step outputs from the pure functions in `action/lib.mjs`. Inputs reach shell steps through
   `env:`, never interpolated into the script. `test/unit/action-report.test.js` holds that text to the
-  red-line list, and `.github/workflows/action-selftest.yml` runs the action (`uses: ./`) on Ubuntu and
+  red-line list, `test/unit/action-manifest.test.js` holds `action.yml` to the Marketplace limits
+  (description under 125 characters, name, branding), and `.github/workflows/action-selftest.yml` runs the action (`uses: ./`) on Ubuntu and
   Windows against the demo pages. Exit code 2 always fails the step, whatever `fail-on` says. The
-  action must keep to the honesty rules: no score, no badge, no "compliant".
+  action must keep to the honesty rules: no score, no badge, no "compliant". It is listed on the
+  GitHub Marketplace from v0.4.1: <https://github.com/marketplace/actions/a11y-loop-audit>.
 - **`demo/before/` and `demo/after/`** — the seeded-violation fixture and its fixed counterpart
   that back the README's headline claim and `test/integration/demo.test.js`. `VIOLATIONS.md` and
   `FIXES.md` are the finding-by-finding record — keep them in sync with the actual markup if you
@@ -273,17 +293,22 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   shape.
 - **`test/`** — `node --test`, unit and integration. Besides the engine's own tests, several guard
   the release itself and are worth knowing by name: `unit/plugin-sync.test.js` (copies, versions,
-  no `../` or `package.json` in `plugin/`), `unit/skill-frontmatter.test.js` (Agent Skills spec
+  no `../` or `package.json` in `plugin/`), `unit/action-manifest.test.js` (the Marketplace limits
+  on `action.yml`), `unit/skill-frontmatter.test.js` (Agent Skills spec
   limits, no `paths:`), `unit/text-encoding.test.js` (no BOM, invalid UTF-8 or raw control byte in
   shipped text and docs), `unit/non-interactive.test.js` (every subcommand and the hook exit with a
   documented code, and none hangs, with stdin closed), `integration/symlink-entry.test.js` (the CLI
   and the hook run through a symlink and a junction) and `integration/missing-browser.test.js`
   (`--file` and `--html` exit 2 instead of hanging when there is no browser).
 - **Skill evals (`claude plugin eval`)** — run `npm run eval:skill` (needs Claude Code >= 2.1.269, a logged-in account, and spends real API money: roughly the cost recorded in `evals/skill-eval-report-2026-10.md`). It runs `plugin/evals/` with and without the plugin and prints the with-minus-without delta. Add a prompt to `trigger-evals.json` or a case folder under `skills/a11y-loop/evals/native/`, then `npm run sync-plugin`; `test/unit/native-evals.test.js` checks the structure without a model. `tool_used: Skill` graders are a plugin-fired indicator in the with-without run, not part of the score. Native Windows has no sandbox backend, so keep `allowed_tools` read-only.
-- **`evals/`** — the baseline-vs-skilled benchmark (`benchmark-results.md` + `outputs/baseline/`,
-  `outputs/skilled/`), run against the skill as it stood at v0.1.x. This is evidence, not fixtures —
-  don't regenerate `outputs/` casually; a real regeneration means re-running both generation
-  conditions and re-auditing. A 2026-10 re-run is in progress (see [`docs/roadmap.md`](docs/roadmap.md)).
+- **`evals/`** — the baseline-vs-skilled benchmark. `benchmark-results.md` is the 2026-10 run
+  (Claude Sonnet 5.5 through `claude -p`, three runs per condition, the skill and CLI at 0.3.2,
+  scored by a11y-loop, IBM Equal Access and Lighthouse; files in `outputs/2026-10/`).
+  `benchmark-results-2026-07.md` and `outputs/2026-07/` keep the earlier single run against the
+  v0.1.x skill, unchanged. `skill-eval-report-2026-10.md` is the first `claude plugin eval` run.
+  This is evidence, not fixtures — don't regenerate `outputs/` casually; a real regeneration means
+  re-running both generation conditions and re-auditing, and it goes in a new dated report beside
+  the old ones.
 - **`docs/research/`** — the market/competitive, tooling, standards/regulatory and distribution
   briefings that ground the tool's claims and citations (coverage percentages, WCAG version
   mapping, credibility red lines, where the project is listed and on what rules). Each carries its
@@ -420,6 +445,27 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   semantic structure. Scope: one task, two models, 40 first-pass UIs, and no verification loop
   measured. The correct short form is "prompting helps substantially, barriers persist, no loop
   was measured". W4A'24's 84% covers ChatGPT (GPT-3.5) in one 2024 study, not "AI-generated pages".
+- **A static import of an optional SDK takes every subcommand down.** During 0.4.0 development
+  `src/cli.js` imported the MCP server module at start-up, so `--version`, `audit` and every other
+  command failed whenever `@modelcontextprotocol/server` could not be loaded. The `mcp` branch of
+  `main()` now loads `src/commands/mcp.js` with a dynamic `import()`, and nothing else may import
+  it statically. Any future optional dependency gets the same treatment.
+- **`npm i -g <directory>` links the directory and installs none of its dependencies.** npm treats a
+  local folder as a link, so the installed binary runs from that folder with whatever
+  `node_modules` it happens to have. That is why the action's checkout fallback runs `npm pack` and
+  installs the tarball, the same way `install-smoke` in `ci.yml` does. Never "simplify" either to a
+  directory install.
+- **The GitHub Marketplace validates `action.yml` at the release's own tag.** v0.4.0's
+  `description` was about 260 characters against a 125-character limit, so v0.4.0 could not be
+  listed, and 0.4.1 was cut only to shorten it. A tag is never edited, so a manifest error costs a
+  release. `test/unit/action-manifest.test.js` holds the description, name and branding before
+  you tag.
+- **On a release PR the action self-test tests the checkout fallback, not the registry.** The
+  bumped version is not on npm until the tag is pushed, so `action-selftest.yml` installs the
+  packed checkout there. On every other PR it installs the published version and so tests the
+  action's wiring, not unreleased CLI code. Without the fallback the self-test could never pass on
+  a release PR. An explicit `version` input that is not on npm fails with exit 2 instead of
+  falling back.
 
 ### Skill frontmatter and the plugin layer
 
@@ -480,7 +526,10 @@ rather than left to be rediscovered.
   hook is a `node` script the validator does not follow (`COMMAND_SCRIPT_NOT_FOLLOWED`), which goes
   to a human reviewer, plus three unknown-key notes for `documentationUrl`, `privacyPolicyUrl` and
   `supportUrl` (which the directory itself reads) and the uninspected hook output. Anything you add
-  to `plugin/` is scanned as plugin code, including prose.
+  to `plugin/` is scanned as plugin code, including prose. 0.4.x adds the audit gate and
+  `plugin/evals/` (90 files of eval prompts and graders), about 106 tracked files in all; as of
+  2026-10-20 no version after 0.3.2 has been scanned, because the submission is locked while in
+  review.
 - **The skill pre-approves only `Bash(a11y-loop *)` and `Bash(npx a11y-loop *)`.** It used to
   pre-approve `node ${CLAUDE_SKILL_DIR}/../../src/cli.js *` for checkouts, a path that climbs out
   of the skill's folder and that the plugin directory holds for review. Working from a checkout,
@@ -494,7 +543,8 @@ rather than left to be rediscovered.
   calls `ExitPlanMode` again — cannot be exercised headlessly, only in an interactive session.
   What *is* covered headlessly: the hook's decision logic (`test/unit/plan-gate.test.js`, including
   invoking the script over stdin with realistic payloads), and that the plugin loads and registers
-  the hook (`claude plugin details a11y-loop` → `Hooks (1) PreToolUse`). Don't claim the round trip
+  the hooks (`claude plugin details a11y-loop` → `Hooks (2) PreToolUse, Stop`, checked 2026-10-20
+  on Claude Code 2.1.304). Don't claim the round trip
   is verified on the strength of those. The equivalent non-interactive path is `a11y-loop
   plan-check`: the same decision function, drivable from any agent or CI job, and covered by
   `test/unit/plan-check.test.js` and `test/unit/non-interactive.test.js`.
@@ -585,12 +635,16 @@ read on 2026-10-19 and 2026-10-20. Distribution channels in general are in
   (see the gotcha above), but that only helps once the maintainer switches the submission's tracked
   ref to `release`, which is a manual edit in the portal. Until then, **every release needs the
   tracked ref moved to the new tag** and re-validated, or the listing stays on the old version.
+- **State on 2026-10-20 (portal, read by the maintainer):** the submission is In review for v0.3.2.
+  The tracked ref cannot be changed while it is under review, so the switch to `release` waits for
+  the outcome. Auto-publish is on. There is no webhook: the portal checks the tracked ref on a
+  schedule, about every 6 hours.
 - **The listing icon is read once.** The directory takes `plugin/.claude-plugin/icon.png` (square
   PNG or JPEG, 512 to 2048 px, under 2 MB; SVG and WebP are refused) only the first time the plugin
   is saved or submitted. Replacing the file later does not change the listing.
 - **Hooks do not run in Cowork or the Claude apps.** The portal lists the plugin there and says
-  "Not used here: hooks. Slash commands load as skills here." Only Claude Code runs the plan gate.
-  Never describe the hook as working on those surfaces.
+  "Not used here: hooks. Slash commands load as skills here." Only Claude Code runs the plan gate
+  and the audit gate. Never describe either hook as working on those surfaces.
 - **Every version is scanned, and a person reviews a new listing** before it goes live. A hold is a
   reviewer-read item, not a rejection.
 
@@ -613,14 +667,20 @@ publishes until a tag is pushed, and publishing is the one irreversible step.
 5. **Tag `main` and push the tag:** `git tag vX.Y.Z && git push origin vX.Y.Z`. `release.yml`
    publishes to npm with provenance and creates the GitHub Release. Check both:
    `npm view a11y-loop version` and `gh release view vX.Y.Z`.
-6. **Check the Anthropic directory listing.** `release.yml` fast-forwards `release` to the tag. If
-   the submission tracks `release`, confirm the portal picked up the new commit; if it still tracks
-   a tag, move it to the new tag and re-validate. Either way, read the hold and warning counts.
-   On the first release that contains `action.yml`, also tick "Publish this Action to the GitHub
-   Marketplace" on the GitHub Release (see `CONTRIBUTING.md`). The Marketplace validates `action.yml`
-   at the release's own tag (description under 125 characters, branding present), so
-   `test/unit/action-manifest.test.js` holds both before the tag; 0.4.0 was rejected for a
-   260-character description.
+6. **Check the channels that follow a tag.**
+   - **`release` branch.** `git ls-remote origin release` must print the tag's commit
+     (`git rev-list -n1 vX.Y.Z`). If the workflow step only warned, read its log before pushing
+     anything by hand.
+   - **GitHub Marketplace.** The listing (<https://github.com/marketplace/actions/a11y-loop-audit>)
+     must show the new tag. `release.yml` creates the Release with `gh`, which cannot tick
+     "Publish this release to the GitHub Marketplace", so edit the Release and tick it (see
+     `CONTRIBUTING.md`). The Marketplace validates `action.yml` at the release's own tag
+     (description under 125 characters, branding present); `test/unit/action-manifest.test.js`
+     holds both before the tag, and 0.4.0 was refused for a 260-character description.
+   - **Anthropic directory.** If the submission tracks `release`, confirm the portal picked up the
+     new commit; it checks on a schedule, about every 6 hours. If it still tracks a tag, move it to
+     the new tag and re-validate; once the review of v0.3.2 is over, switch the tracked ref to
+     `release` instead. Either way, read the hold and warning counts.
 7. **Check what users get:** that npmjs.com shows the English README, that
    `npx skills add ChanMeng666/a11y-loop -g -y` reports `Found 1 skill` and skills.sh lists it, that
    `gh skill` finds it, and that `claude plugin marketplace update chanmeng-a11y-loop` followed by
@@ -638,8 +698,11 @@ When onboarding to this repo, read in this order:
 3. `skills/a11y-loop/SKILL.md` — the product's actual contract with an agent; §3 also governs how
    anything in this repo is allowed to describe its own results
 4. `CONTRIBUTING.md` — contribution workflow and quality gates
-5. `docs/roadmap.md` — what is shipped, in progress and planned, so you do not build or describe
+5. `docs/roadmap.md` — its "State as of" section first (versions, channels, and what is pending on
+   whom), then what is shipped, in progress and planned, so you do not build or describe
    something twice
+6. `docs/agent-gates.md`, before you touch the gates or describe them for a client other than
+   Claude Code
 
 ## Conventions for Changes
 
