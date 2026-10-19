@@ -40,6 +40,8 @@ Key number: Deque's study (13,000+ pages, ~300,000 issues) found **57% of access
 
 **MCP servers are fully saturated** (Deque official + priyankark/a11y-mcp + at least 5 more). **Do not ship another axe MCP server.**
 
+> *2026-10 addendum:* `a11y-loop mcp` ships a thin stdio server over a11y-loop's own loop (passes and states, its own checks, diff, manual checklist, contrast fixes, plan check), not over `axe.run()`. The note above still rules out an axe wrapper. The reasoning is in `AGENTS.md` under `src/commands/mcp.js`.
+
 ### Study hardest: AccessLint MCP
 
 Cameron Cundiff, "Accessibility Tooling for Agentic Coding Loops" (dev.to) — the most sophisticated published thinking on agent-facing a11y tooling. `@accesslint/mcp` over `@accesslint/core` (92 rules / 23 WCAG 2.1 SC).

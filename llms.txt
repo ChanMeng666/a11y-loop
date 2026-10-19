@@ -13,6 +13,11 @@ of the project for large language models and AI agents.
 - Two layers: an Agent Skill (`skills/a11y-loop/`, open Agent Skills standard) covering the plan,
   generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff` /
   `plan-check` / `doctor` / `install-browser`) for browser-verified checks and the plan gate
+- `a11y-loop mcp` serves the same commands as MCP tools over stdio for MCP-only clients
+  (`a11y_loop_audit`, `a11y_loop_diff`, `a11y_loop_contrast_fix`, `a11y_loop_plan_check`,
+  `a11y_loop_doctor`, `a11y_loop_manual_checklist`). Each result is the report the matching command
+  writes with `--json`, with the same coverage statement and manual checklist. Setup:
+  https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#mcp-server
 - `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state

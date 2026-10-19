@@ -124,8 +124,22 @@ or Playwright will report a missing browser.
   dynamically imports its copy `./lib/plan-gate.mjs` of `src/lib/plan-gate.js` (see below), and
   if that copy is missing or throws it exits 0 with no verdict.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
-  `src/commands/{audit,contrast,diff,doctor,install-browser,plan-check}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
+  `src/commands/{audit,contrast,diff,doctor,install-browser,mcp,plan-check}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
   `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
+- **`src/commands/mcp.js`** — `a11y-loop mcp`, a stdio MCP server on `@modelcontextprotocol/server`
+  (SDK v2). It is a protocol layer and nothing more: each tool calls the function its CLI command
+  calls (`buildAuditReport`, `diffReports`, `checkedContrastResult`, `planCheck`,
+  `collectDoctorReport`), so a tool result is the `--json` report, trimmed only in how many findings
+  it lists. Never put a decision about what counts as a finding in this file; put it in the
+  command or `src/lib/` so the CLI gets it too. stdout is the protocol channel: nothing else may
+  write to it while the server runs. Timeouts go through `runAudit`'s `signal`, which closes the
+  browser; racing a promise without aborting would leave Chromium running behind a tool error.
+  **This reverses a July note on purpose.** `docs/research/market.md` says "do not ship another axe
+  MCP server", and that still holds for a server that wraps `axe.run()`. This one exposes
+  a11y-loop's own loop: five rendering passes plus scripted states, the checks axe cannot run,
+  fingerprint diff to convergence, the manual checklist, contrast fixes and the plan check. It
+  reaches clients that load only MCP servers and lists the project in the MCP registries. If a
+  change would make it a thinner axe wrapper than that, the July note applies again.
 - **`src/lib/`** — the engine: `axe-runner.js` (Playwright + axe-core orchestration across the
   five rendering passes), `checks/` (a11y-loop's own checks that axe can't run — dialog focus
   trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size),

@@ -47,6 +47,8 @@ Start a new agent session and ask for UI as usual. The skill applies while the a
 a11y-loop audit http://localhost:3000
 ```
 
+MCP-only clients: `a11y-loop mcp` serves the audit, diff, contrast, plan-check and doctor commands as MCP tools over stdio ([setup](docs/overview.md#mcp-server)).
+
 ### Claude Code: the plugin instead of step 1
 
 The plugin carries the skill, a `/a11y-plan` command and a plan-mode hook. Install the plugin **or** the skill, not both.

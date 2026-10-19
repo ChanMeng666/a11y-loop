@@ -148,6 +148,24 @@ describe('every subcommand runs with no TTY and never hangs', () => {
     assert.match(r.stderr, /stayed open with no data/);
   });
 
+  test('mcp with closed stdin exits 0 and writes nothing to stdout', async () => {
+    const r = await runNoTty(CLI, ['mcp']);
+    assertFinished(r, [0], 'mcp, closed stdin');
+    assert.equal(r.stdout, '', 'stdout is the protocol channel and must stay empty with no client');
+  });
+
+  test('mcp with a stdin pipe that closes after one request answers it and exits 0', async () => {
+    const init = `${JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'initialize',
+      params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 't', version: '0' } },
+    })}\n`;
+    const r = await runNoTty(CLI, ['mcp'], { input: init });
+    assertFinished(r, [0], 'mcp, piped stdin');
+    assert.equal(JSON.parse(r.stdout.trim().split('\n')[0]).result.serverInfo.name, 'a11y-loop');
+  });
+
   test('the plan-gate hook with an empty stdin exits 0 and emits nothing', async () => {
     const dataDir = await mkdtemp(join(tmpdir(), 'a11y-gate-'));
     try {

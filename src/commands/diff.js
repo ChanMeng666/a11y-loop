@@ -11,7 +11,21 @@ import { resolve } from 'node:path';
 import { diffReports, formatDiffHuman } from '../lib/diff.js';
 import { ToolError } from '../lib/axe-runner.js';
 
-async function readReport(path, label) {
+/**
+ * Check that a parsed object is an a11y-loop report. `where` names it in the
+ * error (a path for the CLI, a run id for `a11y-loop mcp`).
+ */
+export function validateReport(report, label, where) {
+  if (!report?.findings?.violations) {
+    throw new ToolError(
+      `--${label} report ${where} is not an a11y-loop report (no findings.violations array).`,
+      { hint: 'Produce reports with: a11y-loop audit <target> --out report.json' },
+    );
+  }
+  return report;
+}
+
+export async function readReport(path, label) {
   const absolute = resolve(path);
   let text;
   try {
@@ -27,13 +41,7 @@ async function readReport(path, label) {
   } catch (error) {
     throw new ToolError(`--${label} report ${absolute} is not valid JSON: ${error.message}`);
   }
-  if (!report?.findings?.violations) {
-    throw new ToolError(
-      `--${label} report ${absolute} is not an a11y-loop report (no findings.violations array).`,
-      { hint: 'Produce reports with: a11y-loop audit <target> --out report.json' },
-    );
-  }
-  return report;
+  return validateReport(report, label, absolute);
 }
 
 /**

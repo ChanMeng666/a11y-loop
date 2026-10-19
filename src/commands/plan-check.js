@@ -224,6 +224,18 @@ export function formatPlanCheckHuman(result) {
 }
 
 /**
+ * Read the plan and check it: the one code path behind `a11y-loop plan-check`
+ * and the MCP `a11y_loop_plan_check` tool.
+ *
+ * @param {{file?:string, text?:string}} flags
+ * @param {(NodeJS.ReadableStream & {isTTY?:boolean}) | null} stdin
+ */
+export async function planCheck(flags, stdin) {
+  const { source, text } = await readPlanInput(flags, stdin);
+  return planCheckResult(checkPlan(text), source);
+}
+
+/**
  * @param {{flags?: {file?:string, text?:string, json?:boolean}}} input
  * @param {{write:Function, writeError:Function, stdin?:NodeJS.ReadableStream|null}} io
  *   `io.stdin` defaults to `process.stdin`; pass `null` to mean "no stdin".
@@ -231,8 +243,7 @@ export function formatPlanCheckHuman(result) {
  */
 export async function runPlanCheckCommand({ flags = {} } = {}, io) {
   const stdin = io.stdin === undefined ? process.stdin : io.stdin;
-  const { source, text } = await readPlanInput(flags, stdin);
-  const result = planCheckResult(checkPlan(text), source);
+  const result = await planCheck(flags, stdin);
   io.write(flags.json ? `${JSON.stringify(result, null, 2)}\n` : formatPlanCheckHuman(result));
   return result.verdict === 'fail' ? 1 : 0;
 }

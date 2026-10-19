@@ -15,6 +15,18 @@ a11y-loop is MIT-licensed. It depends on and gratefully acknowledges the followi
 - License: Apache-2.0
 - Source: https://github.com/microsoft/playwright
 
+## MCP TypeScript SDK (@modelcontextprotocol/server, @modelcontextprotocol/core)
+
+- Copyright the Model Context Protocol contributors
+- License: Apache-2.0 (the project is moving from MIT; contributions not yet relicensed remain MIT, per its LICENSE file)
+- Source: https://github.com/modelcontextprotocol/typescript-sdk
+- Used only by `a11y-loop mcp`, as an unmodified npm dependency. The packages ship no NOTICE file.
+
+## zod
+
+- License: MIT
+- Source: https://github.com/colinhacks/zod
+
 ## culori
 
 - License: MIT
