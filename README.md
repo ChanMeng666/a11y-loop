@@ -13,7 +13,7 @@ Your coding agent writes accessible UI, audits the rendered page, fixes what it 
 
 <a href="https://ChanMeng666.github.io/a11y-loop/"><img src="./.github/readme/pill-docs.svg" height="40" alt="Docs"></a> <a href="https://www.npmjs.com/package/a11y-loop"><img src="./.github/readme/pill-npm.svg" height="40" alt="npm"></a> <a href="evals/benchmark-results.md"><img src="./.github/readme/pill-benchmark.svg" height="40" alt="Benchmark"></a> <a href="docs/overview.md#-field-notes"><img src="./.github/readme/pill-field-notes.svg" height="40" alt="Field notes"></a>
 
-<sub>English · [简体中文](README.zh-CN.md)</sub>
+<sub>English · [简体中文](docs/README.zh-CN.md)</sub>
 
 </div>
 

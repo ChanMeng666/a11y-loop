@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
   Windows and in a test; this checks a real install on each OS on every PR.
 
+### Fixed
+
+- **npm served the Chinese README.** npm picks the package readme from the first file matching
+  `README` or `README.*` in the package root whose name ends in `.md`, in glob order, and force-includes
+  every such file in the tarball. With `README.zh-CN.md` beside `README.md`, 0.3.0 showed the Chinese
+  one on the registry. The Chinese README now lives at `docs/README.zh-CN.md`, outside the package root.
+
 ## [0.3.0] - 2026-10-19
 
 Almost certainly the first release that runs at all from an `npm i -g` or `npx` install on Linux
