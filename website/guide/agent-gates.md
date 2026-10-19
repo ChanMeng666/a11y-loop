@@ -369,20 +369,19 @@ exit $status
 ```
 
 Exit 2 from the audit (for example no browser) does not fail the commit here; change the test if you
-want it to. In GitHub Actions, once a release contains `action.yml`:
+want it to. In GitHub Actions, from release 0.4.0:
 
 ```yaml
 - uses: actions/setup-node@v4
   with: { node-version: 22 }
-- uses: ChanMeng666/a11y-loop@vX.Y.Z   # replace with the first release that contains action.yml
+- uses: ChanMeng666/a11y-loop@v0.4.0
   with:
     target: ./dist/index.html
     fail-on: violations
 ```
 
-The action is merged on `main` and is **not in a release yet**. Release 0.3.2 does not contain it,
-so a `uses:` line pinned to a tag resolves only after a release that contains it is tagged. Until
-then call the CLI from a `run:` step, as the
+The action ships in release 0.4.0 and later, so a `uses:` line pinned to an earlier tag does not
+resolve. On 0.3.2 or earlier call the CLI from a `run:` step, as the
 [CI guide](ci-integration)
 shows. The action's inputs and outputs are in `action.yml` at the repository root.
 

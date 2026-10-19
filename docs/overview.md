@@ -359,7 +359,7 @@ signature. Confirm by hand with the five-minute keyboard test in
 [`references/manual-testing.md`](../skills/a11y-loop/references/manual-testing.md), and audit narrower
 states so each walk fits.
 
-### `dialog-focus-not-returned` used to name the dialog's own Submit button (fixed on `main`, unreleased)
+### `dialog-focus-not-returned` used to name the dialog's own Submit button (fixed in 0.4.0)
 
 Up to 0.3.x the dialog check took the last clicked element as the dialog's trigger. An
 `--interact` state that opened a dialog and then clicked the dialog's own Submit (to reach its
@@ -435,6 +435,12 @@ wait for the focus move before it returns; the second is counted from when the s
 dialog the second is counted from the close itself, so waiting in the state does not extend it, and
 a state that acts again within the second freezes the snapshot at that moment.
 
+The status-message check (`status-message-not-announced`) stands down entirely in a state where the page
+moved focus somewhere other than the control the state activated. So an unannounced status shown in
+that same state is not reported. This is a deliberate choice against false positives: focus moving
+to a new place is how many pages announce a change, and the check cannot tell which message that
+move covered.
+
 ### Up to 0.2.x, invoking the CLI through a link silently did nothing (fixed in 0.3.0)
 
 `src/cli.js` runs `main()` only when it is the program being run. Up to 0.2.x it decided that with
@@ -497,8 +503,8 @@ skill only. See [`roadmap.md`](roadmap.md).
   [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 481 tests across unit and integration suites
-  (0.3.2), including a 19-fixture matrix of seeded violations and correct-behaviour regression
+- **Tests:** the built-in `node --test` runner, 638 tests across unit and integration suites
+  (0.4.0), including a 32-fixture matrix of seeded violations and correct-behaviour regression
   guards, a demo end-to-end run, a forced-colors gradient regression test, and release guards:
   plugin-copy sync and version agreement, skill frontmatter against the Agent Skills spec, text
   encoding, every subcommand run with stdin closed, the CLI and hook run through a symlink and a
@@ -781,8 +787,8 @@ it exits `1` when it finds violations, which fails the job (see below).
 
 The quickest route is the composite GitHub Action. It installs the CLI and the browser, audits,
 writes the result to the job summary, can diff against a baseline report and can keep one sticky
-comment on the pull request. It is merged on `main` but in no release yet: 0.3.2 does not contain
-it, so the `uses:` line below resolves only once the release that contains it is tagged.
+comment on the pull request. It ships in release 0.4.0; 0.3.2 and earlier do not contain
+it, so the `uses:` line below resolves from the v0.4.0 tag on.
 
 ```yaml
 - uses: actions/setup-node@v4          # Node 20 or newer must be on the runner first

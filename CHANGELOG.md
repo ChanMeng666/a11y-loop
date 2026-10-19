@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-20
+
+**Behaviour change.** Three things can change an exit code or a report you already parse. `color-contrast` and `color-contrast-enhanced` rows from the forced-colors pass are now `needsReview`, so a page whose only violations were those rows exits 0 where it used to exit 1. The JSON report is now `schemaVersion: 2`; it only adds fields, and a report without the field is version 1. And `--interact` now runs new checks on built states: `route-change-focus-lost` and `status-message-not-announced` can be violations, so a page with built states can exit 1 where it used to exit 0, and `live-region-injected-late` is always needs-review. An audit without `--interact` is not affected by the new checks.
+
 ### Docs
 - **Plan-gate and audit-gate equivalents for other agent clients** (`docs/agent-gates.md`, and `website/guide/agent-gates.md` on the site). For Codex CLI, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline and OpenCode it records, with the date and URL read, which hook events exist, which can ask the agent to continue, and what could not be verified. One script serves the four clients that can; a git hook and a CI job cover the rest. The script has been run on its own, not yet inside those clients.
 

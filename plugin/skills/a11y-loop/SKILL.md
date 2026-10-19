@@ -21,7 +21,7 @@ compatibility: >-
   setup). The generation and honesty rules apply with or without the CLI; every
   step that says "audit" requires it.
 metadata:
-  "a11y-loop/version": "0.3.2"
+  "a11y-loop/version": "0.4.0"
 allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *)'
 ---
 

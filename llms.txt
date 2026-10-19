@@ -21,16 +21,15 @@ of the project for large language models and AI agents.
 - GitHub Actions: the repository root is a composite action (`action.yml`):
   `uses: ChanMeng666/a11y-loop@<tag>` with `target`, optional `baseline`, `fail-on`
   (`violations` | `new` | `never`) and `pr-comment`. It writes a step summary and an optional sticky
-  PR comment, and never a score. Example: `examples/github-action/audit.yml`. Merged on `main`,
-  not in a release yet (0.3.2 does not contain it): the `uses:` line resolves once a release that
-  contains it is tagged
+  PR comment, and never a score. Example: `examples/github-action/audit.yml`. Ships in release 0.4.0 and
+  later (0.3.2 and earlier do not contain it)
 - `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state
 - Plus one *optional*, Claude-Code-only layer (`plugin/`, the plugin root, published by the root
   `.claude-plugin/marketplace.json`) that enforces the plan phase at plan approval, and the
   audit loop with a `Stop` hook that declines, once per session, to end a session that changed UI
-  files without running `a11y-loop audit` afterwards (on `main`, not yet in a tagged release).
+  files without running `a11y-loop audit` afterwards (ships in release 0.4.0).
   Other clients rely on the skill text plus `a11y-loop audit` in CI. Installing it copies only
   `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hooks run only in
   Claude Code: on Cowork and the Claude apps, where the plugin directory also lists it, only the

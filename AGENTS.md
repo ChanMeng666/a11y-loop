@@ -25,8 +25,8 @@ the audit: there the skill's rules apply, but nothing is verified. `plugin/READM
 
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
 describe a planned or in-progress item as existing, and do not describe something merged on `main`
-but not yet tagged (the GitHub Action, the Stop-hook audit gate and `a11y-loop mcp`, as of this
-writing) as usable from a release.
+but not yet tagged as usable from a release. The GitHub Action, the Stop-hook audit gate and
+`a11y-loop mcp` ship in 0.4.0; nothing is merged-but-untagged at the time of this release.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
