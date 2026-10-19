@@ -62,6 +62,12 @@ additive: nothing under `skills/` may depend on it, and no
 Claude-Code-specific mechanism — hooks, plugin manifests, slash commands, `ExitPlanMode` — may
 appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked to split it.
 
+**Don't edit the generated copies in `plugin/`.** `plugin/skills/a11y-loop/` (from
+`skills/a11y-loop/`, minus `evals/`), `plugin/hooks/lib/plan-gate.mjs` (from
+`src/lib/plan-gate.js`) and `plugin/LICENSE` (from `LICENSE`) are copies. Edit the original and run
+`npm run sync-plugin`. `test/unit/plugin-sync.test.js` fails while any copy differs from its
+source. `plugin/README.md` is not generated: edit it directly.
+
 ## Releasing
 
 Releases are cut by pushing a version tag. There are no npm tokens anywhere in this project — not
