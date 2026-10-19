@@ -121,7 +121,7 @@ Converged: all 159 violations fixed, none introduced
 ```
 
 That count is for axe-core 4.14.0, the version a11y-loop pins, and it is the same on every run.
-The GIF above was recorded at axe-core 4.12.1, when the count was 163. Up to and including 0.3.0
+The GIF above is rendered from the literal output of a11y-loop 0.3.2 at that axe-core version: the 159 failures, the quiet runs and the diff above. Its source and how to regenerate it are in [`docs/demo-gif-src/`](demo-gif-src). Up to and including 0.3.0
 the count also moved by one between runs, 159 or 160, and the cause was the page, not the engine.
 One of its seeded failures is a scrolling sponsor ticker, and whether its tenth name was inside
 the viewport when axe read the page depended on how far the animation had got. The ticker now
@@ -632,7 +632,35 @@ it exits `1` when it finds violations, which fails the job (see below).
 
 ## ⚙️ Using it in CI
 
-Install the CLI and its browser once per job, then audit:
+The quickest route is the composite GitHub Action. It installs the CLI and the browser, audits,
+writes the result to the job summary, can diff against a baseline report and can keep one sticky
+comment on the pull request:
+
+```yaml
+- uses: actions/setup-node@v4          # Node 20 or newer must be on the runner first
+  with:
+    node-version: 22
+- uses: actions/cache@v4               # optional: keep the browser between runs
+  with:
+    path: ${{ runner.temp }}/pw-browsers
+    key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+- uses: ChanMeng666/a11y-loop@v0.4.0
+  with:
+    target: http://localhost:3000      # a URL, or the path of an HTML file
+    fail-on: violations                # violations | new | never
+```
+
+Inputs: `target`, `interact`, `baseline`, `fail-on`, `sarif`, `pr-comment`, `version`, `browser`,
+`playwright-browsers-path`. Outputs: `violations`, `needs-review`, `manual`, `new`, `fixed`,
+`remaining`, `report-path`, `sarif-path`, `exit-code`. A tool error (exit code 2) always fails the
+step. `baseline` points at a JSON report from an earlier run; a missing file is a notice, not an
+error. `pr-comment: 'true'` needs `pull-requests: write` and edits one comment in place.
+[`examples/github-action/audit.yml`](../examples/github-action/audit.yml) is a complete workflow with
+the browser cache, a baseline taken from the latest run on `main`, and the comment. The action
+never posts a score or badge, and its summary says what a clean report does and does not mean.
+
+Without the action, the same thing in plain shell. Install the CLI and its browser once per job,
+then audit:
 
 ```bash
 npm i -g a11y-loop

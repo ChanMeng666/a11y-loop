@@ -19,6 +19,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Stop` fires under `claude -p`, so unlike the plan gate its full round trip runs headlessly.
   The decision lives in `src/lib/audit-gate.js`, copied into the plugin by `npm run sync-plugin`.
   It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
+- **A composite GitHub Action** (`action.yml` at the repository root, usable as
+  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version and the
+  headless-shell browser, runs `doctor` and `audit`, and writes a step summary with the totals, the
+  first violations, the manual-check count and the sentence about what a clean report means. Inputs:
+  `target`, `interact`, `baseline`, `fail-on` (`violations`, `new` or `never`), `sarif`, `pr-comment`,
+  `version`, `browser`, `playwright-browsers-path`. Outputs: `violations`, `needs-review`, `manual`,
+  `new`, `fixed`, `remaining`, `report-path`, `sarif-path`, `exit-code`. With `baseline` it runs
+  `diff` and `fail-on: new` fails only on regressions; a missing baseline file is a notice, not an
+  error. A tool error (exit code 2) always fails the step. With `pr-comment: 'true'` it keeps one
+  comment on the pull request, found by a hidden marker and edited in place, using `gh api` and no
+  third-party action. It never posts a score or badge, and it does not upload SARIF.
+- `examples/github-action/audit.yml`: browser cache, baseline taken from the latest run on `main`,
+  and the PR comment.
+- `.github/workflows/action-selftest.yml` runs the action on Ubuntu and Windows against the demo
+  pages and asserts its outputs.
+- **A `release` branch for the plugin directory to track.** The release workflow now fast-forwards
+  (or creates) `release` to each tagged release, so a directory listing tracking that branch picks
+  up new versions without a manual re-validate. The branch only ever points at tagged commits.
+
+### Changed
+- **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
 
 ## [0.3.2] - 2026-10-19
 

@@ -142,6 +142,15 @@ or Playwright will report a missing browser.
   It may import only `node:` built-ins, because the copy has to run on its own. No I/O, no state, nothing
   Claude-Code-specific: the loop guard, session cap and kill switch stay in the hook, and the CLI
   is stateless.
+- **`action.yml`, `action/`, `examples/github-action/`** — the composite GitHub Action. `action.yml`
+  sits at the repo root so `uses: ChanMeng666/a11y-loop@vX.Y.Z` works; it installs the published CLI
+  at the ref's own `package.json` version (so the action and the CLI release together), audits, and
+  hands the JSON report to `action/report.mjs`, which writes the step summary, the PR comment body and
+  the step outputs from the pure functions in `action/lib.mjs`. Inputs reach shell steps through
+  `env:`, never interpolated into the script. `test/unit/action-report.test.js` holds that text to the
+  red-line list, and `.github/workflows/action-selftest.yml` runs the action (`uses: ./`) on Ubuntu and
+  Windows against the demo pages. Exit code 2 always fails the step, whatever `fail-on` says. The
+  action must keep to the honesty rules: no score, no badge, no "compliant".
 - **`demo/before/` and `demo/after/`** — the seeded-violation fixture and its fixed counterpart
   that back the README's headline claim and `test/integration/demo.test.js`. `VIOLATIONS.md` and
   `FIXES.md` are the finding-by-finding record — keep them in sync with the actual markup if you
@@ -309,6 +318,11 @@ rather than left to be rediscovered.
   If that shape changes, `scanTranscript()` finds no tool calls and the gate passes silently: it
   fails open, never closed. Check a fresh transcript when bumping the supported Claude Code
   version. Files written by a shell command, and edits made inside a subagent, are not seen.
+- **The `release` branch exists only for the Anthropic plugin directory and always equals the latest
+  tagged release.** `release.yml` fast-forwards it on every `v*` tag push and nothing else should
+  ever write to it. When the maintainer next edits the directory submission, switch the tracked ref
+  from the tag to the `release` branch and keep auto-publish on, so new releases are picked up
+  without a manual re-validate.
 
 ## Testing the plugin layer
 

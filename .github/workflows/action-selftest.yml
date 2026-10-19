@@ -1,0 +1,124 @@
+name: Action self-test
+
+# Runs this repository's own action (uses: ./) on two operating systems against the demo pages,
+# and asserts the outputs. The action installs the published a11y-loop at the version in this
+# checkout's package.json, so it exercises the action's wiring, not unreleased CLI changes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    name: selftest (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache the Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw-browsers
+          key: pw-selftest-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Fixed page exits 0
+        id: after
+        uses: ./
+        with:
+          target: demo/after/index.html
+          # The comment path is exercised once, on Linux, so two jobs never race for the marker.
+          pr-comment: ${{ matrix.os == 'ubuntu-latest' }}
+
+      - name: Assert the fixed page
+        env:
+          VIOLATIONS: ${{ steps.after.outputs.violations }}
+          EXIT_CODE: ${{ steps.after.outputs.exit-code }}
+          REPORT: ${{ steps.after.outputs.report-path }}
+        run: |
+          test "$VIOLATIONS" = "0"
+          test "$EXIT_CODE" = "0"
+          test -s "$REPORT"
+
+      - name: Seeded page with fail-on never reports 159
+        id: before
+        uses: ./
+        with:
+          target: demo/before/index.html
+          fail-on: never
+          sarif: 'true'
+
+      - name: Assert the seeded page
+        env:
+          VIOLATIONS: ${{ steps.before.outputs.violations }}
+          EXIT_CODE: ${{ steps.before.outputs.exit-code }}
+          REPORT: ${{ steps.before.outputs.report-path }}
+          SARIF: ${{ steps.before.outputs.sarif-path }}
+        run: |
+          test "$VIOLATIONS" = "159"
+          test "$EXIT_CODE" = "1"
+          test -s "$REPORT"
+          test -s "$SARIF"
+
+      - name: Seeded page against the fixed baseline fails on new
+        id: regression
+        continue-on-error: true
+        uses: ./
+        with:
+          target: demo/before/index.html
+          baseline: ${{ steps.after.outputs.report-path }}
+          fail-on: new
+
+      - name: Assert the regression was caught
+        env:
+          OUTCOME: ${{ steps.regression.outcome }}
+          NEW: ${{ steps.regression.outputs.new }}
+          FIXED: ${{ steps.regression.outputs.fixed }}
+        run: |
+          test "$OUTCOME" = "failure"
+          test "$NEW" = "159"
+          test "$FIXED" = "0"
+
+      - name: Fixed page against the seeded baseline converges
+        id: converge
+        uses: ./
+        with:
+          target: demo/after/index.html
+          baseline: ${{ steps.before.outputs.report-path }}
+          fail-on: new
+
+      - name: Assert convergence
+        env:
+          NEW: ${{ steps.converge.outputs.new }}
+          FIXED: ${{ steps.converge.outputs.fixed }}
+          REMAINING: ${{ steps.converge.outputs.remaining }}
+        run: |
+          test "$NEW" = "0"
+          test "$FIXED" = "159"
+          test "$REMAINING" = "0"
+
+      - name: A missing baseline is not an error
+        id: nobaseline
+        uses: ./
+        with:
+          target: demo/after/index.html
+          baseline: does-not-exist.json
+          fail-on: new

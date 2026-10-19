@@ -69,3 +69,18 @@ jobs:
           fi
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
             gh release create "$GITHUB_REF_NAME" --title "a11y-loop $ver" --notes-file notes.md --verify-tag
+
+      # The Anthropic plugin directory tracks a git ref. A tag never moves, so a
+      # tag-tracked listing needs a manual re-validate per release; a branch is
+      # picked up automatically. `release` therefore only ever points at a tagged
+      # release. Plain push, never forced: it creates the branch or fast-forwards
+      # it, and a re-run of an older tag is rejected by the server and skipped
+      # rather than moving the branch backwards. Idempotent for the current tag.
+      - name: Fast-forward release branch
+        if: ${{ success() && github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          if git push origin "$GITHUB_SHA:refs/heads/release"; then
+            echo "release -> $GITHUB_REF_NAME ($GITHUB_SHA)"
+          else
+            echo "::warning::release branch not fast-forwarded to $GITHUB_REF_NAME (older tag re-run, or push refused)"
+          fi
