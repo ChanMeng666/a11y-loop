@@ -34,7 +34,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -555,6 +555,30 @@ export async function main() {
   }
 }
 
-const invokedDirectly =
-  process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
-if (invokedDirectly) await main();
+/**
+ * Whether this module is the process entry point. Node resolves
+ * `import.meta.url` through symlinks and junctions but leaves `process.argv[1]`
+ * as typed, so a plain comparison is false when the hook is reached through a
+ * link and the gate would silently never run. Resolve argv[1] first; if it
+ * cannot be resolved, compare it as given. Never throws.
+ *
+ * @param {string} moduleUrl
+ * @param {string|undefined} argv1
+ * @returns {boolean}
+ */
+export function isEntryPoint(moduleUrl, argv1) {
+  if (!argv1) return false;
+  try {
+    let entry = argv1;
+    try {
+      entry = realpathSync(argv1);
+    } catch {
+      // Not resolvable: compare the path as given.
+    }
+    return moduleUrl === pathToFileURL(entry).href;
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint(import.meta.url, process.argv[1])) await main();

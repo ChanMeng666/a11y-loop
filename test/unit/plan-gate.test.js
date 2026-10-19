@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, rmdirSync, rmSync, symlinkSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import {
@@ -12,6 +12,7 @@ import {
   planHash,
   evaluate,
   buildReason,
+  isEntryPoint,
 } from '../../hooks/plan-gate.mjs';
 
 const GATE = fileURLToPath(new URL('../../hooks/plan-gate.mjs', import.meta.url));
@@ -287,5 +288,64 @@ describe('the hook as Claude Code invokes it', () => {
 
   test('a payload with no plan is not an error', () => {
     assert.equal(runGate({ tool_name: 'ExitPlanMode', tool_input: {} }), null);
+  });
+});
+
+describe('the hook runs when invoked through a link', () => {
+  const REPO = path.resolve(path.dirname(GATE), '..');
+
+  function viaLink(makeLink) {
+    const dir = mkdtempSync(path.join(tmpdir(), 'a11y-gate-link-'));
+    const link = path.join(dir, 'link');
+    try {
+      symlinkSync(...makeLink(link));
+    } catch (error) {
+      if (error.code === 'EPERM') return { skip: 'symlink creation is not permitted here (EPERM)' };
+      throw error;
+    }
+    const cleanup = () => {
+      try {
+        unlinkSync(link);
+      } catch {
+        rmdirSync(link);
+      }
+      rmSync(dir, { recursive: true, force: true });
+    };
+    return { link, cleanup };
+  }
+
+  function verdictVia(entry) {
+    const stdout = execFileSync(process.execPath, [entry], {
+      input: JSON.stringify(hookInput(UI_PLAN)),
+      encoding: 'utf8',
+      env: { ...process.env, CLAUDE_PLUGIN_DATA: mkdtempSync(path.join(tmpdir(), 'a11y-gate-')), A11Y_LOOP_PLAN_GATE: '' },
+    });
+    return stdout.trim() ? JSON.parse(stdout).hookSpecificOutput : null;
+  }
+
+  test('a file symlink to the hook still emits a verdict', (t) => {
+    const l = viaLink((link) => [GATE, link, 'file']);
+    if (l.skip) return t.skip(l.skip);
+    try {
+      assert.equal(verdictVia(l.link)?.permissionDecision, 'deny');
+    } finally {
+      l.cleanup();
+    }
+  });
+
+  test('a directory junction or symlink to the checkout still emits a verdict', (t) => {
+    const l = viaLink((link) => [REPO, link, 'junction']);
+    if (l.skip) return t.skip(l.skip);
+    try {
+      assert.equal(verdictVia(path.join(l.link, 'hooks', 'plan-gate.mjs'))?.permissionDecision, 'deny');
+    } finally {
+      l.cleanup();
+    }
+  });
+
+  test('isEntryPoint never throws and is false without an argv[1]', () => {
+    assert.equal(isEntryPoint('file:///x.mjs', undefined), false);
+    assert.equal(isEntryPoint('file:///x.mjs', ' bad'), false);
+    assert.equal(isEntryPoint(import.meta.url, fileURLToPath(import.meta.url)), true);
   });
 });
