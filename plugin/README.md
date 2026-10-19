@@ -34,6 +34,8 @@ commands to run. It ships four things:
   finish. It reads the session transcript Claude Code already keeps, looking for file edits and
   audit commands, and writes one small state file to the same data directory. It runs no audit
   itself and makes no network requests. Turn it off with `A11Y_LOOP_AUDIT_GATE=off`.
+  Claude Code shows the decline as a "Stop hook" notice in the session, and it happens at most
+  once per session.
 - **Installing the plugin** copies this folder and nothing else. There is no `package.json` here,
   so the install fetches no packages.
 - **The audit** needs the separate command-line tool: `npm i -g a11y-loop` and then

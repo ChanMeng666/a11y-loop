@@ -39,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   up new versions without a manual re-validate. The branch only ever points at tagged commits.
 
 ### Changed
+- **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
+  `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
+  run was lost. The skill's own examples use that path.
 - **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
 
 ## [0.3.2] - 2026-10-19

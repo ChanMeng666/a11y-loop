@@ -228,7 +228,7 @@ export function buildReason({ files, cwd }) {
     ...shown.map((f) => `- ${f}`),
     ...(more > 0 ? [`- and ${more} more`] : []),
     '',
-    'Before ending, run the audit on what you changed, including any state you built (an open dialog, an error state) with `--interact`. `--out` does not create directories, so create `.a11y/` first if it is missing:',
+    'Before ending, run the audit on what you changed, including any state you built (an open dialog, an error state) with `--interact`:',
     '',
     `  npx a11y-loop audit ${target} --out .a11y/run-1.json --quiet`,
     '',
