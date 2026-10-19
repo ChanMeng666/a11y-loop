@@ -1,9 +1,9 @@
 # Architecture & the Loop
 
 a11y-loop is two things working together: an **Agent Skill** that sets the rules — first while the
-UI work is being planned, then while the agent writes the code — and a **Node CLI** that verifies
-the rendered result in a real browser and feeds failures back to the agent until the report
-converges.
+UI work is being planned, then while the agent writes the code — and a **Node CLI** that checks the
+plan and verifies the rendered result in a real browser, feeding failures back to the agent until
+the report converges. An optional Claude Code plugin adds a plan-mode gate on top.
 
 The skill's phases run in that order. §0 settles the decisions that are cheap now and expensive
 later (conformance target, per-component criteria, foreclosing decisions, color tokens, structure);
@@ -15,6 +15,8 @@ about the result. Only §2 needs a browser — see
 graph TD
     A["Agent Skill<br/>skills/a11y-loop/SKILL.md + references/"] -->|"§0 plan rules"| P["Agent plans the UI work<br/>conformance target, per-component criteria,<br/>foreclosing decisions, color tokens, structure"]
     P -->|"contrast --fix, no browser needed"| E
+    P -->|"plan-check, no browser needed"| Q["plan-check<br/>exit 1 if a UI plan names<br/>no accessibility decisions"]
+    Q --> B
     P --> B
     A -->|"§1 standing generation rules"| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
     B --> C["a11y-loop CLI"]
@@ -63,11 +65,14 @@ back to the agent to fix; `a11y-loop diff` confirms convergence without new regr
 report and its manual-review checklist are the artifact of record, with SARIF offered as a
 secondary format for tools that consume it.
 
-Only the plan phase has an enforcement point outside the skill itself: in Claude Code, the
-[optional plugin layer](/guide/getting-started#optional-the-claude-code-plugin-layer) hooks
-`ExitPlanMode` and declines a UI plan with no accessibility content once. It checks that the
-question was asked, not that the answer is any good — the audit loop above and a human reviewer are
-still what judge the answer.
+The plan phase has two enforcement points outside the skill itself. `a11y-loop plan-check` runs in
+any agent or CI job and exits `1` on a UI plan with no accessibility content. In interactive Claude
+Code, the [optional plugin layer](/guide/getting-started#optional-the-claude-code-plugin-layer)
+runs the same decision as a hook on `ExitPlanMode` and declines such a plan once. Both check that
+the question was asked, not that the answer is any good — the audit loop above and a human
+reviewer are still what judge the answer. Nothing yet gates the end of a turn on the audit: a
+Stop-hook audit gate is on the
+[roadmap](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/roadmap.md), not shipped.
 
 ## Tech stack
 

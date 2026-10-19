@@ -25,6 +25,8 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
 - axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed. See the
   [benchmark write-up](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md)
   for a live example of two such findings being investigated and resolved rather than dismissed.
+  That benchmark was run against the skill at v0.1.x, before the plan rules existed; a 2026-10
+  re-run is in progress.
 - **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
   a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
   written up in [Field Notes](/guide/field-notes), with what to check before dismissing one.
