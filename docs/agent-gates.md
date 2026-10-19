@@ -74,7 +74,8 @@ four. It does what the Claude Code hook does in spirit, with a smaller scope:
 - It has a time budget, 100 seconds by default (`A11Y_LOOP_GATE_BUDGET_MS`). Files it has not
   reached when the budget runs out are listed in its reason text for the agent to audit itself.
 - It asks the agent to continue only when an audit exits 1. Exit 2 (no browser, usage error) and any
-  error of its own let the agent stop.
+  error of its own let the agent stop. If `a11y-loop` cannot be started at all, it writes
+  `a11y-gate: a11y-loop not found` and the error code to stderr and lets the agent stop.
 - It stops asking when the client says it is already continuing because of a stop hook
   (`stop_hook_active` for Codex, Copilot and Gemini CLI, `loop_count` for Cursor).
   `A11Y_LOOP_AUDIT_GATE=off` disables it.
@@ -91,6 +92,7 @@ Save this as `a11y-gate.mjs` in the folder named for each client below:
 // Never prompts, never uses a shell, and fails open: any error of its own lets the agent stop.
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 const client = process.argv[2];
@@ -118,7 +120,9 @@ const root = top.stdout.trim();
 // spawned without one, so run the package's cli.js with node instead.
 let cli = ['a11y-loop'];
 if (process.platform === 'win32') {
-  const where = run('where', ['a11y-loop'], root, 10000);
+  // cwd is the temp dir, not the repo: `where` searches the current directory first, and a repository
+  // must not be able to plant an a11y-loop.cmd that gets run.
+  const where = run('where', ['a11y-loop'], tmpdir(), 10000);
   const shim = (where.stdout || '').split(/\r?\n/).find((l) => l.trim());
   const js = shim && join(dirname(shim.trim()), 'node_modules', 'a11y-loop', 'src', 'cli.js');
   if (!js || !existsSync(js)) { process.stderr.write('a11y-gate: a11y-loop not found on PATH\n'); process.exit(0); }
@@ -149,6 +153,10 @@ for (const t of targets) {
   const left = budgetMs - (Date.now() - started);
   if (left < 5000) { skipped.push(t.name); continue; }
   const r = run(cli[0], [...cli.slice(1), 'audit', ...t.args, '--quiet'], root, left);
+  if (r.error && r.error.code !== 'ETIMEDOUT') { // for example ENOENT: a11y-loop is not installed
+    process.stderr.write(`a11y-gate: a11y-loop not found (${r.error.code})\n`);
+    process.exit(0);
+  }
   if (r.error || r.signal) skipped.push(t.name); // timed out
   else if (r.status === 1) failures.push(`${t.name}: ${(r.stdout || '').trim().split('\n')[0]}`);
   // status 2 (no browser, usage error) and anything else: fail open, like the Claude Code hook.
