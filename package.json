@@ -13,7 +13,8 @@
     "test": "node --test",
     "test:unit": "node --test \"test/unit/*.test.js\"",
     "test:integration": "node --test \"test/integration/*.test.js\"",
-    "sync-plugin": "node scripts/sync-plugin.mjs"
+    "sync-plugin": "node scripts/sync-plugin.mjs",
+    "eval:skill": "claude plugin eval plugin --trust-plugin --no-publish -j 4 --output-dir evals/skill-eval-results --json evals/skill-eval-results/latest.json"
   },
   "keywords": [
     "accessibility",
