@@ -314,6 +314,16 @@ then call the CLI from a `run:` step, as the
 [CI guide](ci-integration)
 shows. The action's inputs and outputs are in `action.yml` at the repository root.
 
+## A third route: the MCP server, which is not a gate
+
+`a11y-loop mcp` serves the CLI as Model Context Protocol tools over stdio, including
+`a11y_loop_plan_check` and `a11y_loop_audit` (with `a11y_loop_diff`, `a11y_loop_contrast_fix`,
+`a11y_loop_doctor` and `a11y_loop_manual_checklist`). A client that loads MCP servers lets the agent
+call those tools itself, in the middle of a task. That is a standing capability, not a gate: nothing
+makes the agent call them, nothing runs when it stops, and it does not replace a hook or the CI
+route. Setup snippets for Claude Code, Codex and Cursor are in the
+[overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#mcp-server). Copilot's and Gemini CLI's MCP configuration was not checked against their own documentation, so there is no snippet for them.
+
 ## Limits, stated plainly
 
 - The script audits changed `.html` files or one URL. The Claude Code hook reads the transcript and
