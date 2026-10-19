@@ -5,6 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **A composite GitHub Action** (`action.yml` at the repository root, usable as
+  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version and the
+  headless-shell browser, runs `doctor` and `audit`, and writes a step summary with the totals, the
+  first violations, the manual-check count and the sentence about what a clean report means. Inputs:
+  `target`, `interact`, `baseline`, `fail-on` (`violations`, `new` or `never`), `sarif`, `pr-comment`,
+  `version`, `browser`, `playwright-browsers-path`. Outputs: `violations`, `needs-review`, `manual`,
+  `new`, `fixed`, `remaining`, `report-path`, `sarif-path`, `exit-code`. With `baseline` it runs
+  `diff` and `fail-on: new` fails only on regressions; a missing baseline file is a notice, not an
+  error. A tool error (exit code 2) always fails the step. With `pr-comment: 'true'` it keeps one
+  comment on the pull request, found by a hidden marker and edited in place, using `gh api` and no
+  third-party action. It never posts a score or badge, and it does not upload SARIF.
+- `examples/github-action/audit.yml`: browser cache, baseline taken from the latest run on `main`,
+  and the PR comment.
+- `.github/workflows/action-selftest.yml` runs the action on Ubuntu and Windows against the demo
+  pages and asserts its outputs.
+
 ## [0.3.2] - 2026-10-19
 
 Documentation only. No behaviour change, no change to the report shape.
