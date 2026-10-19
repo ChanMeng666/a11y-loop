@@ -131,7 +131,9 @@ or Playwright will report a missing browser.
   trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size),
   `contrast-math.js` + `suggest-color.js` (WCAG contrast + OKLCh fix suggestions), `fingerprint.js`
   (stable finding IDs for `diff`), `diff.js` (FIXED/NEW/REMAINING classification), `finding.js`
-  (the shared finding shape), `format/` (`json.js`, `human.js`, `sarif.js`, `checklist.js` — one
+  (the shared finding shape, including the `evidence` tier), `cluster.js` (root-cause clusters:
+  colour pair for contrast, selector pattern otherwise; additive, every row stays in `findings`),
+  `format/` (`json.js`, `human.js`, `sarif.js`, `checklist.js` — one
   serializer per output format), `wcag-map.js` (rule → WCAG SC + ACT ID mapping), `serve.js` and
   `browser-utils.js` (local static serving for `--file`/`--html`, and Playwright lifecycle helpers),
   and `plan-gate.js` — the plan gate's pure decision (is this UI work, does it carry accessibility
@@ -207,12 +209,16 @@ or Playwright will report a missing browser.
   reads an element's foreground from `-webkit-text-fill-color` before `color` (`getTextColor()`),
   and Chromium's forced-colors emulation forces `color` and the background but leaves
   `-webkit-text-fill-color` at the author's value, so light-on-dark text is compared against a
-  forced white background and every line on a dark surface is reported. If this is ever to be
-  handled in code rather than in prose, `findingsFromAxeResult()` in `src/lib/axe-runner.js`
-  already downgrades one rule (`target-size`) to `needsReview` by id; the same shape keyed on rule
-  id **and** `passName === 'forced-colors'` would route these to needs-review. That is a
-  recommendation, not a decision — it changes what counts as a violation and therefore the exit
-  code, so it needs its own measurement and its own release note.
+  forced white background and every line on a dark surface is reported. This one is now handled
+  in code: `reviewRouting()` in `src/lib/axe-runner.js` routes a contrast-rule violation from the
+  `forced-colors` pass, and only that pass, to `needsReview` with `routedFrom`, `note` and
+  `noteUrl`, and drops its colour suggestion. It is the same mechanism that always downgrades
+  `target-size`. `test/fixtures/fixture-forced-colors-dark-surface.html` is its regression target:
+  exit 1 without the routing, exit 0 with it. On the demo and every other fixture no row moved,
+  because each forced-colors contrast failure there also fails in another pass and
+  `dedupeFindings()` lets a violation from any pass win. Adding another rule to the routing
+  changes what counts as a violation and therefore the exit code, so it needs the same: a fixture,
+  a before/after measurement across the matrix and the demo, and its own release note.
 - **An entry guard must realpath `process.argv[1]` before comparing it with `import.meta.url`.**
   `src/cli.js` ends with an entry guard so tests can import `main` freely. Node resolves
   `import.meta.url` through a junction or symlink to the real path while `process.argv[1]` keeps

@@ -20,6 +20,55 @@ export const SEVERITY = {
   BEST_PRACTICE: 'bestPractice',
 };
 
+/**
+ * How a finding's verdict was established. Orthogonal to severity: severity
+ * says whether a row blocks (the exit code), evidence says how much weight the
+ * row itself can carry.
+ *
+ *  - `measured`     — a value was read off the rendered page and compared with
+ *                     a threshold or a required attribute: every axe violation
+ *                     (contrast ratios, missing names, invalid ARIA), and our
+ *                     own static checks (positive tabindex, focus indicator
+ *                     style diff, reflow scroll width, animation under reduced
+ *                     motion).
+ *  - `inferred`     — the failure is concluded from what a driven, bounded
+ *                     probe did or did not observe: focus never arrived during
+ *                     a Tab walk, a dialog let focus out, Escape did not close
+ *                     it, Enter did not activate a role=button, or a click
+ *                     handler with no role and no tabindex implies no keyboard
+ *                     path. Still a real, blocking violation, but the verdict
+ *                     rests on the probe having been representative — which is
+ *                     why a row whose probe ran out of budget also carries
+ *                     `confidence`.
+ *  - `needs-review` — every needsReview row: axe `incomplete`, the rules we
+ *                     always downgrade (target-size, forced-colors contrast),
+ *                     and our own checks that find something real but cannot
+ *                     judge it.
+ */
+export const EVIDENCE = {
+  MEASURED: 'measured',
+  INFERRED: 'inferred',
+  NEEDS_REVIEW: 'needs-review',
+};
+
+/** Rule ids whose violations are behavioural inferences from a driven probe. */
+export const INFERRED_RULES = new Set([
+  'keyboard-unreachable',
+  'dialog-initial-focus',
+  'dialog-focus-not-trapped',
+  'dialog-escape-does-not-close',
+  'dialog-focus-not-returned',
+  'role-button-keyboard-activation',
+  'div-button',
+]);
+
+/** The evidence tier a finding gets when its producer does not say. */
+export function defaultEvidence({ ruleId, severity }) {
+  if (severity === SEVERITY.NEEDS_REVIEW) return EVIDENCE.NEEDS_REVIEW;
+  if (INFERRED_RULES.has(ruleId)) return EVIDENCE.INFERRED;
+  return EVIDENCE.MEASURED;
+}
+
 export const HTML_TRUNCATE_AT = 200;
 
 /** Collapse whitespace and cap length, so reports stay readable and small. */
@@ -46,6 +95,13 @@ export function truncateHtml(html, limit = HTML_TRUNCATE_AT) {
  * @param {string[]} [spec.passes] which emulation passes it appeared in
  * @param {string|null} [spec.state] interaction state name, if any
  * @param {object} [spec.data] extra check-specific detail
+ * @param {string} [spec.evidence] one of EVIDENCE; derived when omitted
+ * @param {{level:'reduced', reason:string}} [spec.confidence] set only when the
+ *   probe behind the row hit a budget, so the verdict is weaker than usual
+ * @param {string} [spec.note] why a row is not what it looks like
+ * @param {string} [spec.noteUrl] where that explanation is written up
+ * @param {string} [spec.routedFrom] the severity the engine reported before a
+ *   documented rule moved the row (only 'violation' today)
  */
 export function makeFinding(spec) {
   const {
@@ -64,6 +120,11 @@ export function makeFinding(spec) {
     passes = [],
     state = null,
     data,
+    evidence,
+    confidence,
+    note,
+    noteUrl,
+    routedFrom,
   } = spec;
 
   const wcag = sc ? wcagForSc(sc) : wcagFromTags(tags);
@@ -82,10 +143,15 @@ export function makeFinding(spec) {
     html: truncateHtml(html),
     message,
     helpUrl,
+    evidence: evidence ?? defaultEvidence({ ruleId, severity }),
   };
 
   if (suggestions?.length) finding.suggestions = suggestions;
   if (data) finding.data = data;
+  if (confidence) finding.confidence = confidence;
+  if (note) finding.note = note;
+  if (noteUrl) finding.noteUrl = noteUrl;
+  if (routedFrom) finding.routedFrom = routedFrom;
   return finding;
 }
 
@@ -148,6 +214,16 @@ export function dedupeFindings(findings) {
     ) {
       existing.severity = SEVERITY.VIOLATION;
       existing.message = finding.message;
+      // The row is now the violating sighting's verdict, so it carries that
+      // sighting's evidence, and drops anything that only explained why an
+      // earlier sighting had been routed to needs-review.
+      existing.evidence = finding.evidence;
+      if (finding.confidence) existing.confidence = finding.confidence;
+      else delete existing.confidence;
+      delete existing.note;
+      delete existing.noteUrl;
+      delete existing.routedFrom;
+      if (!existing.data && finding.data) existing.data = finding.data;
     }
     if (!existing.suggestions && finding.suggestions) existing.suggestions = finding.suggestions;
   }

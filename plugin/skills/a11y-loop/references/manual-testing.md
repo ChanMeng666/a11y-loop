@@ -127,10 +127,13 @@ the same as suppressing it, and nothing here is a reason to disable a rule.
   Dark-on-light text survives that; light-on-dark text reads near 1:1 and every
   line on a dark surface is reported. The tell is a finding whose foreground is
   a color you can find in your source and whose background is `#ffffff` or
-  `#000000`. Confirm the pair in the default and dark passes, check forced
-  colors by eye or with the OS setting, and report it as reviewed rather than
-  measured. **Never apply the suggested color** — it is derived from the same
-  mismatched pair and fails in the default pass.
+  `#000000`. a11y-loop reports these rows under needsReview, not as
+  violations: each carries `routedFrom: "violation"`, a `note` with this
+  explanation and a `noteUrl`, and no suggested color, because one derived
+  from the mismatched pair fails in the default pass. The same element failing
+  in any other pass is still a violation. Confirm the pair in the default and
+  dark passes, check forced colors by eye or with the OS setting, and report it
+  as reviewed rather than measured.
 - **A click handler on `<body>` or on a portal root is how popup libraries
   dismiss on an outside press**, and a keyboard-path check sees a clickable
   element with no role, no `tabindex` and no keyboard handling. The keyboard
@@ -147,8 +150,9 @@ the same as suppressing it, and nothing here is a reason to disable a rule.
 - **A Tab walk has a budget** — 60 presses. Anything the walk did not reach
   inside it is reported unreachable because the budget ended, not because focus
   could not get there. A contiguous cluster at the end of document order is the
-  signature; confirm it by hand with the keyboard test below, and audit
-  narrower states so each walk fits.
+  signature, and when the walk used every press each row says so in its
+  `confidence` field. Confirm it by hand with the keyboard test below, and
+  audit narrower states so each walk fits.
 
 ---
 

@@ -11,8 +11,19 @@
  *  - No conformance language, ever. See RED_LINE_PATTERNS.
  */
 
-import { bucketFindings } from '../finding.js';
+import { bucketFindings, EVIDENCE } from '../finding.js';
 import { compareSc, CONFORMANCE_SET } from '../wcag-map.js';
+import { buildClusters, colourPairSummary } from '../cluster.js';
+
+/**
+ * The report's shape version. Reports from 0.3.x and earlier carry no field
+ * and are version 1. Version 2 only ADDS: `evidence` (and, when relevant,
+ * `confidence`, `note`, `noteUrl`, `routedFrom`, `data.contrast`) on findings,
+ * the top-level `clusters` array, and `summary.evidence`, `summary.clusters`
+ * and `summary.colourPairs`. Nothing was renamed or removed, so a version-1
+ * reader keeps working.
+ */
+export const SCHEMA_VERSION = 2;
 
 /** The clean-run sentence. Deliberately not "passed", "compliant" or "accessible". */
 export const CLEAN_VERDICT = 'No automatically detectable failures';
@@ -89,6 +100,15 @@ export function affectedCriteria(findings) {
   return [...map.values()].sort((a, b) => compareSc(a.sc, b.sc));
 }
 
+/** Rows per evidence tier across all three buckets, every tier always present. */
+export function countByEvidence(findings) {
+  const counts = { [EVIDENCE.MEASURED]: 0, [EVIDENCE.INFERRED]: 0, [EVIDENCE.NEEDS_REVIEW]: 0 };
+  for (const finding of findings) {
+    if (finding.evidence in counts) counts[finding.evidence] += 1;
+  }
+  return counts;
+}
+
 /**
  * Assemble the report.
  *
@@ -102,6 +122,10 @@ export function affectedCriteria(findings) {
 export function buildReport({ tool, target, findings, manualChecklist = [], facts = {} }) {
   const buckets = bucketFindings(findings);
   const violationCount = buckets.violations.length;
+  const clusters = buildClusters(buckets);
+  const clusteredViolations = clusters
+    .filter((c) => c.severity === 'violation')
+    .reduce((n, c) => n + c.count, 0);
 
   const summary = {
     violations: violationCount,
@@ -117,9 +141,26 @@ export function buildReport({ tool, target, findings, manualChecklist = [], fact
         : `${violationCount} automatically detectable failure${violationCount === 1 ? '' : 's'}`,
     target: 'WCAG 2.2 Level AA',
     coverage: COVERAGE,
+    evidence: {
+      violations: countByEvidence(buckets.violations),
+      needsReview: countByEvidence(buckets.needsReview),
+      bestPractice: countByEvidence(buckets.bestPractice),
+      reducedConfidence: findings.filter((f) => f.confidence).length,
+      routedToNeedsReview: buckets.needsReview.filter((f) => f.routedFrom).length,
+    },
+    clusters: {
+      total: clusters.length,
+      violations: clusters.filter((c) => c.severity === 'violation').length,
+      violationRowsClustered: clusteredViolations,
+    },
+    colourPairs: {
+      violations: colourPairSummary(buckets.violations),
+      needsReview: colourPairSummary(buckets.needsReview),
+    },
   };
 
   return {
+    schemaVersion: SCHEMA_VERSION,
     tool,
     target,
     summary,
@@ -128,6 +169,7 @@ export function buildReport({ tool, target, findings, manualChecklist = [], fact
       needsReview: buckets.needsReview,
       bestPractice: buckets.bestPractice,
     },
+    clusters,
     manualChecklist,
     pageInventory: facts,
   };

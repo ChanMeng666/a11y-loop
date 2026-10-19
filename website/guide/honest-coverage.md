@@ -28,7 +28,23 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
 - **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
   a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
   written up in [Field Notes](/guide/field-notes), with what to check before dismissing one.
-  Verifying a row is not the same as suppressing it, and a11y-loop suppresses nothing.
+  Verifying a row is not the same as suppressing it, and a11y-loop suppresses nothing. The
+  forced-colors contrast rows are the one class handled in code: they are reported under
+  `needsReview` rather than as violations, each with a note that links to its field note, and they
+  are still in every report.
+- **Every finding says how it was established.** `evidence` is `measured` when a value was read
+  off the rendered page and compared with a threshold or a required attribute (every axe
+  violation, and a11y-loop's static checks), `inferred` when the failure is a conclusion from what
+  a driven, bounded probe did or did not see (a Tab walk that never reached an element, a dialog
+  that let focus out, Escape that did not close it, a click handler with no keyboard path), and
+  `needs-review` for every `needsReview` row. An `inferred` row is still a blocking violation. When
+  the probe behind it ran out of budget, the row also carries `confidence: { level: "reduced",
+  reason }`. Evidence never changes the exit code.
+- **Many rows, one cause, said once.** The report's `clusters` group rows that share a root
+  cause: a colour pair for contrast (rule, foreground, background, required ratio), a selector
+  pattern for everything else. Each cluster names the cause, gives the fix once, and lists its
+  members by fingerprint. Every row stays in `findings`. On `demo/before`, 12 colour pairs account
+  for its 104 contrast violations.
 - **SARIF caveat, stated honestly:** GitHub Code Scanning only displays SARIF results that carry a
   file-path location. a11y-loop's findings are located by rendered URL + CSS selector, which
   Code Scanning drops on ingestion — a naive upload produces an empty Code Scanning view. SARIF

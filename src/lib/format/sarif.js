@@ -18,7 +18,7 @@
  * result per finding, each located by the artifact URI plus the CSS selector as a
  * logical location. test/unit/format.test.js asserts it against a golden file
  * captured from axe-sarif-converter 3.1.0 before the dependency was removed.
- * Three differences are deliberate, and that test pins each of them:
+ * Four differences are deliberate, and that test pins each of them:
  *
  *  - There is no `conversion` block. Nothing is converted any more, and naming a
  *    converter that did not run would misdescribe where the log came from.
@@ -31,6 +31,14 @@
  *    which is not a URI, so the log failed the SARIF 2.1.0 schema's
  *    `uri-reference` format. A fragment has no address, so it goes in the
  *    artifact's `contents` instead and results point at it by index alone.
+ *  - Since report schema 2, every result carries a `message`. The converter's
+ *    was empty, because it built the text from axe's per-check results, which
+ *    a11y-loop findings do not carry; a SARIF viewer then showed a row with no
+ *    explanation. The text is the finding's own message (axe's help plus its
+ *    failure summary, which already names the measured values, or our check's
+ *    measured sentence), then the measured contrast pair when there is one,
+ *    then the evidence tier and any confidence caveat or note. Each result also
+ *    gets a `properties` bag with the fingerprint and evidence tier.
  *
  * Still no invented file paths: the artifact URI is the audited page URL, or the
  * path given to --file, which is what the converter wrote too.
@@ -71,6 +79,17 @@ export function toAxeShape(report) {
     none: [],
     impact: finding.impact ?? null,
     failureSummary: finding.message,
+    // Not axe fields: carried so the SARIF result can say how it was established.
+    a11yLoop: {
+      fingerprint: finding.fingerprint,
+      evidence: finding.evidence ?? null,
+      confidence: finding.confidence ?? null,
+      note: finding.note ?? null,
+      noteUrl: finding.noteUrl ?? null,
+      contrast: finding.data?.contrast ?? null,
+      passes: finding.passes ?? [],
+      state: finding.state ?? null,
+    },
   });
 
   const groupByRule = (findings) => {
@@ -121,6 +140,33 @@ export function toAxeShape(report) {
     passes: [],
     inapplicable: [],
   };
+}
+
+/**
+ * The result message: what failed and the values that show it, then how the
+ * verdict was reached. Plain text and Markdown carry the same words.
+ */
+export function resultMessage(node) {
+  const meta = node.a11yLoop ?? {};
+  const summary = String(node.failureSummary ?? '').trim();
+  const parts = [summary && !/[.!?]$/.test(summary) ? `${summary}.` : summary];
+  const c = meta.contrast;
+  if (c?.fgColor && c?.bgColor && !summary.includes(String(c.fgColor))) {
+    const ratio = c.contrastRatio !== undefined ? `${c.contrastRatio}:1 for ` : '';
+    const needs = c.expectedContrastRatio ? `, ${c.expectedContrastRatio} required` : '';
+    parts.push(`Measured: ${ratio}foreground ${c.fgColor} on background ${c.bgColor}${needs}.`);
+  }
+  if (meta.passes?.length) parts.push(`Passes: ${meta.passes.join(', ')}.`);
+  if (meta.state) parts.push(`State: ${meta.state}.`);
+  if (meta.evidence) parts.push(`Evidence: ${meta.evidence}.`);
+  if (meta.confidence) parts.push(`Confidence ${meta.confidence.level}: ${meta.confidence.reason}`);
+  if (meta.note) parts.push(`Note: ${meta.note}${meta.noteUrl ? ` See ${meta.noteUrl}` : ''}`);
+  const text = parts.filter(Boolean).join(' ');
+  const markdown = parts
+    .filter(Boolean)
+    .map((part, i) => (i === 0 ? part : part.replace(/^(Measured|Passes|State|Evidence|Confidence \w+|Note):/, '**$1:**')))
+    .join(' ');
+  return { text, markdown };
 }
 
 /** Understanding-document slug for a criterion name: "Contrast (Minimum)" becomes "contrast-minimum". */
@@ -200,10 +246,8 @@ export function toSarif(report) {
     : { location: artifactLocation(), sourceLanguage: 'html', roles: ['analysisTarget'] };
 
   // kind/level as the converter set them: violations and best-practice are
-  // `fail` at `error`, needs-review is `open` at `none`. The message is empty,
-  // as the converter's was: it built the text from axe's per-check results,
-  // which a11y-loop findings do not carry. The finding's own text is the
-  // rule's `name` and `fullDescription`.
+  // `fail` at `error`, needs-review is `open` at `none`. The message is ours:
+  // see resultMessage and the header comment.
   const results = [];
   const addResults = (groups, kind) => {
     for (const group of groups) {
@@ -213,7 +257,7 @@ export function toSarif(report) {
           ruleIndex: ruleIndex.get(group.id),
           kind,
           level: kind === 'fail' ? 'error' : 'none',
-          message: { text: '', markdown: '' },
+          message: resultMessage(node),
           locations: [
             {
               physicalLocation: {
@@ -223,6 +267,10 @@ export function toSarif(report) {
               logicalLocations: [{ fullyQualifiedName: node.target.join(';'), kind: 'element' }],
             },
           ],
+          properties: {
+            fingerprint: node.a11yLoop?.fingerprint ?? null,
+            evidence: node.a11yLoop?.evidence ?? null,
+          },
         });
       }
     }

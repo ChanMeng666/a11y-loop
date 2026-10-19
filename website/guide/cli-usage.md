@@ -61,6 +61,7 @@ each as `FIXED`, `NEW` (a regression — fails the command even if the total cou
 | `--headed` | audit | run a visible browser, for debugging |
 | `--no-best-practice` | audit | omit axe best-practice rules (never blocking either way) |
 | `--quiet` | audit | one-line summary only |
+| `--verbose` | audit | list every row of every cluster; by default a cluster prints one example and "+N more like this" |
 | `--large` | contrast | large-scale text thresholds (≥24px, or ≥18.5px bold) |
 | `--ui` | contrast | non-text / UI component threshold, 3:1, SC 1.4.11 |
 | `--fix` | contrast | suggest passing colors, lighter and darker, in OKLCh |
