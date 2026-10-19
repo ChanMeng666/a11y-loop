@@ -317,3 +317,14 @@ Ranked shortlist from that research, highest leverage first: Anthropic directory
 - Product film: YouTube `HIjLTA7HS64`, 2026-07-27, 28 views.
 - Prior press for the maintainer (DataCamp, PulseMCP newsletter, 小宇宙FM) was about other projects; a February 2026 Show HN was for a different project. GitHub: 244 followers, 56 repositories, since 2023-11. X `@chanmeng666` and LinkedIn `/in/chanmeng666` exist (counts not visible); Bluesky unconfirmed; no dev.to account.
 - GitHub repository search for the name found only `ChanMeng666/a11y-loop-promo-video` (0 stars).
+
+---
+
+## (h) Update 2026-10-20: submissions resolved
+
+Facts recorded on 2026-10-20. They are listings and queue states, not measures of use.
+
+- **GitHub Marketplace: live.** <https://github.com/marketplace/actions/a11y-loop-audit>, categories Code quality and Testing, published from v0.4.1. The Marketplace validates `action.yml` at the release's own tag and rejected v0.4.0 because the action's `description` was about 260 characters; the limit is 125 characters. The description is now 116 characters and `test/unit/action-manifest.test.js` holds it there.
+- **Anthropic plugin directory: in review.** The submission is In review for v0.3.2. The tracked ref cannot be changed while it is under review, so the switch from a tag to the `release` branch (see section (f)) waits for the outcome. The `release` branch itself is at v0.4.1.
+- **awesome-accessibility: merged.** Pull request #113 was merged.
+- **Still open:** the awesome-a11y pull request #341, and the ruanyf/weekly issue <https://github.com/ruanyf/weekly/issues/12549>. No outcome yet.

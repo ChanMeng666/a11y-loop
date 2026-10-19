@@ -63,7 +63,7 @@ the strength of them.
 | **Thin MCP server** | An MCP server that exposes the existing CLI subcommands as tools, adding no logic of its own, for clients that prefer MCP to a shell. | shipped, 0.4.0 (#31): `a11y-loop mcp`, six tools over stdio. Not yet submitted to the MCP registry (`docs/overview.md` has the `server.json`) |
 | **Release-branch tracking for the plugin directory** | The Anthropic directory submission tracks a release branch instead of a tag, so a release reaches the listing without re-pointing the submission by hand (see [`AGENTS.md`](../AGENTS.md#the-anthropic-plugin-directory)). `release.yml` fast-forwards `release` to each tag (#28); switching the submission's tracked ref to it is a manual step in the portal, not done yet. | shipped, 0.4.0: `release.yml` fast-forwards `release` to each tag (#28). Switching the directory submission's tracked ref to it is a manual step in the portal, not done yet |
 | **SARIF messages** | SARIF results carry a non-empty `message.text`. It has been empty since the converter era, a gap 0.3.0 left for its own change. | shipped, 0.4.0 |
-| **Research refresh** | The July 2026 briefings in `docs/research/` brought up to date with dated, appended sections, and the distribution briefing kept current as submissions resolve. | in progress |
+| **Research refresh** | The July 2026 briefings in `docs/research/` brought up to date with dated, appended sections, and the distribution briefing kept current as submissions resolve. | shipped, 2026-10: dated sections appended in each briefing (#35); the distribution briefing is updated as submissions resolve |
 
 ## How to use this file
 
