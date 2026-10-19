@@ -23,6 +23,7 @@ import { serializeReport } from '../../src/lib/format/json.js';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CLI = join(REPO, 'src', 'cli.js');
 const HOOK = join(REPO, 'plugin', 'hooks', 'plan-gate.mjs');
+const AUDIT_HOOK = join(REPO, 'plugin', 'hooks', 'audit-gate.mjs');
 
 const UI_PLAN = `Build a React settings page. Add a modal dialog for role changes, a
 members table with per-row actions, tabs across the top and a dark mode toggle
@@ -171,6 +172,17 @@ describe('every subcommand runs with no TTY and never hangs', () => {
     try {
       const r = await runNoTty(HOOK, [], { env: { CLAUDE_PLUGIN_DATA: dataDir, A11Y_LOOP_PLAN_GATE: '' } });
       assertFinished(r, [0], 'plugin/hooks/plan-gate.mjs');
+      assert.equal(r.stdout.trim(), '');
+    } finally {
+      await rm(dataDir, { recursive: true, force: true });
+    }
+  });
+
+  test('the audit-gate Stop hook with an empty stdin exits 0 and emits nothing', async () => {
+    const dataDir = await mkdtemp(join(tmpdir(), 'a11y-audit-gate-'));
+    try {
+      const r = await runNoTty(AUDIT_HOOK, [], { env: { CLAUDE_PLUGIN_DATA: dataDir, A11Y_LOOP_AUDIT_GATE: '' } });
+      assertFinished(r, [0], 'plugin/hooks/audit-gate.mjs');
       assert.equal(r.stdout.trim(), '');
     } finally {
       await rm(dataDir, { recursive: true, force: true });

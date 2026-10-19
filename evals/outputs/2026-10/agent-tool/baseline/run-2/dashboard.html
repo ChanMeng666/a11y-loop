@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding:32px 16px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{margin:0 0 20px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.tile{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.num{font-size:2rem;font-weight:800}
+.label{color:#475569;margin:4px 0 8px}
+.trend{font-size:.9rem;font-weight:600}
+.up{color:#15803d}.down{color:#b91c1c}
+section.act{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+h2{margin:0 0 12px;font-size:1.15rem}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #e2e8f0}
+li:first-child{border-top:0}
+time{color:#64748b;font-size:.85rem;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Overview</h1>
+  <section class="tiles" aria-label="Key metrics">
+    <div class="tile"><div class="num">12,480</div><div class="label">Visitors</div><div class="trend up">&#9650; 8.2% vs last week</div></div>
+    <div class="tile"><div class="num">3.4%</div><div class="label">Conversion rate</div><div class="trend up">&#9650; 0.6% vs last week</div></div>
+    <div class="tile"><div class="num">$18.9k</div><div class="label">Revenue</div><div class="trend down">&#9660; 2.1% vs last week</div></div>
+    <div class="tile"><div class="num">142</div><div class="label">Support tickets</div><div class="trend down">&#9660; 12% vs last week</div></div>
+  </section>
+  <section class="act">
+    <h2>Recent activity</h2>
+    <ul>
+      <li><span>New signup: dana@example.com</span><time>2 min ago</time></li>
+      <li><span>Pro plan upgrade by Northwind Ltd</span><time>18 min ago</time></li>
+      <li><span>Invoice #1042 paid</span><time>1 hr ago</time></li>
+      <li><span>Support ticket #381 resolved</span><time>3 hr ago</time></li>
+      <li><span>Weekly report generated</span><time>Yesterday</time></li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>

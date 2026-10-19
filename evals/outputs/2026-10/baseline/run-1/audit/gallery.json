@@ -1,0 +1,1080 @@
+{
+  "tool": {
+    "name": "a11y-loop",
+    "version": "0.3.2",
+    "axeCoreVersion": "4.14.0",
+    "browser": "Chromium",
+    "browserVersion": "156.0.8078.4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "timestamp": "2026-10-19T12:11:30.379Z",
+    "passesRun": [
+      "default",
+      "dark",
+      "forced-colors",
+      "reduced-motion",
+      "reflow"
+    ],
+    "statesRun": []
+  },
+  "target": {
+    "type": "file",
+    "value": "D:/.claude-scratch/2026-10-20/bench/baseline-clean/run-1/gallery.html",
+    "servedAt": "http://127.0.0.1:52848/"
+  },
+  "summary": {
+    "violations": 7,
+    "needsReview": 18,
+    "bestPractice": 1,
+    "manualChecklist": 10,
+    "byImpact": {
+      "serious": 7
+    },
+    "criteriaAffected": [
+      {
+        "sc": "1.4.10",
+        "name": "Reflow",
+        "level": "AA",
+        "wcag22Only": false,
+        "count": 1
+      },
+      {
+        "sc": "2.5.3",
+        "name": "Label in Name",
+        "level": "A",
+        "wcag22Only": false,
+        "count": 6
+      }
+    ],
+    "wcag22OnlyViolations": 0,
+    "verdict": "7 automatically detectable failures",
+    "target": "WCAG 2.2 Level AA",
+    "coverage": {
+      "statement": "Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.",
+      "issueVolumePercent": 57,
+      "issueVolumeDenominator": "instances of individual issues found, per Deque’s 2,000-audit study",
+      "criteriaWithAnyAutomatedRulePercent": 31,
+      "criteriaWithAnyAutomatedRuleDenominator": "17 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaReliablyAutomatedPercent": 13,
+      "criteriaReliablyAutomatedDenominator": "7 of the 55 WCAG 2.2 A/AA criteria",
+      "criteriaUntestableByAnyTool": 9,
+      "criteriaRequiringHumanVerification": 13
+    }
+  },
+  "findings": {
+    "violations": [
+      {
+        "fingerprint": "7752d33073b5",
+        "ruleId": "label-content-name-mismatch",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A",
+          "minVersion": "2.1",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "2ee8b8"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(1) > div:nth-child(2) > a:nth-child(4)",
+        "html": "<a href=\"#story-1\" aria-label=\"Read the full story of Maya Chen\">Read full story →</a>",
+        "message": "Elements must have their visible text as part of their accessible name. Fix any of the following: Text inside the element is not included in the accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=playwright"
+      },
+      {
+        "fingerprint": "a332427088c9",
+        "ruleId": "label-content-name-mismatch",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A",
+          "minVersion": "2.1",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "2ee8b8"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(2) > div:nth-child(2) > a:nth-child(4)",
+        "html": "<a href=\"#story-2\" aria-label=\"Read the full story of Daniel Okafor\">Read full story →</a>",
+        "message": "Elements must have their visible text as part of their accessible name. Fix any of the following: Text inside the element is not included in the accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=playwright"
+      },
+      {
+        "fingerprint": "6460439ac5f7",
+        "ruleId": "label-content-name-mismatch",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A",
+          "minVersion": "2.1",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "2ee8b8"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(3) > div:nth-child(2) > a:nth-child(4)",
+        "html": "<a href=\"#story-3\" aria-label=\"Read the full story of Sofia Rossi\">Read full story →</a>",
+        "message": "Elements must have their visible text as part of their accessible name. Fix any of the following: Text inside the element is not included in the accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=playwright"
+      },
+      {
+        "fingerprint": "c21217b33b74",
+        "ruleId": "label-content-name-mismatch",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A",
+          "minVersion": "2.1",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "2ee8b8"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(4) > div:nth-child(2) > a:nth-child(4)",
+        "html": "<a href=\"#story-4\" aria-label=\"Read the full story of Arjun Patel\">Read full story →</a>",
+        "message": "Elements must have their visible text as part of their accessible name. Fix any of the following: Text inside the element is not included in the accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=playwright"
+      },
+      {
+        "fingerprint": "acaa6ef752ff",
+        "ruleId": "label-content-name-mismatch",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A",
+          "minVersion": "2.1",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "2ee8b8"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(5) > div:nth-child(2) > a:nth-child(4)",
+        "html": "<a href=\"#story-5\" aria-label=\"Read the full story of Hannah Müller\">Read full story →</a>",
+        "message": "Elements must have their visible text as part of their accessible name. Fix any of the following: Text inside the element is not included in the accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=playwright"
+      },
+      {
+        "fingerprint": "3263085a9771",
+        "ruleId": "label-content-name-mismatch",
+        "source": "axe",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A",
+          "minVersion": "2.1",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "2ee8b8"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(6) > div:nth-child(2) > a:nth-child(4)",
+        "html": "<a href=\"#story-6\" aria-label=\"Read the full story of Leo Tanaka\">Read full story →</a>",
+        "message": "Elements must have their visible text as part of their accessible name. Fix any of the following: Text inside the element is not included in the accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=playwright"
+      },
+      {
+        "fingerprint": "f439ba2ce9c5",
+        "ruleId": "reflow-horizontal-scroll",
+        "source": "a11y-loop",
+        "severity": "violation",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.10",
+          "name": "Reflow",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "reflow"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(1)",
+        "html": "<article class=\"card\"> <svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Maya Chen\">",
+        "message": "At a 320×256 viewport (equivalent to 400% zoom at 1280px) the page scrolls horizontally by 4px. Overflowing: #grid > article.card:nth-of-type(1) (extends to 324px), #grid > article.card:nth-of-type(1) > svg (extends to 323px), #grid > article.card:nth-of-type(1) > svg > rect (extends to 323px), #grid > article.card:nth-of-type(1) > div.body (extends to 323px), #grid > article.card:nth-of-type(2) (extends to 324px).",
+        "helpUrl": null,
+        "data": {
+          "viewport": {
+            "width": 320,
+            "height": 256
+          },
+          "scrollWidth": 324,
+          "clientWidth": 320,
+          "culprits": [
+            {
+              "tag": "ARTICLE",
+              "selector": "#grid > article.card:nth-of-type(1)",
+              "html": "<article class=\"card\">\n      <svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Maya Chen\">\n       ",
+              "right": 324,
+              "width": 300
+            },
+            {
+              "tag": "svg",
+              "selector": "#grid > article.card:nth-of-type(1) > svg",
+              "html": "<svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Maya Chen\">\n        <defs><linearGradient id=\"g0",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "rect",
+              "selector": "#grid > article.card:nth-of-type(1) > svg > rect",
+              "html": "<rect width=\"320\" height=\"180\" fill=\"url(#g0)\"></rect>",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "DIV",
+              "selector": "#grid > article.card:nth-of-type(1) > div.body",
+              "html": "<div class=\"body\">\n        <p class=\"name\">Maya Chen</p>\n        <p class=\"role\">COO, Lumen Labs</p>\n        <blockquote",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "ARTICLE",
+              "selector": "#grid > article.card:nth-of-type(2)",
+              "html": "<article class=\"card\">\n      <svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Daniel Okafor\">\n   ",
+              "right": 324,
+              "width": 300
+            },
+            {
+              "tag": "svg",
+              "selector": "#grid > article.card:nth-of-type(2) > svg",
+              "html": "<svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Daniel Okafor\">\n        <defs><linearGradient id",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "rect",
+              "selector": "#grid > article.card:nth-of-type(2) > svg > rect",
+              "html": "<rect width=\"320\" height=\"180\" fill=\"url(#g1)\"></rect>",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "DIV",
+              "selector": "#grid > article.card:nth-of-type(2) > div.body",
+              "html": "<div class=\"body\">\n        <p class=\"name\">Daniel Okafor</p>\n        <p class=\"role\">CTO, Brightpath</p>\n        <blockq",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "ARTICLE",
+              "selector": "#grid > article.card:nth-of-type(3)",
+              "html": "<article class=\"card\">\n      <svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Sofia Rossi\">\n     ",
+              "right": 324,
+              "width": 300
+            },
+            {
+              "tag": "svg",
+              "selector": "#grid > article.card:nth-of-type(3) > svg",
+              "html": "<svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Sofia Rossi\">\n        <defs><linearGradient id=\"",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "rect",
+              "selector": "#grid > article.card:nth-of-type(3) > svg > rect",
+              "html": "<rect width=\"320\" height=\"180\" fill=\"url(#g2)\"></rect>",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "DIV",
+              "selector": "#grid > article.card:nth-of-type(3) > div.body",
+              "html": "<div class=\"body\">\n        <p class=\"name\">Sofia Rossi</p>\n        <p class=\"role\">Head of Ops, Verde</p>\n        <block",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "ARTICLE",
+              "selector": "#grid > article.card:nth-of-type(4)",
+              "html": "<article class=\"card\">\n      <svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Arjun Patel\">\n     ",
+              "right": 324,
+              "width": 300
+            },
+            {
+              "tag": "svg",
+              "selector": "#grid > article.card:nth-of-type(4) > svg",
+              "html": "<svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Arjun Patel\">\n        <defs><linearGradient id=\"",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "rect",
+              "selector": "#grid > article.card:nth-of-type(4) > svg > rect",
+              "html": "<rect width=\"320\" height=\"180\" fill=\"url(#g3)\"></rect>",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "DIV",
+              "selector": "#grid > article.card:nth-of-type(4) > div.body",
+              "html": "<div class=\"body\">\n        <p class=\"name\">Arjun Patel</p>\n        <p class=\"role\">Founder, Kite</p>\n        <blockquote",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "ARTICLE",
+              "selector": "#grid > article.card:nth-of-type(5)",
+              "html": "<article class=\"card\">\n      <svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Hannah Müller\">\n   ",
+              "right": 324,
+              "width": 300
+            },
+            {
+              "tag": "svg",
+              "selector": "#grid > article.card:nth-of-type(5) > svg",
+              "html": "<svg viewBox=\"0 0 320 180\" role=\"img\" aria-label=\"Photo placeholder for Hannah Müller\">\n        <defs><linearGradient id",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "rect",
+              "selector": "#grid > article.card:nth-of-type(5) > svg > rect",
+              "html": "<rect width=\"320\" height=\"180\" fill=\"url(#g4)\"></rect>",
+              "right": 323,
+              "width": 298
+            },
+            {
+              "tag": "DIV",
+              "selector": "#grid > article.card:nth-of-type(5) > div.body",
+              "html": "<div class=\"body\">\n        <p class=\"name\">Hannah Müller</p>\n        <p class=\"role\">VP Product, Northwind</p>\n        <",
+              "right": 323,
+              "width": 298
+            }
+          ]
+        }
+      }
+    ],
+    "needsReview": [
+      {
+        "fingerprint": "e57dcb853465",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(1) > svg:nth-child(1) > text:nth-child(5)",
+        "html": "<text x=\"160\" y=\"80\" text-anchor=\"middle\" font-family=\"system-ui,sans-serif\" font-size=\"22\" font-weight=\"700\" fill=\"#6366f1\">MC</text>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright"
+      },
+      {
+        "fingerprint": "1a979bb065cc",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(2) > svg:nth-child(1) > text:nth-child(5)",
+        "html": "<text x=\"160\" y=\"80\" text-anchor=\"middle\" font-family=\"system-ui,sans-serif\" font-size=\"22\" font-weight=\"700\" fill=\"#0ea5e9\">DO</text>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright"
+      },
+      {
+        "fingerprint": "f8fe35d72791",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(3) > svg:nth-child(1) > text:nth-child(5)",
+        "html": "<text x=\"160\" y=\"80\" text-anchor=\"middle\" font-family=\"system-ui,sans-serif\" font-size=\"22\" font-weight=\"700\" fill=\"#10b981\">SR</text>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright"
+      },
+      {
+        "fingerprint": "87274b7eec28",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(4) > svg:nth-child(1) > text:nth-child(5)",
+        "html": "<text x=\"160\" y=\"80\" text-anchor=\"middle\" font-family=\"system-ui,sans-serif\" font-size=\"22\" font-weight=\"700\" fill=\"#f59e0b\">AP</text>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright"
+      },
+      {
+        "fingerprint": "28f1159d621e",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(5) > svg:nth-child(1) > text:nth-child(5)",
+        "html": "<text x=\"160\" y=\"80\" text-anchor=\"middle\" font-family=\"system-ui,sans-serif\" font-size=\"22\" font-weight=\"700\" fill=\"#ec4899\">HM</text>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright"
+      },
+      {
+        "fingerprint": "ff338ab3fedb",
+        "ruleId": "color-contrast",
+        "source": "axe",
+        "severity": "needsReview",
+        "impact": "serious",
+        "wcag": {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA",
+          "minVersion": "2.0",
+          "wcag22Only": false,
+          "alsoSc": []
+        },
+        "act": [
+          "afw4f7",
+          "09o5cg"
+        ],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html > body > section:nth-child(1) > div:nth-child(3) > article:nth-child(6) > svg:nth-child(1) > text:nth-child(5)",
+        "html": "<text x=\"160\" y=\"80\" text-anchor=\"middle\" font-family=\"system-ui,sans-serif\" font-size=\"22\" font-weight=\"700\" fill=\"#8b5cf6\">LT</text>",
+        "message": "Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined because it is overlapped by another element",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright"
+      },
+      {
+        "fingerprint": "9a2c22adbf37",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(1) > div.body > a",
+        "html": "<a href=\"#story-1\" aria-label=\"Read the full story of Maya Chen\">Read full story →</a>",
+        "message": "The focus indicator (outline, rgb(165, 180, 252)) has a contrast ratio of 1.99:1 against the adjacent background rgb(255, 255, 255), below the 3:1 minimum for non-text visual information.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "outline"
+          ],
+          "indicatorColor": "rgb(165, 180, 252)",
+          "adjacentBackground": "rgb(255, 255, 255)",
+          "ratio": 1.9935400148679114
+        }
+      },
+      {
+        "fingerprint": "233e6b25b6ab",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(2) > div.body > a",
+        "html": "<a href=\"#story-2\" aria-label=\"Read the full story of Daniel Okafor\">Read full story →</a>",
+        "message": "The focus indicator (outline, rgb(165, 180, 252)) has a contrast ratio of 1.99:1 against the adjacent background rgb(255, 255, 255), below the 3:1 minimum for non-text visual information.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "outline"
+          ],
+          "indicatorColor": "rgb(165, 180, 252)",
+          "adjacentBackground": "rgb(255, 255, 255)",
+          "ratio": 1.9935400148679114
+        }
+      },
+      {
+        "fingerprint": "0b4754982937",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(3) > div.body > a",
+        "html": "<a href=\"#story-3\" aria-label=\"Read the full story of Sofia Rossi\">Read full story →</a>",
+        "message": "The focus indicator (outline, rgb(165, 180, 252)) has a contrast ratio of 1.99:1 against the adjacent background rgb(255, 255, 255), below the 3:1 minimum for non-text visual information.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "outline"
+          ],
+          "indicatorColor": "rgb(165, 180, 252)",
+          "adjacentBackground": "rgb(255, 255, 255)",
+          "ratio": 1.9935400148679114
+        }
+      },
+      {
+        "fingerprint": "7110939c7b3f",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(4) > div.body > a",
+        "html": "<a href=\"#story-4\" aria-label=\"Read the full story of Arjun Patel\">Read full story →</a>",
+        "message": "The focus indicator (outline, rgb(165, 180, 252)) has a contrast ratio of 1.99:1 against the adjacent background rgb(255, 255, 255), below the 3:1 minimum for non-text visual information.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "outline"
+          ],
+          "indicatorColor": "rgb(165, 180, 252)",
+          "adjacentBackground": "rgb(255, 255, 255)",
+          "ratio": 1.9935400148679114
+        }
+      },
+      {
+        "fingerprint": "5791b6275885",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(5) > div.body > a",
+        "html": "<a href=\"#story-5\" aria-label=\"Read the full story of Hannah Müller\">Read full story →</a>",
+        "message": "The focus indicator (outline, rgb(165, 180, 252)) has a contrast ratio of 1.99:1 against the adjacent background rgb(255, 255, 255), below the 3:1 minimum for non-text visual information.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "outline"
+          ],
+          "indicatorColor": "rgb(165, 180, 252)",
+          "adjacentBackground": "rgb(255, 255, 255)",
+          "ratio": 1.9935400148679114
+        }
+      },
+      {
+        "fingerprint": "3d7556813a64",
+        "ruleId": "focus-indicator-contrast",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA",
+          "minVersion": "2.1",
+          "wcag22Only": false
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(6) > div.body > a",
+        "html": "<a href=\"#story-6\" aria-label=\"Read the full story of Leo Tanaka\">Read full story →</a>",
+        "message": "The focus indicator (outline, rgb(165, 180, 252)) has a contrast ratio of 1.99:1 against the adjacent background rgb(255, 255, 255), below the 3:1 minimum for non-text visual information.",
+        "helpUrl": null,
+        "data": {
+          "indicators": [
+            "outline"
+          ],
+          "indicatorColor": "rgb(165, 180, 252)",
+          "adjacentBackground": "rgb(255, 255, 255)",
+          "ratio": 1.9935400148679114
+        }
+      },
+      {
+        "fingerprint": "002b7187f4ab",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(1) > div.body > a",
+        "html": "<a href=\"#story-1\" aria-label=\"Read the full story of Maya Chen\">Read full story →</a>",
+        "message": "Target is 295.3×20 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 295.3,
+          "height": 20,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      },
+      {
+        "fingerprint": "06360ab10126",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(2) > div.body > a",
+        "html": "<a href=\"#story-2\" aria-label=\"Read the full story of Daniel Okafor\">Read full story →</a>",
+        "message": "Target is 295.3×20 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 295.3,
+          "height": 20,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      },
+      {
+        "fingerprint": "7e84c52329db",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(3) > div.body > a",
+        "html": "<a href=\"#story-3\" aria-label=\"Read the full story of Sofia Rossi\">Read full story →</a>",
+        "message": "Target is 295.3×20 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 295.3,
+          "height": 20,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      },
+      {
+        "fingerprint": "041349326b62",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(4) > div.body > a",
+        "html": "<a href=\"#story-4\" aria-label=\"Read the full story of Arjun Patel\">Read full story →</a>",
+        "message": "Target is 295.3×20 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 295.3,
+          "height": 20,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      },
+      {
+        "fingerprint": "7b0075b93a1b",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(5) > div.body > a",
+        "html": "<a href=\"#story-5\" aria-label=\"Read the full story of Hannah Müller\">Read full story →</a>",
+        "message": "Target is 295.3×20 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 295.3,
+          "height": 20,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      },
+      {
+        "fingerprint": "81a2c4fb1e4a",
+        "ruleId": "target-size-min",
+        "source": "a11y-loop",
+        "severity": "needsReview",
+        "impact": "moderate",
+        "wcag": {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA",
+          "minVersion": "2.2",
+          "wcag22Only": true
+        },
+        "act": [],
+        "passes": [
+          "default"
+        ],
+        "state": null,
+        "selector": "#grid > article.card:nth-of-type(6) > div.body > a",
+        "html": "<a href=\"#story-6\" aria-label=\"Read the full story of Leo Tanaka\">Read full story →</a>",
+        "message": "Target is 295.3×20 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.",
+        "helpUrl": null,
+        "data": {
+          "width": 295.3,
+          "height": 20,
+          "minimum": 24,
+          "spacingExceptionMet": true,
+          "conflictsWith": null
+        }
+      }
+    ],
+    "bestPractice": [
+      {
+        "fingerprint": "20805c59334e",
+        "ruleId": "landmark-one-main",
+        "source": "axe",
+        "severity": "bestPractice",
+        "impact": "moderate",
+        "wcag": null,
+        "act": [],
+        "passes": [
+          "default",
+          "dark",
+          "forced-colors",
+          "reduced-motion",
+          "reflow"
+        ],
+        "state": null,
+        "selector": "html",
+        "html": "<html lang=\"en\">",
+        "message": "Document should have one main landmark. Fix all of the following: Document does not have a main landmark",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/landmark-one-main?application=playwright"
+      }
+    ]
+  },
+  "manualChecklist": [
+    {
+      "id": "assistive-technology",
+      "sc": null,
+      "text": "Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).",
+      "why": "No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification."
+    },
+    {
+      "id": "focus-order-logic",
+      "sc": "2.4.3",
+      "text": "Tab through the page and confirm the focus order is logical, not merely present.",
+      "why": "a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment."
+    },
+    {
+      "id": "keyboard-only-walkthrough",
+      "sc": "2.1.1",
+      "text": "Complete the page’s main task using only the keyboard.",
+      "why": "Automated checks probe individual controls; they do not know what the user is trying to accomplish."
+    },
+    {
+      "id": "alt-text-quality",
+      "sc": "1.1.1",
+      "text": "Confirm the alt text on 6 images is accurate and useful, and that decorative images use alt=\"\" rather than a description.",
+      "why": "Automation can only see whether alt text exists. alt=\"decorative image\" passes every automated rule and is worse than alt=\"\". If any alt text was generated by an AI, treat it as a draft that a human must confirm."
+    },
+    {
+      "id": "link-purpose",
+      "sc": "2.4.4",
+      "text": "Read each link text out of context and confirm the destination is still clear.",
+      "why": "SC 2.4.4 permits vague link text when the surrounding context supplies the purpose — whether it does is a judgment call."
+    },
+    {
+      "id": "heading-semantics",
+      "sc": "1.3.1",
+      "text": "Confirm the heading structure describes the content hierarchy, not the visual sizes.",
+      "why": "Automation can detect skipped levels but not whether the outline reflects the actual structure of the page."
+    },
+    {
+      "id": "aria-appropriateness",
+      "sc": "4.1.2",
+      "text": "Review the 19 ARIA attributes on this page: is each one appropriate, or merely valid?",
+      "why": "Pages using ARIA average more accessibility errors than pages without it (WebAIM Million 2026: 59.1 vs 42.0). A role is a promise — role=\"button\" commits to the full keyboard behaviour of a button. No ARIA is better than bad ARIA."
+    },
+    {
+      "id": "color-not-only-cue",
+      "sc": "1.4.1",
+      "text": "Confirm colour is never the only way information is conveyed.",
+      "why": "SC 1.4.1 is one of the criteria no tool can test: recognising that \"the required fields are in red\" needs comprehension of the content."
+    },
+    {
+      "id": "contrast-undeterminable",
+      "sc": "1.4.3",
+      "text": "Check the contrast of the elements axe could not measure by hand (WebAIM Contrast Checker, or a11y-loop contrast <fg> <bg>).",
+      "why": "axe gives up on background images, gradients, pseudo-element backgrounds and foreground opacity or occlusion, and reports them as incomplete. A computed ratio of 1:1 is the usual tell."
+    },
+    {
+      "id": "hover-focus-contrast",
+      "sc": "1.4.11",
+      "text": "Check the contrast of hover and focus states.",
+      "why": "No engine checks state contrast unless the state is driven and re-scanned. Use --interact to add hover and focus states to the audit."
+    }
+  ],
+  "pageInventory": {
+    "images": 6,
+    "formFields": 0,
+    "links": 6,
+    "headings": 1,
+    "videos": 0,
+    "audios": 0,
+    "tables": 0,
+    "iframes": 0,
+    "dialogs": 0,
+    "buttons": 0,
+    "ariaAttributes": 19,
+    "animations": 0,
+    "stickyElements": 0,
+    "lang": "en",
+    "title": "Customer Stories"
+  }
+}

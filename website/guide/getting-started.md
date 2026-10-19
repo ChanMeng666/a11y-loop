@@ -14,21 +14,26 @@ you to click anything:
 ```bash
 npm i -g a11y-loop
 a11y-loop install-browser
+a11y-loop doctor                                  # exit 0 when an audit can run here
+
+# Then ONE of these:
 npx skills add ChanMeng666/a11y-loop -g -y        # portable skill, any Agent Skills client
-claude plugin marketplace add ChanMeng666/a11y-loop
-claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # OR the Claude Code plugin (2.1.292+)
 ```
 
 No `git clone` needed. `npx skills add` fetches the skill from GitHub. The same skill also ships inside
-the npm package, so `cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/` works too.
-On Claude Code you can skip the `claude plugin` pair and use the one-liner
-`claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop` (Claude Code 2.1.292 or later).
+the npm package, so `cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/` works too,
+unless `npx skills add` already linked it there. On Claude Code older than 2.1.292, the plugin takes
+two commands: `claude plugin marketplace add ChanMeng666/a11y-loop`, then
+`claude plugin install a11y-loop@chanmeng-a11y-loop --scope user`. On Codex:
+`codex plugin marketplace add ChanMeng666/a11y-loop`, then `codex plugin add a11y-loop@chanmeng-a11y-loop`.
+On Windows, these commands work in PowerShell and Git Bash, not cmd.exe.
 Verify:
 
 ```bash
 a11y-loop --version
-test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
-claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"   # skill route
+claude plugin list | grep -A2 'a11y-loop@'   # plugin route; expect: Status: ✔ enabled
 ```
 
 Install the skill *or* the plugin, not both — the plugin carries its own copy, and doing both makes
@@ -40,7 +45,7 @@ installed reports "already installed" and does nothing):
 
 ```bash
 npm i -g a11y-loop@latest
-cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # if using the skill
+npx skills add ChanMeng666/a11y-loop -g -y                           # if using the skill
 claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
 claude plugin update a11y-loop@chanmeng-a11y-loop
 ```
@@ -96,6 +101,9 @@ The portable skill above is the whole product. This repository also ships a thin
 layer that adds one thing a skill cannot do — enforcement during plan mode:
 
 ```bash
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # Claude Code 2.1.292 or later
+
+# Older Claude Code:
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
@@ -131,8 +139,14 @@ nothing about accessibility, the plan is declined once and the `### Accessibilit
 back to fill in, naming any decision already in the plan that is hard to walk back later. It also
 adds `/a11y-plan`, to ask for that section directly.
 
-Its limits are deliberate: it **defers** rather than allows on every non-deny path, so it never
-suppresses your own plan approval; it declines a given plan **at most once**, so it cannot loop; a
+The hook runs only in Claude Code. The Anthropic plugin directory also lists the plugin on Cowork
+and the Claude apps, where hooks do not run and the audit cannot, so there only the skill's rules
+apply. Outside plan mode, and in any other agent or CI job, `a11y-loop plan-check --file plan.md` runs
+the same check (see [CLI Usage](/guide/cli-usage#plan-check)).
+
+Its limits are deliberate: it never returns `allow`, and off the deny path it sends at most a
+reminder with no permission decision, so it never suppresses your own plan approval; it declines a
+given plan **at most once**, so it cannot loop; a
 plan with no UI in it passes silently; and `A11Y_LOOP_PLAN_GATE=off` turns it off. The gate checks
 that the question was asked — it cannot check that the answer is any good. That is still
 `a11y-loop audit` and a human.
@@ -140,7 +154,7 @@ that the question was asked — it cannot check that the answer is any good. Tha
 |  | Portable skill | Plugin layer |
 |---|---|---|
 | Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
-| Works in | 40+ Agent Skills clients | Claude Code only |
+| Works in | 40+ Agent Skills clients | Claude Code (the hook and `/a11y-plan`) |
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
 | Required? | yes | no |
 

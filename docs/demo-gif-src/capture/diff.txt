@@ -1,0 +1,165 @@
+a11y-loop diff · before: R:\before.json · after: R:\after.json
+
+FIXED      SC 4.1.2   aria-hidden-focus         html > body > footer:nth-child(5) > div > div:nth-child(2) > a:nth-child(3)
+FIXED      SC 4.1.2   aria-required-attr        html > body > div:nth-child(4) > section:nth-child(3) > div:nth-child(3)
+FIXED      SC 1.3.1   aria-required-children    html > body > header:nth-child(1) > div > nav:nth-child(2) > ul
+FIXED      SC 4.1.2   button-name               html > body > header:nth-child(1) > div > button:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > header:nth-child(1) > div > a:nth-child(1) > span:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(1) > a
+FIXED      SC 1.4.3   color-contrast            html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(2) > a
+FIXED      SC 1.4.3   color-contrast            html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(3) > a
+FIXED      SC 1.4.3   color-contrast            html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(4) > a
+FIXED      SC 1.4.3   color-contrast            html > body > section:nth-child(2) > div > div:nth-child(4) > div:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(5)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(6)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(7)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(8)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(3) > div > span:nth-child(9)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(2) > a
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > h5:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > h5:nth-child(5)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(7)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(1) > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(2) > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(3) > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(4) > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(5) > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(6) > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(4) > a
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(4)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(4) > a
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(4) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(5) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(2) > select:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(4) > span:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(5)
+FIXED      SC 1.4.3   color-contrast            html > body > footer:nth-child(5) > div > p:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > footer:nth-child(5) > div > p:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(2)
+FIXED      SC 3.1.1   html-has-lang             html
+FIXED      SC 1.1.1   image-alt                 html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)
+FIXED      SC 1.1.1   image-alt                 html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(2) > img:nth-child(1)
+FIXED      SC 1.1.1   image-alt                 html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(3) > img:nth-child(1)
+FIXED      SC 1.1.1   image-alt                 html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(4) > img:nth-child(1)
+FIXED      SC 1.1.1   image-alt                 html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(5) > img:nth-child(1)
+FIXED      SC 1.1.1   image-alt                 html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(6) > img:nth-child(1)
+FIXED      SC 4.1.2   label                     html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(4) > input:nth-child(1)
+FIXED      SC 1.4.1   link-in-text-block        html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(2) > a
+FIXED      SC 1.4.1   link-in-text-block        html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(4) > a
+FIXED      SC 1.4.1   link-in-text-block        html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(4) > a
+FIXED      SC 1.4.1   link-in-text-block        html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(1)
+FIXED      SC 1.4.1   link-in-text-block        html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(2)
+FIXED      SC 2.4.4   link-name                 html > body > footer:nth-child(5) > div > div:nth-child(2) > a:nth-child(1)
+FIXED      SC 2.4.4   link-name                 html > body > footer:nth-child(5) > div > div:nth-child(2) > a:nth-child(2)
+FIXED      SC 1.3.1   listitem                  html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(1)
+FIXED      SC 1.3.1   listitem                  html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(2)
+FIXED      SC 1.3.1   listitem                  html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(3)
+FIXED      SC 1.3.1   listitem                  html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(4)
+FIXED      SC 4.1.2   select-name               html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(2) > select:nth-child(2)
+FIXED      SC 2.4.3   positive-tabindex         #top > div.container.hero-inner > div.hero-actions > a.btn.btn-ghost
+FIXED      SC 2.4.3   positive-tabindex         #register > form.reg-form > div.field-row:nth-of-type(1) > input.field:nth-of-type(1)
+FIXED      SC 2.4.3   positive-tabindex         #register > form.reg-form > div.field-row:nth-of-type(1) > input.field:nth-of-type(2)
+FIXED      SC 2.4.7   focus-not-visible         html > body > header.site-header > div.container.header-inner > a.logo-link
+FIXED      SC 2.4.7   focus-not-visible         html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(1) > a
+FIXED      SC 2.4.7   focus-not-visible         html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(2) > a
+FIXED      SC 2.4.7   focus-not-visible         html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(3) > a
+FIXED      SC 2.4.7   focus-not-visible         html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(4) > a
+FIXED      SC 2.4.7   focus-not-visible         html > body > header.site-header > div.container.header-inner > button.icon-btn.hamburger
+FIXED      SC 2.4.7   focus-not-visible         #top > div.container.hero-inner > p.hero-note:nth-of-type(3) > a
+FIXED      SC 2.4.7   focus-not-visible         #programme > p.section-lead:nth-of-type(1) > a
+FIXED      SC 2.4.7   focus-not-visible         #speakers > p.section-lead:nth-of-type(2) > a
+FIXED      SC 2.4.7   focus-not-visible         #venue > p.section-lead:nth-of-type(2) > a
+FIXED      SC 2.4.7   focus-not-visible         #register > form.reg-form > div.field-row:nth-of-type(2) > input.field
+FIXED      SC 2.4.7   focus-not-visible         #register > form.reg-form > div.field-row:nth-of-type(2) > select.field
+FIXED      SC 2.4.7   focus-not-visible         #register > form.reg-form > div.field-row:nth-of-type(3) > textarea.field
+FIXED      SC 2.4.7   focus-not-visible         #register > form.reg-form > div.check-row:nth-of-type(4) > input.check
+FIXED      SC 2.4.7   focus-not-visible         html > body > footer.site-footer > div.container.footer-inner > div.social > a.icon-btn:nth-of-type(1)
+FIXED      SC 2.4.7   focus-not-visible         html > body > footer.site-footer > div.container.footer-inner > div.social > a.icon-btn:nth-of-type(2)
+FIXED      SC 2.4.7   focus-not-visible         html > body > footer.site-footer > div.container.footer-inner > p.footer-fine:nth-of-type(2) > a:nth-of-type(1)
+FIXED      SC 2.4.7   focus-not-visible         html > body > footer.site-footer > div.container.footer-inner > p.footer-fine:nth-of-type(2) > a:nth-of-type(2)
+FIXED      SC 2.1.1   div-button                #top > div.container.hero-inner > div.hero-actions > div.btn.btn-primary
+FIXED      SC 2.1.1   div-button                #speakers > div.speaker-grid > div.speaker-card:nth-of-type(1)
+FIXED      SC 2.1.1   div-button                #speakers > div.speaker-grid > div.speaker-card:nth-of-type(2)
+FIXED      SC 2.1.1   div-button                #speakers > div.speaker-grid > div.speaker-card:nth-of-type(3)
+FIXED      SC 2.1.1   div-button                #speakers > div.speaker-grid > div.speaker-card:nth-of-type(4)
+FIXED      SC 2.1.1   div-button                #speakers > div.speaker-grid > div.speaker-card:nth-of-type(5)
+FIXED      SC 2.1.1   div-button                #speakers > div.speaker-grid > div.speaker-card:nth-of-type(6)
+FIXED      SC 2.1.1   div-button                #register > form.reg-form > div.btn.btn-primary:nth-of-type(5)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(1) > h3:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > h3:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(1) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(2) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(3) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(4) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(5) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(6) > p:nth-child(2)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(3) > h3:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(3) > div:nth-child(3)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(4) > h6:nth-child(1)
+FIXED      SC 1.4.3   color-contrast            html > body > div:nth-child(4) > section:nth-child(5) > h3:nth-child(1)
+FIXED      SC 2.2.2   reduced-motion-ignored    html > body > div.ticker:nth-of-type(1) > div.ticker-track
+FIXED      SC 1.4.10  reflow-horizontal-scroll  html > body > header.site-header > div.container.header-inner
+
+40 new needs-review finding(s) — not blocking, but new.
+
+Converged: all 159 violations fixed, none introduced

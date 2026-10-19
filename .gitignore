@@ -9,3 +9,7 @@ website/node_modules/
 website/.vitepress/cache/
 website/.vitepress/dist/
 .a11y/
+
+# claude plugin eval output (npm run eval:skill)
+evals/skill-eval-results/
+plugin/evals/results/

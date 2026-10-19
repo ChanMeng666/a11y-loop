@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newsletter signup</title>
+<style>
+:root{--bg:#f6f7fb;--surface:#fff;--text:#1a1d23;--muted:#4b5563;--border:#6b7280;--line:#d6dae2;--accent:#1d4ed8;--on-accent:#fff;--accent-soft:#e8eefc;--error:#b42318;--ok:#0a6b3d;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b23;--text:#eceef2;--muted:#b0b8c5;--border:#8d96a5;--line:#2c333f;--accent:#8fb0ff;--on-accent:#0b1020;--accent-soft:#1d2740;--error:#ff9b8f;--ok:#6fdc9f;--focus:#8fb0ff}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+.card{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+h1{margin:0 0 6px;font-size:1.75rem}
+.lead{margin:0 0 24px;color:var(--muted)}
+.field{margin-bottom:18px}
+label{display:block;font-weight:600;margin-bottom:6px}
+input[type=text],input[type=email],select{width:100%;min-height:44px;padding:8px 12px;font:inherit;color:var(--text);background:var(--surface);border:2px solid var(--border);border-radius:10px}
+input[aria-invalid=true]{border-color:var(--error)}
+.err{color:var(--error);margin:6px 0 0;font-size:.9rem}
+.check{display:flex;gap:12px;align-items:flex-start;margin-bottom:22px}
+.check input{width:24px;height:24px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+.check label{margin:0;font-weight:400}
+.btn{width:100%}
+#status{margin-top:16px;font-weight:600;color:var(--ok)}
+.hint{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+</style></head><body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<div class="card">
+<h1>Join our newsletter</h1>
+<p class="lead">One thoughtful email a month. Unsubscribe any time.</p>
+<form id="f" novalidate>
+<div class="field"><label for="name">Full name</label>
+<input type="text" id="name" name="name" autocomplete="name" aria-describedby="name-err"><p class="err" id="name-err" hidden></p></div>
+<div class="field"><label for="email">Email address</label>
+<input type="email" id="email" name="email" autocomplete="email" aria-describedby="email-hint email-err"><p class="hint" id="email-hint">We'll send a confirmation link.</p><p class="err" id="email-err" hidden></p></div>
+<div class="field"><label for="country">Country</label>
+<select id="country" name="country" autocomplete="country-name" aria-describedby="country-err">
+<option value="">Select a country</option><option>Australia</option><option>Canada</option><option>China</option><option>Germany</option><option>India</option><option>New Zealand</option><option>United Kingdom</option><option>United States</option></select><p class="err" id="country-err" hidden></p></div>
+<div class="check"><input type="checkbox" id="consent" name="consent"><label for="consent">I agree to receive marketing emails. I can withdraw consent at any time.</label></div>
+<button class="btn" type="submit">Subscribe</button>
+<p id="status" role="status"></p>
+</form></div></main>
+<script>
+const f=document.getElementById('f'),st=document.getElementById('status');
+function setErr(id,msg){const i=document.getElementById(id),e=document.getElementById(id+'-err');
+ if(msg){e.textContent=msg;e.hidden=false;i.setAttribute('aria-invalid','true')}else{e.hidden=true;e.textContent='';i.removeAttribute('aria-invalid')}return !msg}
+f.addEventListener('submit',ev=>{ev.preventDefault();st.textContent='';
+ const r=[setErr('name',f.name.value.trim()?'':'Enter your name.'),
+ setErr('email',/^\S+@\S+\.\S+$/.test(f.email.value)?'':'Enter a valid email address, like name@example.com.'),
+ setErr('country',f.country.value?'':'Choose your country.')];
+ const bad=['name','email','country'].find((k,n)=>!r[n]);
+ if(bad){document.getElementById(bad).focus();st.style.color='var(--error)';st.textContent='Please fix the highlighted fields.';return}
+ st.style.color='var(--ok)';st.textContent='Thanks, check your inbox to confirm.';f.reset()});
+</script></body></html>

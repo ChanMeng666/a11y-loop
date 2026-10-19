@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer Stories</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding:48px 16px}
+h1{text-align:center;margin:0 0 32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:1100px;margin:0 auto}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);display:flex;flex-direction:column}
+.card svg{display:block;width:100%;height:160px}
+.body{padding:20px;display:flex;flex-direction:column;flex:1}
+h2{margin:0 0 8px;font-size:1.1rem}
+blockquote{margin:0 0 16px;color:#475569;flex:1}
+a{color:#4338ca;font-weight:600}
+a:focus-visible{outline:3px solid #4338ca;outline-offset:2px}
+</style>
+</head>
+<body>
+<h1>Customer stories</h1>
+<div class="grid" id="grid"></div>
+<script>
+const data=[
+["Maria Lopez","Brightside Bakery","#f97316","We cut onboarding time in half within a month."],
+["James Carter","Northwind Logistics","#0ea5e9","The reporting alone paid for the subscription."],
+["Aiko Tanaka","Studio Kumo","#8b5cf6","Our whole design team finally works in one place."],
+["Samuel Okafor","GreenLeaf Health","#10b981","Support tickets dropped by 40 percent."],
+["Priya Nair","Lumen Labs","#ec4899","Setup took an afternoon, not a quarter."],
+["Lars Eriksen","Fjord Outdoors","#14b8a6","It scaled with us through our busiest season."]];
+document.getElementById('grid').innerHTML=data.map(([n,c,col,q])=>`
+<article class="card">
+<svg viewBox="0 0 280 160" role="img" aria-label="Photo placeholder of ${n}"><rect width="280" height="160" fill="${col}" opacity=".18"/><circle cx="140" cy="68" r="28" fill="${col}"/><path d="M80 160c0-36 26-52 60-52s60 16 60 52z" fill="${col}"/></svg>
+<div class="body"><h2>${n}, ${c}</h2><blockquote>&ldquo;${q}&rdquo;</blockquote><a href="#">Read the full story<span style="position:absolute;left:-9999px"> of ${n}</span></a></div>
+</article>`).join('');
+</script>
+</body>
+</html>

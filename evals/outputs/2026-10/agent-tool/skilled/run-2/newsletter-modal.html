@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newsletter modal</title>
+<style>
+:root{--bg:#fff;--surface:#f1f5f9;--text:#111827;--muted:#4b5563;--border:#6b7280;--line:#cbd5e1;--primary:#4338ca;--on-primary:#fff;--focus:#1d4ed8;--ok:#166534;--bad:#b91c1c;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--border:#94a3b8;--line:#334155;--primary:#a5b4fc;--on-primary:#0f172a;--focus:#93c5fd;--ok:#86efac;--bad:#fca5a5}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;cursor:pointer}
+main{max-width:720px;margin:0 auto;padding:72px 20px;text-align:center}
+h1{font-size:2.2rem;margin:0 0 12px}
+.lead{color:var(--muted);margin:0 0 28px}
+dialog{width:min(440px,calc(100% - 32px));border:1px solid var(--line);border-radius:18px;padding:28px;background:var(--bg);color:var(--text);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(15,23,42,.65)}
+dialog h2{margin:0 0 6px;font-size:1.4rem;padding-right:48px}
+dialog p{color:var(--muted);margin:0 0 18px}
+.close{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.close:hover{background:var(--surface)}
+.close svg{width:22px;height:22px;stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+label{display:block;font-weight:600;margin-bottom:6px}
+input[type=email]{width:100%;min-height:44px;padding:8px 12px;font:inherit;color:var(--text);background:var(--bg);border:2px solid var(--border);border-radius:10px;margin-bottom:6px}
+input[aria-invalid=true]{border-color:var(--bad)}
+.err{color:var(--bad);font-size:.9rem;margin:0 0 14px;min-height:1.4em}
+.ok{color:var(--ok);font-weight:600;margin:12px 0 0}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+<h1>Stay in the loop</h1>
+<p class="lead">Get product updates and tips delivered to your inbox.</p>
+<button type="button" class="btn" id="open">Subscribe</button>
+<p id="status" role="status" class="ok"></p>
+</main>
+<dialog id="dlg" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+<button type="button" class="close" id="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19"/></svg><span class="sr-only">Close</span></button>
+<h2 id="dlg-title">Subscribe to our newsletter</h2>
+<p id="dlg-desc">One email a month. Unsubscribe at any time.</p>
+<form id="f" novalidate>
+<label for="email">Email address</label>
+<input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-err">
+<p class="err" id="email-err"></p>
+<button type="submit" class="btn">Sign up</button>
+</form>
+</dialog>
+<script>
+const dlg=document.getElementById('dlg'),op=document.getElementById('open'),em=document.getElementById('email'),er=document.getElementById('email-err'),st=document.getElementById('status');
+op.addEventListener('click',()=>{dlg.showModal();em.focus()});
+document.getElementById('close').addEventListener('click',()=>dlg.close());
+dlg.addEventListener('close',()=>{op.focus()});
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();
+if(!/^\S+@\S+\.\S+$/.test(em.value)){er.textContent='Enter a valid email address, like name@example.com.';em.setAttribute('aria-invalid','true');em.focus();return}
+er.textContent='';em.removeAttribute('aria-invalid');em.value='';dlg.close();st.textContent='Thanks! You are subscribed.'});
+</script>
+</body>
+</html>

@@ -22,11 +22,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   official MCP registry checks. `docs/overview.md` gives the `server.json` to publish with.
 - **New dependencies:** `@modelcontextprotocol/server` 2.3.1 (Apache-2.0, with MIT portions) and
   `zod` 4.6.7 (MIT). `THIRD-PARTY-NOTICES.md` lists both.
+- **A `Stop` hook that declines ending a session with unaudited UI changes, once.** The skill's §2
+  says the audit loop is mandatory after any UI change; until now nothing enforced it. The plugin's
+  new `hooks/audit-gate.mjs` reads the session transcript when Claude is about to finish. If UI
+  files were written (`.html`, `.htm`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.css`,
+  `.scss`, `.mdx`, or `.js`/`.ts` whose new content touches the DOM) and no `a11y-loop audit`
+  ran after the last one, it returns `decision: "block"` with the files and the exact `audit` and
+  `diff` commands. It blocks at most once per session, never while `stop_hook_active` is true,
+  and on any failure of its own lets the session end. `A11Y_LOOP_AUDIT_GATE=off` turns it off.
+  `Stop` fires under `claude -p`, so unlike the plan gate its full round trip runs headlessly.
+  The decision lives in `src/lib/audit-gate.js`, copied into the plugin by `npm run sync-plugin`.
+  It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
+- **Native plugin evals.** `plugin/evals/` is a suite for `claude plugin eval` (Claude Code 2.1.269 or later): one trigger case per prompt in `trigger-evals.json` (21 should-trigger, 11 should-not) and 7 behaviour cases with graders for the plan, the APG modal and tabs contracts, the audit loop, and the honesty rules. Hand-written cases live in `skills/a11y-loop/evals/native/`; `npm run sync-plugin` generates the rest. `npm run eval:skill` runs it with and without the plugin and prints the delta. First measured results are in `evals/skill-eval-report-2026-10.md`.
+- **A composite GitHub Action** (`action.yml` at the repository root, usable as
+  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version and the
+  headless-shell browser, runs `doctor` and `audit`, and writes a step summary with the totals, the
+  first violations, the manual-check count and the sentence about what a clean report means. Inputs:
+  `target`, `interact`, `baseline`, `fail-on` (`violations`, `new` or `never`), `sarif`, `pr-comment`,
+  `version`, `browser`, `playwright-browsers-path`. Outputs: `violations`, `needs-review`, `manual`,
+  `new`, `fixed`, `remaining`, `report-path`, `sarif-path`, `exit-code`. With `baseline` it runs
+  `diff` and `fail-on: new` fails only on regressions; a missing baseline file is a notice, not an
+  error. A tool error (exit code 2) always fails the step. With `pr-comment: 'true'` it keeps one
+  comment on the pull request, found by a hidden marker and edited in place, using `gh api` and no
+  third-party action. It never posts a score or badge, and it does not upload SARIF.
+- `examples/github-action/audit.yml`: browser cache, baseline taken from the latest run on `main`,
+  and the PR comment.
+- `.github/workflows/action-selftest.yml` runs the action on Ubuntu and Windows against the demo
+  pages and asserts its outputs.
+- **A `release` branch for the plugin directory to track.** The release workflow now fast-forwards
+  (or creates) `release` to each tagged release, so a directory listing tracking that branch picks
+  up new versions without a manual re-validate. The branch only ever points at tagged commits.
 
 ### Changed
 - `runAudit` accepts an optional `signal` and `onProgress`. The CLI passes neither, so its
   behaviour is unchanged. `resolveAuditTarget` moved to `src/commands/audit.js` and is still
   exported from `src/cli.js`.
+- **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
+  `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
+  run was lost. The skill's own examples use that path.
+- **The skill description now names planning and discussion, small edits, and alt text.** Measured on the new eval suite, should-trigger prompts fire the skill 74% of the time (31 of 42 runs) instead of 52% (11 of 21), with no false trigger on the should-not prompts.
+- **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
+- **Documentation synchronised with 0.3.2, read end to end against the code.** `AGENTS.md` now
+  describes the three layers, every CLI subcommand with its exit codes, the CI workflows, the
+  install routes for the skill, the Claude Code plugin and Codex (one or the other, not both, which
+  the old agent-runnable block contradicted), the Anthropic plugin directory facts, and a release
+  checklist; its gotchas gain the Playwright-on-PATH mismatch, the npm README rule, the
+  plugin-root scan, the demo ticker and the W4A'25 misreading. `docs/overview.md`, `llms.txt`,
+  `CONTRIBUTING.md` and the docs site's guide drop stale statements (424 tests, "three commands",
+  a hook that "defers", a release workflow that "only publishes", no `plan-check`, `doctor` or
+  `install-browser` on the CLI and CI pages). New: `docs/roadmap.md` (shipped, in progress and
+  planned work) and `docs/research/distribution.md` (channels, their rules and what was
+  submitted, as of 2026-10). `docs/research/market.md` and `tooling.md` gain a dated
+  "Update 2026-10" section. `docs/research/standards.md` corrects the DOJ ADA Title II extension
+  to 20 April 2026 (91 FR 20902) and records that HHS extended its Section 504 deadlines too.
+- **The baseline-vs-skilled benchmark was re-run (2026-10) with three runs per condition and two
+  engines besides a11y-loop.** Claude Sonnet 5.5 built the same six components with the same
+  prompts. Each file was checked by a11y-loop 0.3.2, IBM Equal Access (`accessibility-checker`
+  4.0.34) and Lighthouse 13.5.0. The baseline had 45 a11y-loop violations across 18 files. The
+  converged skilled runs had none, and no failed Lighthouse audits. IBM still flags one finding
+  in every converged file: a skip link outside any landmark. Lighthouse uses the same axe-core
+  rules as a11y-loop, so only IBM is an independent engine. Subagents started inside this repo
+  can read `AGENTS.md`, and that alone removed every a11y-loop violation from the baseline, so the
+  headline arms ran from a clean directory. The contaminated runs are reported as well. The
+  2026-07 report and outputs are kept unchanged in `evals/benchmark-results-2026-07.md` and
+  `evals/outputs/2026-07/`.
 
 ## [0.3.2] - 2026-10-19
 

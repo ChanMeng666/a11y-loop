@@ -4,8 +4,8 @@
  * Exit codes: 0 no violations · 1 violations found · 2 tool error.
  */
 
-import { writeFile, readFile } from 'node:fs/promises';
-import { resolve, isAbsolute } from 'node:path';
+import { writeFile, readFile, mkdir } from 'node:fs/promises';
+import { resolve, isAbsolute, dirname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { runAudit, ToolError, DEFAULT_VIEWPORT } from '../lib/axe-runner.js';
@@ -16,6 +16,23 @@ import { serializeSarif } from '../lib/format/sarif.js';
 import { buildChecklist } from '../lib/format/checklist.js';
 
 export const TOOL_NAME = 'a11y-loop';
+
+/**
+ * Write an output file (`--out`, `--sarif`), creating its parent directories
+ * first. The skill's own examples write to `.a11y/run-1.json`, and a fresh
+ * project has no `.a11y/`; failing there with ENOENT after a full audit threw
+ * the whole run away.
+ *
+ * @param {string} file
+ * @param {string} text
+ * @returns {Promise<string>} the absolute path written
+ */
+export async function writeOutputFile(file, text) {
+  const target = resolve(file);
+  await mkdir(dirname(target), { recursive: true });
+  await writeFile(target, text, 'utf8');
+  return target;
+}
 
 /** Read our own version rather than hardcoding it in two places. */
 async function toolVersion() {
@@ -162,8 +179,8 @@ export async function runAuditCommand({ target, flags }, io) {
   const report = await buildAuditReport({ target, flags });
   const json = serializeReport(report);
 
-  if (flags.out) await writeFile(resolve(flags.out), json, 'utf8');
-  if (flags.sarif) await writeFile(resolve(flags.sarif), serializeSarif(report), 'utf8');
+  if (flags.out) await writeOutputFile(flags.out, json);
+  if (flags.sarif) await writeOutputFile(flags.sarif, serializeSarif(report));
 
   if (flags.json) {
     io.write(json);

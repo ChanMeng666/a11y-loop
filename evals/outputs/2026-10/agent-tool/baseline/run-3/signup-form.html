@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newsletter Signup</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#eef2ff,#fdf2f8);font-family:system-ui,sans-serif;color:#1f2937;padding:16px}
+form{background:#fff;width:100%;max-width:420px;padding:32px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.1)}
+h1{margin:0 0 4px;font-size:1.5rem}
+p.sub{margin:0 0 24px;color:#4b5563}
+.field{margin-bottom:16px}
+label{display:block;font-weight:600;margin-bottom:6px;font-size:.9rem}
+input[type=text],input[type=email],select{width:100%;padding:10px 12px;border:1px solid #6b7280;border-radius:8px;font:inherit;background:#fff}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid #4f46e5;outline-offset:2px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}
+.check input{margin-top:3px;width:18px;height:18px}
+button{width:100%;padding:12px;border:0;border-radius:8px;background:#4338ca;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+button:hover{background:#3730a3}
+#msg{margin-top:16px;color:#047857;font-weight:600}
+</style>
+</head>
+<body>
+<form id="f">
+  <h1>Join our newsletter</h1>
+  <p class="sub">Product news and tips, once a month.</p>
+  <div class="field"><label for="name">Name</label><input type="text" id="name" name="name" autocomplete="name" required></div>
+  <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" autocomplete="email" required></div>
+  <div class="field"><label for="country">Country</label>
+    <select id="country" name="country" autocomplete="country-name" required>
+      <option value="">Select a country</option>
+      <option>Australia</option><option>Canada</option><option>China</option><option>France</option><option>Germany</option><option>India</option><option>United Kingdom</option><option>United States</option>
+    </select></div>
+  <div class="field check"><input type="checkbox" id="consent" name="consent"><label for="consent" style="font-weight:400;margin:0">I agree to receive marketing emails. I can unsubscribe at any time.</label></div>
+  <button type="submit">Subscribe</button>
+  <div id="msg" role="status"></div>
+</form>
+<script>
+document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();document.getElementById('msg').textContent='Thanks! Check your inbox to confirm.';});
+</script>
+</body>
+</html>

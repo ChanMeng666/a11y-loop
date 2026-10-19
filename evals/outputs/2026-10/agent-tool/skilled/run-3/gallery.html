@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer stories</title>
+<style>
+:root{--bg:#f6f7fb;--surface:#fff;--text:#1a1d23;--muted:#4b5563;--border:#6b7280;--line:#d6dae2;--accent:#1d4ed8;--on-accent:#fff;--accent-soft:#e8eefc;--error:#b42318;--ok:#0a6b3d;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b23;--text:#eceef2;--muted:#b0b8c5;--border:#8d96a5;--line:#2c333f;--accent:#8fb0ff;--on-accent:#0b1020;--accent-soft:#1d2740;--error:#ff9b8f;--ok:#6fdc9f;--focus:#8fb0ff}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:1100px;margin:0 auto;padding:56px 16px}
+h1{font-size:2.25rem;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 36px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;list-style:none;padding:0;margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;height:100%;display:flex;flex-direction:column;transition:box-shadow .2s}
+.card:hover{box-shadow:0 12px 30px rgba(0,0,0,.14)}
+.card svg.photo{display:block;width:100%;height:auto}
+.body{padding:20px 22px 24px;display:flex;flex-direction:column;flex:1}
+h2{margin:0 0 2px;font-size:1.15rem}
+.role{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+blockquote{margin:0 0 16px;flex:1}
+.more{font-weight:600;display:inline-block;padding:6px 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<h1>Customer stories</h1><p class="sub">See how teams around the world get results.</p>
+<ul class="grid">
+<li><article class="card"><svg class="photo" viewBox="0 0 300 180" role="img" aria-label="Placeholder portrait of Amara Okafor"><rect width="300" height="180" fill="#dbeafe"/><circle cx="150" cy="75" r="34" fill="#2563eb"/><path d="M80 180c0-45 31-68 70-68s70 23 70 68z" fill="#2563eb"/></svg>
+<div class="body"><h2 id="c1">Amara Okafor</h2><p class="role">Operations lead, Brightway</p><blockquote><p>“We cut onboarding time in half within a single quarter.”</p></blockquote>
+<a class="more" href="#story-1">Read the full story<span class="sr"> of Amara Okafor</span> &rarr;</a></div></article></li>
+<li><article class="card"><svg class="photo" viewBox="0 0 300 180" role="img" aria-label="Placeholder portrait of Liam Chen"><rect width="300" height="180" fill="#d1fae5"/><circle cx="150" cy="75" r="34" fill="#047857"/><path d="M80 180c0-45 31-68 70-68s70 23 70 68z" fill="#047857"/></svg>
+<div class="body"><h2 id="c2">Liam Chen</h2><p class="role">CTO, Northwind Labs</p><blockquote><p>“The migration was painless and support answered within minutes.”</p></blockquote>
+<a class="more" href="#story-2">Read the full story<span class="sr"> of Liam Chen</span> &rarr;</a></div></article></li>
+<li><article class="card"><svg class="photo" viewBox="0 0 300 180" role="img" aria-label="Placeholder portrait of Sofia Alvarez"><rect width="300" height="180" fill="#fef3c7"/><circle cx="150" cy="75" r="34" fill="#b45309"/><path d="M80 180c0-45 31-68 70-68s70 23 70 68z" fill="#b45309"/></svg>
+<div class="body"><h2 id="c3">Sofia Alvarez</h2><p class="role">Founder, Casa Verde</p><blockquote><p>“Our small team now ships like a team three times our size.”</p></blockquote>
+<a class="more" href="#story-3">Read the full story<span class="sr"> of Sofia Alvarez</span> &rarr;</a></div></article></li>
+<li><article class="card"><svg class="photo" viewBox="0 0 300 180" role="img" aria-label="Placeholder portrait of Noah Fischer"><rect width="300" height="180" fill="#ede9fe"/><circle cx="150" cy="75" r="34" fill="#7c3aed"/><path d="M80 180c0-45 31-68 70-68s70 23 70 68z" fill="#7c3aed"/></svg>
+<div class="body"><h2 id="c4">Noah Fischer</h2><p class="role">Head of Data, Kestrel</p><blockquote><p>“Reporting that took days now takes a coffee break.”</p></blockquote>
+<a class="more" href="#story-4">Read the full story<span class="sr"> of Noah Fischer</span> &rarr;</a></div></article></li>
+<li><article class="card"><svg class="photo" viewBox="0 0 300 180" role="img" aria-label="Placeholder portrait of Priya Nair"><rect width="300" height="180" fill="#ffe4e6"/><circle cx="150" cy="75" r="34" fill="#be123c"/><path d="M80 180c0-45 31-68 70-68s70 23 70 68z" fill="#be123c"/></svg>
+<div class="body"><h2 id="c5">Priya Nair</h2><p class="role">Product manager, Lumen</p><blockquote><p>“Customers noticed the difference from the very first week.”</p></blockquote>
+<a class="more" href="#story-5">Read the full story<span class="sr"> of Priya Nair</span> &rarr;</a></div></article></li>
+<li><article class="card"><svg class="photo" viewBox="0 0 300 180" role="img" aria-label="Placeholder portrait of Tane Walker"><rect width="300" height="180" fill="#cffafe"/><circle cx="150" cy="75" r="34" fill="#0e7490"/><path d="M80 180c0-45 31-68 70-68s70 23 70 68z" fill="#0e7490"/></svg>
+<div class="body"><h2 id="c6">Tane Walker</h2><p class="role">Director, Harbour Group</p><blockquote><p>“Reliable, quick, and refreshingly easy to roll out.”</p></blockquote>
+<a class="more" href="#story-6">Read the full story<span class="sr"> of Tane Walker</span> &rarr;</a></div></article></li>
+</ul></main></body></html>

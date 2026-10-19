@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newsletter Signup</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #eef2ff, #f8fafc); color: #0f172a; }
+  .card { width: 100%; max-width: 440px; background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 10px 40px rgba(30,41,59,.12); }
+  h1 { margin: 0 0 6px; font-size: 1.6rem; }
+  .sub { margin: 0 0 24px; color: #64748b; }
+  .field { margin-bottom: 18px; }
+  label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 6px; }
+  input[type=text], input[type=email], select { width: 100%; padding: 11px 12px; font: inherit; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid #4f46e5; outline-offset: 1px; border-color: #4f46e5; }
+  .error { color: #dc2626; font-size: .82rem; min-height: 1.1em; margin-top: 4px; }
+  input[aria-invalid=true], select[aria-invalid=true] { border-color: #dc2626; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: .9rem; color: #334155; }
+  .check input { margin-top: 3px; width: 18px; height: 18px; accent-color: #4f46e5; }
+  button { width: 100%; padding: 12px; font: inherit; font-weight: 600; color: #fff; background: #4f46e5; border: 0; border-radius: 8px; cursor: pointer; margin-top: 8px; }
+  button:hover { background: #4338ca; }
+  button:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 2px; }
+  .success { display: none; text-align: center; padding: 12px 0; }
+  .success.show { display: block; }
+</style>
+</head>
+<body>
+<main class="card">
+  <form id="form" novalidate>
+    <h1>Stay in the loop</h1>
+    <p class="sub">Product news and tips, once a month. No spam.</p>
+
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" autocomplete="name" required>
+      <div class="error" id="name-err" role="alert"></div>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="email" required>
+      <div class="error" id="email-err" role="alert"></div>
+    </div>
+    <div class="field">
+      <label for="country">Country</label>
+      <select id="country" name="country" autocomplete="country-name" required>
+        <option value="">Select a country…</option>
+        <option>Australia</option><option>Brazil</option><option>Canada</option><option>China</option>
+        <option>France</option><option>Germany</option><option>India</option><option>Japan</option>
+        <option>United Kingdom</option><option>United States</option><option>Other</option>
+      </select>
+      <div class="error" id="country-err" role="alert"></div>
+    </div>
+    <div class="field">
+      <label class="check"><input type="checkbox" id="consent" name="consent"> <span>I agree to receive marketing emails and can unsubscribe at any time.</span></label>
+      <div class="error" id="consent-err" role="alert"></div>
+    </div>
+    <button type="submit">Subscribe</button>
+  </form>
+  <div class="success" id="success" role="status" tabindex="-1">
+    <h2>You're subscribed!</h2>
+    <p class="sub">Check your inbox to confirm your email.</p>
+  </div>
+</main>
+<script>
+  const form = document.getElementById('form');
+  const rules = {
+    name: v => v.trim() ? '' : 'Please enter your name.',
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Please enter a valid email address.',
+    country: v => v ? '' : 'Please choose a country.',
+    consent: (v, el) => el.checked ? '' : 'Consent is required to subscribe.'
+  };
+  function check(id) {
+    const el = document.getElementById(id);
+    const msg = rules[id](el.value, el);
+    document.getElementById(id + '-err').textContent = msg;
+    el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    return !msg;
+  }
+  Object.keys(rules).forEach(id => document.getElementById(id).addEventListener('change', () => check(id)));
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const results = Object.keys(rules).map(check);
+    if (results.includes(false)) { form.querySelector('[aria-invalid=true]').focus(); return; }
+    form.hidden = true;
+    const s = document.getElementById('success');
+    s.classList.add('show');
+    s.focus();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+1 automatically detectable failure · 3 to review · 0 best-practice · 11 manual checks
+exit 1
