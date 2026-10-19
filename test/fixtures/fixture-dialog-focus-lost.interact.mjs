@@ -12,4 +12,13 @@ export const states = {
     await page.click('#submitSub');
     await page.waitForSelector('#subDialog', { state: 'detached' });
   },
+  // Focus is lost, and the state's next click puts it on Help. The close is
+  // judged from the snapshot frozen at that click, so it is still reported.
+  'submit-then-click': async (page) => {
+    await page.click('#openSub');
+    await page.waitForSelector('#subDialog');
+    await page.fill('#subEmail', 'name@example.com');
+    await page.click('#submitSub');
+    await page.click('#help');
+  },
 };

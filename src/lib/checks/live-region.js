@@ -9,8 +9,8 @@
  * Two checks, both driven by what an --interact state's action changed:
  *
  *  - status-message-not-announced: text appeared after the action, outside any
- *    live region that existed before it, and focus did not go to it (nor to a
- *    control that names it with aria-describedby or aria-errormessage). A
+ *    live region that existed before it, focus did not go to it, and no element
+ *    names it with aria-describedby or aria-errormessage. A
  *    violation only when every confidence signal is present: the text is short,
  *    it reads like a status ("saved", "error", "required", "3 results"), and it
  *    appeared next to the control the state activated. Anything weaker is
@@ -32,6 +32,11 @@
  *    sibling, a menu, listbox, tab panel, tooltip, open <details> or popover;
  *  - large content: anything with a heading, a landmark, a table or two or more
  *    controls in it, or more than LARGE_TEXT characters of new text;
+ *  - text that any element names with aria-describedby or aria-errormessage:
+ *    an inline error linked from its field is read when the field gets focus;
+ *  - anything at all when, after the action, focus is on something other than
+ *    the control the state activated: the page moved the user on purpose (an
+ *    error summary, the first invalid field), which is the author handling it;
  *  - anything at all when the state changed the route: a new view is not a
  *    status message, and route-change-focus-lost is the check for it.
  */
@@ -216,6 +221,32 @@ export async function surveyLiveRegions(page) {
         });
       };
 
+      // Text that ANY element names as its description or error message is
+      // tied to that element, and is read when the element gets focus: an
+      // inline error linked from its field, as in the GOV.UK error-summary
+      // pattern, where focus goes to the summary and each field points at its
+      // own message. Not a status message, whatever has focus now.
+      const referencedIds = new Set();
+      for (const el of document.querySelectorAll('[aria-describedby], [aria-errormessage]')) {
+        for (const name of ['aria-describedby', 'aria-errormessage']) {
+          for (const id of (el.getAttribute(name) || '').split(/\s+/)) if (id) referencedIds.add(id);
+        }
+      }
+      const referencedByAny = (el) =>
+        [...referencedIds].some((id) => {
+          const target = document.getElementById(id);
+          return target && (el.contains(target) || target.contains(el));
+        });
+
+      // Focus moved after the action, and not to the control the state
+      // activated: the page took the user somewhere on purpose (an error
+      // summary, the first invalid field, a new panel). That is the author
+      // handling what the action changed, so no new text in this state is
+      // judged as an unannounced status message.
+      const focusMovedByPage = Boolean(
+        !focusOnBody && activated && active !== activated && !activated.contains(active),
+      );
+
       const disclosedByControl = (el) => {
         for (let node = el; node && node.nodeType === 1; node = node.parentElement) {
           if (node.matches(DISCLOSED)) return true;
@@ -273,6 +304,8 @@ export async function surveyLiveRegions(page) {
         if (region && (validRegion(region) || lateEls.has(region))) continue;
         if (!focusOnBody && (root.contains(active) || active.contains(root))) continue;
         if (referencedByFocus(root)) continue;
+        if (focusMovedByPage) continue;
+        if (referencedByAny(root)) continue;
         if (inNewDialog(root)) continue;
         if (disclosedByControl(root)) continue;
         if (isLarge(root, text)) continue;

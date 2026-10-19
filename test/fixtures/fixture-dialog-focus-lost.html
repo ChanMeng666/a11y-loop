@@ -9,7 +9,10 @@
 
      The inverse of fixture-dialog-submit-inside.html: the same interaction, a
      click on the dialog's own Submit, but here focus really is lost, and
-     dialog-focus-not-returned must still be reported. -->
+     dialog-focus-not-returned must still be reported. The submit-then-click
+     state clicks "Help" straight after, which puts focus on Help: the verdict
+     must come from the snapshot frozen at that click, not from where the click
+     left focus. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -77,6 +80,7 @@
   <h1>Newsletter</h1>
   <p>One email a month about new releases.</p>
   <button type="button" id="openSub">Subscribe</button>
+  <button type="button" id="help">Help</button>
   <div id="dialogHost"></div>
 </main>
 <script>

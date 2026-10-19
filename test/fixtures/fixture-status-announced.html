@@ -6,7 +6,10 @@
      that is in the page, empty, from the start, so the change is announced.
      "Shipping details" is a disclosure button (aria-expanded, aria-controls)
      that reveals a short paragraph: text the user asked to see, which is not a
-     status message and must not be reported as one. -->
+     status message and must not be reported as one. "Apply member discount"
+     adds a short note and moves focus to the order total heading: the page
+     moved the user on purpose, which a11y-loop treats as the author handling
+     the change. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -72,6 +75,10 @@
     <p id="saveStatus" role="status"></p>
   </form>
 
+  <h2 id="totalHeading" tabindex="-1">Order total</h2>
+  <p>NZ$48.00</p>
+  <button type="button" id="applyCode">Apply member discount</button>
+
   <h2>Delivery</h2>
   <button type="button" id="detailsToggle" aria-expanded="false" aria-controls="shipDetails">Shipping details</button>
   <div id="shipDetails" hidden>
@@ -81,6 +88,13 @@
 <script>
   document.getElementById('save').addEventListener('click', () => {
     document.getElementById('saveStatus').textContent = 'Saved. Your display name is updated.';
+  });
+  document.getElementById('applyCode').addEventListener('click', (event) => {
+    const note = document.createElement('p');
+    note.textContent = 'Discount applied.';
+    event.currentTarget.after(note);
+    // The page moves focus to the updated total on purpose.
+    document.getElementById('totalHeading').focus();
   });
   const toggle = document.getElementById('detailsToggle');
   const details = document.getElementById('shipDetails');

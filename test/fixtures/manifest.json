@@ -584,12 +584,13 @@
         "stateName": "submit-invalid",
         "steps": [
           "submit-invalid: click #openSub, click the dialog's own #submitSub with the field empty; the dialog stays open with an error, and the Escape probe then closes it",
-          "submit-valid: click #openSub, fill the field, click #submitSub; the state's own action closes the dialog"
+          "submit-valid: click #openSub, fill the field, click #submitSub; the state's own action closes the dialog",
+          "reopen-from-script: submit-valid, then showModal() from script with no new activation outside the dialog"
         ],
         "onLoadIsClean": true
       },
       "defects": [],
-      "note": "Regression guard for the dialog-focus-not-returned false positive in evals/benchmark-results.md (2026-10). Up to 0.3.x the dialog's trigger was the last clicked element, which in the submit-invalid state is the dialog's own Submit button, so the Escape probe expected focus to return to Submit and reported the dialog when it correctly went to Subscribe. Measured 2026-10-20: with the trigger logic mutated back to the last click, this fixture reports dialog-focus-not-returned (violation, inferred) in submit-invalid; with the fix it reports no row in either state. The trigger is now the last activation or focus OUTSIDE the dialog before it opened, as recorded by the state recorder in src/lib/browser-utils.js."
+      "note": "Regression guard for the dialog-focus-not-returned false positive in evals/benchmark-results.md (2026-10). Up to 0.3.x the trigger was the presumed trigger, the last clicked element read when the probe ran, which in the submit-invalid state is the dialog's own Submit button, so the Escape probe expected focus to return to Submit and reported the dialog when it correctly went to Subscribe. The state recorder in src/lib/browser-utils.js now takes the opener at the moment the dialog opens. Measured 2026-10-20: with every state forced back onto the presumed-trigger fall-back, submit-invalid reports dialog-focus-not-returned (violation, inferred); with the fix no state reports a row. The inside-the-dialog filter in pickOpener is guarded separately by reopen-from-script, where the most recent activation is the dialog's own Submit: with the filter removed, that state reports the row (measured 2026-10-20 for the PR #39 review)."
     },
 
     "fixture-dialog-focus-lost.html": {
@@ -604,16 +605,19 @@
           "scName": "Focus Order",
           "level": "A",
           "axeTag": null,
-          "minNodes": 1,
+          "minNodes": 2,
           "allowNeedsReview": false,
-          "note": "Reported by closedDialogFindings, not by the Escape probe: no dialog is open when the state returns, so the probe never runs. The opener is still on the page, so the row is a violation, evidence inferred."
+          "note": "Reported by closedDialogFindings, not by the Escape probe: no dialog is open when the state returns, so the probe never runs. The opener is still on the page, so both rows are violations, evidence inferred. submit-then-click guards the freeze: each close is judged from a focus snapshot taken when focus lands or the 1 s settle window ends, and frozen by the state's next activation. With the freeze disabled the snapshot settles on Help and that state reports nothing (measured 2026-10-20)."
         }
       ],
       "interact": {
         "required": true,
         "script": "fixture-dialog-focus-lost.interact.mjs",
         "stateName": "submit-valid",
-        "steps": ["click #openSub", "fill #subEmail", "click #submitSub, which removes the dialog"],
+        "steps": [
+          "submit-valid: click #openSub, fill #subEmail, click #submitSub, which removes the dialog",
+          "submit-then-click: the same, then click #help, which puts focus on Help"
+        ],
         "onLoadIsClean": true
       },
       "defects": ["the dialog is removed with focus inside it and focus is not returned to the opener"],
@@ -704,12 +708,13 @@
         "stateName": "saved",
         "steps": [
           "saved: click #save, which writes into a role=\"status\" region that was in the page from the start",
-          "details-expanded: click the aria-expanded disclosure, which reveals its aria-controls target"
+          "details-expanded: click the aria-expanded disclosure, which reveals its aria-controls target",
+          "discount-applied: click Apply member discount; a short note appears next to the button and the page moves focus to the Order total heading"
         ],
         "onLoadIsClean": true
       },
       "defects": [],
-      "note": "Passing counterpart of fixture-status-not-announced.html, plus the disclosure exclusion: the revealed paragraph contains the word \"Saved\" on purpose, so it is the aria-controls relationship, not the wording, that keeps it from being reported."
+      "note": "Passing counterpart of fixture-status-not-announced.html, plus the disclosure exclusion: the revealed paragraph contains the word \"Saved\" on purpose, so it is the aria-controls relationship, not the wording, that keeps it from being reported. discount-applied guards the focus-moved-by-the-page exclusion: with it removed, that state reports one needsReview row (measured 2026-10-20)."
     },
 
     "fixture-live-region-late.html": {
@@ -740,6 +745,126 @@
       },
       "defects": ["the live region and its text are inserted in the same mutation batch"],
       "note": "expectClean is true because the row is needs-review: the page has no violation, and exits 0."
+    },
+
+    "fixture-dialog-sequences.html": {
+      "class": "dialog-close-sequences",
+      "title": "CORRECT dialogs driven through sequences an end-of-state reading gets wrong",
+      "expectClean": true,
+      "expect": [],
+      "mustNotReport": ["dialog-focus-not-returned"],
+      "interact": {
+        "required": true,
+        "script": "fixture-dialog-sequences.interact.mjs",
+        "stateName": "submit-then-click-text",
+        "steps": [
+          "submit-then-click-text: open Rename, Save (focus returns to Rename), then click plain text (Chromium moves focus to <body>)",
+          "keyboard-open: open with Enter, Save with Space",
+          "two-in-a-row: Rename then Invite, each returning focus to its opener",
+          "delete-row: the opener is removed with its row and focus goes to the Members heading",
+          "late-return: a <div role=\"dialog\"> that hides and restores focus to its opener 300 ms later"
+        ],
+        "onLoadIsClean": true
+      },
+      "defects": [],
+      "note": "From the PR #39 review repros (2026-10-20). Measured: judging each close from focus at the end of the state reports submit-then-click-text; a settle window of 0 reports late-return. Chromium's native <dialog>.close() restores focus synchronously, which is why the late-return dialog is a custom one."
+    },
+
+    "fixture-dialog-opener-removed.html": {
+      "class": "dialog-opener-removed",
+      "title": "A dialog removes its own opener and leaves focus on the body",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "dialog-focus-not-returned",
+          "detector": "a11y-loop",
+          "scHint": "2.4.3",
+          "scName": "Focus Order",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "Opener gone and focus on <body>: a violation, evidence inferred. Opener gone and focus on a sensible element is silent (the delete-row state of fixture-dialog-sequences.html). An unknown opener is needsReview."
+        }
+      ],
+      "interact": {
+        "required": true,
+        "script": "fixture-dialog-opener-removed.interact.mjs",
+        "stateName": "delete-row",
+        "steps": ["click Delete Ana and confirm; the row and its opener are removed and focus is left on <body>"],
+        "onLoadIsClean": true
+      },
+      "defects": ["the opener is removed with its row and focus is not moved anywhere"]
+    },
+
+    "fixture-error-summary.html": {
+      "class": "error-summary",
+      "title": "CORRECT validation: error summary, first invalid field, linked inline errors",
+      "expectClean": true,
+      "expect": [],
+      "mustNotReport": ["status-message-not-announced", "live-region-injected-late"],
+      "interact": {
+        "required": true,
+        "script": "fixture-error-summary.interact.mjs",
+        "stateName": "govuk-summary",
+        "steps": [
+          "govuk-summary: submit empty; the error summary is shown and focused, and each inline error is linked from its field by aria-describedby",
+          "focus-first-invalid: submit empty; focus moves to the first invalid field",
+          "blur-validation: type a bad address and Tab on; the error appears, linked from its field"
+        ],
+        "onLoadIsClean": true
+      },
+      "defects": [],
+      "note": "From the PR #39 review repros (2026-10-20): before the fix, govuk-summary reported two violations and focus-first-invalid one. Those two states are now excluded because the page moved focus somewhere other than the activated control. blur-validation is the state that depends on the exclusion for text any element names with aria-describedby or aria-errormessage: with it removed, that state reports one needsReview row (measured 2026-10-20)."
+    },
+
+    "fixture-route-shadow-announcer.html": {
+      "class": "route-shadow-announcer",
+      "title": "CORRECT client-side routes: a shadow-root announcer, and focus after a fetch",
+      "expectClean": true,
+      "expect": [],
+      "mustNotReport": ["route-change-focus-lost", "status-message-not-announced"],
+      "interact": {
+        "required": true,
+        "script": "fixture-route-shadow-announcer.interact.mjs",
+        "stateName": "shadow-announcer",
+        "steps": [
+          "shadow-announcer: follow the order link; the route is announced in an aria-live region inside an open shadow root, the way the Next.js App Router does it",
+          "focus-after-fetch: follow the order link; the new h1 is focused 300 ms later"
+        ],
+        "onLoadIsClean": true
+      },
+      "defects": [],
+      "note": "From the PR #39 review repros (2026-10-20). Measured: collecting live regions from the light DOM only reports shadow-announcer; judging focus without the 1 s settle reports focus-after-fetch."
+    },
+
+    "fixture-query-state.html": {
+      "class": "query-state",
+      "title": "Filter state in the query string, with an unannounced result count",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "status-message-not-announced",
+          "detector": "a11y-loop",
+          "scHint": "4.1.3",
+          "scName": "Status Messages",
+          "level": "AA",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "A violation, evidence inferred: \"2 results\" is short, reads like a status and appears next to the button."
+        }
+      ],
+      "mustNotReport": ["route-change-focus-lost"],
+      "interact": {
+        "required": true,
+        "script": "fixture-query-state.interact.mjs",
+        "stateName": "filter-red",
+        "steps": ["click Show red only; the list filters in place, replaceState writes ?color=red, and \"2 results\" is appended next to the button"],
+        "onLoadIsClean": true
+      },
+      "defects": ["the result count is a plain paragraph, outside any live region"],
+      "note": "From the PR #39 review (2026-10-20). A changed query string or an unmatched hash counts as a route change only when <main> was replaced as well. Measured: counting the query string alone as a route stands the status-message check down, and this fixture then reports nothing."
     }
   }
 }

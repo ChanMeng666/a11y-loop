@@ -36,6 +36,7 @@ import {
   roleButtonFindings,
   surveyClosedDialogs,
   closedDialogFindings,
+  settleFocusOffBody,
 } from './checks/dialog.js';
 import { armRouteFocus, surveyRouteFocus, routeFocusFindings } from './checks/route-focus.js';
 import { armLiveRegions, surveyLiveRegions, liveRegionFindings } from './checks/live-region.js';
@@ -471,7 +472,14 @@ export async function runAudit({ target, options = {} }) {
         // status-message checks stand down for that state rather than
         // describe the same new view a second time.
         const actionFindings = [];
-        const route = await surveyRouteFocus(page).catch(() => null);
+        let route = await surveyRouteFocus(page).catch(() => null);
+        if (route?.routeChanged && route.focusOnBody && !route.announced) {
+          // A router that focuses the new heading after a data fetch is not
+          // losing focus. Give focus up to FOCUS_SETTLE_MS to leave <body>,
+          // then look again.
+          await settleFocusOffBody(page);
+          route = await surveyRouteFocus(page).catch(() => null);
+        }
         const routeChanged = Boolean(route?.routeChanged);
         actionFindings.push(...routeFocusFindings(route, ctx));
         if (!routeChanged) {

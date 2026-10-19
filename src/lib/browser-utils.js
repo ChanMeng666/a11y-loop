@@ -297,12 +297,16 @@ export const HELPERS_SOURCE = `
   // the page's own handlers, so an activation is on record before whatever it
   // triggers (a dialog opening, a route changing) has happened. pointerdown is
   // here because some menus open on it rather than on click.
-  window.addEventListener('pointerdown', function (event) { remember(activations, controlFor(event.target)); }, true);
-  window.addEventListener('click', function (event) { remember(activations, controlFor(event.target)); }, true);
+  // Each one also freezes the focus snapshot of any dialog that closed since
+  // the previous activation (see settleClosed): whatever the user does next is
+  // not the page's doing, so it must not change the verdict on that close.
+  window.addEventListener('pointerdown', function (event) { freezeClosed(); remember(activations, controlFor(event.target)); }, true);
+  window.addEventListener('click', function (event) { freezeClosed(); remember(activations, controlFor(event.target)); }, true);
   window.addEventListener(
     'keydown',
     function (event) {
       if (event.key !== 'Enter' && event.key !== ' ') return;
+      freezeClosed();
       var active = document.activeElement;
       if (active && active !== document.body && active !== document.documentElement) remember(activations, active);
     },
@@ -353,12 +357,79 @@ export const HELPERS_SOURCE = `
   var tracker = null;
 
   /**
+   * How long a closed dialog's page gets to put focus somewhere real before the
+   * close is judged. A library that restores focus in an animation frame, or
+   * after the close transition, is not late in any way a user would notice.
+   */
+  var CLOSE_SETTLE_MS = 1000;
+
+  /**
+   * Where focus is, for a dialog that has just closed. It has landed only when
+   * it is on a rendered element outside the closed dialog: focus still inside
+   * a dialog that is now hidden is about to be fixed up to <body> by the
+   * browser, so it is not an answer yet.
+   */
+  function sampleClosedFocus(record) {
+    var active = document.activeElement;
+    var landed =
+      active &&
+      active !== document.body &&
+      active !== document.documentElement &&
+      !(record.el && record.el.isConnected && record.el.contains(active)) &&
+      isRendered(active);
+    record.focusLost = !landed;
+    record.focusPath = landed ? cssPath(active) : null;
+    var opener = record.opener;
+    record.openerUsable = Boolean(
+      opener &&
+        opener.isConnected &&
+        isVisible(opener) &&
+        (!window.tabbable || window.tabbable.isFocusable(opener)),
+    );
+    return landed;
+  }
+
+  /**
+   * Judge a close from a snapshot, not from wherever focus happens to be when
+   * the state returns: a state that closes a dialog and then clicks plain text
+   * moves focus to <body> itself, and that is not the dialog's doing. The
+   * snapshot is retaken every 50 ms until focus lands or CLOSE_SETTLE_MS
+   * passes, and frozen early by the next activation.
+   */
+  function settleClosed(record) {
+    var started = performance.now();
+    record.settled = false;
+    (function tick() {
+      if (record.settled) return;
+      if (sampleClosedFocus(record) || performance.now() - started >= CLOSE_SETTLE_MS) {
+        record.settled = true;
+        return;
+      }
+      setTimeout(tick, 50);
+    })();
+  }
+
+  function freezeClosed() {
+    if (!tracker) return;
+    tracker.closed.forEach(function (record) {
+      if (record.settled) return;
+      sampleClosedFocus(record);
+      record.settled = true;
+    });
+  }
+
+  /**
    * The control that opened this dialog: the most recent activation, failing
-   * that the most recent focus, that is NOT inside the dialog itself. A button
-   * inside the dialog (its own Submit or Save) can never be its opener, however
-   * recently it was clicked. Up to 0.3.x the last click of any kind was taken
-   * as the trigger, which is how a state that submitted a dialog's form came to
-   * be reported for not returning focus to the submit button.
+   * that the most recent focus, taken at the moment the dialog opened, that is
+   * NOT inside the dialog itself.
+   *
+   * Taking it at open time is the fix for 0.3.x, which read the last click when
+   * the probe ran and so took a dialog's own Submit for its trigger. The
+   * inside-the-dialog filter matters for a different case: a dialog opened
+   * again with no new activation outside it (from script, after its own Save
+   * closed it), where the most recent activation is that Save button. See the
+   * reopen-from-script state of fixture-dialog-submit-inside.html, which goes
+   * red without the filter.
    */
   function pickOpener(dialog) {
     var lists = [activations, focusHistory];
@@ -396,6 +467,7 @@ export const HELPERS_SOURCE = `
       if (nowOpen.indexOf(el) !== -1) return;
       tracker.open.delete(el);
       tracker.closed.push(record);
+      settleClosed(record);
     });
   }
 

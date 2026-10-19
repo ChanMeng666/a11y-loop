@@ -178,8 +178,12 @@ hear what a screen reader said.
   that was a new view (then move focus to its heading) or a tab set or wizard
   step with its own pattern.
 - **`dialog-focus-not-returned` in needsReview** means a dialog closed with
-  focus on the body and the engine could not tell which control opened it.
-  Open it from its real control, close it, and check where focus goes.
+  focus on the body and the engine could not tell which control opened it
+  (it was open on load, or the state opened it from script). Open it from its
+  real control, close it, and check where focus goes. As a violation, the
+  opener was known: still on the page, or removed with focus left on the body.
+  An opener that was removed while focus went to a heading or another real
+  element is never reported.
 
 ---
 

@@ -14,4 +14,10 @@ export const states = {
     await page.click('#detailsToggle');
     await page.waitForSelector('#shipDetails:not([hidden])');
   },
+  // A short note appears next to the button and the page moves focus to the
+  // total. Depends on the focus-moved-by-the-page exclusion.
+  'discount-applied': async (page) => {
+    await page.click('#applyCode');
+    await page.waitForFunction(() => document.activeElement?.id === 'totalHeading');
+  },
 };

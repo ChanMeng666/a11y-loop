@@ -22,4 +22,17 @@ export const states = {
     await page.click('#submitSub');
     await page.waitForSelector('#subDialog:not([open])', { state: 'attached' });
   },
+  // Submitted, closed, then opened again from script with no new activation
+  // outside it. The most recent activation is now the dialog's own Submit, so
+  // this is the state that depends on pickOpener skipping elements inside the
+  // dialog: without that filter, Submit is taken for the trigger again.
+  'reopen-from-script': async (page) => {
+    await page.click('#openSub');
+    await page.waitForSelector('#subDialog[open]');
+    await page.fill('#subEmail', 'name@example.com');
+    await page.click('#submitSub');
+    await page.waitForSelector('#subDialog:not([open])', { state: 'attached' });
+    await page.evaluate(() => document.getElementById('subDialog').showModal());
+    await page.waitForSelector('#subDialog[open]');
+  },
 };

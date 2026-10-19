@@ -34,14 +34,13 @@ describe('dialog: focus after a dialog the state closed', () => {
     openerKnown: true,
     openerPath: '#openSub',
     openerUsable: true,
-    onOpener: false,
-    focusOnBody: true,
+    focusLost: true,
   };
 
   test('focus on the opener, or anywhere real, is not reported', () => {
-    assert.equal(judgeClosedDialog({ ...closed, focusOnBody: false, onOpener: true }), null);
-    assert.equal(judgeClosedDialog({ ...closed, focusOnBody: false, onOpener: false }), null);
-    assert.deepEqual(closedDialogFindings([{ ...closed, focusOnBody: false }], ctx), []);
+    assert.equal(judgeClosedDialog({ ...closed, focusLost: false }), null);
+    assert.equal(judgeClosedDialog({ ...closed, focusLost: false, openerUsable: false }), null);
+    assert.deepEqual(closedDialogFindings([{ ...closed, focusLost: false }], ctx), []);
   });
 
   test('focus on the body with the opener still there is an inferred violation', () => {

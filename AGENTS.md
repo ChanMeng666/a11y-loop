@@ -263,7 +263,7 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   `FIXES.md` are the finding-by-finding record — keep them in sync with the actual markup if you
   touch these files.
 - **`test/fixtures/manifest.json`** — the fixture matrix driving `test/integration/fixtures.test.js`:
-  one seeded-violation HTML fixture per failure class, plus correct-behaviour counterparts (27
+  one seeded-violation HTML fixture per failure class, plus correct-behaviour counterparts (32
   entries today), declared in the manifest rather than hardcoded per-test, so adding a fixture
   means adding a manifest entry plus the HTML file. A fixture driven by `--interact` states names
   its `<fixture>.interact.mjs` module in `interact.script`. `mustNotReport` lists rule ids that may
@@ -337,11 +337,17 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
 - **A dialog's trigger is never inside the dialog.** Up to 0.3.x the engine took the last clicked
   element as a dialog's trigger, so an `--interact` state that clicked the dialog's own Submit made
   the Escape probe expect focus to return to Submit and report `dialog-focus-not-returned` when it
-  correctly went to the opener (the 2026-10 benchmark's newsletter-modal artifact). The trigger now
-  comes from the state recorder in `browser-utils.js`: the last activation or focus outside the
-  dialog before it opened. Focus is compared by element identity, not CSS path. Without a known
-  opener the row is needsReview, never a violation. `fixture-dialog-submit-inside.html` goes red if
-  the old rule comes back.
+  correctly went to the opener (the 2026-10 benchmark's newsletter-modal artifact). The opener now
+  comes from the state recorder in `browser-utils.js`, taken at the moment the dialog opens, which
+  is before any Submit inside it has been clicked; that timing is the fix. Focus is compared by
+  element identity, not CSS path. Without a known opener the row is needsReview, never a violation.
+  What each fixture guards, measured by mutation: `fixture-dialog-submit-inside.html`'s
+  `submit-invalid` goes red if states fall back on the presumed trigger (the last click, the 0.3.x
+  rule); its `reopen-from-script` goes red if `pickOpener` stops skipping elements inside the
+  dialog, which matters only when a dialog reopens with no new activation outside it. A closed
+  dialog is judged from a focus snapshot (settled for up to 1 s, frozen by the next activation),
+  never from focus at the end of the state: `fixture-dialog-sequences.html` and
+  `fixture-dialog-focus-lost.html`'s `submit-then-click` go red otherwise.
 - **Fixture tests are manifest-driven.** Adding a new seeded-violation fixture without a
   corresponding `test/fixtures/manifest.json` entry means it's inert — it won't be picked up by
   `test/integration/fixtures.test.js`.

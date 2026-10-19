@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!-- FIXTURE: dialog-opener-removed. A confirmation dialog that deletes the row its
+     opener lived in and leaves focus on <body>.
+
+     "Delete Ana" opens a native <dialog>. Confirming removes Ana's row, which
+     takes the opener with it, and moves focus nowhere, so focus falls to <body>.
+     That is the one defect. With the opener gone, the APG Dialog (Modal) pattern
+     asks for focus to go to the next logical place; <body> is never one, so
+     dialog-focus-not-returned is a violation here (evidence inferred).
+
+     The counterpart is the delete-row state of fixture-dialog-sequences.html,
+     which moves focus to the list heading and reports nothing. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — dialog removes its own opener</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 0 0 0.75rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    margin: 0 0.5rem 0.5rem 0;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  dialog {
+    max-width: 28rem;
+    padding: 1.5rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+  }
+  dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+  ul { padding-left: 1.25rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Team members</h1>
+  <ul id="rows">
+    <li id="r1">Ana <button type="button" class="del" data-row="r1">Delete Ana</button></li>
+    <li id="r2">Ben <button type="button" class="del" data-row="r2">Delete Ben</button></li>
+  </ul>
+  <dialog id="dC" aria-labelledby="tC">
+    <h2 id="tC">Delete member?</h2>
+    <button type="button" id="confirmC">Delete</button>
+    <button type="button" id="cancelC">Cancel</button>
+  </dialog>
+</main>
+<script>
+  let pending = null;
+  const dC = document.getElementById('dC');
+  document.querySelectorAll('.del').forEach((button) =>
+    button.addEventListener('click', () => {
+      pending = button;
+      dC.showModal();
+    }),
+  );
+  document.getElementById('cancelC').addEventListener('click', () => {
+    dC.close();
+    pending.focus();
+  });
+  document.getElementById('confirmC').addEventListener('click', () => {
+    const row = document.getElementById(pending.dataset.row);
+    dC.close();
+    // DEFECT: the row goes, the opener with it, and focus is left on <body>.
+    row.remove();
+  });
+</script>
+</body>
+</html>

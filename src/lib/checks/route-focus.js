@@ -44,7 +44,16 @@ const LIVE_SELECTOR =
 export async function armRouteFocus(page) {
   await page.evaluate((liveSelector) => {
     const main = document.querySelector('main, [role="main"]');
-    const regions = Array.from(document.querySelectorAll(liveSelector));
+    // Route announcers often live in a shadow root: Next.js App Router's is a
+    // <next-route-announcer> element whose open shadow root holds the
+    // aria-live region. document.querySelectorAll does not reach inside, so
+    // walk every open shadow root as well.
+    const regions = [];
+    const collect = (root) => {
+      regions.push(...root.querySelectorAll(liveSelector));
+      for (const el of root.querySelectorAll('*')) if (el.shadowRoot) collect(el.shadowRoot);
+    };
+    collect(document);
     window.__a11yLoopRoute = {
       token: window.__a11yLoopPageToken,
       href: location.href,
@@ -73,14 +82,14 @@ export async function surveyRouteFocus(page) {
     const helpers = window.__a11yLoop;
     const before = new URL(arm.href);
     const now = new URL(location.href);
-    const pathChanged = before.pathname !== now.pathname || before.search !== now.search;
-    let hashRoute = false;
-    if (!pathChanged && before.hash !== now.hash) {
+    const pathChanged = before.pathname !== now.pathname;
+    const searchChanged = before.search !== now.search;
+    let unmatchedHash = false;
+    if (before.hash !== now.hash) {
       // #section with a matching id is an in-page anchor, not a route.
       const id = decodeURIComponent(now.hash.slice(1));
-      hashRoute = Boolean(now.hash.length > 1 && !document.getElementById(id) && !document.getElementsByName(id).length);
+      unmatchedHash = Boolean(now.hash.length > 1 && !document.getElementById(id) && !document.getElementsByName(id).length);
     }
-    const urlChanged = pathChanged || hashRoute;
 
     const mainReplaced = Boolean(
       arm.main &&
@@ -88,6 +97,12 @@ export async function surveyRouteFocus(page) {
           (arm.mainChildren.length > 0 && arm.mainChildren.every((child) => !child.isConnected))),
     );
 
+    // A changed path is a route. A changed query string or an unmatched hash
+    // on its own is usually page state (?tab=, ?color=, #/filters) written
+    // with replaceState, so it counts as a route only when <main> was replaced
+    // as well. Calling it a route would also stand the dialog and
+    // status-message checks down for that state, so the bar is kept high.
+    const urlChanged = pathChanged || ((searchChanged || unmatchedHash) && mainReplaced);
     const routeChanged = urlChanged || mainReplaced;
     if (!routeChanged) return { fullLoad: false, routeChanged: false };
 

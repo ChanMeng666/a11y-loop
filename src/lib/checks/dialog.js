@@ -183,11 +183,12 @@ export function dialogFindings(observation, ctx) {
  * Focus on the opener, or anywhere else real, is not reported.
  *
  * @param {{selector:string, html:string, openerKnown:boolean, openerPath:string|null,
- *   openerUsable:boolean, onOpener:boolean, focusOnBody:boolean}} closed
+ *   openerUsable:boolean, focusLost:boolean}} closed focusLost means focus never
+ *   landed on a rendered element outside the dialog within the settle window
  * @returns {null | {severity:string, reason:'opener-present'|'opener-gone'|'opener-unknown'}}
  */
 export function judgeClosedDialog(closed) {
-  if (!closed || !closed.focusOnBody) return null;
+  if (!closed || !closed.focusLost) return null;
   if (!closed.openerKnown) return { severity: SEVERITY.NEEDS_REVIEW, reason: 'opener-unknown' };
   if (closed.openerUsable) return { severity: SEVERITY.VIOLATION, reason: 'opener-present' };
   return { severity: SEVERITY.VIOLATION, reason: 'opener-gone' };
@@ -249,33 +250,60 @@ export function closedDialogFindings(closedDialogs = [], ctx) {
  * @param {import('playwright').Page} page
  */
 export async function surveyClosedDialogs(page) {
+  // Each close carries its own focus snapshot, retaken until focus lands or
+  // the recorder's settle window (1 s) passes, and frozen by the state's next
+  // activation. Wait for every snapshot to be final before reading them.
+  await page
+    .waitForFunction(
+      () => {
+        const rec = window.__a11yLoop.recorder();
+        return !rec || rec.closed.every((closed) => closed.settled);
+      },
+      null,
+      { timeout: CLOSE_SETTLE_WAIT_MS, polling: 50 },
+    )
+    .catch(() => {});
   return page.evaluate(() => {
-    const helpers = window.__a11yLoop;
-    const rec = helpers.recorder();
+    const rec = window.__a11yLoop.recorder();
     if (!rec) return [];
-    const active = document.activeElement;
-    const focusOnBody = !active || active === document.body || active === document.documentElement;
     const bySelector = new Map();
     for (const closed of rec.closed) {
-      const opener = closed.opener;
-      const openerUsable = Boolean(
-        opener &&
-          opener.isConnected &&
-          helpers.isVisible(opener) &&
-          (!window.tabbable || window.tabbable.isFocusable(opener)),
-      );
       bySelector.set(closed.selector, {
         selector: closed.selector,
         html: closed.html,
-        openerKnown: Boolean(opener),
+        openerKnown: Boolean(closed.opener),
         openerPath: closed.openerPath,
-        openerUsable,
-        onOpener: Boolean(opener && active && (active === opener || opener.contains(active))),
-        focusOnBody,
+        openerUsable: Boolean(closed.openerUsable),
+        focusLost: closed.focusLost !== false,
       });
     }
     return [...bySelector.values()];
   });
+}
+
+/** Upper bound on waiting for the recorder's close snapshots (its own window is 1 s). */
+const CLOSE_SETTLE_WAIT_MS = 1500;
+
+/**
+ * How long focus may take to leave <body> after a close or a route change
+ * before the engine judges where it went. A page that focuses its new heading
+ * after a data fetch, or restores focus after a close transition, is not
+ * losing focus; one that leaves it on <body> for a second is.
+ */
+export const FOCUS_SETTLE_MS = 1000;
+
+/** Wait up to FOCUS_SETTLE_MS for focus to be somewhere other than <body>. */
+export async function settleFocusOffBody(page, timeout = FOCUS_SETTLE_MS) {
+  await page
+    .waitForFunction(
+      () => {
+        const active = document.activeElement;
+        return Boolean(active && active !== document.body && active !== document.documentElement);
+      },
+      null,
+      { timeout, polling: 50 },
+    )
+    .catch(() => {});
 }
 
 /**
@@ -357,9 +385,11 @@ export async function captureDialogInitialState(page, opts = {}) {
       // The trigger, in order of how much it can be trusted: a declared
       // relationship; the opener the state recorder saw (the last activation
       // or focus OUTSIDE this dialog before it opened); and, only when the
-      // recorder was not armed, the presumed trigger from the caller. Never an
-      // element inside the dialog: a dialog's own Submit button cannot have
-      // opened it, however recently it was clicked.
+      // recorder was not armed, the presumed trigger from the caller (the last
+      // click, read when the probe runs). That fall-back is what 0.3.x used for
+      // every state, and it is why a state that clicked the dialog's own
+      // Submit had Submit taken for the trigger: the recorder takes the opener
+      // at the moment the dialog opened instead, before Submit was ever clicked.
       let triggerEl = null;
       if (dialog.id) {
         triggerEl = document.querySelector(
@@ -374,7 +404,6 @@ export async function captureDialogInitialState(page, opts = {}) {
           triggerEl = null;
         }
       }
-      if (triggerEl && dialog.contains(triggerEl)) triggerEl = null;
       window.__a11yLoopDialogTrigger = triggerEl;
       const trigger = triggerEl ? helpers.cssPath(triggerEl) : null;
 
@@ -576,6 +605,8 @@ export async function surveyDialog(page, found) {
   let triggerConnected = null;
   let focusOnBodyAfterClose = null;
   if (escapeClosed) {
+    // Give a focus restore that runs after a close transition time to land.
+    await settleFocusOffBody(page);
     const after = await page.evaluate(() => {
       const active = document.activeElement;
       const onBody = !active || active === document.body || active === document.documentElement;
