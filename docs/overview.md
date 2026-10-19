@@ -110,15 +110,21 @@ https://github.com/user-attachments/assets/33ff8672-7690-4581-9ceb-d95476883c54
 ![a11y-loop fixing a seeded-violation demo page across five audit passes until it converges on zero violations](demo.gif)
 
 The demo page ([`demo/before/`](../demo/before)) is a fictional conference site seeded with
-**163 detectable failures** spanning the WebAIM Million's top six failure classes plus the
+**159 detectable failures** spanning the WebAIM Million's top six failure classes plus the
 failure modes documented for LLM-generated UI: clickable divs, hidden focus indicators, skipped
 heading levels, broken ARIA references, and ignored `prefers-reduced-motion`. Running the loop
 against it converges on [`demo/after/`](../demo/after) — **0 violations** — and
 `a11y-loop diff --before demo/before/report.json --after demo/after/report.json` reports:
 
 ```
-Converged: all 163 violations fixed, none introduced
+Converged: all 159 violations fixed, none introduced
 ```
+
+That count is for axe-core 4.14.0, the version a11y-loop pins. It was 163 at axe-core 4.12.1, which
+is the version the GIF above was recorded with. One of the page's seeded failures is a scrolling
+ticker, and whether its last name is inside the viewport when axe reads the page depends on where
+the animation has got to, so a run reports 159 or 160 and converges on "all 160" when it is 160.
+`test/integration/demo.test.js` holds the count: exact outside the ticker, 9 or 10 inside it.
 
 `FIXED` / `NEW` / `REMAINING` status per finding, matched by stable fingerprint (rule + selector +
 WCAG success criterion), is what makes that verdict checkable rather than asserted — see
@@ -242,8 +248,8 @@ of the other ~87%.
 
 Things a report says that are not what they look like. These came out of running a11y-loop against
 a production app across a full audit-fix cycle; each one cost an hour to work out from the report
-alone, so it is written down here. Every number below is reproducible from a checkout at axe-core
-4.12.1.
+alone, so it is written down here. Every number below that can be reproduced from a checkout
+was reproduced at axe-core 4.12.1, and at 4.14.0 (checked 2026-10-19).
 
 ### `color-contrast` in the forced-colors pass is usually not a defect
 
@@ -351,14 +357,16 @@ illustration of the effect's shape, not a controlled study or a precise effect s
 
 - **Runtime:** Node.js ≥ 20, ESM (`"type": "module"`)
 - **Browser automation:** [Playwright](https://playwright.dev/) (Chromium)
-- **Accessibility engine:** [axe-core](https://github.com/dequelabs/axe-core) via
-  `@axe-core/playwright` (MPL-2.0 — see [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md))
+- **Accessibility engine:** [axe-core](https://github.com/dequelabs/axe-core) 4.14.0 via
+  `@axe-core/playwright` 4.14.0, both pinned exactly so a fresh install runs the same rules
+  (MPL-2.0 — see [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md))
 - **Color math:** [culori](https://github.com/Evercoder/culori) (OKLCh contrast fixes)
 - **Focus order:** [tabbable](https://github.com/focus-trap/tabbable)
-- **SARIF conversion:** [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter)
+- **SARIF:** SARIF 2.1.0 written directly by `src/lib/format/sarif.js`, in the shape
+  [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 378 tests across unit and integration suites,
+- **Tests:** the built-in `node --test` runner, 424 tests across unit and integration suites,
   including a 19-fixture matrix of seeded violations and correct-behaviour regression guards, a
   demo end-to-end run, and a forced-colors gradient regression test
 

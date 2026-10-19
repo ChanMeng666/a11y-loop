@@ -73,10 +73,10 @@ still what judge the answer.
 
 - **Runtime:** Node.js ≥ 20, ESM
 - **Browser automation:** [Playwright](https://playwright.dev/) (Chromium)
-- **Accessibility engine:** [axe-core](https://github.com/dequelabs/axe-core) via `@axe-core/playwright`
+- **Accessibility engine:** [axe-core](https://github.com/dequelabs/axe-core) 4.14.0 via `@axe-core/playwright` 4.14.0, both pinned exactly
 - **Color math:** [culori](https://github.com/Evercoder/culori) (OKLCh contrast fixes)
 - **Focus order:** [tabbable](https://github.com/focus-trap/tabbable)
-- **SARIF conversion:** [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter)
+- **SARIF:** SARIF 2.1.0 written directly, in the shape [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard
 
 See the [overview's Tech Stack section](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#%EF%B8%8F-tech-stack)

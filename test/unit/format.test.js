@@ -1,5 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   buildReport,
@@ -11,7 +12,7 @@ import {
 } from '../../src/lib/format/json.js';
 import { formatHuman, findingHeadline, groupFindings, describeTarget } from '../../src/lib/format/human.js';
 import { buildChecklist } from '../../src/lib/format/checklist.js';
-import { toAxeShape, toSarif, GITHUB_LIMITATION_NOTE } from '../../src/lib/format/sarif.js';
+import { toAxeShape, toSarif, wcagTaxa, GITHUB_LIMITATION_NOTE } from '../../src/lib/format/sarif.js';
 import { SEVERITY } from '../../src/lib/finding.js';
 import {
   makeReport,
@@ -375,5 +376,118 @@ describe('SARIF output', () => {
     const log = toSarif(makeReport({ findings: [dialogFinding()] }));
     const ruleIds = log.runs[0].results.map((r) => r.ruleId);
     assert.ok(ruleIds.includes('dialog-focus-not-trapped'));
+  });
+});
+
+/**
+ * axe-sarif-converter 3.1.0's output for the report below, captured with that
+ * package still installed and then removed along with it. The direct writer
+ * has to reproduce it, except where sarif.js's header says it deliberately
+ * does not.
+ */
+describe('SARIF output matches the axe-sarif-converter golden file', () => {
+  const golden = JSON.parse(
+    readFileSync(new URL('../fixtures/golden/sarif-axe-sarif-converter-3.1.0.json', import.meta.url), 'utf8'),
+  ).runs[0];
+
+  const goldenFindings = () => [
+    emptyButtonFinding(),
+    emptyButtonFinding({ selector: 'html > body > div > button', html: '<button></button>' }),
+    contrastFinding(),
+    targetSizeFinding(),
+    bestPracticeFinding(),
+    dialogFinding(),
+  ];
+  // The golden file was captured from an --html report. targetType 'url' keeps
+  // the same target value, so everything except the --html artifact handling
+  // can be compared field for field.
+  const run = toSarif(makeReport({ findings: goldenFindings(), targetType: 'url' })).runs[0];
+  const withoutRelationships = (rules) => rules.map(({ relationships, ...rule }) => rule);
+
+  test('same results: rule ids, count, kinds, levels, message text and locations', () => {
+    assert.equal(run.results.length, golden.results.length);
+    assert.deepEqual(
+      run.results.map((r) => [r.ruleId, r.kind, r.level, r.message.text]),
+      golden.results.map((r) => [r.ruleId, r.kind, r.level, r.message.text]),
+    );
+    assert.deepEqual(run.results, golden.results);
+  });
+
+  test('same rules, tool driver, invocations, artifacts and run properties', () => {
+    assert.deepEqual(withoutRelationships(run.tool.driver.rules), withoutRelationships(golden.tool.driver.rules));
+    const { rules: _ours, ...driver } = run.tool.driver;
+    const { rules: _theirs, ...goldenDriver } = golden.tool.driver;
+    assert.deepEqual(driver, goldenDriver);
+    assert.deepEqual(run.invocations, golden.invocations);
+    assert.deepEqual(run.artifacts, golden.artifacts);
+    assert.deepEqual(run.properties, golden.properties);
+  });
+
+  test('no conversion block, because no converter ran', () => {
+    assert.ok(golden.conversion);
+    assert.equal('conversion' in run, false);
+  });
+
+  test('relationships keep every golden one and add only WCAG 2.2 criteria', () => {
+    const taxa = run.taxonomies[0].taxa;
+    golden.tool.driver.rules.forEach((goldenRule, i) => {
+      const rule = run.tool.driver.rules[i];
+      const ids = rule.relationships.map((rel) => rel.target.id);
+      const goldenIds = goldenRule.relationships.map((rel) => rel.target.id);
+      assert.deepEqual(ids.filter((id) => goldenIds.includes(id)), goldenIds, rule.id);
+      for (const rel of rule.relationships) {
+        assert.equal(taxa[rel.target.index].id, rel.target.id, `${rule.id} points at the wrong taxon`);
+      }
+    });
+    const targetSize = run.tool.driver.rules.find((r) => r.id === 'target-size-min');
+    assert.deepEqual(targetSize.relationships.map((rel) => rel.target.id), ['wcag258']);
+  });
+
+  test('the taxonomy is WCAG 2.2: the 2.1 list carried over, 2.2 changes only', () => {
+    const taxonomy = run.taxonomies[0];
+    assert.equal(taxonomy.version, '2.2');
+    assert.equal(taxonomy.guid, golden.taxonomies[0].guid);
+    assert.equal(taxonomy.taxa.length, 87, 'best-practice plus 86 WCAG 2.2 criteria');
+    const ours = new Map(taxonomy.taxa.map((t) => [t.id, t]));
+    // What WCAG 2.2 itself changed: 4.1.1 removed, 2.5.5 renamed, and the
+    // converter's lower-case "Resize text" against the Recommendation's title.
+    const changedIn22 = new Set(['wcag411', 'wcag255', 'wcag144']);
+    assert.equal(ours.has('wcag411'), false);
+    assert.equal(ours.get('wcag255').shortDescription.text, 'Target Size (Enhanced)');
+    for (const taxon of golden.taxonomies[0].taxa) {
+      if (changedIn22.has(taxon.id)) continue;
+      const mine = ours.get(taxon.id);
+      assert.ok(mine, `${taxon.id} missing`);
+      assert.equal(mine.name, taxon.name);
+      assert.deepEqual(mine.shortDescription, taxon.shortDescription);
+      assert.equal(mine.helpUri, taxon.helpUri?.replace('/WCAG21/', '/WCAG22/'), taxon.id);
+    }
+    assert.deepEqual(wcagTaxa(), taxonomy.taxa);
+  });
+
+  test('rules and taxa are sorted by id, as the converter sorted them, and indices follow', () => {
+    // Findings arriving out of order: the golden fixture's already are sorted.
+    const log = toSarif(makeReport({ findings: [dialogFinding(), contrastFinding(), emptyButtonFinding()] }));
+    const { rules } = log.runs[0].tool.driver;
+    assert.deepEqual(rules.map((r) => r.id), ['button-name', 'color-contrast', 'dialog-focus-not-trapped']);
+    for (const result of log.runs[0].results) assert.equal(rules[result.ruleIndex].id, result.ruleId);
+    const ids = log.runs[0].taxonomies[0].taxa.map((t) => t.id);
+    assert.deepEqual(ids, [...ids].sort());
+    assert.ok(ids.indexOf('wcag1410') < ids.indexOf('wcag142'), 'string order, as axe tags sort');
+  });
+
+  test('an --html fragment is embedded as artifact contents, not written as a URI', () => {
+    const html = toSarif(makeReport({ findings: goldenFindings(), targetType: 'html' })).runs[0];
+    assert.deepEqual(html.artifacts, [
+      { contents: { text: '<button></button>' }, sourceLanguage: 'html', roles: ['analysisTarget'] },
+    ]);
+    for (const result of html.results) {
+      assert.deepEqual(result.locations[0].physicalLocation.artifactLocation, { index: 0 });
+    }
+    // Everything else is the golden file's.
+    assert.deepEqual(
+      html.results.map((r) => r.locations[0].logicalLocations),
+      golden.results.map((r) => r.locations[0].logicalLocations),
+    );
   });
 });

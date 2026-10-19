@@ -11,6 +11,7 @@ import {
   compareSc,
   isBestPractice,
   actIdsForRule,
+  axeRuleIndex,
   axeCoreVersion,
   formatCitation,
 } from '../../src/lib/wcag-map.js';
@@ -172,10 +173,27 @@ describe('isBestPractice', () => {
 
 describe('axe-core metadata', () => {
   test('exposes ACT rule ids from the installed axe-core', () => {
-    // Verified against axe-core 4.12.1 rule metadata.
+    // Verified against axe-core 4.12.1 and 4.14.0 rule metadata.
     assert.deepEqual(actIdsForRule('button-name'), ['97a4e1', 'm6b1q3']);
     assert.ok(actIdsForRule('color-contrast').includes('afw4f7'));
     assert.deepEqual(actIdsForRule('not-a-real-rule'), []);
+  });
+
+  test('label-content-name-mismatch maps to SC 2.5.3 with the ACT id axe-core itself carries', () => {
+    // On by default from axe-core 4.14.0 (it was experimental before), so it
+    // now reaches reports. The ACT id is read from axe's own rule metadata,
+    // not from the W3C implementation report, which is stale (AGENTS.md).
+    const rule = axeRuleIndex().get('label-content-name-mismatch');
+    assert.ok(rule, 'rule present in the installed axe-core');
+    assert.equal(rule.enabled, true);
+    assert.equal(rule.tags.includes('experimental'), false);
+    const wcag = wcagFromTags(rule.tags);
+    assert.equal(wcag.sc, '2.5.3');
+    assert.equal(wcag.name, 'Label in Name');
+    assert.equal(wcag.level, 'A');
+    assert.equal(wcag.minVersion, '2.1');
+    assert.deepEqual(actIdsForRule('label-content-name-mismatch'), rule.actIds);
+    assert.deepEqual(rule.actIds, ['2ee8b8']);
   });
 
   test('reports the installed axe-core version', () => {

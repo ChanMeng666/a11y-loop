@@ -17,7 +17,7 @@ Your coding agent writes accessible UI, audits the rendered page, fixes what it 
 
 <br>
 
-<a href="https://ChanMeng666.github.io/a11y-loop/"><img src="./.github/readme/card.svg" width="100%" alt="a11y-loop, an open-source Agent Skill and command-line tool that has a coding agent write accessible UI, audit the rendered page in a real browser, fix what was found and audit again. The card follows one turn of that loop on the demo page: 163 detectable failures across five rendering passes fall to 0, beside the 44 findings left for review and the 15 manual checks automation cannot judge."></a>
+<a href="https://ChanMeng666.github.io/a11y-loop/"><img src="./.github/readme/card.svg" width="100%" alt="a11y-loop, an open-source Agent Skill and command-line tool that has a coding agent write accessible UI, audit the rendered page in a real browser, fix what was found and audit again. The card follows one turn of that loop on the demo page: 159 detectable failures across five rendering passes fall to 0, beside the 44 findings left for review and the 15 manual checks automation cannot judge."></a>
 
 <br>
 
