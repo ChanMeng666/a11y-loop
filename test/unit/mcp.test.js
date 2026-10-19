@@ -215,7 +215,7 @@ describe('a11y-loop mcp over stdio', () => {
   test('audit --html finds the nameless button, then re-audit, diff by run id, checklist and resources', { timeout: 240_000 }, async (t) => {
     const first = await server.call(
       'a11y_loop_audit',
-      { html: '<main><h1>Settings</h1><button></button></main>', out: join(dir, 'run1.json') },
+      { html: '<main><h1>Settings</h1><button></button></main>', out: join(dir, 'nested', 'run1.json') },
       { timeoutMs: 120_000, meta: { progressToken: 'audit-1' } },
     );
     if (isMissingBrowser(first)) return t.skip('Chromium is not installed here');
@@ -232,7 +232,7 @@ describe('a11y-loop mcp over stdio', () => {
     assert.deepEqual(findRedLineLanguage(first.content[0].text), []);
 
     // The file written with `out` is the CLI's full report.
-    const written = JSON.parse(await readFile(join(dir, 'run1.json'), 'utf8'));
+    const written = JSON.parse(await readFile(join(dir, 'nested', 'run1.json'), 'utf8'));
     assert.equal(written.summary.violations, body.summary.violations);
 
     // Progress was reported per pass against the client's token.

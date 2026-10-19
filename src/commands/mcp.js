@@ -16,14 +16,12 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
 
 import { McpServer, ResourceTemplate, ResourceNotFoundError } from '@modelcontextprotocol/server';
 import { serveStdio } from '@modelcontextprotocol/server/stdio';
 import * as z from 'zod/v4';
 
-import { buildAuditReport, resolveAuditTarget } from './audit.js';
+import { buildAuditReport, resolveAuditTarget, writeOutputFile } from './audit.js';
 import { checkedContrastResult } from './contrast.js';
 import { readReport, validateReport } from './diff.js';
 import { collectDoctorReport } from './doctor.js';
@@ -299,8 +297,7 @@ Example: {"html": "<main><h1>Settings</h1><button></button></main>"}`,
       });
       let reportPath = null;
       if (out) {
-        reportPath = resolve(out);
-        await writeFile(reportPath, serializeReport(report), 'utf8');
+        reportPath = await writeOutputFile(out, serializeReport(report));
       }
       const runId = storeRun(report);
       return jsonResult(auditToolResult(report, { runId, reportPath }));
