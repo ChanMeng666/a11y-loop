@@ -692,7 +692,7 @@ the once-per-plan guard) is tested by driving the script directly.
 
 **Audit gate without Claude Code.** The Stop hook reads Claude Code's own session transcript, so it
 has no portable equivalent: Codex, Cursor, Copilot and other clients rely on the skill's §2 text.
-What enforces the loop for every client is CI. Run `a11y-loop audit` on the pages a change touches;
+Clients that do have a hook system (Codex, Cursor, Copilot, Gemini CLI) can be wired to run the audit at stop time; [`docs/agent-gates.md`](agent-gates.md) gives the verified events and a copy-pasteable script for each, and says what could not be verified. What enforces the loop for every client is CI. Run `a11y-loop audit` on the pages a change touches;
 it exits `1` when it finds violations, which fails the job (see below).
 
 ## ⚙️ Using it in CI

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+- **Plan-gate and audit-gate equivalents for other agent clients** (`docs/agent-gates.md`, and `website/guide/agent-gates.md` on the site). For Codex CLI, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline and OpenCode it records, with the date and URL read, which hook events exist, which can ask the agent to continue, and what could not be verified. One script serves the four clients that can; a git hook and a CI job cover the rest. The script has been run on its own, not yet inside those clients.
+
 ### Added
 - **A `Stop` hook that declines ending a session with unaudited UI changes, once.** The skill's §2
   says the audit loop is mandatory after any UI change; until now nothing enforced it. The plugin's
