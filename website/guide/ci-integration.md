@@ -14,7 +14,7 @@ To cache the browser between runs, set `PLAYWRIGHT_BROWSERS_PATH` to a cached di
 command is non-interactive: none of them prompts, and `install-browser` ignores stdin.
 
 A composite GitHub Action (`action.yml`) ships in release 0.4.0 and later:
-`uses: ChanMeng666/a11y-loop@v0.4.0`. On 0.3.2 or earlier, call the CLI from a `run:` step as above. The
+`uses: ChanMeng666/a11y-loop@v0.4.1`. On 0.3.2 or earlier, call the CLI from a `run:` step as above. The
 [overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#%EF%B8%8F-using-it-in-ci)
 lists its inputs and outputs.
 

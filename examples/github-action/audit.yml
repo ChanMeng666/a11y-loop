@@ -61,7 +61,7 @@ jobs:
 
       - name: Audit
         id: a11y
-        uses: ChanMeng666/a11y-loop@v0.4.0
+        uses: ChanMeng666/a11y-loop@v0.4.1
         with:
           target: http://localhost:3000
           baseline: baseline/report.json
