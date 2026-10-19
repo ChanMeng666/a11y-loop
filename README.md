@@ -79,7 +79,7 @@ codex plugin add a11y-loop@chanmeng-a11y-loop
 
 ### Windows
 
-Step 1 and step 2 work as written in PowerShell, Windows PowerShell and Git Bash. The `npx skills` installer is the cross-platform way to add the skill. If you copy the skill by hand instead, use the variant for your shell. Re-running it upgrades in place.
+Step 1 and step 2 work as written in PowerShell, Windows PowerShell and Git Bash. The `npx skills` installer is the cross-platform way to add the skill. If you copy the skill by hand instead, use the variant for your shell. Re-running it upgrades in place. Do not copy over a skill that `npx skills add` already linked into `~/.claude/skills`: the copy fails on the link, and the skill is already there.
 
 PowerShell:
 
