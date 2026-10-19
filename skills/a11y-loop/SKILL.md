@@ -40,11 +40,12 @@ write it, run §2 before you call the work done, and speak about the result only
 in the terms allowed by §3.** They stay in force across turns — you do not need
 to be reminded.
 
-Prompting alone does not work. UIs generated from accessibility-oriented
-prompts measure *slightly worse* than accessibility-agnostic ones (W4A'25,
-17.32% vs 15.93% violation rate). §1 is the setup; §2 is the product. Skipping
-the loop reverts you to the baseline where 84% of AI-generated pages carry
-accessibility failures.
+Prompting alone is not enough. In W4A'25, accessibility-oriented prompts cut
+expert-judged violation rates from 58% to 19%, but barriers persisted,
+particularly in semantic structure. §1 is the setup; §2 is the product. Skipping
+the loop leaves whatever prompting leaves behind: in W4A'24, 84% of
+ChatGPT-generated websites had accessibility problems, and W4A'25 found
+persistent barriers even with accessibility-oriented prompts.
 
 ## Resolving the CLI
 
@@ -170,7 +171,9 @@ now a discontinued draft but still the canonical statement):
 **No ARIA is better than bad ARIA.** Wrong ARIA actively misrepresents the
 interface to screen reader users — worse than none. Empirically, pages *with*
 ARIA average more failures than pages without (WebAIM Million 2026: 59.1 vs
-42.0). Add ARIA only when you can name the native gap it fills.
+42.0), though WebAIM cautions that this "does not necessarily mean that ARIA
+introduced these errors (these pages were also more complex)". Add ARIA only
+when you can name the native gap it fills.
 
 **A role is a promise.** `role="button"` commits you to Enter and Space
 activation, focusability, and a disabled state. `role="tab"` commits you to the

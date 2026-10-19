@@ -183,12 +183,16 @@ On this run, standing generation-time rules (SKILL.md's failure-mode
 checklist — clickable divs, icon-button names, `outline: none`, dangling ARIA
 refs, focus management, etc.) did most of the work of avoiding the *loud*
 failures: broken dialog focus management, systemic contrast failures. That is
-a larger first-pass effect than W4A'25 found (accessibility-oriented prompts
-there had a slightly *higher* violation rate than neutral ones, 17.32% vs.
-15.93% — see `docs/research/market.md` §A3) — plausibly because SKILL.md is a
-concrete, itemized failure-mode checklist rather than a generic
-"be accessible" instruction, but the comparison is not apples-to-apples (that
-study measured a different violation rate metric across many more samples).
+a first-pass effect not directly comparable to W4A'25, a one-task study of two
+models where accessibility-oriented prompts cut expert-judged violation rates
+from 58% to 19%, while one automated tool (MAUVE++) showed 17.32% against
+15.93% for neutral prompts (see `docs/research/market.md` §A3). The
+comparison is not apples-to-apples: different task, models, metrics and sample
+sizes. W4A'25 evaluated 40 first-pass UIs from two models on one task; this
+benchmark has 12 files, six components per condition, from one model. W4A'25's
+accessibility-oriented condition was also a one-sentence prompt naming four
+WCAG 2.1 AA requirements, where SKILL.md is an itemized failure-mode
+checklist.
 
 **What the loop contributed** (skilled first-audit → final): the generation
 rules did *not* get to zero on their own — one real violation
@@ -200,9 +204,9 @@ focus-indicator contrast). None of these are things a "write accessible code"
 instruction reliably catches, because they depend on how the rendered page
 actually measures under specific conditions (forced-colors mode, a 24×24px
 minimum, dark mode). The loop is what converted "unknown" into "fixed" or
-"investigated and reasoned about" for every one of them. This is the
-concrete version of the W4A'25 finding cited in `docs/research/market.md`:
-instructions alone are not demonstrably sufficient; here they got close on
+"investigated and reasoned about" for every one of them. This is consistent
+with W4A'25's observation that barriers persist under accessibility-oriented
+prompting (see `docs/research/market.md` §A3): instructions here got close on
 raw violation count but left the entire needsReview surface — arguably the
 harder, more judgment-dependent half of the audit — untouched until the loop
 ran.

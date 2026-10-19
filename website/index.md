@@ -54,8 +54,9 @@ features:
 
 ## What is a11y-loop?
 
-AI coding agents write inaccessible UI by default — 84% of AI-generated web pages carry
-accessibility issues, and telling the model to "be accessible" barely moves that number.
+AI coding agents write inaccessible UI by default: in one 2024 study, 84% of ChatGPT-generated
+websites had accessibility problems ([W4A'24](https://doi.org/10.1145/3677846.3677854)). Asking the model to "be
+accessible" helps, but barriers persist ([W4A'25](https://doi.org/10.1145/3744257.3744266)).
 a11y-loop puts accessibility in three places instead: the **plan**, where the decisions that
 foreclose it are still a sentence to change rather than a rewrite; the **standing generation
 rules** the agent writes UI under; and a **browser-verified audit loop** that checks the rendered
