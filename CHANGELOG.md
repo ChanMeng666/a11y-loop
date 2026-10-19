@@ -5,6 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-10-19
+
+Documentation only. No behaviour change, no change to the report shape.
+
+### Changed
+- **The plugin README now says where each part runs.** The Anthropic plugin directory shows
+  `plugin/README.md` as the listing README and lists the plugin on Claude Code, Cowork and the
+  Claude apps. Its own form notes that hooks do not run outside Claude Code. A new "Where each part
+  works" section says that Claude Code (CLI and desktop) gets the skill, the `/a11y-plan` command
+  and the plan-mode hook. Cowork and the Claude apps (web, desktop, mobile) get the skill's plan,
+  generation and reporting rules only: the hook does not run there, and the audit loop cannot,
+  because it needs Node and a browser. There the rules apply, but nothing is verified.
+- **The plugin README's install block matches the main README.** The `/plugin install a11y-loop
+  --marketplace ChanMeng666/a11y-loop` one-liner comes first, then the terminal form for Claude
+  Code 2.1.292 or later, then the two-step form for older versions.
+- **The note on `plugin/`'s generated copies moved to `CONTRIBUTING.md`**, and the plugin README
+  points there in one line.
+
 ## [0.3.1] - 2026-10-19
 
 Three things, in order of how much they change for you. **The Claude Code plugin now ships from
