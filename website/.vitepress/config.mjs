@@ -3,7 +3,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid';
 const siteUrl = 'https://ChanMeng666.github.io/a11y-loop/';
 const ogImage = `${siteUrl}og-image.png`;
 const ogDescription =
-  "An Agent Skill + CLI that puts accessibility in the plan, writes UI to WCAG 2.2 AA by default, then verifies it in a real browser — and says exactly what it couldn't check.";
+  "An Agent Skill + CLI that puts accessibility in the plan, steers your agent toward accessible markup, then audits the rendered page in a real browser — and says exactly what it couldn't check.";
 
 export default withMermaid({
   title: 'a11y-loop',

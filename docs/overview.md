@@ -446,15 +446,14 @@ secondary format for tools that consume it.
 
 ```bash
 npm i -g a11y-loop
-npx playwright install chromium
-mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
+a11y-loop install-browser
+npx skills add ChanMeng666/a11y-loop -g -y
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
 That is: the CLI, its browser, the portable skill, and the optional Claude Code plugin. No `git
-clone` — the skill ships inside the npm package. Verify:
+clone`: `npx skills add` fetches the skill, which also ships inside the npm package for a manual copy. Verify:
 
 ```bash
 a11y-loop --version
@@ -462,7 +461,7 @@ test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
 claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
 ```
 
-Skip the last two lines if you only want the portable skill, or the `mkdir`/`cp` pair if you only
+Skip the last two lines if you only want the portable skill, or the `npx skills add` line if you only
 want the plugin. Do not do both: the plugin carries its own copy, so the model ends up seeing
 `a11y-loop` *and* the directory-qualified `a11y-loop:a11y-loop`, paying the always-on token cost
 twice. If both names show up, delete `~/.claude/skills/a11y-loop` and keep the plugin.
@@ -472,7 +471,7 @@ installed reports "already installed" and does nothing:
 
 ```bash
 npm i -g a11y-loop@latest
-cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # if using the skill
+npx skills add ChanMeng666/a11y-loop -g -y                           # if using the skill
 claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
 claude plugin update a11y-loop@chanmeng-a11y-loop
 ```
@@ -486,8 +485,8 @@ npx a11y-loop <command>
 # Or install the CLI globally
 npm i -g a11y-loop
 
-# Either way, install the Chromium build Playwright needs for audits
-npx playwright install chromium
+# Either way, install the Chromium build a11y-loop's own Playwright needs for audits
+a11y-loop install-browser
 ```
 
 Prefer working from source (e.g. to contribute)? Clone and install instead:
@@ -500,12 +499,14 @@ npx playwright install chromium
 ```
 
 If you keep browser binaries off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
-`npx playwright install chromium` (and before running the test suite, which launches the same
+`a11y-loop install-browser` (and before running the test suite, which launches the same
 browser) — e.g. `PLAYWRIGHT_BROWSERS_PATH=D:\playwright-browsers`.
 
 ### Installing the Agent Skill
 
-The skill is a directory. Copy it wherever your client reads skills from — no clone required, since
+The one-line route, for any Agent Skills client: `npx skills add ChanMeng666/a11y-loop -g -y`.
+
+Or copy the directory by hand. The skill is a directory. Copy it wherever your client reads skills from — no clone required, since
 `npm i -g a11y-loop` already put it on disk:
 
 ```bash

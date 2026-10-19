@@ -65,5 +65,5 @@ development workflow rather than an after-the-fact compliance check.
 
 Start with [Planning with Accessibility](/guide/planning) if the UI work is still being scoped, or
 the [Getting Started guide](/guide/getting-started) if there is already code. The
-[full introduction and honest-coverage statement](https://github.com/ChanMeng666/a11y-loop#-introduction)
-is on GitHub.
+[honest-coverage statement](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-honest-coverage)
+and the [full overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md) are on GitHub.
