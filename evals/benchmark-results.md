@@ -2,7 +2,7 @@
 
 A small, illustrative comparison of the same six UI components built twice by
 the same model — once with no accessibility guidance, once following
-`skill/a11y-loop/SKILL.md` and running the audit loop to convergence. This is
+`skills/a11y-loop/SKILL.md` and running the audit loop to convergence. This is
 **not a controlled study**: N=6 components, a single run per condition, one
 model family, and the audits are produced by a11y-loop's own engine. Read the
 numbers with that in mind; the point is to show the shape of the effect, not
@@ -63,7 +63,7 @@ preamble and an added loop requirement:**
 
 > You are a web developer building six small front-end deliverables, and you
 > MUST follow the a11y-loop skill throughout. FIRST read
-> `skill/a11y-loop/SKILL.md` completely and treat its instructions as
+> `skills/a11y-loop/SKILL.md` completely and treat its instructions as
 > binding … consult its `references/` files when you implement a pattern
 > they cover.
 >

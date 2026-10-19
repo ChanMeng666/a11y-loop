@@ -15,7 +15,7 @@ you to click anything:
 npm i -g a11y-loop
 npx playwright install chromium
 mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
@@ -37,7 +37,7 @@ installed reports "already installed" and does nothing):
 
 ```bash
 npm i -g a11y-loop@latest
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # if using the skill
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # if using the skill
 claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
 claude plugin update a11y-loop@chanmeng-a11y-loop
 ```
@@ -70,10 +70,10 @@ The Agent Skill is what makes your AI coding agent plan for accessibility and wr
 
 ```bash
 # Personal, all projects (Claude Code and other clients that read ~/.claude/skills)
-cp -r node_modules/a11y-loop/skill/a11y-loop ~/.claude/skills/a11y-loop
+cp -r node_modules/a11y-loop/skills/a11y-loop ~/.claude/skills/a11y-loop
 
 # Or project-scoped
-cp -r node_modules/a11y-loop/skill/a11y-loop .claude/skills/a11y-loop
+cp -r node_modules/a11y-loop/skills/a11y-loop .claude/skills/a11y-loop
 ```
 
 Any client implementing the Agent Skills specification can load it the same way — Claude Code,
@@ -129,7 +129,7 @@ that the question was asked — it cannot check that the answer is any good. Tha
 
 |  | Portable skill | Plugin layer |
 |---|---|---|
-| Install | copy `skill/a11y-loop` | `claude plugin install a11y-loop@…` |
+| Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
 | Works in | 40+ Agent Skills clients | Claude Code only |
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
 | Required? | yes | no |

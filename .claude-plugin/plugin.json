@@ -20,6 +20,5 @@
     "plan-mode",
     "hooks",
     "agent-skills"
-  ],
-  "skills": "./skill/"
+  ]
 }

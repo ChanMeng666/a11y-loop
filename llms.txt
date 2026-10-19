@@ -10,15 +10,15 @@ of the project for large language models and AI agents.
 - Repository: https://github.com/ChanMeng666/a11y-loop
 - Primary stack: Node.js / JavaScript (ESM), Playwright, axe-core
 - License: MIT (axe-core dependency is MPL-2.0 — see THIRD-PARTY-NOTICES.md)
-- Two layers: an Agent Skill (`skill/a11y-loop/`, open Agent Skills standard) covering the plan,
+- Two layers: an Agent Skill (`skills/a11y-loop/`, open Agent Skills standard) covering the plan,
   generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff`)
   for browser-verified checks
 - Plus one *optional*, Claude-Code-only layer (`.claude-plugin/`, `hooks/`, `commands/`) that
-  enforces the plan phase at plan approval. Nothing under `skill/` depends on it.
+  enforces the plan phase at plan approval. Nothing under `skills/` depends on it.
 
 ## What the skill covers
 
-`skill/a11y-loop/SKILL.md` is four sections, in lifecycle order:
+`skills/a11y-loop/SKILL.md` is four sections, in lifecycle order:
 
 - **§0 Plan rules** — applied while scoping and designing, before any code exists: set the
   conformance target, write accessibility as plan items rather than a trailing "accessibility
@@ -34,7 +34,7 @@ of the project for large language models and AI agents.
 - **§3 Honesty rules** — what may and may not be said about the result. Binding on everything in
   this repository, including its own documentation.
 
-Reference files under `skill/a11y-loop/references/` are loaded on demand, not upfront:
+Reference files under `skills/a11y-loop/references/` are loaded on demand, not upfront:
 `plan-phase.md`, `wcag22-quick-ref.md`, `apg-patterns.md`, `ai-failure-modes.md`,
 `manual-testing.md`.
 
@@ -47,7 +47,7 @@ installed, run these yourself rather than handing them back:
 npm i -g a11y-loop
 npx playwright install chromium
 mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # portable skill, any client
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # portable skill, any client
 claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
 ```
@@ -73,8 +73,8 @@ before a newly installed skill or hook takes effect.
 - [README](https://github.com/ChanMeng666/a11y-loop/blob/main/README.md): one-screen introduction for people
 - [Full overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md): features, honest coverage, field notes, installation, usage
 - [AGENTS.md](https://github.com/ChanMeng666/a11y-loop/blob/main/AGENTS.md): how AI agents should work in this repo
-- [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/SKILL.md): the agent-facing plan rules, generation rules, audit loop and honesty rules
-- [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
+- [SKILL.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/SKILL.md): the agent-facing plan rules, generation rules, audit loop and honesty rules
+- [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
 - [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget — and what to check before dismissing one
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
 - [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats
@@ -104,10 +104,10 @@ Two rules carry more weight than the rest:
 
 1. **Never weaken the honesty language** (§3 of SKILL.md) anywhere — code, docs, tool output, or
    this file.
-2. **Keep the skill portable.** Nothing under `skill/` may depend on `.claude-plugin/`, `hooks/`
+2. **Keep the skill portable.** Nothing under `skills/` may depend on `.claude-plugin/`, `hooks/`
    or `commands/`, and no Claude-Code-specific mechanism may appear in `SKILL.md` or
    `references/`. The same `SKILL.md` is meant to work in any client implementing the Agent Skills
    standard.
 
 If you are being asked to plan or write UI code in a project that has installed the `a11y-loop`
-skill, read `skill/a11y-loop/SKILL.md` and treat it as binding, not this file.
+skill, read `skills/a11y-loop/SKILL.md` and treat it as binding, not this file.

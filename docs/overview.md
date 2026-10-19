@@ -302,7 +302,7 @@ The rule's own message names the budget.
 
 A cluster of unreachable findings that is contiguous and sits at the end of document order is the
 signature. Confirm by hand with the five-minute keyboard test in
-[`references/manual-testing.md`](../skill/a11y-loop/references/manual-testing.md), and audit narrower
+[`references/manual-testing.md`](../skills/a11y-loop/references/manual-testing.md), and audit narrower
 states so each walk fits.
 
 ### Invoking the CLI through a Windows junction silently does nothing
@@ -365,7 +365,7 @@ illustration of the effect's shape, not a controlled study or a precise effect s
 
 ```mermaid
 graph TD
-    A["Agent Skill<br/>skill/a11y-loop/SKILL.md + references/"] -->|"§0 plan rules"| P["Agent plans the UI work<br/>conformance target, per-component criteria,<br/>foreclosing decisions, color tokens, structure"]
+    A["Agent Skill<br/>skills/a11y-loop/SKILL.md + references/"] -->|"§0 plan rules"| P["Agent plans the UI work<br/>conformance target, per-component criteria,<br/>foreclosing decisions, color tokens, structure"]
     P -->|"contrast --fix, no browser needed"| E
     P --> B
     A -->|"§1 standing generation rules"| B["Agent writes UI code<br/>HTML / JSX / Vue / Svelte / Astro / CSS"]
@@ -436,7 +436,7 @@ secondary format for tools that consume it.
 npm i -g a11y-loop
 npx playwright install chromium
 mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
@@ -460,7 +460,7 @@ installed reports "already installed" and does nothing:
 
 ```bash
 npm i -g a11y-loop@latest
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # if using the skill
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # if using the skill
 claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
 claude plugin update a11y-loop@chanmeng-a11y-loop
 ```
@@ -497,7 +497,7 @@ The skill is a directory. Copy it wherever your client reads skills from — no 
 `npm i -g a11y-loop` already put it on disk:
 
 ```bash
-SKILL_SRC="$(npm root -g)/a11y-loop/skill/a11y-loop"
+SKILL_SRC="$(npm root -g)/a11y-loop/skills/a11y-loop"
 
 # Personal, all projects (Claude Code and other clients that read ~/.claude/skills)
 mkdir -p ~/.claude/skills && cp -r "$SKILL_SRC" ~/.claude/skills/
@@ -506,7 +506,7 @@ mkdir -p ~/.claude/skills && cp -r "$SKILL_SRC" ~/.claude/skills/
 mkdir -p .claude/skills && cp -r "$SKILL_SRC" .claude/skills/
 ```
 
-From a checkout, `skill/a11y-loop` is the same directory. Any client implementing the
+From a checkout, `skills/a11y-loop` is the same directory. Any client implementing the
 [Agent Skills specification](https://agentskills.io/specification) loads it the same way — Claude
 Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place.
 
@@ -564,7 +564,7 @@ and a human.
 
 | | Portable skill | Plugin layer |
 |---|---|---|
-| Install | copy `skill/a11y-loop` | `claude plugin install a11y-loop@…` |
+| Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
 | Works in | 40+ Agent Skills clients | Claude Code only |
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
 | Required? | yes | no |
@@ -654,7 +654,7 @@ verdict. See [`AGENTS.md`](../AGENTS.md) for the rest of the plugin-layer gotcha
 
 See [`AGENTS.md`](../AGENTS.md) for AI-agent-oriented project conventions, the fixture-manifest
 testing pattern, the loop discipline expected when touching `demo/` or other UI, and the rule that
-keeps `skill/` free of any Claude-Code-specific mechanism.
+keeps `skills/` free of any Claude-Code-specific mechanism.
 
 ## 🤝 Contributing
 
@@ -681,7 +681,7 @@ uses to run its checks, is separately licensed under MPL-2.0 — see
 **Chan Meng** · [chanmeng.dev@gmail.com](mailto:chanmeng.dev@gmail.com) · [github.com/ChanMeng666](https://github.com/ChanMeng666)
 
 [demo-link]: demo.gif
-[docs-link]: ../skill/a11y-loop/SKILL.md
+[docs-link]: ../skills/a11y-loop/SKILL.md
 [docs-site-link]: https://ChanMeng666.github.io/a11y-loop/
 
 ---
