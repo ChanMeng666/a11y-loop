@@ -108,18 +108,12 @@ export function formatContrastHuman(result) {
 }
 
 /**
- * @param {{fg:string, bg:string, flags:object}} input
- * @param {{write:Function, writeError:Function}} io
- * @returns {Promise<number>}
+ * `contrastResult`, with an unparseable colour turned into a ToolError that
+ * lists the accepted formats. Shared by the CLI and `a11y-loop mcp`.
  */
-export async function runContrastCommand({ fg, bg, flags }, io) {
-  let result;
+export function checkedContrastResult(fg, bg, options) {
   try {
-    result = contrastResult(fg, bg, {
-      large: Boolean(flags.large),
-      ui: Boolean(flags.ui),
-      fix: Boolean(flags.fix),
-    });
+    return contrastResult(fg, bg, options);
   } catch (error) {
     if (error instanceof ColorParseError) {
       throw new ToolError(error.message, {
@@ -130,6 +124,19 @@ export async function runContrastCommand({ fg, bg, flags }, io) {
     }
     throw error;
   }
+}
+
+/**
+ * @param {{fg:string, bg:string, flags:object}} input
+ * @param {{write:Function, writeError:Function}} io
+ * @returns {Promise<number>}
+ */
+export async function runContrastCommand({ fg, bg, flags }, io) {
+  const result = checkedContrastResult(fg, bg, {
+    large: Boolean(flags.large),
+    ui: Boolean(flags.ui),
+    fix: Boolean(flags.fix),
+  });
 
   if (flags.json) {
     io.write(`${JSON.stringify(result, null, 2)}\n`);

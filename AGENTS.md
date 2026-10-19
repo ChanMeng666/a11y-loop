@@ -12,7 +12,8 @@ states it built, and tells you exactly what it could not check. Three layers:
 1. **An Agent Skill** (`skills/a11y-loop/`, open Agent Skills standard) supplying plan rules,
    standing generation rules and honesty rules. It is text and runs nothing.
 2. **A Node CLI** (`src/`, the npm package) supplying `audit`, `contrast --fix`, `diff`,
-   `plan-check`, `doctor` and `install-browser` (see [CLI subcommands](#cli-subcommands)).
+   `plan-check`, `doctor`, `install-browser` and `mcp`, which serves the same commands as MCP tools
+   (see [CLI subcommands](#cli-subcommands)).
 3. **An *optional* Claude Code plugin** (`plugin/`, published through the root
    `.claude-plugin/marketplace.json`) that carries a copy of the skill, the `/a11y-plan` command and
    a plan-mode hook. Nothing under `skills/` may depend on it.
@@ -23,8 +24,8 @@ the audit: there the skill's rules apply, but nothing is verified. `plugin/READM
 "Where each part works", says this to users.
 
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
-describe a planned or in-progress item (an MCP server) as existing, and do not describe something
-merged on `main` but not yet tagged (the GitHub Action and the Stop-hook audit gate, as of this
+describe a planned or in-progress item as existing, and do not describe something merged on `main`
+but not yet tagged (the GitHub Action, the Stop-hook audit gate and `a11y-loop mcp`, as of this
 writing) as usable from a release.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
@@ -150,6 +151,7 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
 | `diff --before a.json --after b.json` | FIXED / NEW / REMAINING by fingerprint | no regression | a NEW violation | usage or input error |
 | `plan-check` with `--file`, `--text` or piped stdin | the plan gate's decision; stateless, never prompts; `--json` | plan carries a11y content, is not UI work, or is too short to assess | UI plan with thin or absent a11y content | usage or input error, or stdin held open with no data for 3 s (`A11Y_LOOP_STDIN_IDLE_MS`) |
 | `doctor` | Node, the bundled Playwright and its Chromium (judged by a real headless launch), `PLAYWRIGHT_BROWSERS_PATH`, axe-core version, skill copies, plugin, double registration; `--json` | an audit can run here | never | an audit cannot run here |
+| `mcp` | stdio MCP server: the commands above as six tools, each returning the matching `--json` report (see `src/commands/mcp.js` below); stdout is the protocol channel | the client closed stdin | never | never; a tool failure is an `isError` tool result |
 | `install-browser` | runs the *bundled* Playwright's installer for Chromium; extra arguments pass through (`--only-shell`, `--with-deps`, `--dry-run`); stdin ignored | installed | never | installer failed |
 
 `A11Y_LOOP_DEBUG=1` prints a stack trace on a tool error.
@@ -209,12 +211,26 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   dynamically imports its copy `./lib/plan-gate.mjs` of `src/lib/plan-gate.js` (see below), and
   if that copy is missing or throws it exits 0 with no verdict.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
-  `src/commands/{audit,contrast,diff,doctor,install-browser,plan-check}.js` (table under
+  `src/commands/{audit,contrast,diff,doctor,install-browser,mcp,plan-check}.js` (table under
   [CLI subcommands](#cli-subcommands)). It ends with an entry guard, `isEntryPoint()`, so tests can
   import `main(argv, io)` without running it (see Gotchas).
 - **`scripts/sync-plugin.mjs`** — writes the three generated copies inside `plugin/` (above).
   `npm run sync-plugin` writes them; `node scripts/sync-plugin.mjs --check` reports drift and
   exits 1.
+- **`src/commands/mcp.js`** — `a11y-loop mcp`, a stdio MCP server on `@modelcontextprotocol/server`
+  (SDK v2). It is a protocol layer and nothing more: each tool calls the function its CLI command
+  calls (`buildAuditReport`, `diffReports`, `checkedContrastResult`, `planCheck`,
+  `collectDoctorReport`), so a tool result is the `--json` report, trimmed only in how many findings
+  it lists. Never put a decision about what counts as a finding in this file; put it in the
+  command or `src/lib/` so the CLI gets it too. stdout is the protocol channel: nothing else may
+  write to it while the server runs. Timeouts go through `runAudit`'s `signal`, which closes the
+  browser; racing a promise without aborting would leave Chromium running behind a tool error.
+  **This reverses a July note on purpose.** `docs/research/market.md` says "do not ship another axe
+  MCP server", and that still holds for a server that wraps `axe.run()`. This one exposes
+  a11y-loop's own loop: five rendering passes plus scripted states, the checks axe cannot run,
+  fingerprint diff to convergence, the manual checklist, contrast fixes and the plan check. It
+  reaches clients that load only MCP servers and lists the project in the MCP registries. If a
+  change would make it a thinner axe wrapper than that, the July note applies again.
 - **`src/lib/`** — the engine: `axe-runner.js` (Playwright + axe-core orchestration across the
   five rendering passes), `checks/` (a11y-loop's own checks that axe can't run — dialog focus
   trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size),
