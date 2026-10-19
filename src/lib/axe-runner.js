@@ -361,10 +361,25 @@ async function runDefaultPassChecks(page, ctx) {
  * @param {boolean} [input.options.headed]
  * @param {boolean} [input.options.bestPractice]
  * @param {Record<string, (page:any) => Promise<void>>} [input.options.states]
+ * @param {AbortSignal} [input.options.signal] aborting closes the browser and
+ *   rejects with `signal.reason` when it is a ToolError, otherwise a ToolError
+ *   saying the audit was cancelled. Used by `a11y-loop mcp` for timeouts.
+ * @param {(step:{kind:'pass'|'state', name:string, done:number, total:number}) => void} [input.options.onProgress]
+ *   called after each rendering pass and each interaction state completes
  * @returns {Promise<{findings:Array, facts:object, tool:object, incompleteRuleIds:string[]}>}
  */
 export async function runAudit({ target, options = {} }) {
-  const { headed = false, bestPractice = true, states = {} } = options;
+  const { headed = false, bestPractice = true, states = {}, signal = null, onProgress = null } = options;
+  const totalSteps = PASSES.length + Object.keys(states).length;
+  let doneSteps = 0;
+  const progress = (kind, name) => {
+    doneSteps += 1;
+    try {
+      onProgress?.({ kind, name, done: doneSteps, total: totalSteps });
+    } catch {
+      // A progress reporter must never break the audit it reports on.
+    }
+  };
 
   const findings = [];
   const passesRun = [];
@@ -380,13 +395,22 @@ export async function runAudit({ target, options = {} }) {
   // exits. A URL target's close is a no-op, which is why only those two hung.
   let served = null;
   let browser = null;
+  // Aborting closes the browser, which makes whatever Playwright call is in
+  // flight reject; the catch below turns that into the abort's own reason.
+  const onAbort = () => {
+    browser?.close().catch(() => {});
+  };
+  signal?.addEventListener('abort', onAbort, { once: true });
 
   try {
+    signal?.throwIfAborted();
     served = await resolveTarget(target);
     browser = await launchBrowser({ headed });
+    signal?.throwIfAborted();
     browserVersion = browser.version();
 
     for (const pass of PASSES) {
+      signal?.throwIfAborted();
       const context = await browser.newContext({ viewport: pass.viewport, ...pass.context });
       const page = await openPage(context, served.url);
       const ctx = { passes: [pass.name], state: null };
@@ -412,6 +436,7 @@ export async function runAudit({ target, options = {} }) {
         }
 
         passesRun.push(pass.name);
+        progress('pass', pass.name);
       } finally {
         await context.close();
       }
@@ -426,6 +451,7 @@ export async function runAudit({ target, options = {} }) {
     const baseFingerprints = new Set(findings.map((f) => f.fingerprint));
 
     for (const [name, setup] of Object.entries(states)) {
+      signal?.throwIfAborted();
       const context = await browser.newContext({ viewport: DEFAULT_VIEWPORT });
       const page = await openPage(context, served.url);
       const ctx = { passes: ['default'], state: name };
@@ -469,7 +495,9 @@ export async function runAudit({ target, options = {} }) {
         ];
         findings.push(...stateFindings.filter((f) => !baseFingerprints.has(f.fingerprint)));
         statesRun.push(name);
+        progress('state', name);
       } catch (error) {
+        if (signal?.aborted) throw error;
         throw new ToolError(`The --interact state "${name}" threw: ${error.message}`, {
           hint: 'Each state is `async (page) => { … }` and receives a Playwright Page.',
         });
@@ -477,7 +505,15 @@ export async function runAudit({ target, options = {} }) {
         await context.close();
       }
     }
+  } catch (error) {
+    if (signal?.aborted) {
+      throw signal.reason instanceof ToolError
+        ? signal.reason
+        : new ToolError('The audit was cancelled before it finished.');
+    }
+    throw error;
   } finally {
+    signal?.removeEventListener('abort', onAbort);
     try {
       await browser?.close();
     } finally {

@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **`a11y-loop mcp`, a stdio MCP server for clients that load MCP servers but not Agent Skills.**
+  It serves six tools: `a11y_loop_audit`, `a11y_loop_diff`, `a11y_loop_contrast_fix`,
+  `a11y_loop_plan_check`, `a11y_loop_doctor` and `a11y_loop_manual_checklist`. Each calls the same
+  code as its CLI command and returns the same `--json` report. Audit results list at most 50
+  findings per bucket, and the full report is a resource. Every audit result carries the manual
+  checklist and the coverage statement. Runs are kept in memory by run id, so an agent can audit,
+  fix, re-audit and diff without writing files. An audit honours `timeoutMs` and closes its
+  browser when it runs out. It reports progress after each rendering pass. A missing browser
+  returns a tool error naming `a11y-loop install-browser` within seconds. Setup for Claude Code,
+  Codex and Cursor is in `docs/overview.md`.
+- **`mcpName` in `package.json`** (`io.github.ChanMeng666/a11y-loop`), the ownership marker the
+  official MCP registry checks. `docs/overview.md` gives the `server.json` to publish with.
+- **New dependencies:** `@modelcontextprotocol/server` 2.3.1 (Apache-2.0, with MIT portions) and
+  `zod` 4.6.7 (MIT). `THIRD-PARTY-NOTICES.md` lists both.
 - **A `Stop` hook that declines ending a session with unaudited UI changes, once.** The skill's §2
   says the audit loop is mandatory after any UI change; until now nothing enforced it. The plugin's
   new `hooks/audit-gate.mjs` reads the session transcript when Claude is about to finish. If UI
@@ -101,6 +115,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   audit cannot see what an action did.
 
 ### Changed
+- `runAudit` accepts an optional `signal` and `onProgress`. The CLI passes neither, so its
+  behaviour is unchanged. `resolveAuditTarget` moved to `src/commands/audit.js` and is still
+  exported from `src/cli.js`.
 - **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
   `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
   run was lost. The skill's own examples use that path.

@@ -77,13 +77,58 @@ export async function loadStates(path) {
 }
 
 /**
+ * Work out what `audit` should audit. Shared by the CLI and `a11y-loop mcp`.
+ *
+ * @param {string[]} positionals
+ * @param {{file?:string, html?:string}} flags
+ * @returns {{type:'url'|'file'|'html', value:string}}
+ */
+export function resolveAuditTarget(positionals, flags) {
+  const given = [
+    positionals[0] ? { type: 'url', value: positionals[0] } : null,
+    flags.file ? { type: 'file', value: flags.file } : null,
+    flags.html !== undefined ? { type: 'html', value: flags.html } : null,
+  ].filter(Boolean);
+
+  if (given.length === 0) {
+    throw new ToolError('audit needs a target.', {
+      hint: 'Use one of:\n  a11y-loop audit http://localhost:3000\n  a11y-loop audit --file page.html\n  a11y-loop audit --html "<button></button>"',
+    });
+  }
+  if (given.length > 1) {
+    throw new ToolError(
+      `audit takes exactly one target, but got ${given.map((g) => g.type).join(' and ')}.`,
+    );
+  }
+
+  const target = given[0];
+  if (target.type === 'url' && !/^https?:\/\//i.test(target.value)) {
+    if (/^file:\/\//i.test(target.value)) {
+      throw new ToolError('file:// URLs are not supported.', {
+        hint:
+          'A null origin breaks axe frame injection, ES modules and fetch. Use --file <path> ' +
+          'instead — a11y-loop serves it over http on 127.0.0.1.',
+      });
+    }
+    throw new ToolError(`"${target.value}" is not an http(s) URL.`, {
+      hint: 'Did you mean --file or --html?',
+    });
+  }
+  return target;
+}
+
+/**
+ * Run the audit and assemble the JSON report: the one code path behind both
+ * `a11y-loop audit` and the MCP `a11y_loop_audit` tool.
+ *
  * @param {object} input
  * @param {{type:'url'|'file'|'html', value:string}} input.target
- * @param {object} input.flags parsed CLI flags
- * @param {{write:(s:string)=>void, writeError:(s:string)=>void}} io
- * @returns {Promise<number>} process exit code
+ * @param {object} input.flags parsed CLI flags (interact, headed, bestPractice)
+ * @param {AbortSignal} [input.signal]
+ * @param {Function} [input.onProgress] see runAudit
+ * @returns {Promise<object>} the report, as `serializeReport` writes it
  */
-export async function runAuditCommand({ target, flags }, io) {
+export async function buildAuditReport({ target, flags, signal, onProgress }) {
   const states = flags.interact ? await loadStates(flags.interact) : {};
 
   const result = await runAudit({
@@ -92,6 +137,8 @@ export async function runAuditCommand({ target, flags }, io) {
       headed: Boolean(flags.headed),
       bestPractice: flags.bestPractice !== false,
       states,
+      signal,
+      onProgress,
     },
   });
 
@@ -101,7 +148,7 @@ export async function runAuditCommand({ target, flags }, io) {
     statesRun: result.statesRun,
   });
 
-  const report = buildReport({
+  return buildReport({
     tool: {
       name: TOOL_NAME,
       version: await toolVersion(),
@@ -119,7 +166,17 @@ export async function runAuditCommand({ target, flags }, io) {
     manualChecklist,
     facts: result.facts,
   });
+}
 
+/**
+ * @param {object} input
+ * @param {{type:'url'|'file'|'html', value:string}} input.target
+ * @param {object} input.flags parsed CLI flags
+ * @param {{write:(s:string)=>void, writeError:(s:string)=>void}} io
+ * @returns {Promise<number>} process exit code
+ */
+export async function runAuditCommand({ target, flags }, io) {
+  const report = await buildAuditReport({ target, flags });
   const json = serializeReport(report);
 
   if (flags.out) await writeOutputFile(flags.out, json);
