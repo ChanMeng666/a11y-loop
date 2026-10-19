@@ -107,11 +107,11 @@ What earns respect: transparency about limits, correct WCAG citation, crediting 
 ## A3 — Research on accessibility of AI-generated code
 
 **Baseline: AI-generated UI is inaccessible by default.**
-- *Does ChatGPT Generate Accessible Code?* (W4A'24): **84% of generated websites had accessibility issues.**
+- *Does ChatGPT Generate Accessible Code?* (W4A'24): **84% of the websites ChatGPT (GPT-3.5) generated had accessibility problems**, as found by automated checkers.
 - Simon Miner (IAAP), "AI-Generated Code is Inaccessible by Default" (May 2026): "Bad patterns are not edge cases in the training set. They *are* the training set." Failure taxonomy (ready-made ruleset spec): clickable divs instead of buttons, skipped heading levels, hidden focus indicators, missing/mismatched labels, ignored reduced-motion, content updates unannounced to AT, broken SPA focus management, inaccessible live regions.
 
-**The killer finding: prompting alone is not enough.**
-*When LLM-Generated Code Perpetuates UI Accessibility Barriers…* (W4A'25): UIs generated with **accessibility-oriented prompts had a slightly *higher* violation rate (17.32%) than accessibility-agnostic prompts (15.93%)**. **This is the strongest argument for a11y-loop's architecture: a skill that only injects accessibility instructions is not demonstrably effective. The verification loop is the product; the instructions are the setup.**
+**Prompting helps but leaves gaps.**
+*When LLM-Generated Code Perpetuates UI Accessibility Barriers…* (W4A'25): accessibility-oriented prompts **cut expert-judged violation rates from 58% to 19%** (one automated tool, MAUVE++, showed a slightly higher rate, 17.32% vs 15.93%), but persistent barriers remained, particularly in semantic structure, alt text and status messages. One task (a banking-app homepage), two models (Claude 3.5 Haiku and GPT-4-turbo), 40 first-pass UIs, no verification loop tested. This supports pairing instructions with verification; it does not show that instructions alone fail.
 
 **Structured tool-assisted pipelines beat naked prompting by a wide margin.**
 - **AccessGuru**: detection **82%** vs standard LLM baseline **31%**; correction **74%** vs **16%**.
@@ -191,7 +191,7 @@ skill-creator plugin automates: test cases in `evals/evals.json`, one subagent p
 
 ## Gap analysis — what nobody does yet that a11y-loop could own
 
-1. **Closed-loop generation, not audit-after.** The pairing — standing generation rules + mandatory verification whose failures feed back — is unoccupied, and W4A'25 proves the generation half alone is insufficient.
+1. **Closed-loop generation, not audit-after.** The pairing — standing generation rules + mandatory verification whose failures feed back — is unoccupied, and W4A'25 found that even with accessibility-oriented prompts, barriers persisted in the generated code.
 2. **State coverage.** Nobody systematically drives the *states the agent just built*: modal open, menu expanded, form in error, async content loaded, post-route-change focus. Where the SPA-focus/live-region failure taxonomy actually lives; axe-on-load finds nothing there. **Most defensible technical claim available; natural fit for "loop".**
 3. **The not-covered list as a first-class output.** Per-run scoped manual-verification checklist naming the components built and the criteria automation could not judge + axe `incomplete` passed through. The direct inverse of overlay marketing.
 4. **AI-specific ruleset** targeting failure modes of *generated* code (clickable divs, hidden focus, skipped headings, ignored reduced-motion, broken ARIA references), each rule citing the research motivating it.

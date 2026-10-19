@@ -17,9 +17,10 @@ job.
 **A role is a promise.** Declaring a role commits you to every keyboard
 interaction, state, and focus behavior in its contract, and ARIA adds no behavior
 by itself. Pages using ARIA average *more* failures than pages without it (WebAIM
-Million 2026: 59.1 vs 42.0 errors per page) precisely because the promise usually
-goes unkept. If you cannot implement the full contract, ship the native element
-or the plain version.
+Million 2026: 59.1 vs 42.0 errors per page). WebAIM cautions that this "does not
+necessarily mean that ARIA introduced these errors (these pages were also more
+complex)", but an unkept promise is one way ARIA makes a page worse. If you cannot
+implement the full contract, ship the native element or the plain version.
 
 ## The 30 APG patterns
 
