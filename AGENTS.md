@@ -256,11 +256,18 @@ rather than left to be rediscovered.
   broken manifest above cleanly. It checks shape, not loadability. Treat it as a linter, never as
   proof: the only real check is installing the plugin and reading `claude plugin list` for
   `Status: ✔ enabled`.
-- **The version lives in four files and they must move together:** `package.json`,
-  `plugin/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` (twice — `metadata.version`
-  and `plugins[0].version`), and `SKILL.md`'s `metadata."a11y-loop/version"`.
-  `test/unit/plugin-sync.test.js` fails when they disagree; run `npm run sync-plugin` after the
-  bump so the plugin's copy of `SKILL.md` follows.
+- **The version lives in six files, eight fields, and they must move together:** `package.json`;
+  `package-lock.json` (twice — the top-level `version` and `packages[""].version`);
+  `plugin/.claude-plugin/plugin.json`; `.claude-plugin/marketplace.json` (twice —
+  `metadata.version` and `plugins[0].version`); `skills/a11y-loop/SKILL.md`'s
+  `metadata."a11y-loop/version"`; and its generated copy `plugin/skills/a11y-loop/SKILL.md`. Edit
+  the first five by hand, then run `npm run sync-plugin` (`scripts/sync-plugin.mjs`) so the plugin's
+  copy follows. `test/unit/plugin-sync.test.js` fails when `package.json`, `plugin.json`, both
+  marketplace fields and the skill disagree, or when the plugin copy drifts from its source; nothing
+  checks the lockfile, so `npm ls --depth=0` is the check there. When `node_modules` is shared
+  through a junction, edit the lockfile's two fields by hand rather than running
+  `npm install --package-lock-only`. A quick sweep:
+  `git grep -n '<old-version>' -- package.json package-lock.json .claude-plugin plugin skills`.
 - **A `package.json` plus a lockfile in the plugin root makes Claude Code install dependencies at
   plugin install time,** with no way to turn it off (code.claude.com/docs/en/plugins/loading,
   "Node.js package dependencies"). Up to 0.3.0 the plugin root was the whole repository, so

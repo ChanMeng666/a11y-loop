@@ -5,42 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.1] - 2026-10-19
 
-### Added
-- **`PRIVACY.md`.** a11y-loop collects nothing and sends nothing to its author; the file says what
-  each part reads and writes on your machine, and what goes over the network (only Chromium's
-  download by `install-browser`, from Playwright's CDN). It is linked from the README, `llms.txt`
-  and the plugin manifest's new `privacyPolicyUrl`. The manifest now also carries the docs site as
-  `homepage`, plus `documentationUrl` and `supportUrl`: the Anthropic plugin directory had
-  reported 3 of 6 link fields filled. `termsOfServiceUrl` stays empty, because there is no
-  terms-of-service document and the MIT license is not one.
-- `npm run sync-plugin` (`scripts/sync-plugin.mjs`) and `test/unit/plugin-sync.test.js`, which
-  keep the plugin's copies identical to their sources and fail on drift, on a `../` path or
-  `${CLAUDE_SKILL_DIR}` inside `plugin/`, on a `package.json` or lockfile there, and on the version
-  disagreeing across its four files. `test/unit/text-encoding.test.js` fails on a BOM, invalid
-  UTF-8 or a raw control byte in `src/`, `plugin/`, `skills/`, `scripts/`, root and `docs/`
-  Markdown, `llms.txt` or the marketplace manifest.
-- **`plugin/.claude-plugin/icon.png`**, a 1024×1024 PNG rendered from the brand logo, so the Claude Code plugin directory has a listing icon. The directory reads it only the first time a plugin is saved or submitted there, so it has to ship in the release that is submitted.
-- **CI now installs the packed tarball with `npm i -g` on Ubuntu (Node 20 and 22), macOS and Windows
-  and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`
-  and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
-  Windows and in a test; this checks a real install on each OS on every PR.
-- **`a11y-loop plan-check`, the plan gate for any agent and any CI job.** The plan gate used to
-  exist only as a Claude Code `PreToolUse` hook on `ExitPlanMode`, a tool that exists only in
-  interactive Claude Code sessions, so Codex, Cursor, Copilot, CI and headless Claude Code runs
-  could not use it at all. `plan-check` runs the same decision on a plan from `--file`, `--text`
-  or a piped stdin and exits `0` (the plan carries accessibility content, is not UI work, or is
-  too short to assess), `1` (a UI plan with thin or absent accessibility content), or `2` (usage
-  or input error). `--json` returns the verdict, `isUiWork`, `hasA11yContent`, the missing items
-  and the SKILL.md §0 plan rule each one stands for. It never prompts: stdin is read only when it
-  is not a TTY, and a pipe held open with no data gives up with `2` after 3 seconds
-  (`A11Y_LOOP_STDIN_IDLE_MS` overrides). It is stateless, with no loop guard and no session cap,
-  so the same plan always gets the same answer. It checks that the questions were asked in the
-  plan, not that the answers are any good.
-- `test/unit/non-interactive.test.js`: every subcommand, and the hook with an empty stdin, run as
-  a child process with stdin closed and a hard timeout, asserting each exits with a documented code
-  and none hangs.
+Three things, in order of how much they change for you. **The Claude Code plugin now ships from
+`plugin/`, and installing it fetches nothing**; installing the 0.3.0 plugin ran `npm ci` in Claude
+Code's plugin cache and left 24 MB of packages the plugin never uses. **`a11y-loop plan-check`**
+brings the plan gate to any agent and any CI job, not only interactive Claude Code. The rest are
+smaller: a CI install check on three operating systems, a demo count that no longer changes between
+runs, the English README back on npm, a plugin icon, a narrower `allowed-tools`, a source file that
+no longer reads as binary, and a `PRIVACY.md`.
 
 ### Changed
 - **BREAKING (for anyone who points at plugin files by path): the Claude Code plugin now ships from
@@ -55,33 +28,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   24 MB `node_modules` there (`axe-core`, `@axe-core/playwright`, `playwright`, `playwright-core`,
   `culori`, `tabbable`; lifecycle scripts disabled, so no browser), none of which the plugin uses.
   This version's plugin folder has no `package.json`, and its install fetches nothing.
-  `.claude-plugin/marketplace.json` stays at the root with `source: "./plugin"`; the root
-  `.claude-plugin/plugin.json`, `hooks/` and `commands/` are gone, and the npm package no longer
-  includes them. `skills/a11y-loop/` and `src/lib/plan-gate.js` stay the canonical sources, and
-  `plugin/` holds generated copies. The hook now loads its logic from `plugin/hooks/lib/plan-gate.mjs`
-  and still exits 0 with no verdict when that file is missing or throws.
-- The plan gate's decision logic moved from `hooks/plan-gate.mjs` to `src/lib/plan-gate.js`,
-  shared by the hook and `plan-check`. The hook keeps its stdin/stdout protocol, its
-  once-per-plan guard, its session cap and `A11Y_LOOP_PLAN_GATE=off` unchanged, and re-exports the
-  detectors it used to define. A plan the hook denied before is denied now, and vice versa.
-- SKILL.md §0 now ends with: run `plan-check` on the written plan and address what it names
-  before building.
+  - `.claude-plugin/marketplace.json` stays at the root with `source: "./plugin"`. The root
+    `.claude-plugin/plugin.json`, `hooks/` and `commands/` are gone, and the npm package no longer
+    includes them.
+  - `skills/a11y-loop/` and `src/lib/plan-gate.js` stay the canonical sources, and `plugin/` holds
+    generated copies. `npm run sync-plugin` (`scripts/sync-plugin.mjs`) writes them, and
+    `test/unit/plugin-sync.test.js` keeps them identical to their sources. The test fails on drift,
+    on a `../` path or `${CLAUDE_SKILL_DIR}` inside `plugin/`, on a `package.json` or lockfile
+    there, and on the version disagreeing across `package.json`, the plugin manifest, both
+    marketplace fields and `SKILL.md`.
+  - The hook now loads its logic from `plugin/hooks/lib/plan-gate.mjs`, and still exits 0 with no
+    verdict when that file is missing or throws.
+  - `AGENTS.md` and `CONTRIBUTING.md` now list all six files the version lives in, including the
+    lockfile and the generated `plugin/skills/a11y-loop/SKILL.md`.
+
+### Added
+- **`a11y-loop plan-check`, the plan gate for any agent and any CI job.** The plan gate used to
+  exist only as a Claude Code `PreToolUse` hook on `ExitPlanMode`, a tool that exists only in
+  interactive Claude Code sessions, so Codex, Cursor, Copilot, CI and headless Claude Code runs
+  could not use it at all. `plan-check` runs the same decision on a plan from `--file`, `--text`
+  or a piped stdin and exits `0` (the plan carries accessibility content, is not UI work, or is
+  too short to assess), `1` (a UI plan with thin or absent accessibility content), or `2` (usage
+  or input error). `--json` returns the verdict, `isUiWork`, `hasA11yContent`, the missing items
+  and the SKILL.md §0 plan rule each one stands for. It never prompts: stdin is read only when it
+  is not a TTY, and a pipe held open with no data gives up with `2` after 3 seconds
+  (`A11Y_LOOP_STDIN_IDLE_MS` overrides). It is stateless, with no loop guard and no session cap,
+  so the same plan always gets the same answer. It checks that the questions were asked in the
+  plan, not that the answers are any good.
+  - The decision logic moved from `hooks/plan-gate.mjs` to `src/lib/plan-gate.js`, shared by the
+    hook and `plan-check`. The hook keeps its stdin/stdout protocol, its once-per-plan guard, its
+    session cap and `A11Y_LOOP_PLAN_GATE=off` unchanged, and re-exports the detectors it used to
+    define. A plan the hook denied before is denied now, and vice versa.
+  - SKILL.md §0 now ends with: run `plan-check` on the written plan and address what it names
+    before building.
+  - `test/unit/non-interactive.test.js`: every subcommand, and the hook with an empty stdin, run
+    as a child process with stdin closed and a hard timeout, asserting each exits with a
+    documented code and none hangs.
+- **CI now installs the packed tarball with `npm i -g` on Ubuntu (Node 20 and 22), macOS and Windows
+  and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`
+  and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
+  Windows and in a test; this checks a real install on each OS on every PR.
+- **`plugin/.claude-plugin/icon.png`**, a 1024×1024 PNG rendered from the brand logo, so the Claude
+  Code plugin directory has a listing icon. The directory reads it only the first time a plugin is
+  saved or submitted there, so it has to ship in the release that is submitted.
+- **`PRIVACY.md`.** a11y-loop collects nothing and sends nothing to its author; the file says what
+  each part reads and writes on your machine, and what goes over the network (only Chromium's
+  download by `install-browser`, from Playwright's CDN). It is linked from the README, `llms.txt`
+  and the plugin manifest's new `privacyPolicyUrl`. The manifest now also carries the docs site as
+  `homepage`, plus `documentationUrl` and `supportUrl`: the Anthropic plugin directory had
+  reported 3 of 6 link fields filled. `termsOfServiceUrl` stays empty, because there is no
+  terms-of-service document and the MIT license is not one.
+- `test/unit/text-encoding.test.js` fails on a BOM, invalid UTF-8 or a raw control byte in `src/`,
+  `plugin/`, `skills/`, `scripts/`, root and `docs/` Markdown, `llms.txt` or the marketplace
+  manifest.
 
 ### Fixed
-
-- **The skill pre-approved a command path that climbs out of its folder.** `allowed-tools` in
-  `SKILL.md` included `Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)`, for running the CLI
-  from a checkout. It now pre-approves only `Bash(a11y-loop *)` and `Bash(npx a11y-loop *)`. From a
-  checkout, `node src/cli.js` asks before each call, or `npm link` makes `a11y-loop` resolve to it.
-- **`src/lib/fingerprint.js` read as a binary file.** The separator in its fingerprint string was a
-  raw NUL byte inside a string literal, so git and the Anthropic plugin directory treated the file
-  as binary and the directory held it as uninspectable. It is now the `'\u0000'` escape: the same
-  string at run time, so every fingerprint, and every `diff` against an older report, is
-  unchanged. `test/unit/plan-gate.test.js` had the same raw byte and got the same fix.
-- **npm served the Chinese README.** npm picks the package readme from the first file matching
-  `README` or `README.*` in the package root whose name ends in `.md`, in glob order, and force-includes
-  every such file in the tarball. With `README.zh-CN.md` beside `README.md`, 0.3.0 showed the Chinese
-  one on the registry. The Chinese README now lives at `docs/README.zh-CN.md`, outside the package root.
 - **The demo count no longer changes between runs: it is 159 on every run at axe-core 4.14.0.** In
   0.3.0 it was 159 or 160 depending on timing. The seeded B14 sponsor ticker is a CSS animation, and
   whether its tenth name was inside the viewport when axe read the page depended on how far the
@@ -91,6 +92,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   still reports it. Twenty consecutive audits gave 159 with an identical set of findings, against
   160 seven times and 159 three times in ten runs before the change, and `diff` converges on all
   159. `demo.test.js` now asserts exactly 9 ticker findings instead of 9 or 10.
+- **npm served the Chinese README.** npm picks the package readme from the first file matching
+  `README` or `README.*` in the package root whose name ends in `.md`, in glob order, and
+  force-includes every such file in the tarball. With `README.zh-CN.md` beside `README.md`, 0.3.0
+  showed the Chinese one on the registry. The Chinese README now lives at `docs/README.zh-CN.md`,
+  outside the package root.
+- **The skill pre-approved a command path that climbs out of its folder.** `allowed-tools` in
+  `SKILL.md` included `Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)`, for running the CLI
+  from a checkout. It now pre-approves only `Bash(a11y-loop *)` and `Bash(npx a11y-loop *)`. From a
+  checkout, `node src/cli.js` asks before each call, or `npm link` makes `a11y-loop` resolve to it.
+- **`src/lib/fingerprint.js` read as a binary file.** The separator in its fingerprint string was a
+  raw NUL byte inside a string literal, so git and the Anthropic plugin directory treated the file
+  as binary and the directory held it as uninspectable. It is now the `'\u0000'` escape: the same
+  string at run time, so every fingerprint, and every `diff` against an older report, is
+  unchanged. `test/unit/plan-gate.test.js` had the same raw byte and got the same fix.
 
 ## [0.3.0] - 2026-10-19
 
