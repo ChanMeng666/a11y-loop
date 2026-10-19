@@ -107,9 +107,12 @@ or Playwright will report a missing browser.
   and is why the marketplace is named `chanmeng-a11y-loop` while the plugin inside it is
   `a11y-loop` — installs are `a11y-loop@chanmeng-a11y-loop`. `plugin/hooks/plan-gate.mjs` is a
   `PreToolUse` hook on `ExitPlanMode` that declines a plan changing UI work with no
-  accessibility content in it. Three things in `plugin/` are generated copies, never edited by
-  hand: `plugin/skills/a11y-loop/` (from `skills/a11y-loop/`, minus `evals/`),
-  `plugin/hooks/lib/plan-gate.mjs` (from `src/lib/plan-gate.js`) and `plugin/LICENSE`. Edit the
+  accessibility content in it. `plugin/hooks/audit-gate.mjs` is a `Stop` hook that declines, once
+  per session, to end a session whose transcript shows UI files written after the last
+  `a11y-loop audit` run; its decision is `src/lib/audit-gate.js`. Four things in `plugin/` are
+  generated copies, never edited by hand: `plugin/skills/a11y-loop/` (from `skills/a11y-loop/`,
+  minus `evals/`), `plugin/hooks/lib/plan-gate.mjs` (from `src/lib/plan-gate.js`),
+  `plugin/hooks/lib/audit-gate.mjs` (from `src/lib/audit-gate.js`) and `plugin/LICENSE`. Edit the
   original and run `npm run sync-plugin` (`scripts/sync-plugin.mjs`);
   `test/unit/plugin-sync.test.js` fails while any copy differs, and also fails if anything in
   `plugin/` names a `../` path or `${CLAUDE_SKILL_DIR}`, or if a `package.json` or lockfile
@@ -292,6 +295,20 @@ rather than left to be rediscovered.
   is verified on the strength of those. The equivalent non-interactive path is `a11y-loop
   plan-check`: the same decision function, drivable from any agent or CI job, and covered by
   `test/unit/plan-check.test.js` and `test/unit/non-interactive.test.js`.
+- **`Stop` does fire under `claude -p`, so the audit gate's round trip *is* verifiable headlessly.**
+  `claude --plugin-dir ./plugin -p "<write an HTML file>" --allowedTools Write --output-format
+  stream-json --verbose` shows the block arrive as `Stop hook feedback:`, then Claude running the
+  audit, and a second Stop that passes. The block also raises a "Stop hook error occurred"
+  notification; that is how Claude Code labels any `decision: "block"` from a Stop hook, not a
+  failure of the hook. The hooks reference says `hookSpecificOutput.additionalContext` continues
+  the turn without that label; switching to it is a one-line change in `main()`.
+- **The audit gate reads Claude Code's transcript JSONL, which is not a published contract.** It
+  relies on assistant lines carrying `message.content[]` blocks of `{ type: "tool_use", name,
+  input }`, with `Write`/`Edit`/`MultiEdit`/`NotebookEdit` paths in `file_path` or
+  `notebook_path` and shell commands in `input.command` (`Bash`, and `PowerShell` on Windows).
+  If that shape changes, `scanTranscript()` finds no tool calls and the gate passes silently: it
+  fails open, never closed. Check a fresh transcript when bumping the supported Claude Code
+  version. Files written by a shell command, and edits made inside a subagent, are not seen.
 
 ## Testing the plugin layer
 
@@ -324,6 +341,17 @@ Two ways that command misleads you if you are not careful:
   ```bash
   echo "$payload" | CLAUDE_PLUGIN_DATA="$(mktemp -d)" node plugin/hooks/plan-gate.mjs
   ```
+
+The audit gate takes a Stop payload whose `transcript_path` points at a JSONL file. A one-line
+transcript with a `Write` to an `.html` file and no audit gets a `"block"`; a second run with
+the same `session_id` and `CLAUDE_PLUGIN_DATA` prints nothing, which is the once-per-session cap:
+
+```bash
+d="$(mktemp -d)"
+echo '{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Write","input":{"file_path":"index.html","content":"<button>x</button>"}}]}}' > "$d/t.jsonl"
+echo "{\"session_id\":\"s1\",\"transcript_path\":\"$d/t.jsonl\",\"stop_hook_active\":false}" \
+  | CLAUDE_PLUGIN_DATA="$d" node plugin/hooks/audit-gate.mjs
+```
 
 To test as a real install instead, register the checkout as a marketplace — `claude plugin
 marketplace add ./` — so the plugin tracks your edits rather than the published repo. A local

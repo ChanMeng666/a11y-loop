@@ -64,7 +64,8 @@ appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked t
 
 **Don't edit the generated copies in `plugin/`.** `plugin/skills/a11y-loop/` (from
 `skills/a11y-loop/`, minus `evals/`), `plugin/hooks/lib/plan-gate.mjs` (from
-`src/lib/plan-gate.js`) and `plugin/LICENSE` (from `LICENSE`) are copies. Edit the original and run
+`src/lib/plan-gate.js`), `plugin/hooks/lib/audit-gate.mjs` (from `src/lib/audit-gate.js`) and
+`plugin/LICENSE` (from `LICENSE`) are copies. Edit the original and run
 `npm run sync-plugin`. `test/unit/plugin-sync.test.js` fails while any copy differs from its
 source. `plugin/README.md` is not generated: edit it directly.
 

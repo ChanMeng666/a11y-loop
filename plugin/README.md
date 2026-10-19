@@ -2,20 +2,24 @@
 
 This folder is the a11y-loop Claude Code plugin. It makes accessibility a decision in the plan:
 when a plan changes user interface work and says nothing about accessibility, the plan is declined
-once and Claude is handed the section to fill in. It ships three things:
+once and Claude is handed the section to fill in. When a session changes user interface files and
+never runs the audit afterwards, ending the session is declined once and Claude is handed the
+commands to run. It ships four things:
 
 - **The `a11y-loop` skill** (`skills/a11y-loop/`): plan rules, accessible-markup generation rules,
   an audit-fix-re-audit loop, and rules for how results may be described.
 - **The `/a11y-plan` command** (`commands/a11y-plan.md`): writes the plan's accessibility section
   on request.
 - **A plan-mode hook** (`hooks/plan-gate.mjs`): a `PreToolUse` hook on `ExitPlanMode`.
+- **An audit hook** (`hooks/audit-gate.mjs`): a `Stop` hook. It declines a stop at most once per
+  session, and never while Claude is already continuing because of a stop hook.
 
 ## Where each part works
 
-- **Claude Code (CLI and desktop)** gets all three: the skill, the `/a11y-plan` command and the
-  plan-mode hook.
+- **Claude Code (CLI and desktop)** gets all four: the skill, the `/a11y-plan` command, the
+  plan-mode hook and the audit hook. The audit hook also runs in headless `claude -p` sessions.
 - **Cowork and the Claude apps (web, desktop, mobile)** get the skill's plan, generation and
-  reporting rules only. The plan-mode hook does not run there. The audit loop (the skill's §2)
+  reporting rules only. Neither hook runs there. The audit loop (the skill's §2)
   cannot run there either, because it needs Node and a browser. So the skill's rules apply, but
   nothing is verified.
 
@@ -26,6 +30,10 @@ once and Claude is handed the section to fill in. It ships three things:
   mode. It reads the plan text and writes one small state file to Claude Code's plugin data
   directory (or the temp directory). It makes no network requests. Turn it off with
   `A11Y_LOOP_PLAN_GATE=off`.
+- **The audit hook** runs `node hooks/audit-gate.mjs` from this folder when Claude is about to
+  finish. It reads the session transcript Claude Code already keeps, looking for file edits and
+  audit commands, and writes one small state file to the same data directory. It runs no audit
+  itself and makes no network requests. Turn it off with `A11Y_LOOP_AUDIT_GATE=off`.
 - **Installing the plugin** copies this folder and nothing else. There is no `package.json` here,
   so the install fetches no packages.
 - **The audit** needs the separate command-line tool: `npm i -g a11y-loop` and then

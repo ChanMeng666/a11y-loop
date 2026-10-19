@@ -548,11 +548,11 @@ From a local checkout, `claude plugin marketplace add ./` registers the working 
 plugin tracks your edits rather than the published repo.
 
 **What installing it copies.** The plugin is the repository's `plugin/` folder, not the whole
-repository: the skill, the `/a11y-plan` command, the hook and its decision logic, a README and the
-license. That folder has no `package.json`, so the install fetches no packages. Up to 0.3.0 the
+repository: the skill, the `/a11y-plan` command, the two hooks and their decision logic, a README
+and the license. That folder has no `package.json`, so the install fetches no packages. Up to 0.3.0 the
 plugin was the repository root, and its `package.json` and `package-lock.json` made Claude Code run
 a scripts-disabled `npm ci` in the plugin cache, about 24 MB of packages the plugin never used.
-`skills/a11y-loop/` and `src/lib/plan-gate.js` stay the canonical sources; `npm run sync-plugin`
+`skills/a11y-loop/`, `src/lib/plan-gate.js` and `src/lib/audit-gate.js` stay the canonical sources; `npm run sync-plugin`
 copies them into `plugin/`, and a unit test fails while a copy differs.
 
 **Team-wide, declaratively.** `--scope project` writes `.claude/settings.json`, which you commit —
@@ -579,6 +579,11 @@ It contributes:
   accessibility, the plan is declined once and the `### Accessibility` section is handed back to fill
   in. It names any decision already in the plan that is hard to walk back later — drag-only
   reordering, hover-only menus, infinite scroll, canvas-rendered data, time limits, CAPTCHA, autoplay.
+- a `Stop` hook. When Claude is about to finish a session that wrote UI files (`.html`, `.jsx`,
+  `.tsx`, `.vue`, `.svelte`, `.astro`, `.css`, `.scss`, `.mdx`, or `.js`/`.ts` whose new
+  content touches the DOM) and has not run `a11y-loop audit` since the last such write, the stop is
+  declined once. Claude is handed the files and the exact `audit` and `diff` commands to run. This
+  is how the skill's §2 is enforced in Claude Code, including headless `claude -p` runs.
 - `/a11y-plan`, to ask for that section directly.
 
 Deliberate limits: it never returns `allow`, and on every non-deny path it returns at most a reminder with no
@@ -587,11 +592,18 @@ UI in it is passed silently; and `A11Y_LOOP_PLAN_GATE=off` disables it. The gate
 question was asked — it cannot check that the answer is any good. That is still `a11y-loop audit`
 and a human.
 
+The audit gate has the same shape of limits. It declines a stop **at most once per session**, and
+never while `stop_hook_active` is true, which Claude Code sets when it is already continuing because
+of a stop hook. Any failure (no transcript, a shape it does not recognise, a state file it cannot
+write) lets the session end as it would have. `A11Y_LOOP_AUDIT_GATE=off` disables it. It checks
+that an audit ran after the last UI edit, not that the audit was clean or covered the states that
+changed.
+
 | | Portable skill | Plugin layer |
 |---|---|---|
 | Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
 | Works in | 40+ Agent Skills clients | Claude Code only |
-| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
+| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, §2 enforcement at Stop, `/a11y-plan` |
 | Required? | yes | no |
 
 **Plan gate without Claude Code.** The hook only exists inside Claude Code's interactive plan mode:
@@ -612,6 +624,11 @@ gets the same answer. The hook and the CLI call the same function in `src/lib/pl
 hook's interactive round trip remains unverifiable headlessly; that is now immaterial, because the
 decision is identical and fully tested, and the part only the hook adds (the stdin/stdout protocol,
 the once-per-plan guard) is tested by driving the script directly.
+
+**Audit gate without Claude Code.** The Stop hook reads Claude Code's own session transcript, so it
+has no portable equivalent: Codex, Cursor, Copilot and other clients rely on the skill's §2 text.
+What enforces the loop for every client is CI. Run `a11y-loop audit` on the pages a change touches;
+it exits `1` when it finds violations, which fails the job (see below).
 
 ## ⚙️ Using it in CI
 

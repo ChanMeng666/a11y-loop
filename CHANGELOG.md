@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **A `Stop` hook that declines ending a session with unaudited UI changes, once.** The skill's §2
+  says the audit loop is mandatory after any UI change; until now nothing enforced it. The plugin's
+  new `hooks/audit-gate.mjs` reads the session transcript when Claude is about to finish. If UI
+  files were written (`.html`, `.htm`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.css`,
+  `.scss`, `.mdx`, or `.js`/`.ts` whose new content touches the DOM) and no `a11y-loop audit`
+  ran after the last one, it returns `decision: "block"` with the files and the exact `audit` and
+  `diff` commands. It blocks at most once per session, never while `stop_hook_active` is true,
+  and on any failure of its own lets the session end. `A11Y_LOOP_AUDIT_GATE=off` turns it off.
+  `Stop` fires under `claude -p`, so unlike the plan gate its full round trip runs headlessly.
+  The decision lives in `src/lib/audit-gate.js`, copied into the plugin by `npm run sync-plugin`.
+  It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
+
 ## [0.3.2] - 2026-10-19
 
 Documentation only. No behaviour change, no change to the report shape.
