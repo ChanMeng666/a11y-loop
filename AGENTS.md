@@ -24,8 +24,8 @@ the audit: there the skill's rules apply, but nothing is verified. `plugin/READM
 "Where each part works", says this to users.
 
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
-describe a planned or in-progress item (an MCP server) as existing, and do not describe something
-merged on `main` but not yet tagged (the GitHub Action and the Stop-hook audit gate, as of this
+describe a planned or in-progress item as existing, and do not describe something merged on `main`
+but not yet tagged (the GitHub Action, the Stop-hook audit gate and `a11y-loop mcp`, as of this
 writing) as usable from a release.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
@@ -236,7 +236,9 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   trap, div-button, focus-visible, keyboard, link-text, reduced-motion, reflow, target-size),
   `contrast-math.js` + `suggest-color.js` (WCAG contrast + OKLCh fix suggestions), `fingerprint.js`
   (stable finding IDs for `diff`), `diff.js` (FIXED/NEW/REMAINING classification), `finding.js`
-  (the shared finding shape), `format/` (`json.js`, `human.js`, `sarif.js`, `checklist.js` — one
+  (the shared finding shape, including the `evidence` tier), `cluster.js` (root-cause clusters:
+  colour pair for contrast, selector pattern otherwise; additive, every row stays in `findings`),
+  `format/` (`json.js`, `human.js`, `sarif.js`, `checklist.js` — one
   serializer per output format), `wcag-map.js` (rule → WCAG SC + ACT ID mapping), `serve.js` and
   `browser-utils.js` (local static serving for `--file`/`--html`, and Playwright lifecycle helpers),
   and `plan-gate.js` — the plan gate's pure decision (is this UI work, does it carry accessibility
@@ -335,12 +337,19 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   reads an element's foreground from `-webkit-text-fill-color` before `color` (`getTextColor()`),
   and Chromium's forced-colors emulation forces `color` and the background but leaves
   `-webkit-text-fill-color` at the author's value, so light-on-dark text is compared against a
-  forced white background and every line on a dark surface is reported. If this is ever to be
-  handled in code rather than in prose, `findingsFromAxeResult()` in `src/lib/axe-runner.js`
-  already downgrades one rule (`target-size`) to `needsReview` by id; the same shape keyed on rule
-  id **and** `passName === 'forced-colors'` would route these to needs-review. That is a
-  recommendation, not a decision — it changes what counts as a violation and therefore the exit
-  code, so it needs its own measurement and its own release note.
+  forced white background and every line on a dark surface is reported. This one is now handled
+  in code: `reviewRouting()` in `src/lib/axe-runner.js` routes a contrast-rule violation from the
+  `forced-colors` pass, and only that pass, to `needsReview` with `routedFrom`, `note` and
+  `noteUrl`, and drops its colour suggestion. It is the same mechanism that always downgrades
+  `target-size`. `test/fixtures/fixture-forced-colors-dark-surface.html` is its regression target:
+  exit 1 without the routing, exit 0 with it. On the demo and every other fixture no row moved,
+  because each forced-colors contrast failure there also fails in another pass and
+  `dedupeFindings()` lets a violation from any pass win. It covers both `color-contrast` and
+  `color-contrast-enhanced`. `diff` reports a row moved this way as `RECLASSIFIED`, never `FIXED`
+  (it matches the after report's `routedFrom`). Any new routing needs the same, or an upgrade
+  reads as a fix. Adding another rule to the routing
+  changes what counts as a violation and therefore the exit code, so it needs the same: a fixture,
+  a before/after measurement across the matrix and the demo, and its own release note.
 - **An entry guard must realpath `process.argv[1]` before comparing it with `import.meta.url`.**
   *(Fixed in 0.3.0; the lesson stands for every new entry point.)*
   `src/cli.js` ends with an entry guard so tests can import `main` freely. Node resolves

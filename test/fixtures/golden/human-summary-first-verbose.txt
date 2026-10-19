@@ -1,0 +1,63 @@
+a11y-loop audit · page.html (served at http://127.0.0.1:1234/)
+Target standard: WCAG 2.2 Level AA
+Passes: default, dark, forced-colors, reduced-motion, reflow · states: none
+
+SUMMARY
+  Exit 1: 5 automatically detectable failures. Needs-review rows and best-practice notes never change the exit code.
+  5 violations: 4 measured, 1 inferred, 1 of them with reduced confidence
+  1 needs review: not a pass, a person has to judge it. 1 forced-colors contrast row moved here from violations; read the note on each
+  2 colour pairs account for 4 contrast violation rows
+  1 cluster covers 3 of 5 violations; the other 2 are listed after them
+  7 manual checks: automation cannot judge these
+
+VIOLATIONS (5)
+  Root causes: 1 cluster covers 3 of 5 rows
+    SC 1.4.3 Contrast (Minimum) (Level AA) · ACT afw4f7, 09o5cg · axe: color-contrast (3 rows, one cause)
+      cause: #999999 text on #ffffff: 2.84:1 against 4.5:1 required
+      passes: default
+      · html > body > main > p:nth-child(1)
+      · html > body > main > p:nth-child(2)
+      · html > body > main > p:nth-child(3)
+      fix: text darker → #767676 (ratio 4.54:1)
+      or run: a11y-loop contrast "#999999" "#ffffff" --fix
+      https://dequeuniversity.com/rules/axe/4.14/color-contrast
+  Other rows (2)
+    SC 1.4.3 Contrast (Minimum) (Level AA) · ACT afw4f7, 09o5cg · axe: color-contrast
+      · html > body > footer > p
+        Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff)
+        fix: text darker → #767676 (ratio 4.54:1)
+      https://dequeuniversity.com/rules/axe/4.14/color-contrast
+    SC 2.1.1 Keyboard (Level A) · a11y-loop: keyboard-unreachable [inferred]
+      · #late
+        This element should be reachable by keyboard but never received focus during a Tab walk of 60 steps. Check for aria-hidden, display:none on focus, a focus trap earlier in the page, or tabindex="-1".
+        confidence: reduced. The Tab walk used all 60 presses without wrapping, so elements after the last one it reached may be reachable and simply beyond the budget. Confirm by hand.
+
+NEEDS REVIEW (1) — axe reported these as incomplete, or a11y-loop found something it cannot judge alone
+  SC 1.4.3 Contrast (Minimum) (Level AA) · ACT afw4f7, 09o5cg · axe: color-contrast
+    · html > body > div.card > p  [only under: forced-colors]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 1.23 (foreground color: #e8e6ef, background color: #ffffff)
+      note: axe-core reads the foreground from -webkit-text-fill-color before color, and Chromium's forced-colors emulation forces color and the background but leaves -webkit-text-fill-color at the author's value, so this pass compares the author's foreground against the forced background. Light-on-dark text reads near 1:1 here whatever its real contrast. Confirm the pair in the default and dark passes, check forced colors by eye or with the OS setting, and do not apply a colour derived from this pair: it fails in the default pass.
+      see: https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#color-contrast-in-the-forced-colors-pass-is-usually-not-a-defect
+    https://dequeuniversity.com/rules/axe/4.14/color-contrast
+
+MANUAL CHECKS (7) — automation cannot judge these
+  · Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).
+    why: No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification.
+  · SC 2.4.3: Tab through the page and confirm the focus order is logical, not merely present.
+    why: a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment.
+  · SC 2.1.1: Complete the page’s main task using only the keyboard.
+    why: Automated checks probe individual controls; they do not know what the user is trying to accomplish.
+  · SC 2.4.4: Read each link text out of context and confirm the destination is still clear.
+    why: SC 2.4.4 permits vague link text when the surrounding context supplies the purpose — whether it does is a judgment call.
+  · SC 1.3.1: Confirm the heading structure describes the content hierarchy, not the visual sizes.
+    why: Automation can detect skipped levels but not whether the outline reflects the actual structure of the page.
+  · SC 1.4.1: Confirm colour is never the only way information is conveyed.
+    why: SC 1.4.1 is one of the criteria no tool can test: recognising that "the required fields are in red" needs comprehension of the content.
+  · SC 1.4.11: Check the contrast of hover and focus states.
+    why: No engine checks state contrast unless the state is driven and re-scanned. Use --interact to add hover and focus states to the audit.
+
+5 automatically detectable failures, 1 finding(s) needing review, 0 best-practice note(s).
+The 1 needs-review finding(s) are not passes — see the NEEDS REVIEW section above, or the needsReview array in --json output.
+
+Provenance: a11y-loop 0.1.0 · axe-core 4.12.1 · Chromium 151.0.7922.34 · viewport 1280×720 · passes: default, dark, forced-colors, reduced-motion, reflow · states: none (use --interact to audit modal/error/route states) · 2026-07-26T00:00:00.000Z
+Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.

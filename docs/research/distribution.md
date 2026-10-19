@@ -248,7 +248,7 @@ Researched 2026-10-19. **[V]** from a primary source or by running the tool; **[
 | R7 | A root `package.json` with `package-lock.json` in the plugin folder triggers the "Dependencies install from a lockfile" reviewer hold [V] | pre-submission checklist |
 | R8 | Provenance, `SECURITY.md`, MIT `LICENSE`, `CODE_OF_CONDUCT.md`, issue templates and Discussions in place [V] | |
 | R9 | npm downloads, 30 days to 2026-10-16: 102 [V] | |
-| R10 | [market.md](market.md) (July text) says not to ship another axe MCP server; that conflicts with the MCP-registry channels, which need a server. Left as a decision for the maintainer | |
+| R10 | [market.md](market.md) (July text) says not to ship another axe MCP server; that conflicts with the MCP-registry channels, which need a server. Left as a decision for the maintainer | 2026-10-20: decided for a thin server over a11y-loop's own loop (#31); reasoning in `AGENTS.md` under `src/commands/mcp.js` |
 
 ### Anthropic directory: process
 

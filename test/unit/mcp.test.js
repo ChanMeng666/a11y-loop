@@ -227,6 +227,9 @@ describe('a11y-loop mcp over stdio', () => {
     const buttonName = body.findings.violations.find((f) => f.ruleId === 'button-name');
     assert.ok(buttonName, 'button-name violation expected');
     assert.ok(buttonName.fingerprint && buttonName.selector && buttonName.helpUrl && buttonName.sc);
+    assert.ok(buttonName.evidence, 'each finding carries its evidence tier');
+    assert.ok(Array.isArray(body.clusters));
+    assert.ok(body.summary.evidence, 'summary.evidence passes through');
     assert.ok(body.manualChecklist.length > 0);
     assert.equal(body.coverage, COVERAGE.statement);
     assert.deepEqual(findRedLineLanguage(first.content[0].text), []);
@@ -234,6 +237,7 @@ describe('a11y-loop mcp over stdio', () => {
     // The file written with `out` is the CLI's full report.
     const written = JSON.parse(await readFile(join(dir, 'nested', 'run1.json'), 'utf8'));
     assert.equal(written.summary.violations, body.summary.violations);
+    assert.equal(body.schemaVersion, written.schemaVersion);
 
     // Progress was reported per pass against the client's token.
     const progress = server.notifications.filter(

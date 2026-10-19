@@ -185,7 +185,7 @@ export async function runAuditCommand({ target, flags }, io) {
   if (flags.json) {
     io.write(json);
   } else {
-    io.write(formatHuman(report, { quiet: Boolean(flags.quiet) }));
+    io.write(formatHuman(report, { quiet: Boolean(flags.quiet), verbose: Boolean(flags.verbose) }));
   }
 
   if (flags.out && !flags.json && !flags.quiet) {

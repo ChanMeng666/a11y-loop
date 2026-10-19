@@ -304,15 +304,26 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    contrast over a gradient, image, or translucent layer. Resolve it by
    reasoning about the source, not by ignoring it.
 
-   A few rows have a known non-defect explanation: a `color-contrast` cluster
-   in the forced-colors pass, a `div-button` on `<body>` while a popup is open,
-   a contrast value sampled while something was animating, a run of
-   `keyboard-unreachable` after a long Tab walk.
-   [references/manual-testing.md](references/manual-testing.md) lists each with
-   its tell. Check a row against it before changing code — fixing a false
-   positive breaks working UI, and the suggested color on a forced-colors
-   contrast row fails in the default pass. Verifying a row is not suppressing
-   it: never disable a rule, and say in your report which rows you verified and
+   Read `clusters` before the rows. Each cluster is one shared cause — a colour
+   pair for contrast, a selector pattern otherwise — with its fix given once
+   and its members listed by fingerprint. Fix the cause (the design token, the
+   template), not each element; every member row is still in `findings`.
+
+   Every finding has an `evidence` tier. `measured`: a value read off the page
+   against a threshold. `inferred`: a conclusion from a bounded keyboard or
+   dialog probe, still a blocking violation; a `confidence` field means the
+   probe ran out of budget, so confirm that row by hand. `needs-review`: every
+   needsReview row.
+
+   A few rows have a known non-defect explanation: contrast in the
+   forced-colors pass (a11y-loop already reports these under needsReview with
+   `routedFrom` and a `note`, and gives them no colour suggestion), a
+   `div-button` on `<body>` while a popup is open, a contrast value sampled
+   while something was animating, a run of `keyboard-unreachable` after a long
+   Tab walk. [references/manual-testing.md](references/manual-testing.md) lists
+   each with its tell. Check a row against it before changing code — fixing a
+   false positive breaks working UI. Verifying a row is not suppressing it:
+   never disable a rule, and say in your report which rows you verified and
    how.
 4. **Fix in the source files**, never in the report or by suppressing a rule.
    For contrast findings, use the report's `suggestions[]` or
@@ -326,7 +337,9 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    A11Y diff --before .a11y/run-1.json --after .a11y/run-2.json
    ```
 
-   `diff` matches by fingerprint and reports FIXED / NEW / REMAINING. NEW means
+   `diff` matches by fingerprint and reports FIXED / NEW / REMAINING, plus
+   RECLASSIFIED for a row a documented rule moved to needsReview (it was not
+   fixed, so never report it as fixed). NEW means
    your fix broke something else. If the same finding alternates between FIXED
    and NEW across iterations you are oscillating — stop, read both findings
    together, and change the approach instead of the value.
@@ -389,7 +402,18 @@ components you actually built. Include it in your summary to the user, not just
 in the JSON.
 
 **`needsReview` findings are unresolved uncertainty, never passes.** Report
-them as open questions with what you did about each.
+them as open questions with what you did about each. That includes the
+forced-colors contrast rows a11y-loop routes there: say forced colors was
+reviewed by eye, not measured.
+
+**Count rows, not clusters.** A cluster is one cause behind many failures, not
+one failure. Report the violation count, then how many causes account for it
+("104 contrast failures from 12 colour pairs"); never quote the cluster count
+as if it were the number of failures.
+
+**An `inferred` row is a failure, and a reduced-confidence row is an open
+question until you check it.** Say which probe established it. Never relabel
+either as a pass or leave it out.
 
 **Mark every alt text and accessible name you wrote as DRAFT needing human
 confirmation.** You cannot see the image, and hallucinated image descriptions

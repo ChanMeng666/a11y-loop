@@ -101,8 +101,19 @@ export function trimFinding(f) {
     selector: f.selector,
     message: f.message,
     helpUrl: f.helpUrl ?? null,
+    evidence: f.evidence ?? null,
+    ...(f.confidence ? { confidence: f.confidence } : {}),
+    ...(f.routedFrom ? { routedFrom: f.routedFrom } : {}),
+    ...(f.note ? { note: f.note } : {}),
+    ...(f.noteUrl ? { noteUrl: f.noteUrl } : {}),
     ...(f.suggestions?.length ? { suggestions: f.suggestions } : {}),
   };
+}
+
+/** A root-cause cluster without its full member list, which the report keeps. */
+export function trimCluster(c) {
+  const { fingerprints, seq, ...rest } = c;
+  return rest;
 }
 
 function capped(findings = []) {
@@ -120,8 +131,10 @@ export function auditToolResult(report, { runId, reportPath = null }) {
   const bestPractice = capped(report.findings.bestPractice);
   const omitted = violations.omitted + needsReview.omitted + bestPractice.omitted;
 
+  const clusters = report.clusters ?? [];
   return {
     runId,
+    schemaVersion: report.schemaVersion ?? 1,
     target: { type: report.target.type, value: report.target.type === 'html' ? '(inline html)' : report.target.value },
     verdict: summary.verdict,
     summary,
@@ -132,6 +145,7 @@ export function auditToolResult(report, { runId, reportPath = null }) {
       needsReview: needsReview.items,
       bestPractice: bestPractice.items,
     },
+    clusters: clusters.slice(0, MAX_FINDINGS_PER_BUCKET).map(trimCluster),
     ...(omitted
       ? {
           omitted: {
@@ -154,6 +168,7 @@ export function diffToolResult(diff, { before, after }) {
   const fixed = list(diff.fixed);
   const added = list(diff.new);
   const remaining = list(diff.remaining);
+  const reclassified = list(diff.reclassified ?? []);
   return {
     before,
     after,
@@ -164,8 +179,16 @@ export function diffToolResult(diff, { before, after }) {
     fixed: fixed.items,
     new: added.items,
     remaining: remaining.items,
-    ...(fixed.omitted + added.omitted + remaining.omitted
-      ? { omitted: { fixed: fixed.omitted, new: added.omitted, remaining: remaining.omitted } }
+    reclassified: reclassified.items,
+    ...(fixed.omitted + added.omitted + remaining.omitted + reclassified.omitted
+      ? {
+          omitted: {
+            fixed: fixed.omitted,
+            new: added.omitted,
+            remaining: remaining.omitted,
+            reclassified: reclassified.omitted,
+          },
+        }
       : {}),
     coverage: COVERAGE.statement,
   };
@@ -261,7 +284,7 @@ export function createServer({ log = () => {} } = {}) {
       title: 'Audit a page in a real browser',
       description: `Audit one page in headless Chromium with axe-core and a11y-loop's own checks (keyboard reachability, focus visibility, dialog focus trap, div-as-button, link text, reduced motion, reflow, target size), across five rendering passes: ${PASSES.map((p) => p.name).join(', ')}. Give exactly one of url, file or html. Files and html are served over http on 127.0.0.1, never file://.
 
-Returns the same report \`a11y-loop audit --json\` writes, trimmed: a runId, the verdict, summary counts, violations / needsReview / bestPractice findings (each with fingerprint, ruleId, WCAG criterion, selector, passes, message, helpUrl, and colour suggestions for contrast failures), the manual checklist of what a person must still verify, and the coverage statement. Only violations are failures; best-practice findings never are.
+Returns the same report \`a11y-loop audit --json\` writes, trimmed: a runId, the verdict, summary counts, violations / needsReview / bestPractice findings (each with fingerprint, ruleId, WCAG criterion, selector, passes, message, helpUrl, evidence tier, and colour suggestions for contrast failures), root-cause clusters (one cause behind many rows, so the fix is planned once), the manual checklist of what a person must still verify, and the coverage statement. Only violations are failures; best-practice findings never are.
 
 Fix, audit again, then call a11y_loop_diff with both runIds. If the browser is missing the result is an error naming the fix; a11y_loop_doctor explains more.
 
@@ -308,7 +331,7 @@ Example: {"html": "<main><h1>Settings</h1><button></button></main>"}`,
     'a11y_loop_diff',
     {
       title: 'Compare two audits',
-      description: `Compare two audit reports by finding fingerprint and classify every violation as FIXED, NEW or REMAINING. The same logic as \`a11y-loop diff --json\`.
+      description: `Compare two audit reports by finding fingerprint and classify every violation as FIXED, NEW or REMAINING, and list as RECLASSIFIED a violation that now appears under needs-review (moved, not fixed). The same logic as \`a11y-loop diff --json\`.
 
 converged is true when nothing is new and nothing remains. regression is true when anything is new, even if the total went down: a run that fixes six things and breaks one has broken one.
 

@@ -237,7 +237,23 @@ of the other ~87%.
 - **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
   a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
   written up in [Field Notes](#-field-notes), with what to check before dismissing one. Verifying a
-  row is not the same as suppressing it, and a11y-loop suppresses nothing.
+  row is not the same as suppressing it, and a11y-loop suppresses nothing. The forced-colors
+  contrast rows are the one class handled in code: they are reported under `needsReview` rather
+  than as violations, each with a note that links to its field note, and they are still in every
+  report.
+- **Every finding says how it was established.** `evidence` is `measured` when a value was read
+  off the rendered page and compared with a threshold or a required attribute (every axe
+  violation, and a11y-loop's static checks), `inferred` when the failure is a conclusion from what
+  a driven, bounded probe did or did not see (a Tab walk that never reached an element, a dialog
+  that let focus out, Escape that did not close it, a click handler with no keyboard path), and
+  `needs-review` for every `needsReview` row. An `inferred` row is still a blocking violation. When
+  the probe behind it ran out of budget, the row also carries `confidence: { level: "reduced",
+  reason }`. Evidence never changes the exit code.
+- **Many rows, one cause, said once.** The report's `clusters` group rows that share a root
+  cause: a colour pair for contrast (rule, foreground, background, required ratio), a selector
+  pattern for everything else. Each cluster names the cause, gives the fix once, and lists its
+  members by fingerprint. Every row stays in `findings`. On `demo/before`, 12 colour pairs account
+  for its 104 contrast violations.
 - **SARIF caveat, stated honestly:** GitHub Code Scanning only displays SARIF results that carry a
   file-path location. a11y-loop's findings are located by rendered URL + CSS selector, which
   Code Scanning drops on ingestion — a naive upload produces an empty Code Scanning view. SARIF
@@ -263,22 +279,39 @@ leaves `-webkit-text-fill-color` at the author's value — on every element, inc
 never declared it. So in the forced-colors pass axe compares the author's foreground against the
 forced background.
 
-Dark-on-light text survives that comparison. Light-on-dark text collapses:
+Dark-on-light text survives that comparison. Light-on-dark text collapses. Measured on
+[`test/fixtures/fixture-forced-colors-dark-surface.html`](../test/fixtures/fixture-forced-colors-dark-surface.html)
+at axe-core 4.14.0:
 
 | Element | Default pass | forced-colors pass |
 |---|---|---|
-| `#6d6975` text on `#ffffff` | 4.9:1, silent | silent |
-| `#e8e6ef` text on a `#141218` card | 14:1, silent | `color-contrast`, 1.23:1 — *"foreground color: #e8e6ef, background color: #ffffff"* |
+| `#6d6975` text on `#ffffff` | 5.34:1, silent | silent |
+| `#e8e6ef` text on a `#141218` card | 15.04:1, silent | `color-contrast`, 1.23:1 — *"foreground color: #e8e6ef, background color: #ffffff"* |
+
+Up to 0.3.2 this table gave 4.9:1 and 14:1 for the default pass. a11y-loop's own contrast math
+gives 5.34:1 and 15.04:1 for those pairs, which is what the fixture now pins.
 
 The tell is inside the finding: the reported foreground is the author's color while the background
 is the forced `#ffffff` or `#000000`. On a page with any dark surface this arrives as a cluster
 covering every line of text on it. On one production page it accounted for the large majority of a
 153-finding run.
 
-**Do not apply the suggestion.** It is computed from the same mismatched pair: for the row above it
-proposes darkening `#e8e6ef` to `#77757d`, which then fails in the default pass. **Do not suppress
-the rule either.** Confirm the pair in the default and dark passes, check forced colors by eye or
-with the OS setting, and say in the hand-off that forced colors was reviewed rather than measured.
+**a11y-loop now reports these rows under `needsReview`, not as violations.** A `color-contrast`
+or `color-contrast-enhanced` violation from the forced-colors pass, and only from that pass, is
+routed there by rule id and pass name. (`color-contrast-enhanced` is AAA and not in the default
+run; it reads the foreground the same way, so it is routed too.) The row carries `routedFrom: "violation"`, a `note` with the explanation above and a
+`noteUrl` pointing here. It carries no colour suggestion, because one computed from the mismatched
+pair fails in the default pass: for the row above it would propose darkening `#e8e6ef` to `#77757d`.
+The same element failing in the default, dark, reduced-motion or reflow pass is still a violation,
+because a violation from any pass outranks this. On the fixture above the page went from one
+violation and exit 1 to zero violations and exit 0, with the row still reported. On `demo/before`
+and on every other fixture no row moved: each forced-colors contrast failure there also fails in
+another pass. `diff` lists a row that moved this way as `RECLASSIFIED`, not `FIXED`, so diffing a
+report from 0.3.2 or earlier against a new one does not count it as a fix.
+
+**Do not suppress the rule.** Confirm the pair in the default and dark passes, check forced colors
+by eye or with the OS setting, and say in the hand-off that forced colors was reviewed rather than
+measured.
 
 ### `div-button` on `<body>` or a portal root is an outside-press handler
 
@@ -310,7 +343,10 @@ app honors the preference rather than ignoring it.
 The keyboard survey presses Tab up to `MAX_TAB_STEPS` (60) times, then reports everything
 `tabbable()` expected but the walk never reached. Past 60 tab stops in one state, the tail of the
 document is reported unreachable because the budget ended, not because focus could not get there.
-The rule's own message names the budget.
+The rule's own message names the budget, and when the walk used every press without wrapping, each
+`keyboard-unreachable` row also carries `confidence: { level: "reduced", reason }` saying so. The
+dialog trap probe does the same for `dialog-focus-not-trapped` when the verdict came from its wrap
+budget (`MAX_WRAP_TICKS`) rather than from focus reaching real content outside the dialog.
 
 A cluster of unreachable findings that is contiguous and sits at the end of document order is the
 signature. Confirm by hand with the five-minute keyboard test in
@@ -757,6 +793,7 @@ a11y-loop plan-check --file plan.md
 | `--headed` | audit | run a visible browser, for debugging |
 | `--no-best-practice` | audit | omit axe best-practice rules (never blocking either way) |
 | `--quiet` | audit | one-line summary only |
+| `--verbose` | audit | list every row of every cluster; by default a cluster prints one example and "+N more like this" |
 | `--large` | contrast | large-scale text thresholds (≥24px, or ≥18.5px bold) |
 | `--ui` | contrast | non-text / UI component threshold, 3:1, SC 1.4.11 |
 | `--fix` | contrast | suggest passing colors, lighter and darker, in OKLCh |
@@ -764,6 +801,20 @@ a11y-loop plan-check --file plan.md
 | `--text "<plan>"` | plan-check | the plan as an argument; with neither `--file` nor `--text`, a piped stdin is read |
 
 Run `a11y-loop --help` for the full, current reference.
+
+### Reading a report
+
+The terminal output starts with a summary: what the exit code means, violations by evidence tier,
+needs-review and best-practice counts, how many colour pairs and clusters account for the
+violations, and how many manual checks remain. Root causes come next, one block per cluster with
+its cause, an example, the fix and `+N more like this`, then the rows no cluster explains. On
+`demo/before` that is 356 lines where it used to be 565, for the same 159 violations.
+
+The JSON report (`--out`, `--json`) is `schemaVersion: 2`. Everything from version 1 is where it
+was; version 2 adds `evidence` and, when they apply, `confidence`, `note`, `noteUrl`,
+`routedFrom` and `data.contrast` on findings, a top-level `clusters` array, and
+`summary.evidence`, `summary.clusters` and `summary.colourPairs`. SARIF results carry a message
+built from the finding, its measured values and its evidence tier.
 
 ### MCP server
 

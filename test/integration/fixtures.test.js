@@ -67,7 +67,11 @@ function findingsFor(buckets, item) {
 }
 
 /** Pass name a `requiresPass` value maps to, for the optional pass-membership check. */
-const PASS_NAME = { 'viewport-320': 'reflow', 'reduced-motion': 'reduced-motion' };
+const PASS_NAME = {
+  'viewport-320': 'reflow',
+  'reduced-motion': 'reduced-motion',
+  'forced-colors': 'forced-colors',
+};
 
 describe('fixture matrix (test/fixtures/manifest.json, real engine)', () => {
   for (const [file, entry] of Object.entries(manifest.fixtures)) {
@@ -120,6 +124,14 @@ describe('fixture matrix (test/fixtures/manifest.json, real engine)', () => {
             assert.ok(
               found.some((f) => f.passes?.includes(PASS_NAME[item.requiresPass])),
               `${file}: "${item.ruleIdOrCheck}" should be tagged with the ${PASS_NAME[item.requiresPass]} pass`,
+            );
+          }
+          if (item.routedFrom) {
+            // A row a documented rule moved out of violations must say so,
+            // and say where the explanation is.
+            assert.ok(
+              found.some((f) => f.routedFrom === item.routedFrom && f.note && f.noteUrl),
+              `${file}: "${item.ruleIdOrCheck}" should carry routedFrom "${item.routedFrom}" with a note and noteUrl`,
             );
           }
           if (item.wcag22Only) {

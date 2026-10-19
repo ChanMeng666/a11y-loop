@@ -135,14 +135,66 @@ export function contrastSuggestionsForNode(node) {
 
 const CONTRAST_RULES = new Set(['color-contrast', 'color-contrast-enhanced']);
 
+/** The field note a routed forced-colors contrast row points at. */
+export const FORCED_COLORS_NOTE_URL =
+  'https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md' +
+  '#color-contrast-in-the-forced-colors-pass-is-usually-not-a-defect';
+
+export const FORCED_COLORS_NOTE =
+  "axe-core reads the foreground from -webkit-text-fill-color before color, and Chromium's " +
+  'forced-colors emulation forces color and the background but leaves -webkit-text-fill-color ' +
+  "at the author's value, so this pass compares the author's foreground against the forced " +
+  'background. Light-on-dark text reads near 1:1 here whatever its real contrast. Confirm the ' +
+  'pair in the default and dark passes, check forced colors by eye or with the OS setting, and ' +
+  'do not apply a colour derived from this pair: it fails in the default pass.';
+
+/**
+ * Should this axe violation be reported as needs-review instead?
+ *
+ *  - target-size, always: axe ships the rule disabled because of a documented
+ *    false-positive trail with overlapping and translucent targets.
+ *  - color-contrast and color-contrast-enhanced (CONTRAST_RULES) in the
+ *    forced-colors pass: see FORCED_COLORS_NOTE. Both read the foreground the
+ *    same way, so both carry the same artifact. color-contrast-enhanced is AAA
+ *    and not in the WCAG_TAGS run today; it is routed so that turning it on
+ *    cannot bring the artifact back. Only the forced-colors sighting moves. The same element failing in the default,
+ *    dark, reduced-motion or reflow pass is still a violation, because
+ *    dedupeFindings lets a violation from any pass outrank this.
+ *
+ * @returns {null | {note?:string, noteUrl?:string, routed:boolean}}
+ */
+export function reviewRouting(ruleId, passName) {
+  if (ruleId === 'target-size') return { routed: false };
+  if (CONTRAST_RULES.has(ruleId) && passName === 'forced-colors') {
+    return { routed: true, note: FORCED_COLORS_NOTE, noteUrl: FORCED_COLORS_NOTE_URL };
+  }
+  return null;
+}
+
+/**
+ * The values axe measured for a contrast node: the pair, the ratio and the
+ * threshold. Kept on the finding so a row can be clustered by its cause and a
+ * reader can see the numbers without re-running anything.
+ */
+export function contrastDataForNode(node) {
+  const data = [...(node.any ?? []), ...(node.all ?? []), ...(node.none ?? [])].find(
+    (check) => check.data && (check.data.fgColor || check.data.bgColor || check.data.messageKey),
+  )?.data;
+  if (!data) return undefined;
+  const out = {};
+  for (const key of ['fgColor', 'bgColor', 'contrastRatio', 'expectedContrastRatio', 'fontSize', 'fontWeight', 'messageKey']) {
+    if (data[key] !== undefined && data[key] !== null) out[key] = data[key];
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 /** Convert one axe result entry into a11y-loop findings. */
 export function findingsFromAxeResult(result, { severity, passName, state }) {
   return result.nodes.map((node) => {
-    // target-size findings are ALWAYS downgraded: axe ships the rule disabled
-    // because of a documented false-positive trail with overlapping and
-    // translucent targets.
-    const effectiveSeverity =
-      result.id === 'target-size' ? SEVERITY.NEEDS_REVIEW : severity;
+    const routing = severity === SEVERITY.VIOLATION ? reviewRouting(result.id, passName) : null;
+    const effectiveSeverity = routing ? SEVERITY.NEEDS_REVIEW : severity;
+    const isContrast = CONTRAST_RULES.has(result.id);
+    const contrast = isContrast ? contrastDataForNode(node) : undefined;
 
     return makeFinding({
       ruleId: result.id,
@@ -156,9 +208,15 @@ export function findingsFromAxeResult(result, { severity, passName, state }) {
         ? `${result.help}. ${node.failureSummary.replace(/\s+/g, ' ')}`
         : result.help,
       helpUrl: result.helpUrl,
-      suggestions: CONTRAST_RULES.has(result.id) ? contrastSuggestionsForNode(node) : undefined,
+      // A routed forced-colors row carries no suggestion: it would be computed
+      // from the same mismatched pair, and it fails in the default pass.
+      suggestions: isContrast && !routing?.routed ? contrastSuggestionsForNode(node) : undefined,
       passes: [passName],
       state,
+      data: contrast ? { contrast } : undefined,
+      note: routing?.note,
+      noteUrl: routing?.noteUrl,
+      routedFrom: routing?.routed ? SEVERITY.VIOLATION : undefined,
     });
   });
 }

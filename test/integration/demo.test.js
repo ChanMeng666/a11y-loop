@@ -41,11 +41,12 @@
  *     axe-core evaluates the pre-forced-colors author text colour against
  *     the post-forced-colors flattened background, producing a false
  *     failure — every other pass, and a plain default axe.run(), correctly
- *     call the same element undeterminable. Fixed in
- *     src/lib/finding.js (dedupeFindings / FORCED_COLORS_FRAGILE_RULES):
- *     a lone, uncorroborated forced-colors violation no longer overrides an
- *     established needs-review verdict from every other pass. Regression
- *     test: test/integration/forced-colors-gradient.test.js.
+ *     call the same element undeterminable. First fixed in dedupeFindings
+ *     (a lone forced-colors violation could not override needs-review from
+ *     the other passes); since the forced-colors routing in
+ *     src/lib/axe-runner.js (reviewRouting), every contrast-rule violation
+ *     from that pass is needs-review before dedupe, and that guard was
+ *     removed. Regression test: test/integration/forced-colors-gradient.test.js.
  *
  * With bug 5 fixed, demo/after audits fully clean — zero violations, exit 0
  * — exactly as FIXES.md claims.

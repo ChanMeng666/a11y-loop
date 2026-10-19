@@ -13,22 +13,38 @@ leaves `-webkit-text-fill-color` at the author's value — on every element, inc
 never declared it. So in the forced-colors pass axe compares the author's foreground against the
 forced background.
 
-Dark-on-light text survives that comparison. Light-on-dark text collapses:
+Dark-on-light text survives that comparison. Light-on-dark text collapses. Measured on the
+repository's `test/fixtures/fixture-forced-colors-dark-surface.html` at axe-core 4.14.0:
 
 | Element | Default pass | forced-colors pass |
 |---|---|---|
-| `#6d6975` text on `#ffffff` | 4.9:1, silent | silent |
-| `#e8e6ef` text on a `#141218` card | 14:1, silent | `color-contrast`, 1.23:1 — *"foreground color: #e8e6ef, background color: #ffffff"* |
+| `#6d6975` text on `#ffffff` | 5.34:1, silent | silent |
+| `#e8e6ef` text on a `#141218` card | 15.04:1, silent | `color-contrast`, 1.23:1 — *"foreground color: #e8e6ef, background color: #ffffff"* |
+
+Up to 0.3.2 this table gave 4.9:1 and 14:1 for the default pass. a11y-loop's own contrast math
+gives 5.34:1 and 15.04:1 for those pairs, which is what the fixture now pins.
 
 The tell is inside the finding: the reported foreground is the author's color while the background
 is the forced `#ffffff` or `#000000`. On a page with any dark surface this arrives as a cluster
 covering every line of text on it. On one production page it accounted for the large majority of a
 153-finding run.
 
-**Do not apply the suggestion.** It is computed from the same mismatched pair: for the row above it
-proposes darkening `#e8e6ef` to `#77757d`, which then fails in the default pass. **Do not suppress
-the rule either.** Confirm the pair in the default and dark passes, check forced colors by eye or
-with the OS setting, and say in the hand-off that forced colors was reviewed rather than measured.
+**a11y-loop now reports these rows under `needsReview`, not as violations.** A `color-contrast`
+or `color-contrast-enhanced` violation from the forced-colors pass, and only from that pass, is
+routed there by rule id and pass name. (`color-contrast-enhanced` is AAA and not in the default
+run; it reads the foreground the same way, so it is routed too.) The row carries `routedFrom: "violation"`, a `note` with the explanation above and a
+`noteUrl` pointing here. It carries no colour suggestion, because one computed from the mismatched
+pair fails in the default pass: for the row above it would propose darkening `#e8e6ef` to `#77757d`.
+The same element failing in the default, dark, reduced-motion or reflow pass is still a violation,
+because a violation from any pass outranks this. On the fixture above the page went from one
+violation and exit 1 to zero violations and exit 0, with the row still reported. On `demo/before`
+and on every other fixture no row moved: each forced-colors contrast failure there also fails in
+another pass. `diff` lists a row that moved this way as `RECLASSIFIED`, not `FIXED`, so diffing a
+report from 0.3.2 or earlier against a new one does not count it as a fix.
+
+**Do not suppress the rule.** Confirm the pair in the default and dark passes, check forced colors
+by eye or with the OS setting, and say in the hand-off that forced colors was reviewed rather than
+measured.
 
 ## `div-button` on `<body>` or a portal root is an outside-press handler
 
@@ -60,7 +76,10 @@ app honors the preference rather than ignoring it.
 The keyboard survey presses Tab up to 60 times, then reports everything the page said should be
 reachable but the walk never reached. Past 60 tab stops in one state, the tail of the document is
 reported unreachable because the budget ended, not because focus could not get there. The rule's
-own message names the budget.
+own message names the budget, and when the walk used every press without wrapping, each
+`keyboard-unreachable` row also carries `confidence: { level: "reduced", reason }` saying so. The
+dialog trap probe does the same for `dialog-focus-not-trapped` when the verdict came from its wrap
+budget rather than from focus reaching real content outside the dialog.
 
 A cluster of unreachable findings that is contiguous and sits at the end of document order is the
 signature. Confirm by hand with the five-minute keyboard test in

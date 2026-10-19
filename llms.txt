@@ -35,8 +35,9 @@ of the project for large language models and AI agents.
   `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hooks run only in
   Claude Code: on Cowork and the Claude apps, where the plugin directory also lists it, only the
   skill's rules apply and nothing is verified.
-- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items (an MCP
-  server) do not exist yet; do not describe them as if they did
+- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items do not
+  exist yet; do not describe them as if they did. Items marked "on main" are not in a tagged
+  release until the CHANGELOG has a version section for them
 - Privacy: nothing is collected or sent anywhere; see PRIVACY.md
   (https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md)
 
@@ -126,9 +127,21 @@ audit means "no automatically detectable failures in the states that were driven
 anything is accessible or conformant.
 
 The engine is also wrong in a few known places, and those are documented rather than suppressed.
-Read Field Notes (above) before concluding that a forced-colors `color-contrast` cluster, a
-`div-button` row on `<body>`, or a run of `keyboard-unreachable` findings is a defect. Checking a
-row against its explanation is part of the loop; dropping rules is not, and a11y-loop drops none.
+Read Field Notes (above) before concluding that a `div-button` row on `<body>` or a run of
+`keyboard-unreachable` findings is a defect. Forced-colors `color-contrast` rows arrive under
+`needsReview` with a `note` and `routedFrom: "violation"`, never as violations, and they are still
+reported. Checking a row against its explanation is part of the loop; dropping rules is not, and
+a11y-loop drops none.
+
+## Reading a report
+
+JSON reports are `schemaVersion: 2` and only add to version 1. Each finding has `evidence`:
+`measured` (a value read off the page against a threshold), `inferred` (concluded from a bounded
+keyboard or dialog probe, still a blocking violation, with `confidence` when the probe ran out of
+budget) or `needs-review`. The top-level `clusters` array groups rows by shared cause (a colour
+pair for contrast, a selector pattern otherwise) and gives the fix once; every row also stays in
+`findings`. Count failures in rows, not clusters. The terminal output prints the summary and the
+clusters first; `--verbose` lists every cluster member.
 
 ## For agents
 

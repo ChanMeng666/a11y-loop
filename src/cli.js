@@ -38,6 +38,7 @@ const OPTIONS = {
   'no-best-practice': { type: 'boolean', default: false },
   interact: { type: 'string' },
   quiet: { type: 'boolean', default: false },
+  verbose: { type: 'boolean', default: false },
   file: { type: 'string' },
   html: { type: 'string' },
   text: { type: 'string' },
@@ -72,6 +73,7 @@ AUDIT OPTIONS
   --headed               run a visible browser (debugging)
   --no-best-practice     omit axe best-practice rules (they are never blocking either way)
   --quiet                one-line summary only
+  --verbose              list every row of every cluster instead of one example each
 
 CONTRAST OPTIONS
   --large                large-scale text thresholds (>=24px, or >=18.5px bold)
