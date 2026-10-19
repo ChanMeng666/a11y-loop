@@ -6,6 +6,8 @@
  * that folder: nothing it runs may reach outside it. Two things it needs live
  * canonically elsewhere in the repo, so they are copied in:
  *
+ *   - `skills/a11y-loop/evals/native/` + `trigger-evals.json` -> `plugin/evals/`
+ *                                   (the native `claude plugin eval` suite)
  *   - `skills/a11y-loop/`        -> `plugin/skills/a11y-loop/`  (minus `evals/`,
  *                                   which is development material the skill
  *                                   never loads)
@@ -25,13 +27,69 @@ import { fileURLToPath } from 'node:url';
 export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Directories copied whole, and the subdirectories of each that stay out of the plugin. */
-const DIRS = [{ from: 'skills/a11y-loop', to: 'plugin/skills/a11y-loop', exclude: ['evals'] }];
+const DIRS = [
+  { from: 'skills/a11y-loop', to: 'plugin/skills/a11y-loop', exclude: ['evals'] },
+  // The hand-written behaviour cases of the native `claude plugin eval` suite.
+  // The trigger cases are generated from trigger-evals.json (see `generatedFiles`).
+  { from: 'skills/a11y-loop/evals/native', to: 'plugin/evals', exclude: [], generated: true },
+];
 
 /** Single files copied as they are. */
 const FILES = [
   { from: 'src/lib/plan-gate.js', to: 'plugin/hooks/lib/plan-gate.mjs' },
   { from: 'LICENSE', to: 'plugin/LICENSE' },
 ];
+
+/**
+ * The trigger-accuracy cases of the native eval suite, built from
+ * `trigger-evals.json` so the prompts have one source. Returns
+ * `{ [path relative to plugin/evals]: file text }`.
+ *
+ * A should-trigger case asserts the `a11y-loop` skill fires; with-only, because
+ * the no-plugin arm cannot fire a skill it does not have, so the grader is a
+ * plugin-fired indicator rather than part of the score. A should-not-trigger
+ * case asserts it does not, in both arms.
+ */
+export function generatedFiles(root = REPO) {
+  const queries = JSON.parse(readFileSync(path.join(root, 'skills/a11y-loop/evals/trigger-evals.json'), 'utf8'));
+  const out = {};
+  queries.forEach((q, i) => {
+    const id = `trigger-${String(i + 1).padStart(2, '0')}-${q.should_trigger ? 'fires' : 'quiet'}`;
+    out[`${id}/prompt.md`] =
+      `---
+name: ${id}
+tags: [trigger, ${q.should_trigger ? 'should-trigger' : 'should-not-trigger'}]
+runs: 1
+max_turns: 3
+allowed_tools: [Read, Glob, Grep, Skill]
+---
+
+${q.query}
+`;
+    out[`${id}/graders/skill-fired.md`] = q.should_trigger
+      ? `---
+type: tool_used
+tool: Skill
+input_match: '"skill"\\s*:\\s*"(?:[\\w-]+:)?a11y-loop"'
+arm: with-only
+---
+
+The a11y-loop skill is invoked for this prompt.
+`
+      : `---
+type: tool_used
+tool: Skill
+input_match: '"skill"\\s*:\\s*"(?:[\\w-]+:)?a11y-loop"'
+min: 0
+max: 0
+arm: both
+---
+
+The a11y-loop skill is NOT invoked for this prompt.
+`;
+  });
+  return out;
+}
 
 /** Every file under `dir`, relative to it, with forward slashes. */
 function walk(dir, exclude = [], prefix = '') {
@@ -60,6 +118,12 @@ export function copyPlan(root = REPO) {
     const sources = walk(path.join(root, d.from), d.exclude);
     for (const rel of sources) pairs.push({ from: `${d.from}/${rel}`, to: `${d.to}/${rel}` });
     const wanted = new Set(sources);
+    if (d.generated) {
+      for (const [rel, content] of Object.entries(generatedFiles(root))) {
+        pairs.push({ from: 'skills/a11y-loop/evals/trigger-evals.json', to: `${d.to}/${rel}`, content });
+        wanted.add(rel);
+      }
+    }
     for (const rel of walk(path.join(root, d.to))) if (!wanted.has(rel)) stale.push(`${d.to}/${rel}`);
   }
   return { pairs, stale };
@@ -76,10 +140,10 @@ const normalise = (buf) => buf.toString('utf8').replace(/\r\n/g, '\n');
 export function drift(root = REPO) {
   const { pairs, stale } = copyPlan(root);
   const problems = [];
-  for (const { from, to } of pairs) {
+  for (const { from, to, content } of pairs) {
     const dest = path.join(root, to);
     if (!existsSync(dest)) problems.push(`missing: ${to} (copy of ${from})`);
-    else if (normalise(readFileSync(path.join(root, from))) !== normalise(readFileSync(dest)))
+    else if (normalise(content ?? readFileSync(path.join(root, from))) !== normalise(readFileSync(dest)))
       problems.push(`differs: ${to} (copy of ${from})`);
   }
   for (const s of stale) problems.push(`stale: ${s} (no longer in its source)`);
@@ -88,10 +152,10 @@ export function drift(root = REPO) {
 
 export function sync(root = REPO) {
   const { pairs, stale } = copyPlan(root);
-  for (const { from, to } of pairs) {
+  for (const { from, to, content } of pairs) {
     const dest = path.join(root, to);
     mkdirSync(path.dirname(dest), { recursive: true });
-    writeFileSync(dest, readFileSync(path.join(root, from)));
+    writeFileSync(dest, content ?? readFileSync(path.join(root, from)));
   }
   for (const s of stale) {
     rmSync(path.join(root, s));

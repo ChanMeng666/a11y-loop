@@ -77,6 +77,13 @@ appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked t
 `npm run sync-plugin`. `test/unit/plugin-sync.test.js` fails while any copy differs from its
 source. `plugin/README.md` is not generated: edit it directly.
 
+### Skill evals
+
+A change to the skill's `description` or to `SKILL.md` §0-§3 should be measured, not guessed: run
+`npm run eval:skill` (real API spend, not part of CI) and put the with/without numbers in the PR. A
+change to `trigger-evals.json` or `skills/a11y-loop/evals/native/` needs `npm run sync-plugin`;
+`npm test` checks the suite's structure without a model.
+
 ## Releasing
 
 Releases are cut by pushing a version tag. There are no npm tokens anywhere in this project — not
