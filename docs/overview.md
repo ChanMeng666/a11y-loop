@@ -556,8 +556,8 @@ It contributes:
   reordering, hover-only menus, infinite scroll, canvas-rendered data, time limits, CAPTCHA, autoplay.
 - `/a11y-plan`, to ask for that section directly.
 
-Deliberate limits: it **defers** rather than allows on every non-deny path, so it never suppresses
-your own plan approval; it declines a given plan **at most once**, so it cannot loop; a plan with no
+Deliberate limits: it never returns `allow`, and on every non-deny path it returns at most a reminder with no
+permission decision, so it never suppresses your own plan approval; it declines a given plan **at most once**, so it cannot loop; a plan with no
 UI in it is passed silently; and `A11Y_LOOP_PLAN_GATE=off` disables it. The gate checks that the
 question was asked — it cannot check that the answer is any good. That is still `a11y-loop audit`
 and a human.
@@ -648,7 +648,7 @@ claude plugin validate . --strict   # shape only — see AGENTS.md on why this i
 
 Silence and exit 0 is the gate's normal answer, so an example that prints nothing proves nothing:
 the plan has to clear 40 characters and be unambiguously about UI, or you are testing the pass path
-by accident. Re-running the *same* plan returns `defer` rather than `deny` — the loop guard spends
+by accident. Re-running the *same* plan returns a reminder only (no decision) rather than `deny` — the loop guard spends
 each plan's hash once, deliberately — so prefix with `CLAUDE_PLUGIN_DATA="$(mktemp -d)"` for a clean
 verdict. See [`AGENTS.md`](../AGENTS.md) for the rest of the plugin-layer gotchas.
 

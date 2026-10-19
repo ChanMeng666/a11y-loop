@@ -107,8 +107,9 @@ or Playwright will report a missing browser.
   may depend on this layer, and nothing in this layer may appear in `SKILL.md` or `references/` —
   the skill has to stay portable across the 40+ clients that implement the Agent Skills standard.
   The hook's own invariants are documented in its header comment; the load-bearing ones are that it
-  never blocks on its own failure, defers rather than allows, and declines a given plan at most
-  once.
+  never blocks on its own failure, never returns `allow` (off the deny path it returns
+  `additionalContext` with no `permissionDecision` at all, so the user's plan-approval prompt still
+  appears), and declines a given plan at most once.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
   `src/commands/{audit,contrast,diff}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
   `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
@@ -263,8 +264,10 @@ Two ways that command misleads you if you are not careful:
 - **Silence and exit 0 is the gate's normal answer**, so an example that prints nothing proves
   nothing. The plan has to clear 40 characters and be unambiguously about UI, or you are testing
   the pass path by accident.
-- **The second run of the same plan returns `defer`, not `deny`** — the loop guard spends each
-  plan's hash once, on purpose. That is correct behavior, not a broken hook. Point
+- **The second run of the same plan returns `additionalContext` only, not `deny`** — the loop guard
+  spends each plan's hash once, on purpose, and the reminder is demoted to context with no
+  `permissionDecision` key. That is correct behavior, not a broken hook. (`defer` is not used: Claude
+  Code honors it only under `-p` and ignores `additionalContext` alongside it.) Point
   `CLAUDE_PLUGIN_DATA` at a fresh directory to get a clean verdict:
   ```bash
   echo "$payload" | CLAUDE_PLUGIN_DATA="$(mktemp -d)" node hooks/plan-gate.mjs

@@ -167,19 +167,19 @@ describe('evaluate', () => {
     assert.equal(v.spendHash, true);
   });
 
-  test('defers rather than allows, so the user still approves the plan', () => {
-    assert.equal(evaluate({ ...base, plan: BACKEND_PLAN }).decision, 'defer');
+  test('makes no decision rather than allowing, so the user still approves the plan', () => {
+    assert.equal(evaluate({ ...base, plan: BACKEND_PLAN }).decision, 'none');
   });
 
   test('passes a plan that already answered the question', () => {
     const v = evaluate({ ...base, plan: UI_PLAN + FULL_A11Y });
-    assert.equal(v.decision, 'defer');
+    assert.equal(v.decision, 'none');
     assert.equal(v.why, 'already-covered');
   });
 
   test('demotes to context on a second sighting of the same plan', () => {
     const v = evaluate({ ...base, plan: UI_PLAN, seenBefore: true });
-    assert.equal(v.decision, 'defer');
+    assert.equal(v.decision, 'none');
     assert.equal(v.why, 'repeat-plan');
     assert.ok(v.additionalContext);
     assert.equal(v.spendHash, false);
@@ -187,7 +187,7 @@ describe('evaluate', () => {
 
   test('stops denying once the session cap is reached', () => {
     const v = evaluate({ ...base, plan: UI_PLAN, denyCount: 3 });
-    assert.equal(v.decision, 'defer');
+    assert.equal(v.decision, 'none');
     assert.equal(v.why, 'session-cap');
   });
 
@@ -237,8 +237,32 @@ describe('the hook as Claude Code invokes it', () => {
     assert.equal(runGate(hookInput(UI_PLAN), { dataDir }).permissionDecision, 'deny');
 
     const second = runGate(hookInput(UI_PLAN), { dataDir });
-    assert.equal(second.permissionDecision, 'defer');
+    assert.equal(second.hookEventName, 'PreToolUse');
     assert.ok(second.additionalContext);
+    // No decision key at all: defer is ignored interactively (and drops the
+    // context with it), and allow would skip the user's plan-approval prompt.
+    assert.equal(Object.hasOwn(second, 'permissionDecision'), false);
+    assert.equal(Object.hasOwn(second, 'permissionDecisionReason'), false);
+  });
+
+  test('never returns allow or defer on any path', () => {
+    const dataDir = mkdtempSync(path.join(tmpdir(), 'a11y-gate-'));
+    const runs = [
+      runGate(hookInput(UI_PLAN), { dataDir }),
+      runGate(hookInput(UI_PLAN), { dataDir }),
+      runGate(hookInput(BACKEND_PLAN)),
+      runGate(hookInput(UI_PLAN + FULL_A11Y)),
+      runGate(''),
+    ];
+    for (const out of runs) {
+      assert.notEqual(out?.permissionDecision, 'allow');
+      assert.notEqual(out?.permissionDecision, 'defer');
+    }
+    for (const plan of [UI_PLAN, BACKEND_PLAN, UI_PLAN + FULL_A11Y]) {
+      for (const seenBefore of [false, true]) {
+        assert.ok(['deny', 'none'].includes(evaluate({ plan, seenBefore, denyCount: 0 }).decision));
+      }
+    }
   });
 
   test('says nothing about a backend plan', () => {
