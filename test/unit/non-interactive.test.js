@@ -22,7 +22,7 @@ import { serializeReport } from '../../src/lib/format/json.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CLI = join(REPO, 'src', 'cli.js');
-const HOOK = join(REPO, 'hooks', 'plan-gate.mjs');
+const HOOK = join(REPO, 'plugin', 'hooks', 'plan-gate.mjs');
 
 const UI_PLAN = `Build a React settings page. Add a modal dialog for role changes, a
 members table with per-row actions, tabs across the top and a dark mode toggle
@@ -152,7 +152,7 @@ describe('every subcommand runs with no TTY and never hangs', () => {
     const dataDir = await mkdtemp(join(tmpdir(), 'a11y-gate-'));
     try {
       const r = await runNoTty(HOOK, [], { env: { CLAUDE_PLUGIN_DATA: dataDir, A11Y_LOOP_PLAN_GATE: '' } });
-      assertFinished(r, [0], 'hooks/plan-gate.mjs');
+      assertFinished(r, [0], 'plugin/hooks/plan-gate.mjs');
       assert.equal(r.stdout.trim(), '');
     } finally {
       await rm(dataDir, { recursive: true, force: true });

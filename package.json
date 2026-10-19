@@ -12,7 +12,8 @@
   "scripts": {
     "test": "node --test",
     "test:unit": "node --test \"test/unit/*.test.js\"",
-    "test:integration": "node --test \"test/integration/*.test.js\""
+    "test:integration": "node --test \"test/integration/*.test.js\"",
+    "sync-plugin": "node scripts/sync-plugin.mjs"
   },
   "keywords": [
     "accessibility",
@@ -41,9 +42,6 @@
   "files": [
     "src/",
     "skills/",
-    ".claude-plugin/",
-    "hooks/",
-    "commands/",
     "THIRD-PARTY-NOTICES.md"
   ],
   "dependencies": {

@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "a11y-loop",
-      "source": "./",
+      "source": "./plugin",
       "version": "0.3.0",
       "description": "Accessibility in the plan, not after the pull request. Adds §0 plan rules (conformance target, per-component criteria, the product decisions that foreclose accessibility, color tokens before components), standing WCAG 2.2 AA generation rules, and a PreToolUse hook on ExitPlanMode that declines a UI-touching plan with no accessibility content — once, handing back the section to fill in. Verification is the a11y-loop CLI: axe-core in Chromium across default, dark, forced-colors, reduced-motion and 320px passes.",
       "author": {

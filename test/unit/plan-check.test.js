@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { main, EXIT } from '../../src/cli.js';
 import { checkPlan, COVERAGE_ITEMS, PLAN_RULES } from '../../src/lib/plan-gate.js';
 import { readStream, planCheckResult } from '../../src/commands/plan-check.js';
-import { evaluate } from '../../hooks/plan-gate.mjs';
+import { evaluate } from '../../plugin/hooks/plan-gate.mjs';
 
 /** A plan that is unmistakably UI and says nothing about accessibility. */
 const UI_PLAN = `Build a React settings page. Add a modal dialog for role changes, a

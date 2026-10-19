@@ -3,8 +3,12 @@
  *
  * Two callers share this module and must agree byte for byte:
  *
- *   - `hooks/plan-gate.mjs`, the Claude Code PreToolUse hook on ExitPlanMode,
- *     which adds a loop guard, a per-session cap and a kill switch on top;
+ *   - `plugin/hooks/plan-gate.mjs`, the Claude Code PreToolUse hook on
+ *     ExitPlanMode, which adds a loop guard, a per-session cap and a kill
+ *     switch on top. It loads a copy of this file, `plugin/hooks/lib/plan-gate.mjs`,
+ *     because an installed plugin gets only its own folder. Edit this file, then
+ *     run `npm run sync-plugin`; `test/unit/plugin-sync.test.js` fails until you do.
+ *     Keep it free of imports other than `node:` built-ins, or the copy breaks;
  *   - `a11y-loop plan-check`, the stateless CLI any agent or CI job can run.
  *
  * It answers two questions about a plan's text: does it change user interface
