@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **`.claude-plugin/icon.png`**, a 1024×1024 PNG rendered from the brand logo, so the Claude Code plugin directory has a listing icon. The directory reads it only the first time a plugin is saved or submitted there, so it has to ship in the release that is submitted.
 - **CI now installs the packed tarball with `npm i -g` on Ubuntu (Node 20 and 22), macOS and Windows
   and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`
   and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
