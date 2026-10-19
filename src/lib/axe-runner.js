@@ -153,8 +153,11 @@ export const FORCED_COLORS_NOTE =
  *
  *  - target-size, always: axe ships the rule disabled because of a documented
  *    false-positive trail with overlapping and translucent targets.
- *  - color-contrast in the forced-colors pass: see FORCED_COLORS_NOTE. Only the
- *    forced-colors sighting moves. The same element failing in the default,
+ *  - color-contrast and color-contrast-enhanced (CONTRAST_RULES) in the
+ *    forced-colors pass: see FORCED_COLORS_NOTE. Both read the foreground the
+ *    same way, so both carry the same artifact. color-contrast-enhanced is AAA
+ *    and not in the WCAG_TAGS run today; it is routed so that turning it on
+ *    cannot bring the artifact back. Only the forced-colors sighting moves. The same element failing in the default,
  *    dark, reduced-motion or reflow pass is still a violation, because
  *    dedupeFindings lets a violation from any pass outrank this.
  *

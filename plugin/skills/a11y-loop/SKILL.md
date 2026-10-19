@@ -337,7 +337,9 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    A11Y diff --before .a11y/run-1.json --after .a11y/run-2.json
    ```
 
-   `diff` matches by fingerprint and reports FIXED / NEW / REMAINING. NEW means
+   `diff` matches by fingerprint and reports FIXED / NEW / REMAINING, plus
+   RECLASSIFIED for a row a documented rule moved to needsReview (it was not
+   fixed, so never report it as fixed). NEW means
    your fix broke something else. If the same finding alternates between FIXED
    and NEW across iterations you are oscillating — stop, read both findings
    together, and change the approach instead of the value.

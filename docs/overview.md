@@ -297,15 +297,17 @@ covering every line of text on it. On one production page it accounted for the l
 153-finding run.
 
 **a11y-loop now reports these rows under `needsReview`, not as violations.** A `color-contrast`
-violation from the forced-colors pass, and only from that pass, is routed there by rule id and pass
-name. The row carries `routedFrom: "violation"`, a `note` with the explanation above and a
+or `color-contrast-enhanced` violation from the forced-colors pass, and only from that pass, is
+routed there by rule id and pass name. (`color-contrast-enhanced` is AAA and not in the default
+run; it reads the foreground the same way, so it is routed too.) The row carries `routedFrom: "violation"`, a `note` with the explanation above and a
 `noteUrl` pointing here. It carries no colour suggestion, because one computed from the mismatched
 pair fails in the default pass: for the row above it would propose darkening `#e8e6ef` to `#77757d`.
 The same element failing in the default, dark, reduced-motion or reflow pass is still a violation,
 because a violation from any pass outranks this. On the fixture above the page went from one
 violation and exit 1 to zero violations and exit 0, with the row still reported. On `demo/before`
 and on every other fixture no row moved: each forced-colors contrast failure there also fails in
-another pass.
+another pass. `diff` lists a row that moved this way as `RECLASSIFIED`, not `FIXED`, so diffing a
+report from 0.3.2 or earlier against a new one does not count it as a fix.
 
 **Do not suppress the rule.** Confirm the pair in the default and dark passes, check forced colors
 by eye or with the OS setting, and say in the hand-off that forced colors was reviewed rather than

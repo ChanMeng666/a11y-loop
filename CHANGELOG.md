@@ -99,14 +99,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   headline arms ran from a clean directory. The contaminated runs are reported as well. The
   2026-07 report and outputs are kept unchanged in `evals/benchmark-results-2026-07.md` and
   `evals/outputs/2026-07/`.
-- **`color-contrast` rows from the forced-colors pass are now reported under `needsReview`, not as
-  violations.** This changes the exit code for a page whose only violations were those rows: it
+- **`color-contrast` and `color-contrast-enhanced` rows from the forced-colors pass are now
+  reported under `needsReview`, not as violations.** This changes the exit code for a page whose only violations were those rows: it
   now exits 0 where it used to exit 1. axe-core reads the foreground from `-webkit-text-fill-color`
   before `color`, and Chromium's forced-colors emulation leaves that at the author's value, so
   light-on-dark text was compared against a forced white background (the Field Note in
-  `docs/overview.md`). A contrast-rule violation from the `forced-colors` pass, and only from that
-  pass, is routed by rule id and pass name through the mechanism that already downgraded
-  `target-size`. Each routed row keeps its place in the report and carries `routedFrom:
+  `docs/overview.md`). A `color-contrast` or `color-contrast-enhanced` violation from the
+  `forced-colors` pass, and only from that pass, is routed by rule id and pass name through the
+  mechanism that already downgraded `target-size`. `color-contrast-enhanced` is AAA and not in the
+  default run; it is routed because it reads the foreground the same way. Each routed row keeps its place in the report and carries `routedFrom:
   "violation"`, a `note` with the explanation and a `noteUrl` to the Field Note. It no longer
   carries a colour suggestion, because one computed from that pair fails in the default pass. The
   same element failing in any other pass is still a violation. Measured at axe-core 4.14.0 across
@@ -115,6 +116,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The demo count stays 159 and its per-pass counts are unchanged. A new fixture,
   `fixture-forced-colors-dark-surface.html`, reproduces the Field Note: on 0.3.2 it reported 1
   violation and exited 1; now it reports 0 violations and 1 needs-review row, and exits 0.
+  **`diff` reports these rows as RECLASSIFIED, never FIXED.** A before-violation whose
+  fingerprint is among the after report's needs-review rows with `routedFrom` set is counted in a
+  new `reclassified[]` array and `summary.reclassified`. It is listed as `RECLASSIFIED` in the
+  table and left out of the fixed count. So diffing a 0.3.2 report against a new one says, for
+  example, `Converged: no violations fixed, 1 reclassified to needs-review, none introduced`
+  rather than claiming a fix nobody made. The `dedupeFindings` guard that stopped a lone
+  forced-colors contrast violation overriding the other passes was removed: the routing now
+  handles every such row before dedupe, so no audit could reach it. The gradient regression test
+  still passes, now through the routing, and fails when the routing is disabled.
 - **The terminal report prints a summary first.** Before any finding it states what the exit code
   means, violations by evidence tier, the needs-review, best-practice and manual-check counts, and
   how many colour pairs and clusters account for the violations. Each bucket then lists its

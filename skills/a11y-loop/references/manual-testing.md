@@ -127,11 +127,12 @@ the same as suppressing it, and nothing here is a reason to disable a rule.
   Dark-on-light text survives that; light-on-dark text reads near 1:1 and every
   line on a dark surface is reported. The tell is a finding whose foreground is
   a color you can find in your source and whose background is `#ffffff` or
-  `#000000`. a11y-loop reports these rows under needsReview, not as
-  violations: each carries `routedFrom: "violation"`, a `note` with this
+  `#000000`. a11y-loop reports these rows (`color-contrast` and
+  `color-contrast-enhanced`) under needsReview, not as violations: each carries `routedFrom: "violation"`, a `note` with this
   explanation and a `noteUrl`, and no suggested color, because one derived
   from the mismatched pair fails in the default pass. The same element failing
-  in any other pass is still a violation. Confirm the pair in the default and
+  in any other pass is still a violation, and `diff` lists a moved row as
+  RECLASSIFIED, never FIXED. Confirm the pair in the default and
   dark passes, check forced colors by eye or with the OS setting, and report it
   as reviewed rather than measured.
 - **A click handler on `<body>` or on a portal root is how popup libraries

@@ -328,7 +328,10 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   `target-size`. `test/fixtures/fixture-forced-colors-dark-surface.html` is its regression target:
   exit 1 without the routing, exit 0 with it. On the demo and every other fixture no row moved,
   because each forced-colors contrast failure there also fails in another pass and
-  `dedupeFindings()` lets a violation from any pass win. Adding another rule to the routing
+  `dedupeFindings()` lets a violation from any pass win. It covers both `color-contrast` and
+  `color-contrast-enhanced`. `diff` reports a row moved this way as `RECLASSIFIED`, never `FIXED`
+  (it matches the after report's `routedFrom`). Any new routing needs the same, or an upgrade
+  reads as a fix. Adding another rule to the routing
   changes what counts as a violation and therefore the exit code, so it needs the same: a fixture,
   a before/after measurement across the matrix and the demo, and its own release note.
 - **An entry guard must realpath `process.argv[1]` before comparing it with `import.meta.url`.**
