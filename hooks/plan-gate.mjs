@@ -40,23 +40,36 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import {
-  ACCESSIBILITY_TEMPLATE,
-  checkPlan,
-  planHash,
-} from '../src/lib/plan-gate.js';
+/**
+ * The shared decision, loaded dynamically so that a missing or broken
+ * `src/lib/plan-gate.js` (an unusual plugin layout, a partial copy) leaves the
+ * hook loadable and lets `main()` take its own silent exit-0 path. A static
+ * import would fail at module load, and Node would exit 1 before any of this
+ * file's failure handling ran.
+ */
+let lib = null;
+let libError = null;
+try {
+  lib = await import('../src/lib/plan-gate.js');
+} catch (error) {
+  libError = error;
+}
 
 // Re-exported so the hook's own tests, and anything that imported the hook's
-// detectors before they moved, keep working unchanged.
-export {
-  ACCESSIBILITY_TEMPLATE,
-  COVERAGE_ITEMS,
-  FORECLOSING_RISKS,
-  detectUi,
-  assessAccessibility,
-  detectForeclosingRisks,
-  planHash,
-} from '../src/lib/plan-gate.js';
+// detectors before they moved, keep working unchanged. Without the lib these
+// are empty values and functions that throw; main() never reaches them.
+const needLib = () => {
+  if (!lib) throw libError ?? new Error('src/lib/plan-gate.js did not load');
+  return lib;
+};
+export const ACCESSIBILITY_TEMPLATE = lib?.ACCESSIBILITY_TEMPLATE ?? '';
+export const COVERAGE_ITEMS = lib?.COVERAGE_ITEMS ?? [];
+export const FORECLOSING_RISKS = lib?.FORECLOSING_RISKS ?? [];
+export const detectUi = (text) => needLib().detectUi(text);
+export const assessAccessibility = (text) => needLib().assessAccessibility(text);
+export const detectForeclosingRisks = (text) => needLib().detectForeclosingRisks(text);
+export const planHash = (text) => needLib().planHash(text);
+const checkPlan = (text) => needLib().checkPlan(text);
 
 /** Deny a given plan hash at most once, and a given session at most this often. */
 const MAX_DENIES_PER_SESSION = 3;
@@ -283,6 +296,14 @@ function emit(payload) {
 export async function main() {
   try {
     if (killSwitchOn()) return silent();
+    if (!lib) {
+      // The gate cannot decide without its logic, and it never blocks a plan
+      // over its own failure: one line on stderr, no verdict, exit 0.
+      process.stderr.write(
+        `a11y-loop plan gate: skipped, src/lib/plan-gate.js did not load (${libError?.code ?? libError?.message ?? 'unknown'})\n`,
+      );
+      return silent();
+    }
 
     const raw = await readStdin(process.stdin);
     if (!raw.trim()) return silent();
