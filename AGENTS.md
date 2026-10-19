@@ -170,7 +170,9 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   section is missing, then fast-forwards the `release` branch to the tag for the plugin directory.
   Do not rename the file: its name is part of the npm trusted-publisher contract.
 - **`.github/workflows/action-selftest.yml`** — runs the composite action (`uses: ./`) on Ubuntu and
-  Windows against the demo pages and asserts its outputs.
+  Windows against the demo pages and asserts its outputs. A release PR runs it before the version is
+  published, so the action's install step falls back to its own checkout when `npm view` does not
+  find the version; without that fallback the self-test could never pass on a release PR.
 - **`.github/workflows/deploy-docs.yml`** — builds the VitePress site in `website/` and deploys it to
   GitHub Pages on pushes to `main` that touch it.
 
@@ -603,7 +605,8 @@ publishes until a tag is pushed, and publishing is the one irreversible step.
    `git grep -n '<old-version>' -- package.json package-lock.json .claude-plugin plugin skills`.
 3. **Move `## [Unreleased]` in `CHANGELOG.md` to `## [x.y.z] - YYYY-MM-DD`.** The release workflow
    copies that exact section into the GitHub Release and fails without it.
-4. **Open the PR, wait for CI** (tests plus the three-OS install smoke), and merge.
+4. **Open the PR, wait for CI** (tests plus the three-OS install smoke, and the action self-test,
+   which installs from the checkout because this version is not on npm until step 5), and merge.
 5. **Tag `main` and push the tag:** `git tag vX.Y.Z && git push origin vX.Y.Z`. `release.yml`
    publishes to npm with provenance and creates the GitHub Release. Check both:
    `npm view a11y-loop version` and `gh release view vX.Y.Z`.
