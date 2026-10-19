@@ -19,10 +19,14 @@
  *      spent once; after that the same plan passes with the reminder demoted to
  *      `additionalContext`. There is a per-session cap on top of that, and an
  *      `A11Y_LOOP_PLAN_GATE=off` kill switch on top of that.
- *   3. **It defers, it does not allow.** ExitPlanMode normally asks the user to
- *      approve the plan. Returning `"allow"` would suppress that prompt and
- *      auto-accept the plan — a side effect nobody asked this hook for. The
- *      non-deny paths return `"defer"`, which is the normal permission flow.
+ *   3. **It never allows, and off the deny path it makes no decision at all.**
+ *      ExitPlanMode normally asks the user to approve the plan. Returning
+ *      `"allow"` would suppress that prompt and auto-accept the plan — a side
+ *      effect nobody asked this hook for. Returning `"defer"` is no better: Claude
+ *      Code honors it only under `-p`, ignores the whole result interactively,
+ *      and ignores `additionalContext` alongside it, so the reminder never
+ *      arrived. The reminder path therefore emits `additionalContext` with no
+ *      `permissionDecision` key, and the plan-approval prompt appears as usual.
  *
  * A false deny costs the user a round trip on a plan that was fine. A miss
  * costs nothing the skill was not already going to catch at generation time.
@@ -336,10 +340,10 @@ export function buildReason({ missing, hasSection, risks, repeat }) {
  * The whole decision, with no I/O in it.
  *
  * @param {{plan:string, seenBefore:boolean, denyCount:number}} input
- * @returns {{decision:'deny'|'defer', reason?:string, additionalContext?:string, spendHash:boolean, why:string}}
+ * @returns {{decision:'deny'|'none', reason?:string, additionalContext?:string, spendHash:boolean, why:string}}
  */
 export function evaluate({ plan, seenBefore, denyCount }) {
-  const pass = (why) => ({ decision: 'defer', spendHash: false, why });
+  const pass = (why) => ({ decision: 'none', spendHash: false, why });
 
   if (!plan || plan.trim().length < 40) return pass('plan-too-short');
 
@@ -356,7 +360,7 @@ export function evaluate({ plan, seenBefore, denyCount }) {
   // ignore, because a gate that can fire twice on one plan is a trap.
   if (seenBefore || denyCount >= MAX_DENIES_PER_SESSION) {
     return {
-      decision: 'defer',
+      decision: 'none',
       spendHash: false,
       why: seenBefore ? 'repeat-plan' : 'session-cap',
       additionalContext: buildReason({
@@ -486,7 +490,7 @@ function killSwitchOn() {
 }
 
 /**
- * Emit nothing and exit 0 — identical to a `defer`, and the quietest possible
+ * Emit nothing and exit 0 — a hook with no decision to report, and the quietest possible
  * outcome for the overwhelmingly common case where the gate has no opinion.
  */
 function silent() {
@@ -541,7 +545,8 @@ export async function main() {
       return emit({ permissionDecision: 'deny', permissionDecisionReason: verdict.reason });
     }
     if (verdict.additionalContext) {
-      return emit({ permissionDecision: 'defer', additionalContext: verdict.additionalContext });
+      // No permissionDecision key: only the user's own prompt may approve the plan.
+      return emit({ additionalContext: verdict.additionalContext });
     }
     return silent();
   } catch {
