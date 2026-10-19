@@ -121,7 +121,7 @@ Converged: all 159 violations fixed, none introduced
 ```
 
 That count is for axe-core 4.14.0, the version a11y-loop pins, and it is the same on every run.
-The GIF above was recorded at axe-core 4.12.1, when the count was 163. Up to and including 0.3.0
+The GIF above is rendered from the literal output of a11y-loop 0.3.2 at that axe-core version: the 159 failures, the quiet runs and the diff above. Its source and how to regenerate it are in [`docs/demo-gif-src/`](demo-gif-src). Up to and including 0.3.0
 the count also moved by one between runs, 159 or 160, and the cause was the page, not the engine.
 One of its seeded failures is a scrolling sponsor ticker, and whether its tenth name was inside
 the viewport when axe read the page depended on how far the animation had got. The ticker now

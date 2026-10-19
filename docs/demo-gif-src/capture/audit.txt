@@ -1,0 +1,565 @@
+a11y-loop audit · demo/before/index.html (served at http://127.0.0.1:63749/)
+Target standard: WCAG 2.2 Level AA
+
+VIOLATIONS (159)
+  SC 4.1.2 Name, Role, Value (Level A) · ACT 6cfa84 · axe: aria-hidden-focus
+    · html > body > footer:nth-child(5) > div > div:nth-child(2) > a:nth-child(3)
+      ARIA hidden element must not be focusable or contain focusable elements. Fix all of the following: Focusable content should have tabindex="-1", be removed from the DOM, or not be hidden with aria-hidden
+    https://dequeuniversity.com/rules/axe/4.14/aria-hidden-focus?application=playwright
+  SC 4.1.2 Name, Role, Value (Level A) · ACT 4e8ab6 · axe: aria-required-attr
+    · html > body > div:nth-child(4) > section:nth-child(3) > div:nth-child(3)
+      Required ARIA attributes must be provided. Fix any of the following: Required ARIA attribute not present: aria-level
+    https://dequeuniversity.com/rules/axe/4.14/aria-required-attr?application=playwright
+  SC 1.3.1 Info and Relationships (Level A) · ACT bc4a75, ff89c9 · axe: aria-required-children
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul
+      Certain ARIA roles must contain particular children. Fix any of the following: Element has children which are not allowed: li
+    https://dequeuniversity.com/rules/axe/4.14/aria-required-children?application=playwright
+  SC 4.1.2 Name, Role, Value (Level A) · ACT 97a4e1, m6b1q3 · axe: button-name
+    · html > body > header:nth-child(1) > div > button:nth-child(3)
+      Buttons must have discernible text. Fix any of the following: Element does not have inner text that is visible to screen readers aria-label attribute does not exist or is empty aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty Element has no title attribute Element does not have an implicit (wrapped) <label> Element does not have an explicit <label> Element's default semantics were not overridden with role="none" or role="presentation"
+    https://dequeuniversity.com/rules/axe/4.14/button-name?application=playwright
+  SC 1.4.3 Contrast (Minimum) (Level AA) · ACT afw4f7, 09o5cg · axe: color-contrast (104 elements)
+    · html > body > header:nth-child(1) > div > a:nth-child(1) > span:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.69 (foreground color: #8fa0ab, background color: #ffffff, font size: 10.5pt (14px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text darker → #697983 (ratio 4.50:1)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(1) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.69 (foreground color: #8fa0ab, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #697983 (ratio 4.50:1)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(2) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.69 (foreground color: #8fa0ab, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #697983 (ratio 4.50:1)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(3) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.69 (foreground color: #8fa0ab, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #697983 (ratio 4.50:1)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(4) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.69 (foreground color: #8fa0ab, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #697983 (ratio 4.50:1)
+    · html > body > section:nth-child(2) > div > div:nth-child(4) > div:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.19 (foreground color: #ffffff, background color: #5fbfb2, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #434343 (ratio 4.51:1)
+      fix: background darker → #178479 (ratio 4.55:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(5)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(6)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(7)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(8)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(3) > div > span:nth-child(9)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.09 (foreground color: #b0b0b0, background color: #fafbfb, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #747474 (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(2) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 1.79 (foreground color: #7ed0c4, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #2e8379 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > h5:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.26 (foreground color: #a3aeb5, background color: #ffffff, font size: 9.8pt (13px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text darker → #6e787f (ratio 4.51:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > thead:nth-child(1) > tr > th:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(6) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(4) > tbody:nth-child(2) > tr:nth-child(7) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > h5:nth-child(5)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.26 (foreground color: #a3aeb5, background color: #ffffff, font size: 9.8pt (13px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text darker → #6e787f (ratio 4.51:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > thead:nth-child(1) > tr > th:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.04 (foreground color: #adb7bd, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > table:nth-child(6) > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(7)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(1) > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(2) > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(3) > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(4) > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(5) > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(6) > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(4) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 1.79 (foreground color: #7ed0c4, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #2e8379 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(4)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(4) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 1.79 (foreground color: #7ed0c4, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #2e8379 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(4) > p:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > p:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.84 (foreground color: #999999, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(2) > select:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 4.41 (foreground color: #6d7a82, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6c7880 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(4) > span:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(5)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.19 (foreground color: #ffffff, background color: #5fbfb2, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #434343 (ratio 4.51:1)
+      fix: background darker → #178479 (ratio 4.55:1)
+    · html > body > footer:nth-child(5) > div > p:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.15 (foreground color: #a8b2b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #6f787e (ratio 4.50:1)
+    · html > body > footer:nth-child(5) > div > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.16 (foreground color: #b0b0b0, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 1.79 (foreground color: #7ed0c4, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #2e8379 (ratio 4.52:1)
+    · html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 1.79 (foreground color: #7ed0c4, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+      fix: text darker → #2e8379 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > h3:nth-child(1)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 19.5pt (26px), font weight: bold). Expected contrast ratio of 3:1
+      fix: text lighter → #666666 (ratio 3.03:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > h3:nth-child(1)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 19.5pt (26px), font weight: bold). Expected contrast ratio of 3:1
+      fix: text lighter → #666666 (ratio 3.03:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(1) > p:nth-child(2)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(2) > p:nth-child(2)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(3) > p:nth-child(2)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(4) > p:nth-child(2)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(5) > p:nth-child(2)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(6) > p:nth-child(2)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(3) > h3:nth-child(1)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 19.5pt (26px), font weight: bold). Expected contrast ratio of 3:1
+      fix: text lighter → #666666 (ratio 3.03:1)
+    · html > body > div:nth-child(4) > section:nth-child(3) > div:nth-child(3)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 12.8pt (17px), font weight: bold). Expected contrast ratio of 4.5:1
+      fix: text lighter → #828282 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(4) > h6:nth-child(1)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 19.5pt (26px), font weight: bold). Expected contrast ratio of 3:1
+      fix: text lighter → #666666 (ratio 3.03:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > h3:nth-child(1)  [only under: dark]
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has insufficient color contrast of 2.44 (foreground color: #585858, background color: #1a1a1a, font size: 19.5pt (26px), font weight: bold). Expected contrast ratio of 3:1
+      fix: text lighter → #666666 (ratio 3.03:1)
+    https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright
+  SC 3.1.1 Language of Page (Level A) · ACT b5c3f8 · axe: html-has-lang
+    · html
+      <html> element must have a lang attribute. Fix any of the following: The <html> element does not have a lang attribute
+    https://dequeuniversity.com/rules/axe/4.14/html-has-lang?application=playwright
+  SC 1.1.1 Non-text Content (Level A) · ACT 23a2a8 · axe: image-alt (6 elements)
+    Images must have alternative text. Fix any of the following: Element does not have an alt attribute aria-label attribute does not exist or is empty aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty Element has no title attribute Element's default semantics were not overridden with role="none" or role="presentation"
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(2) > img:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(3) > img:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(4) > img:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(5) > img:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(2) > div:nth-child(3) > div:nth-child(6) > img:nth-child(1)
+    https://dequeuniversity.com/rules/axe/4.14/image-alt?application=playwright
+  SC 4.1.2 Name, Role, Value (Level A) · ACT e086e5 · axe: label
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(4) > input:nth-child(1)
+      Form elements must have labels. Fix any of the following: Element does not have an implicit (wrapped) <label> Element does not have an explicit <label> aria-label attribute does not exist or is empty aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty Element has no title attribute Element has no placeholder attribute Element's default semantics were not overridden with role="none" or role="presentation"
+    https://dequeuniversity.com/rules/axe/4.14/label?application=playwright
+  SC 1.4.1 Use of Color (Level A) · axe: link-in-text-block (5 elements)
+    · html > body > div:nth-child(4) > section:nth-child(1) > p:nth-child(2) > a
+      Links must be distinguishable without relying on color. Fix any of the following: The link has insufficient color contrast of 1.58:1 with the surrounding text. (Minimum contrast is 3:1, link text: #7ed0c4, surrounding text: #999999) The link has no styling (such as underline) to distinguish it from the surrounding text
+    · html > body > div:nth-child(4) > section:nth-child(2) > p:nth-child(4) > a
+      Links must be distinguishable without relying on color. Fix any of the following: The link has insufficient color contrast of 1.58:1 with the surrounding text. (Minimum contrast is 3:1, link text: #7ed0c4, surrounding text: #999999) The link has no styling (such as underline) to distinguish it from the surrounding text
+    · html > body > div:nth-child(4) > section:nth-child(3) > p:nth-child(4) > a
+      Links must be distinguishable without relying on color. Fix any of the following: The link has insufficient color contrast of 1.58:1 with the surrounding text. (Minimum contrast is 3:1, link text: #7ed0c4, surrounding text: #999999) The link has no styling (such as underline) to distinguish it from the surrounding text
+    · html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(1)
+      Links must be distinguishable without relying on color. Fix any of the following: The link has insufficient color contrast of 1.2:1 with the surrounding text. (Minimum contrast is 3:1, link text: #7ed0c4, surrounding text: #b0b0b0) The link has no styling (such as underline) to distinguish it from the surrounding text
+    · html > body > footer:nth-child(5) > div > p:nth-child(3) > a:nth-child(2)
+      Links must be distinguishable without relying on color. Fix any of the following: The link has insufficient color contrast of 1.2:1 with the surrounding text. (Minimum contrast is 3:1, link text: #7ed0c4, surrounding text: #b0b0b0) The link has no styling (such as underline) to distinguish it from the surrounding text
+    https://dequeuniversity.com/rules/axe/4.14/link-in-text-block?application=playwright
+  SC 2.4.4 Link Purpose (In Context) (Level A) · ACT c487ae · axe: link-name (2 elements)
+    Links must have discernible text. Fix all of the following: Element is in tab order and does not have accessible text Fix any of the following: Element does not have text that is visible to screen readers aria-label attribute does not exist or is empty aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty Element has no title attribute
+    · html > body > footer:nth-child(5) > div > div:nth-child(2) > a:nth-child(1)
+    · html > body > footer:nth-child(5) > div > div:nth-child(2) > a:nth-child(2)
+    https://dequeuniversity.com/rules/axe/4.14/link-name?application=playwright
+  SC 1.3.1 Info and Relationships (Level A) · axe: listitem (4 elements)
+    <li> elements must be contained in a <ul> or <ol>. Fix any of the following: List item parent element has a role that is not role="list". Ensure the parent element has role="list", or move the <li> inside a <ul> or <ol>.
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(1)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(2)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(3)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2) > ul > li:nth-child(4)
+    https://dequeuniversity.com/rules/axe/4.14/listitem?application=playwright
+  SC 4.1.2 Name, Role, Value (Level A) · ACT e086e5 · axe: select-name
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(2) > select:nth-child(2)
+      Select element must have an accessible name. Fix any of the following: Element does not have an implicit (wrapped) <label> Element does not have an explicit <label> aria-label attribute does not exist or is empty aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty Element has no title attribute Element's default semantics were not overridden with role="none" or role="presentation"
+    https://dequeuniversity.com/rules/axe/4.14/select-name?application=playwright
+  SC 2.4.3 Focus Order (Level A) · a11y-loop: positive-tabindex (3 elements)
+    · #top > div.container.hero-inner > div.hero-actions > a.btn.btn-ghost
+      tabindex="3" forces this element out of document order into a separate tab sequence. Use tabindex="0" (or no tabindex) and order the DOM instead.
+    · #register > form.reg-form > div.field-row:nth-of-type(1) > input.field:nth-of-type(1)
+      tabindex="1" forces this element out of document order into a separate tab sequence. Use tabindex="0" (or no tabindex) and order the DOM instead.
+    · #register > form.reg-form > div.field-row:nth-of-type(1) > input.field:nth-of-type(2)
+      tabindex="2" forces this element out of document order into a separate tab sequence. Use tabindex="0" (or no tabindex) and order the DOM instead.
+  SC 2.4.7 Focus Visible (Level AA) · a11y-loop: focus-not-visible (18 elements)
+    Nothing about this element changes visually when it receives keyboard focus (no outline, box-shadow, border, background or text change). Keyboard users cannot tell where they are.
+    · html > body > header.site-header > div.container.header-inner > a.logo-link
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(1) > a
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(2) > a
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(3) > a
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(4) > a
+    · html > body > header.site-header > div.container.header-inner > button.icon-btn.hamburger
+    · #top > div.container.hero-inner > p.hero-note:nth-of-type(3) > a
+    · #programme > p.section-lead:nth-of-type(1) > a
+    · #speakers > p.section-lead:nth-of-type(2) > a
+    · #venue > p.section-lead:nth-of-type(2) > a
+    · #register > form.reg-form > div.field-row:nth-of-type(2) > input.field
+    · #register > form.reg-form > div.field-row:nth-of-type(2) > select.field
+    · #register > form.reg-form > div.field-row:nth-of-type(3) > textarea.field
+    · #register > form.reg-form > div.check-row:nth-of-type(4) > input.check
+    · html > body > footer.site-footer > div.container.footer-inner > div.social > a.icon-btn:nth-of-type(1)
+    · html > body > footer.site-footer > div.container.footer-inner > div.social > a.icon-btn:nth-of-type(2)
+    · html > body > footer.site-footer > div.container.footer-inner > p.footer-fine:nth-of-type(2) > a:nth-of-type(1)
+    · html > body > footer.site-footer > div.container.footer-inner > p.footer-fine:nth-of-type(2) > a:nth-of-type(2)
+  SC 2.1.1 Keyboard (Level A) · a11y-loop: div-button (8 elements)
+    This <div> has a click handler but no role, no tabindex, and no keyboard handler. It is not reachable by Tab and does not respond to Enter or Space, so keyboard and screen-reader users cannot activate it. Use a real <button> (or <a href> for navigation), or add role="button", tabindex="0", and keydown handling for both Enter and Space.
+    · #top > div.container.hero-inner > div.hero-actions > div.btn.btn-primary
+    · #speakers > div.speaker-grid > div.speaker-card:nth-of-type(1)
+    · #speakers > div.speaker-grid > div.speaker-card:nth-of-type(2)
+    · #speakers > div.speaker-grid > div.speaker-card:nth-of-type(3)
+    · #speakers > div.speaker-grid > div.speaker-card:nth-of-type(4)
+    · #speakers > div.speaker-grid > div.speaker-card:nth-of-type(5)
+    · #speakers > div.speaker-grid > div.speaker-card:nth-of-type(6)
+    · #register > form.reg-form > div.btn.btn-primary:nth-of-type(5)
+  SC 2.2.2 Pause, Stop, Hide (Level A) · a11y-loop: reduced-motion-ignored
+    · html > body > div.ticker:nth-of-type(1) > div.ticker-track  [only under: reduced-motion]
+      Animation "ticker-scroll" is still running while the browser reports prefers-reduced-motion: reduce, and it loops forever. Wrap the animation in @media (prefers-reduced-motion: no-preference), or disable it under reduce.
+  SC 1.4.10 Reflow (Level AA) · a11y-loop: reflow-horizontal-scroll
+    · html > body > header.site-header > div.container.header-inner  [only under: reflow]
+      At a 320×256 viewport (equivalent to 400% zoom at 1280px) the page scrolls horizontally by 860px. Overflowing: html > body > header.site-header > div.container.header-inner (extends to 1180px), html > body > header.site-header > div.container.header-inner > nav.site-nav (extends to 1110px), html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list (extends to 1110px), html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(1) (extends to 915px), html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(1) > a (extends to 915px).
+
+NEEDS REVIEW (28) — axe reported these as incomplete, or a11y-loop found something it cannot judge alone
+  SC 4.1.2 Name, Role, Value (Level A) · ACT 6a7281 · axe: aria-valid-attr-value (2 elements)
+    · html > body > header:nth-child(1) > div > nav:nth-child(2)
+      ARIA attributes must conform to valid values. Fix all of the following: ARIA attribute element ID does not exist on the page: aria-labelledby="primary-nav-heading"
+    · html > body > div:nth-child(4) > section:nth-child(5)
+      ARIA attributes must conform to valid values. Fix all of the following: ARIA attribute element ID does not exist on the page: aria-labelledby="register-heading"
+    https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=playwright
+  SC 1.4.3 Contrast (Minimum) (Level AA) · ACT afw4f7, 09o5cg · axe: color-contrast (10 elements)
+    · html > body > section:nth-child(2) > div > p:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined due to a background gradient
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > section:nth-child(2) > div > h1:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined due to a background gradient
+      fix: text darker → #949494 (ratio 3.03:1)
+    · html > body > section:nth-child(2) > div > p:nth-child(3)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined due to a background gradient
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > section:nth-child(2) > div > div:nth-child(4) > a:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined due to a background gradient
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > section:nth-child(2) > div > p:nth-child(5)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined due to a background gradient
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > section:nth-child(2) > div > p:nth-child(5) > a
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element's background color could not be determined due to a background gradient
+      fix: text darker → #767676 (ratio 4.54:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(1) > input:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has no value; test color contrast with a value entered
+      fix: text darker → #6c7880 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(1) > input:nth-child(2)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has no value; test color contrast with a value entered
+      fix: text darker → #6c7880 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(2) > input:nth-child(1)
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has no value; test color contrast with a value entered
+      fix: text darker → #6c7880 (ratio 4.52:1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(3) > textarea
+      Elements must meet minimum color contrast ratio thresholds. Fix any of the following: Element has no value; test color contrast with a value entered
+      fix: text darker → #6c7880 (ratio 4.52:1)
+    https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright
+  SC 2.5.8 Target Size (Minimum) (Level AA) · a11y-loop: target-size-min · WCAG 2.2 only (13 elements)
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(1) > a
+      Target is 62.2×16 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(2) > a
+      Target is 47.3×16 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(3) > a
+      Target is 32.8×16 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > header.site-header > div.container.header-inner > nav.site-nav > ul.nav-list > li:nth-of-type(4) > a
+      Target is 48.6×16 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > header.site-header > div.container.header-inner > button.icon-btn.hamburger
+      Target is 18×18 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · #top > div.container.hero-inner > p.hero-note:nth-of-type(3) > a
+      Target is 47.3×15 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. This target is inside a sentence, so the Inline exception may also apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · #programme > p.section-lead:nth-of-type(1) > a
+      Target is 62.2×17 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. This target is inside a sentence, so the Inline exception may also apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · #speakers > p.section-lead:nth-of-type(2) > a
+      Target is 56.4×17 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. This target is inside a sentence, so the Inline exception may also apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · #register > form.reg-form > div.check-row:nth-of-type(4) > input.check
+      Target is 13×13 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > footer.site-footer > div.container.footer-inner > div.social > a.icon-btn:nth-of-type(1)
+      Target is 18×18 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > footer.site-footer > div.container.footer-inner > div.social > a.icon-btn:nth-of-type(2)
+      Target is 18×18 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > footer.site-footer > div.container.footer-inner > p.footer-fine:nth-of-type(2) > a:nth-of-type(1)
+      Target is 73.3×14 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. This target is inside a sentence, so the Inline exception may also apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+    · html > body > footer.site-footer > div.container.footer-inner > p.footer-fine:nth-of-type(2) > a:nth-of-type(2)
+      Target is 30.8×14 CSS px, smaller than the 24×24 minimum. No other target sits within 24 px, so the Spacing exception may apply. This target is inside a sentence, so the Inline exception may also apply. The Equivalent, User agent control and Essential exceptions cannot be judged automatically — confirm one applies, or enlarge the target.
+  SC 2.4.4 Link Purpose (In Context) (Level A) · a11y-loop: ambiguous-link-text (3 elements)
+    · #top > div.container.hero-inner > p.hero-note:nth-of-type(3) > a
+      Link text is "Click here", which does not describe the destination. SC 2.4.4 allows this when the surrounding context supplies the purpose, and only a human can judge that — so confirm the context, or name the destination in the link (e.g. "Read more about the speaker line-up").
+    · #programme > p.section-lead:nth-of-type(1) > a
+      Link text is "Read more", which does not describe the destination. SC 2.4.4 allows this when the surrounding context supplies the purpose, and only a human can judge that — so confirm the context, or name the destination in the link (e.g. "Read more about the speaker line-up").
+    · #venue > p.section-lead:nth-of-type(2) > a
+      Link text is "Click here", which does not describe the destination. SC 2.4.4 allows this when the surrounding context supplies the purpose, and only a human can judge that — so confirm the context, or name the destination in the link (e.g. "Read more about the speaker line-up").
+
+BEST PRACTICE (13) — no success criterion, non-blocking
+  axe: heading-order (3 elements)
+    Heading levels should only increase by one. Fix any of the following: Heading order invalid
+    · html > body > div:nth-child(4) > section:nth-child(1) > h3:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(1) > h5:nth-child(3)
+    · html > body > div:nth-child(4) > section:nth-child(4) > h6:nth-child(1)
+    https://dequeuniversity.com/rules/axe/4.14/heading-order?application=playwright
+  axe: landmark-one-main
+    · html
+      Document should have one main landmark. Fix all of the following: Document does not have a main landmark
+    https://dequeuniversity.com/rules/axe/4.14/landmark-one-main?application=playwright
+  axe: region (6 elements)
+    All page content should be contained by landmarks. Fix any of the following: Some page content is not contained by landmarks
+    · html > body > section:nth-child(2) > div > p:nth-child(1)
+    · html > body > section:nth-child(2) > div > h1:nth-child(2)
+    · html > body > section:nth-child(2) > div > p:nth-child(3)
+    · html > body > section:nth-child(2) > div > div:nth-child(4) > div:nth-child(1)
+    · html > body > section:nth-child(2) > div > p:nth-child(5)
+    · html > body > div:nth-child(4)
+    https://dequeuniversity.com/rules/axe/4.14/region?application=playwright
+  axe: tabindex (3 elements)
+    Elements should not have tabindex greater than zero. Fix any of the following: Element has a tabindex greater than 0
+    · html > body > section:nth-child(2) > div > div:nth-child(4) > a:nth-child(2)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(1) > input:nth-child(1)
+    · html > body > div:nth-child(4) > section:nth-child(5) > form:nth-child(3) > div:nth-child(1) > input:nth-child(2)
+    https://dequeuniversity.com/rules/axe/4.14/tabindex?application=playwright
+
+MANUAL CHECKS (16) — automation cannot judge these
+  · Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).
+    why: No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification.
+  · SC 2.4.3: Tab through the page and confirm the focus order is logical, not merely present.
+    why: a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment.
+  · SC 2.1.1: Complete the page’s main task using only the keyboard.
+    why: Automated checks probe individual controls; they do not know what the user is trying to accomplish.
+  · SC 1.1.1: Confirm the alt text on 6 images is accurate and useful, and that decorative images use alt="" rather than a description.
+    why: Automation can only see whether alt text exists. alt="decorative image" passes every automated rule and is worse than alt="". If any alt text was generated by an AI, treat it as a draft that a human must confirm.
+  · SC 3.3.3: Submit the form with 8 fields in an invalid state and confirm each error is announced, identifies the field, and says how to fix it.
+    why: SC 3.3.1 and 3.3.3 are about whether an error message is actionable, which no tool can assess. Error states also usually only exist after interaction — audit them with --interact.
+  · SC 2.4.6: Confirm every field label describes what to enter, not just that a label exists.
+    why: A label of "Field 1" satisfies every automated rule and tells the user nothing.
+  · SC 2.4.4: Read each link text out of context and confirm the destination is still clear.
+    why: SC 2.4.4 permits vague link text when the surrounding context supplies the purpose — whether it does is a judgment call.
+  · SC 1.3.1: Confirm the heading structure describes the content hierarchy, not the visual sizes.
+    why: Automation can detect skipped levels but not whether the outline reflects the actual structure of the page.
+  · SC 1.4.10: Confirm the table still conveys its meaning at a 320px viewport.
+    why: SC 1.4.10 excepts content requiring two-dimensional layout. Whether a given table qualifies, and whether it remains understandable, needs a person.
+  · SC 4.1.2: Review the 12 ARIA attributes on this page: is each one appropriate, or merely valid?
+    why: Pages using ARIA average more accessibility errors than pages without it (WebAIM Million 2026: 59.1 vs 42.0). A role is a promise — role="button" commits to the full keyboard behaviour of a button. No ARIA is better than bad ARIA.
+  · SC 2.1.2: Confirm each dialog announces itself on open and describes how to dismiss it.
+    why: a11y-loop tests the focus trap, Escape, and focus return mechanically. Whether the dialog is comprehensible when announced is a screen-reader test.
+  · SC 2.3.3: Confirm any animation that survives prefers-reduced-motion is genuinely essential.
+    why: The "essential" exception cannot be evaluated automatically.
+  · SC 1.4.1: Confirm colour is never the only way information is conveyed.
+    why: SC 1.4.1 is one of the criteria no tool can test: recognising that "the required fields are in red" needs comprehension of the content.
+  · SC 2.4.11: Tab through the page and confirm the focused element is never hidden behind sticky or fixed content.
+    why: SC 2.4.11 (new in WCAG 2.2) has no automated rule. This page has position:sticky or position:fixed elements, which are the usual cause.
+  · SC 1.4.3: Check the contrast of the elements axe could not measure by hand (WebAIM Contrast Checker, or a11y-loop contrast <fg> <bg>).
+    why: axe gives up on background images, gradients, pseudo-element backgrounds and foreground opacity or occlusion, and reports them as incomplete. A computed ratio of 1:1 is the usual tell.
+  · SC 1.4.11: Check the contrast of hover and focus states.
+    why: No engine checks state contrast unless the state is driven and re-scanned. Use --interact to add hover and focus states to the audit.
+
+159 automatically detectable failures, 28 finding(s) needing review, 13 best-practice note(s).
+The 28 needs-review finding(s) are not passes — see the NEEDS REVIEW section above, or the needsReview array in --json output.
+
+Provenance: a11y-loop 0.3.2 · axe-core 4.14.0 · Chromium 156.0.8078.4 · viewport 1280×720 · passes: default, dark, forced-colors, reduced-motion, reflow · states: none (use --interact to audit modal/error/route states) · 2026-10-19T11:30:42.382Z
+Automated checks cover a subset of WCAG (Deque: ~57% of issues by volume; ~31% of AA criteria have any automated rule). This is not an audit or conformance claim.

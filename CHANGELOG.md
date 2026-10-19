@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (or creates) `release` to each tagged release, so a directory listing tracking that branch picks
   up new versions without a manual re-validate. The branch only ever points at tagged commits.
 
+### Changed
+- **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
+
 ## [0.3.2] - 2026-10-19
 
 Documentation only. No behaviour change, no change to the report shape.
