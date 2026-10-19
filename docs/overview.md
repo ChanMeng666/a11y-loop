@@ -584,6 +584,17 @@ and a human.
 
 ## ⚙️ Using it in CI
 
+Install the CLI and its browser once per job, then audit:
+
+```bash
+npm i -g a11y-loop
+a11y-loop install-browser --only-shell   # headless shell only; set PLAYWRIGHT_BROWSERS_PATH to cache it
+a11y-loop doctor                        # exits 0 when an audit can run here
+```
+
+This repository's own CI runs these steps against the packed tarball on Ubuntu, macOS and Windows
+(`install-smoke` in `.github/workflows/ci.yml`).
+
 ```bash
 a11y-loop audit http://localhost:3000 --json --out report.json
 ```

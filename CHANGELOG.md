@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **CI now installs the packed tarball with `npm i -g` on Ubuntu (Node 20 and 22), macOS and Windows
+  and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`
+  and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
+  Windows and in a test; this checks a real install on each OS on every PR.
+
 ## [0.3.0] - 2026-10-19
 
 Almost certainly the first release that runs at all from an `npm i -g` or `npx` install on Linux

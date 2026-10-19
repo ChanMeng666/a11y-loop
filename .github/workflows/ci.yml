@@ -19,3 +19,92 @@ jobs:
       - run: npm ci
       - run: npx playwright install --only-shell chromium
       - run: npm test
+
+  # Proves the packed tarball, installed the way a user installs it, runs on all
+  # three OSes. npm links the bin as a symlink on Linux/macOS and a .cmd shim on
+  # Windows; 0.2.x exited 0 with no output through a symlink, so every check
+  # below uses the installed binary from PATH and asserts output, not just exit code.
+  install-smoke:
+    name: install-smoke (${{ matrix.os }}, node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20]
+        include:
+          - os: ubuntu-latest
+            node: 22
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+
+      - name: Pack the tarball
+        run: |
+          tarball="$(npm pack --json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename")"
+          test -f "$tarball"
+          echo "TARBALL=$tarball" >> "$GITHUB_ENV"
+          echo "packed $tarball"
+
+      - name: Install the tarball globally
+        run: npm i -g "./$TARBALL"
+
+      - name: Show the bin being exercised
+        run: |
+          bin="$(command -v a11y-loop)"
+          echo "a11y-loop -> $bin"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            ls -l "$bin"
+            readlink -f "$bin"
+          fi
+
+      - name: --version prints the package version
+        run: |
+          expected="$(node -p "require('./package.json').version")"
+          actual="$(a11y-loop --version)"
+          echo "expected=[$expected] actual=[$actual]"
+          test -n "$actual"
+          test "$actual" = "$expected"
+
+      - name: Resolve the Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/playwright'].version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache the Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: pw-${{ runner.os }}-${{ runner.arch }}-${{ steps.pw.outputs.version }}
+
+      - name: install-browser --only-shell
+        run: a11y-loop install-browser --only-shell
+
+      - name: doctor exits 0
+        run: |
+          out="$(a11y-loop doctor)"
+          echo "$out"
+          test -n "$out"
+
+      - name: audit prints a report and exits with the expected code
+        run: |
+          # This fragment has no violations (the small-target note is needs-review,
+          # which does not affect the exit code), so the expected exit code is 0.
+          # What a silent no-op looks like is exit 0 with EMPTY stdout, hence the length check.
+          expected=0
+          code=0
+          out="$(a11y-loop audit --html '<main><h1>Hi</h1><button>ok</button></main>')" || code=$?
+          echo "$out"
+          echo "exit=$code stdout_bytes=${#out}"
+          test "$code" -eq "$expected"
+          test "${#out}" -gt 0
+          echo "$out" | grep -q "a11y-loop audit"
