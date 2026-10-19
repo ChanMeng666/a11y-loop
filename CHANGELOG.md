@@ -43,6 +43,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
   run was lost. The skill's own examples use that path.
 - **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
+- **Documentation synchronised with 0.3.2, read end to end against the code.** `AGENTS.md` now
+  describes the three layers, every CLI subcommand with its exit codes, the CI workflows, the
+  install routes for the skill, the Claude Code plugin and Codex (one or the other, not both, which
+  the old agent-runnable block contradicted), the Anthropic plugin directory facts, and a release
+  checklist; its gotchas gain the Playwright-on-PATH mismatch, the npm README rule, the
+  plugin-root scan, the demo ticker and the W4A'25 misreading. `docs/overview.md`, `llms.txt`,
+  `CONTRIBUTING.md` and the docs site's guide drop stale statements (424 tests, "three commands",
+  a hook that "defers", a release workflow that "only publishes", no `plan-check`, `doctor` or
+  `install-browser` on the CLI and CI pages). New: `docs/roadmap.md` (shipped, in progress and
+  planned work) and `docs/research/distribution.md` (channels, their rules and what was
+  submitted, as of 2026-10). `docs/research/market.md` and `tooling.md` gain a dated
+  "Update 2026-10" section. `docs/research/standards.md` corrects the DOJ ADA Title II extension
+  to 20 April 2026 (91 FR 20902) and records that HHS extended its Section 504 deadlines too.
 
 ## [0.3.2] - 2026-10-19
 

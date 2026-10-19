@@ -357,6 +357,11 @@ family, and the audits are produced by a11y-loop's own engine** (mitigated, not 
 every finding being grounded in axe-core, a third-party rules engine) — a small, self-audited
 illustration of the effect's shape, not a controlled study or a precise effect size.
 
+It was also run against the skill as it stood at v0.1.x, before the §0 plan rules existed, so it
+says nothing about planning. A 2026-10 re-run against the current skill, scored against an
+independent oracle, is in progress in `evals/`; until it lands, these numbers describe the older
+skill only. See [`roadmap.md`](roadmap.md).
+
 ## 🛠️ Tech Stack
 
 - **Runtime:** Node.js ≥ 20, ESM (`"type": "module"`)
@@ -370,9 +375,12 @@ illustration of the effect's shape, not a controlled study or a precise effect s
   [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 424 tests across unit and integration suites,
-  including a 19-fixture matrix of seeded violations and correct-behaviour regression guards, a
-  demo end-to-end run, and a forced-colors gradient regression test
+- **Tests:** the built-in `node --test` runner, 481 tests across unit and integration suites
+  (0.3.2), including a 19-fixture matrix of seeded violations and correct-behaviour regression
+  guards, a demo end-to-end run, a forced-colors gradient regression test, and release guards:
+  plugin-copy sync and version agreement, skill frontmatter against the Agent Skills spec, text
+  encoding, every subcommand run with stdin closed, the CLI and hook run through a symlink and a
+  junction, and a missing-browser audit that must exit rather than hang
 
 ## 🏗️ Architecture
 
@@ -451,22 +459,27 @@ secondary format for tools that consume it.
 ```bash
 npm i -g a11y-loop
 a11y-loop install-browser
-npx skills add ChanMeng666/a11y-loop -g -y
-claude plugin marketplace add ChanMeng666/a11y-loop
-claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
+a11y-loop doctor                                   # exit 0 when an audit can run here
+
+# Then ONE of these:
+npx skills add ChanMeng666/a11y-loop -g -y         # the portable skill, any Agent Skills client
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # OR the Claude Code plugin (2.1.292+)
 ```
 
-That is: the CLI, its browser, the portable skill, and the optional Claude Code plugin. No `git
-clone`: `npx skills add` fetches the skill, which also ships inside the npm package for a manual copy. Verify:
+That is: the CLI, its browser, and either the portable skill or the optional Claude Code plugin.
+On Claude Code older than 2.1.292 the plugin takes two commands, `claude plugin marketplace add
+ChanMeng666/a11y-loop` and then `claude plugin install a11y-loop@chanmeng-a11y-loop --scope user`.
+On Codex it is `codex plugin marketplace add ChanMeng666/a11y-loop` and then `codex plugin add
+a11y-loop@chanmeng-a11y-loop`. No `git clone`: `npx skills add` fetches the skill, which also ships
+inside the npm package for a manual copy. Verify:
 
 ```bash
 a11y-loop --version
-test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"
-claude plugin list | grep -A2 'a11y-loop@'   # expect: Status: ✔ enabled
+test -f ~/.claude/skills/a11y-loop/references/plan-phase.md && echo "skill ok"   # skill route
+claude plugin list | grep -A2 'a11y-loop@'   # plugin route; expect: Status: ✔ enabled
 ```
 
-Skip the last two lines if you only want the portable skill, or the `npx skills add` line if you only
-want the plugin. Do not do both: the plugin carries its own copy, so the model ends up seeing
+Install the skill or the plugin, not both: the plugin carries its own copy, so the model ends up seeing
 `a11y-loop` *and* the directory-qualified `a11y-loop:a11y-loop`, paying the always-on token cost
 twice. If both names show up, delete `~/.claude/skills/a11y-loop` and keep the plugin.
 
@@ -499,7 +512,7 @@ Prefer working from source (e.g. to contribute)? Clone and install instead:
 git clone https://github.com/ChanMeng666/a11y-loop.git
 cd a11y-loop
 npm install
-npx playwright install chromium
+node src/cli.js install-browser   # the checkout's own Playwright; npx playwright resolves the same one here
 ```
 
 If you keep browser binaries off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
@@ -525,7 +538,11 @@ mkdir -p .claude/skills && cp -r "$SKILL_SRC" .claude/skills/
 
 From a checkout, `skills/a11y-loop` is the same directory. Any client implementing the
 [Agent Skills specification](https://agentskills.io/specification) loads it the same way — Claude
-Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place.
+Code, Cursor, GitHub Copilot, Codex, Gemini CLI, and more. Re-running the copy upgrades in place,
+except over a skill that `npx skills add` installed: that one is a symlink, the copy fails on it, and
+re-running `npx skills add` is the upgrade. On Windows, use PowerShell (`New-Item -ItemType Directory
+-Force "$HOME\.claude\skills"`, then `Copy-Item -Recurse -Force "$(npm root -g)\a11y-loop\skills\a11y-loop"
+"$HOME\.claude\skills\"`) or Git Bash; cmd.exe is not supported.
 
 ### Optional: the Claude Code plugin layer
 
@@ -534,12 +551,15 @@ Claude-Code-only layer that adds one thing the portable skill cannot do — enfo
 plan mode:
 
 ```bash
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # Claude Code 2.1.292 or later
+
+# Older Claude Code:
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
-Both are ordinary CLI commands — no TTY, no prompts, safe to re-run. (They also exist as `/plugin
-marketplace add …` and `/plugin install …` inside a session, but an agent should use the CLI form.)
+These are ordinary CLI commands — no TTY, no prompts, safe to re-run. (They also exist as `/plugin
+install …` and `/plugin marketplace add …` inside a session, but an agent should use the CLI form.)
 Managing it later is equally non-interactive: `claude plugin disable a11y-loop`, `claude plugin
 enable a11y-loop`, `claude plugin uninstall a11y-loop@chanmeng-a11y-loop` — add `-y` only if you
 pass `--prune`, which is the single flag that asks for confirmation.
@@ -602,9 +622,14 @@ changed.
 | | Portable skill | Plugin layer |
 |---|---|---|
 | Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
-| Works in | 40+ Agent Skills clients | Claude Code only |
+| Works in | 40+ Agent Skills clients | the hooks and `/a11y-plan` in Claude Code; on Cowork and the Claude apps only the skill's rules |
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, §2 enforcement at Stop, `/a11y-plan` |
 | Required? | yes | no |
+
+**Where the hooks do not run.** The Anthropic plugin directory also lists the plugin on Cowork and
+the Claude apps (web, desktop, mobile). Hooks do not run there, and there is no Node or browser for
+the audit, so those surfaces get the skill's plan, generation and reporting rules, and nothing is
+verified.
 
 **Plan gate without Claude Code.** The hook only exists inside Claude Code's interactive plan mode:
 it fires on `ExitPlanMode`, and that tool is absent under `claude -p` and in every other client.
@@ -634,7 +659,8 @@ it exits `1` when it finds violations, which fails the job (see below).
 
 The quickest route is the composite GitHub Action. It installs the CLI and the browser, audits,
 writes the result to the job summary, can diff against a baseline report and can keep one sticky
-comment on the pull request:
+comment on the pull request. It is merged on `main` but in no release yet: 0.3.2 does not contain
+it, so the `uses:` line below resolves only once the release that contains it is tagged.
 
 ```yaml
 - uses: actions/setup-node@v4          # Node 20 or newer must be on the runner first
@@ -739,7 +765,7 @@ Run `a11y-loop --help` for the full, current reference.
 
 ```bash
 npm install
-npx playwright install chromium   # once, or after a Playwright version bump
+node src/cli.js install-browser   # once, or after a Playwright version bump
 
 npm test                # full suite
 npm run test:unit       # unit tests only
