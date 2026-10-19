@@ -120,11 +120,15 @@ against it converges on [`demo/after/`](../demo/after) — **0 violations** — 
 Converged: all 159 violations fixed, none introduced
 ```
 
-That count is for axe-core 4.14.0, the version a11y-loop pins. It was 163 at axe-core 4.12.1, which
-is the version the GIF above was recorded with. One of the page's seeded failures is a scrolling
-ticker, and whether its last name is inside the viewport when axe reads the page depends on where
-the animation has got to, so a run reports 159 or 160 and converges on "all 160" when it is 160.
-`test/integration/demo.test.js` holds the count: exact outside the ticker, 9 or 10 inside it.
+That count is for axe-core 4.14.0, the version a11y-loop pins, and it is the same on every run.
+The GIF above was recorded at axe-core 4.12.1, when the count was 163. Up to and including 0.3.0
+the count also moved by one between runs, 159 or 160, and the cause was the page, not the engine.
+One of its seeded failures is a scrolling sponsor ticker, and whether its tenth name was inside
+the viewport when axe read the page depended on how far the animation had got. The ticker now
+holds still for its first ten seconds before it scrolls forever, so every pass reads the same
+unscrolled frame. It still starts on its own and cannot be paused, so the seeded SC 2.2.2 failure
+is unchanged. `test/integration/demo.test.js` holds the count exactly: 150 outside the ticker and
+9 inside it.
 
 `FIXED` / `NEW` / `REMAINING` status per finding, matched by stable fingerprint (rule + selector +
 WCAG success criterion), is what makes that verdict checkable rather than asserted — see

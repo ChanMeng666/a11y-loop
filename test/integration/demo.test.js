@@ -77,12 +77,13 @@ const AFTER_INTERACT = join(HERE, 'interact', 'demo-after.mjs');
  * in package.json and this suite holds both: bump axe-core and the count test
  * goes red until the new count is measured and the docs are updated with it.
  *
- * Why there is a range at all: the demo's ticker (B14, "reduced-motion
- * ignored") is a CSS animation, and one of its ten spans is inside the
- * viewport or not depending on where the animation is when axe reads the
- * page. That is the page moving, not the engine wobbling, so it is held
- * apart: everything outside the ticker is exact, the ticker is 9 or 10. The
- * documented figure is the 9-ticker run, the same convention 163 used.
+ * The ticker (B14, "reduced-motion ignored") is held apart because it once
+ * made this number move by itself: it is a CSS animation, and one of its
+ * names was inside the viewport or not depending on how far the track had
+ * scrolled when axe read the page, so a run gave 159 or 160. The page now
+ * holds the track still for its first 10 s (`animation-delay`), so every pass
+ * reads the unscrolled frame: nine names at 1280px, three at 320px. The count
+ * is exact on both sides of the split, and the split says which side moved.
  */
 const PINNED_AXE_CORE = '4.14.0';
 const EXPECTED_OUTSIDE_TICKER = 150;
@@ -95,7 +96,8 @@ const TICKER_NAMES = new Set([
   'Pipiwharauroa Design',
   'Fernbird Hosting',
 ]);
-const DOCUMENTED_COUNT = EXPECTED_OUTSIDE_TICKER + 9;
+const EXPECTED_TICKER = 9;
+const DOCUMENTED_COUNT = EXPECTED_OUTSIDE_TICKER + EXPECTED_TICKER;
 
 function runCli(args) {
   return spawnSync(process.execPath, [CLI, ...args], { encoding: 'utf8' });
@@ -320,7 +322,7 @@ describe('demo/before — the documented count, at the pinned axe-core', () => {
     assert.equal(report.tool.axeCoreVersion, PINNED_AXE_CORE);
   });
 
-  test(`exactly ${EXPECTED_OUTSIDE_TICKER} violations outside the animated ticker, 9 or 10 inside it`, () => {
+  test(`exactly ${EXPECTED_OUTSIDE_TICKER} violations outside the animated ticker and ${EXPECTED_TICKER} inside it`, () => {
     const { violations } = report.findings;
     const ticker = violations.filter((f) => TICKER_SELECTOR.test(f.selector));
     for (const f of ticker) {
@@ -332,7 +334,12 @@ describe('demo/before — the documented count, at the pinned axe-core', () => {
       EXPECTED_OUTSIDE_TICKER,
       `axe-core ${report.tool.axeCoreVersion}: measure the new demo count and update docs/overview.md, README.md and .github/readme/card.svg`,
     );
-    assert.ok(ticker.length === 9 || ticker.length === 10, `ticker reported ${ticker.length}`);
+    assert.equal(
+      ticker.length,
+      EXPECTED_TICKER,
+      'the ticker is moving while axe reads the page: check the animation-delay in demo/before/style.css',
+    );
+    assert.equal(violations.length, DOCUMENTED_COUNT);
     assert.equal(report.summary.violations, violations.length);
   });
 

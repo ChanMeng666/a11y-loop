@@ -396,6 +396,7 @@ There is not a single media query for width in the stylesheet — the only `@med
 ```css
 .ticker-track {
   animation: ticker-scroll 16s linear infinite;
+  animation-delay: 10s;
 }
 ```
 
@@ -407,6 +408,14 @@ stoppable, or hideable. SC 2.3.3 Animation from Interactions (AAA) is the second
 a11y-loop verifies this behaviourally: it re-runs the page with `prefers-reduced-motion: reduce`
 emulated and checks whether the animation *actually stops*, rather than trusting that a media
 query exists.
+
+The 10-second `animation-delay` does not soften the failure: the ticker still starts on its own,
+still runs forever, and still has no way to stop it, and the `reduced-motion` check reports it
+while it is waiting exactly as it does while it moves. The delay is there for the audit. Without
+it, how many names sat inside the viewport depended on how far the track had scrolled when axe
+read the page, and the demo's count moved by one from run to run. Holding the first ten seconds
+still means every pass reads the same unscrolled frame: nine names at 1280px wide and three at
+320px.
 
 ---
 

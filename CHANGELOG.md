@@ -43,6 +43,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `README` or `README.*` in the package root whose name ends in `.md`, in glob order, and force-includes
   every such file in the tarball. With `README.zh-CN.md` beside `README.md`, 0.3.0 showed the Chinese
   one on the registry. The Chinese README now lives at `docs/README.zh-CN.md`, outside the package root.
+- **The demo count no longer changes between runs: it is 159 on every run at axe-core 4.14.0.** In
+  0.3.0 it was 159 or 160 depending on timing. The seeded B14 sponsor ticker is a CSS animation, and
+  whether its tenth name was inside the viewport when axe read the page depended on how far the
+  track had scrolled. `demo/before/style.css` now gives the ticker a 10-second `animation-delay`, so
+  every pass reads the unscrolled frame: nine names at 1280px, three at 320px. The ticker still
+  starts on its own, runs forever and cannot be paused, and `reduced-motion-ignored` (SC 2.2.2)
+  still reports it. Twenty consecutive audits gave 159 with an identical set of findings, against
+  160 seven times and 159 three times in ten runs before the change, and `diff` converges on all
+  159. `demo.test.js` now asserts exactly 9 ticker findings instead of 9 or 10.
 
 ## [0.3.0] - 2026-10-19
 

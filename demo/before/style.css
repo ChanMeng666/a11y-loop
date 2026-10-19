@@ -201,6 +201,12 @@ a {
   width: max-content;
   /* Infinite motion with no prefers-reduced-motion escape hatch (SC 2.3.3). */
   animation: ticker-scroll 16s linear infinite;
+  /* Held still for the first 10 s, then scrolls forever. Not a fix: it still
+     starts on its own and runs far past five seconds with no way to stop it
+     (SC 2.2.2). It exists so an audit always reads the same frame — without it,
+     how many names sat inside the viewport depended on how far the track had
+     moved when axe looked, and the demo's headline count moved by itself. */
+  animation-delay: 10s;
 }
 
 .ticker-track span {
