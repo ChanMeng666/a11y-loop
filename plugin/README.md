@@ -10,6 +10,15 @@ once and Claude is handed the section to fill in. It ships three things:
   on request.
 - **A plan-mode hook** (`hooks/plan-gate.mjs`): a `PreToolUse` hook on `ExitPlanMode`.
 
+## Where each part works
+
+- **Claude Code (CLI and desktop)** gets all three: the skill, the `/a11y-plan` command and the
+  plan-mode hook.
+- **Cowork and the Claude apps (web, desktop, mobile)** get the skill's plan, generation and
+  reporting rules only. The plan-mode hook does not run there. The audit loop (the skill's §2)
+  cannot run there either, because it needs Node and a browser. So the skill's rules apply, but
+  nothing is verified.
+
 ## What it runs on your machine
 
 - **The skill** is text. It runs nothing by itself.
@@ -28,16 +37,30 @@ ran. It is not a conformance claim. Every run ends with a checklist of what stil
 
 ## Install
 
+In Claude Code:
+
+```text
+/plugin install a11y-loop --marketplace ChanMeng666/a11y-loop
+```
+
+From a terminal (Claude Code 2.1.292 or later):
+
+```bash
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop
+```
+
+Older versions:
+
 ```bash
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
+
+The audit still needs the command-line tool: `npm i -g a11y-loop`, then `a11y-loop install-browser`.
 
 Full documentation: <https://github.com/ChanMeng666/a11y-loop#readme> and
 <https://chanmeng666.github.io/a11y-loop/>. Privacy: [PRIVACY.md](https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md).
 
 ## For contributors
 
-`skills/a11y-loop/`, `hooks/lib/plan-gate.mjs` and `LICENSE` in this folder are generated copies.
-Edit the originals at the repository root (`skills/a11y-loop/`, `src/lib/plan-gate.js`, `LICENSE`)
-and run `npm run sync-plugin`. A unit test fails while any copy differs from its source.
+The skill, the hook's logic and the license in this folder are generated copies; see [CONTRIBUTING.md](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md) before editing.
