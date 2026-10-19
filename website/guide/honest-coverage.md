@@ -23,10 +23,11 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
   alternative accuracy, cognitive accessibility) — the direct inverse of "no manual testing
   needed."
 - axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed. See the
-  [benchmark write-up](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md)
+  [2026-07 benchmark write-up](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results-2026-07.md)
   for a live example of two such findings being investigated and resolved rather than dismissed.
-  That benchmark was run against the skill at v0.1.x, before the plan rules existed; a 2026-10
-  re-run is in progress.
+  The [2026-10 re-run](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md)
+  repeats the comparison three times per condition, with IBM Equal Access and Lighthouse as second
+  engines.
 - **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
   a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
   written up in [Field Notes](/guide/field-notes), with what to check before dismissing one.
@@ -55,8 +56,9 @@ pie showData title WCAG 2.2 AA success criteria — automation reach (Deque rese
   SARIF-consuming tooling; the JSON report remains the primary, complete format.
 - Findings are tagged with the **lowest WCAG version** that contains them (2.0 / 2.1 / 2.2), so you
   can filter to the subset a given jurisdiction actually enforces — e.g. US ADA Title II and
-  Section 508 to the 2.0/2.1 AA subset, EU EN 301 549 to 2.1 AA (moving to 2.2 AA around October
-  2026), NZ and UK to the full 2.2 AA set.
+  Section 508 to the 2.0/2.1 AA subset, EU EN 301 549 v3.2.1 to 2.1 AA (V4.1.1, published
+  2026-09-02, moves it to 2.2 AA once cited in the Official Journal, expected 2026-11-30 or
+  2026-12-16; as of 2026-10), NZ and UK to the full 2.2 AA set.
 
 ## What this is not
 

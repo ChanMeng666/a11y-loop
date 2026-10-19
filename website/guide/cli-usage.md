@@ -1,7 +1,8 @@
 # CLI Usage
 
-a11y-loop ships six commands: `audit`, `contrast` and `diff` for verification, `plan-check` for
-the plan, and `doctor` and `install-browser` for setup. Exit codes are the same contract
+a11y-loop ships seven commands: `audit`, `contrast` and `diff` for verification, `plan-check` for
+the plan, `doctor` and `install-browser` for setup, and `mcp`, which serves the others as MCP
+tools. Exit codes are the same contract
 everywhere: `0` pass, `1` findings, `2` tool or usage error.
 
 ## `audit`
@@ -50,7 +51,8 @@ a11y-loop diff --before base.json --after head.json
 
 Matches findings across two reports by rule + selector + WCAG success criterion and classifies
 each as `FIXED`, `NEW` (a regression — fails the command even if the total count went down), or
-`REMAINING`.
+`REMAINING`. A violation that a documented rule moved to needs-review, such as forced-colors
+contrast, is listed as `RECLASSIFIED` and never counted as fixed.
 
 ## `plan-check`
 
@@ -95,6 +97,18 @@ Installs Chromium with a11y-loop's own bundled Playwright. Use it instead of
 build this copy cannot launch. Extra arguments go to Playwright's installer unchanged
 (`--with-deps`, `--dry-run`, `--only-shell`). stdin is ignored, so `--with-deps` cannot answer a
 sudo prompt. Set `PLAYWRIGHT_BROWSERS_PATH` the same way here and when you audit.
+
+## `mcp`
+
+```bash
+a11y-loop mcp
+```
+
+Serves `audit`, `diff`, `contrast --fix`, `plan-check`, `doctor` and the manual checklist as six
+Model Context Protocol tools over stdio, for clients that load MCP servers but not Agent Skills.
+Each tool returns the report its command writes with `--json`. stdout is the protocol channel. It
+exits `0` when the client closes stdin. Setup for Claude Code, Codex and Cursor is in the
+[overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#mcp-server).
 
 ## Flags reference
 

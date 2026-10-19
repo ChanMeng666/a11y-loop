@@ -174,7 +174,9 @@ axe running once on page load finds nothing in a dialog that only misbehaves onc
 
 `4` **Stable fingerprints power regression detection** — `a11y-loop diff` matches findings across
 two reports by rule + selector + WCAG success criterion and classifies each as FIXED, NEW
-(a regression — this fails the command even if the total count went down), or REMAINING.
+(a regression — this fails the command even if the total count went down), or REMAINING. A
+violation that a documented rule moved to needs-review (the forced-colors contrast routing) is
+RECLASSIFIED, never FIXED.
 
 `5` **Structured, honest output** — JSON is the primary format: every finding carries its WCAG
 success criterion, ACT rule ID where one exists, and a provenance block (axe-core version, browser,
@@ -237,8 +239,8 @@ of the other ~87%.
   alternative accuracy, cognitive accessibility) — the direct inverse of "no manual testing
   needed."
 - axe-core's own `incomplete` results are surfaced as `needsReview`, not suppressed. See
-  `evals/benchmark-results.md` for a live example of two such findings being investigated and
-  resolved rather than dismissed.
+  `evals/benchmark-results-2026-07.md` for a live example of two such findings being investigated
+  and resolved rather than dismissed.
 - **The engine is wrong sometimes, and the honest thing is to say where.** A handful of rows have
   a known non-defect explanation — contrast in the forced-colors pass being the loudest. They are
   written up in [Field Notes](#-field-notes), with what to check before dismissing one. Verifying a
@@ -485,10 +487,9 @@ the three engines (IBM) independent of axe-core.** It is not a controlled study 
 effect size. The 2026-07 single-run comparison is kept in
 [`evals/benchmark-results-2026-07.md`](../evals/benchmark-results-2026-07.md).
 
-It was also run against the skill as it stood at v0.1.x, before the §0 plan rules existed, so it
-says nothing about planning. A 2026-10 re-run against the current skill, scored against an
-independent oracle, is in progress in `evals/`; until it lands, these numbers describe the older
-skill only. See [`roadmap.md`](roadmap.md).
+It ran against the skill and CLI at 0.3.2, which include the §0 plan rules. Each task arrived as a
+finished component request, so the plan rules were not exercised, and it says nothing about
+planning. The 2026-07 run was against the v0.1.x skill.
 
 ## 🛠️ Tech Stack
 
@@ -524,7 +525,7 @@ graph TD
     B --> C["a11y-loop CLI"]
     C --> D["audit<br/>5 passes: default, dark,<br/>forced-colors, reduced-motion, 320px reflow"]
     C --> E["contrast --fix<br/>WCAG 2.x + OKLCh suggestions"]
-    C --> F["diff<br/>FIXED / NEW / REMAINING"]
+    C --> F["diff<br/>FIXED / NEW / REMAINING / RECLASSIFIED"]
     D --> G["Playwright + Chromium"]
     G --> H["axe-core"]
     G --> I["a11y-loop's own checks<br/>focus, dialog trap (native and portalled),<br/>target size, reduced motion,<br/>link text, div-button,<br/>route-change focus, status messages"]
@@ -675,8 +676,8 @@ re-running `npx skills add` is the upgrade. On Windows, use PowerShell (`New-Ite
 ### Optional: the Claude Code plugin layer
 
 The skill above is the whole product and it is portable. This repository also ships a thin
-Claude-Code-only layer that adds one thing the portable skill cannot do — enforcement during
-plan mode:
+Claude-Code-only layer that adds what the portable skill cannot do — enforcement at plan approval
+and at the end of a session:
 
 ```bash
 claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # Claude Code 2.1.292 or later
@@ -787,8 +788,10 @@ it exits `1` when it finds violations, which fails the job (see below).
 
 The quickest route is the composite GitHub Action. It installs the CLI and the browser, audits,
 writes the result to the job summary, can diff against a baseline report and can keep one sticky
-comment on the pull request. It ships in release 0.4.0; 0.3.2 and earlier do not contain
-it, so the `uses:` line below resolves from the v0.4.0 tag on.
+comment on the pull request. It ships in release 0.4.0 and later; 0.3.2 and earlier do not
+contain it. It is listed on the
+[GitHub Marketplace](https://github.com/marketplace/actions/a11y-loop-audit) from v0.4.1, the
+version the `uses:` line below pins.
 
 ```yaml
 - uses: actions/setup-node@v4          # Node 20 or newer must be on the runner first
@@ -911,7 +914,7 @@ built from the finding, its measured values and its evidence tier.
 | Tool | Same as | Returns |
 |---|---|---|
 | `a11y_loop_audit` | `audit --json` | a run id, the verdict and counts, violations / needs-review / best-practice findings (fingerprint, rule, WCAG criterion, selector, passes, message, help URL, contrast suggestions; at most 50 per list), the manual checklist and the coverage statement. `out` writes the full report to disk; `timeoutMs` stops a long audit and returns an error |
-| `a11y_loop_diff` | `diff --json` | FIXED / NEW / REMAINING by fingerprint, plus `converged` and `regression`. Takes two run ids from this session or two report paths |
+| `a11y_loop_diff` | `diff --json` | FIXED / NEW / REMAINING / RECLASSIFIED by fingerprint, plus `converged` and `regression`. Takes two run ids from this session or two report paths |
 | `a11y_loop_contrast_fix` | `contrast --fix --json` | the ratio, the verdict per level, and passing candidates in OKLCh |
 | `a11y_loop_plan_check` | `plan-check --json` | the verdict, the missing plan items and the template section |
 | `a11y_loop_doctor` | `doctor --json` | the environment facts, and the fix for each failing one |
@@ -950,7 +953,7 @@ On Windows, a client that spawns commands without a shell cannot run the `a11y-l
 
 The honesty rules apply to tool results exactly as to CLI output. The tools return the same reports, with the same coverage statement and manual checklist, and nothing in the protocol layer turns a finding count into a verdict about the page. An agent that relays only the violation count has dropped the half of the result that says what was not checked.
 
-**Publishing to the MCP registry.** `package.json` carries the registry's ownership marker, `"mcpName": "io.github.ChanMeng666/a11y-loop"`. The registry needs no file in the repository; `server.json` only has to exist when `mcp-publisher publish` runs, after the npm release. It must carry the fixed `mcp` argument, which `mcp-publisher init` does not know about:
+**Publishing to the MCP registry.** It is not published there yet (checked 2026-10-20). `package.json` carries the registry's ownership marker, `"mcpName": "io.github.ChanMeng666/a11y-loop"`. The registry needs no file in the repository; `server.json` only has to exist when `mcp-publisher publish` runs, after the npm release. It must carry the fixed `mcp` argument, which `mcp-publisher init` does not know about:
 
 ```json
 {

@@ -26,7 +26,7 @@ commands to run. It ships four things:
 ## What it runs on your machine
 
 - **The skill** is text. It runs nothing by itself.
-- **The hook** runs `node hooks/plan-gate.mjs` from this folder before Claude Code leaves plan
+- **The plan-mode hook** runs `node hooks/plan-gate.mjs` from this folder before Claude Code leaves plan
   mode. It reads the plan text and writes one small state file to Claude Code's plugin data
   directory (or the temp directory). It makes no network requests. Turn it off with
   `A11Y_LOOP_PLAN_GATE=off`.

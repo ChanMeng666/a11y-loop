@@ -369,7 +369,8 @@ exit $status
 ```
 
 Exit 2 from the audit (for example no browser) does not fail the commit here; change the test if you
-want it to. In GitHub Actions, from release 0.4.0:
+want it to. In GitHub Actions, from release 0.4.0 (listed on the
+[GitHub Marketplace](https://github.com/marketplace/actions/a11y-loop-audit) from v0.4.1):
 
 ```yaml
 - uses: actions/setup-node@v4

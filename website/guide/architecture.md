@@ -3,7 +3,9 @@
 a11y-loop is two things working together: an **Agent Skill** that sets the rules — first while the
 UI work is being planned, then while the agent writes the code — and a **Node CLI** that checks the
 plan and verifies the rendered result in a real browser, feeding failures back to the agent until
-the report converges. An optional Claude Code plugin adds a plan-mode gate on top.
+the report converges. An optional Claude Code plugin adds two gates on top, one at plan approval
+and one at the end of a session. The same CLI also runs as an MCP server (`a11y-loop mcp`) and as
+a GitHub Action.
 
 The skill's phases run in that order. §0 settles the decisions that are cheap now and expensive
 later (conformance target, per-component criteria, foreclosing decisions, color tokens, structure);
@@ -22,7 +24,7 @@ graph TD
     B --> C["a11y-loop CLI"]
     C --> D["audit<br/>5 passes: default, dark,<br/>forced-colors, reduced-motion, 320px reflow"]
     C --> E["contrast --fix<br/>WCAG 2.x + OKLCh suggestions"]
-    C --> F["diff<br/>FIXED / NEW / REMAINING"]
+    C --> F["diff<br/>FIXED / NEW / REMAINING / RECLASSIFIED"]
     D --> G["Playwright + Chromium"]
     G --> H["axe-core"]
     G --> I["a11y-loop's own checks<br/>focus, dialog trap (native and portalled),<br/>target size, reduced motion,<br/>link text, div-button,<br/>route-change focus, status messages"]
@@ -70,9 +72,10 @@ any agent or CI job and exits `1` on a UI plan with no accessibility content. In
 Code, the [optional plugin layer](/guide/getting-started#optional-the-claude-code-plugin-layer)
 runs the same decision as a hook on `ExitPlanMode` and declines such a plan once. Both check that
 the question was asked, not that the answer is any good — the audit loop above and a human
-reviewer are still what judge the answer. Nothing yet gates the end of a turn on the audit: a
-Stop-hook audit gate is on the
-[roadmap](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/roadmap.md), not shipped.
+reviewer are still what judge the answer. The end of the work has its own gate in the same
+plugin: a `Stop` hook declines, once per session, to end a session that wrote UI files and never
+ran `a11y-loop audit` afterwards. It checks that the audit ran, not what it found. The
+equivalents for other clients are in [Gates in other agents](/guide/agent-gates).
 
 ## Tech stack
 

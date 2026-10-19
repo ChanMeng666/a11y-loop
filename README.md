@@ -47,11 +47,13 @@ Start a new agent session and ask for UI as usual. The skill applies while the a
 a11y-loop audit http://localhost:3000
 ```
 
-MCP-only clients: `a11y-loop mcp` serves the audit, diff, contrast, plan-check and doctor commands as MCP tools over stdio ([setup](docs/overview.md#mcp-server)).
+MCP-only clients: `a11y-loop mcp` serves the audit, diff, contrast, plan-check and doctor commands, and the manual checklist, as six MCP tools over stdio ([setup](docs/overview.md#mcp-server)).
+
+GitHub Actions: `uses: ChanMeng666/a11y-loop@v0.4.1` audits in CI and writes the result to the job summary ([GitHub Marketplace](https://github.com/marketplace/actions/a11y-loop-audit), [setup](docs/overview.md#%EF%B8%8F-using-it-in-ci)).
 
 ### Claude Code: the plugin instead of step 1
 
-The plugin carries the skill, a `/a11y-plan` command and a plan-mode hook. Install the plugin **or** the skill, not both. The hooks run only in Claude Code; [other clients and CI](docs/agent-gates.md) have their own routes to the same plan and audit checks.
+The plugin carries the skill, a `/a11y-plan` command and two hooks. One asks for an accessibility section in a UI plan. The other asks for an audit before a session that changed UI ends. Install the plugin **or** the skill, not both. The hooks run only in Claude Code; [other clients and CI](docs/agent-gates.md) have their own routes to the same plan and audit checks.
 
 ```text
 /plugin install a11y-loop --marketplace ChanMeng666/a11y-loop
@@ -104,11 +106,12 @@ If you keep browsers off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before
 ### What it runs on your machine
 
 - **The skill** is text. It runs nothing by itself.
-- **The plugin's hook** runs `node hooks/plan-gate.mjs` from the plugin's folder before Claude Code leaves plan mode. It reads the plan text and writes one small state file to Claude Code's plugin data directory (or the temp directory). It makes no network requests. Turn it off with `A11Y_LOOP_PLAN_GATE=off`.
+- **The plugin's plan hook** runs `node hooks/plan-gate.mjs` from the plugin's folder before Claude Code leaves plan mode. It reads the plan text and writes one small state file to Claude Code's plugin data directory (or the temp directory). It makes no network requests. Turn it off with `A11Y_LOOP_PLAN_GATE=off`.
+- **The plugin's audit hook** runs `node hooks/audit-gate.mjs` when Claude is about to finish. It reads the session transcript Claude Code already keeps, looking for UI file edits and audit commands, and writes one small state file to the same place. It runs no audit itself and makes no network requests. Turn it off with `A11Y_LOOP_AUDIT_GATE=off`.
 - **Installing the plugin** copies the repository's `plugin/` folder into Claude Code's plugin cache and fetches no packages. Version 0.3.0 and earlier shipped the whole repository as the plugin, so the install also ran `npm ci` there and downloaded about 24 MB of packages the plugin did not use.
 - **The command-line tool** is a separate install (`npm i -g a11y-loop`). It launches a local Chromium, serves `--file` and `--html` targets on a localhost port, and opens only the URL you give it. It sends no telemetry.
 - **`a11y-loop install-browser`** downloads Chromium and a headless shell from Playwright's CDN, about 700 MB on disk.
-- **In claude.ai chat**, only the skill's rules apply. There is no Node or browser there, so the audit cannot run and the hook does not load.
+- **In claude.ai chat**, only the skill's rules apply. There is no Node or browser there, so the audit cannot run and the hooks do not load.
 
 A clean audit means no automatically detectable failures were found in the states and passes that ran. It is not a conformance claim. Every run ends with a checklist of what still needs a person.
 

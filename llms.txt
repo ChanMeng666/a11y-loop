@@ -8,6 +8,8 @@ of the project for large language models and AI agents.
 ## About
 
 - Repository: https://github.com/ChanMeng666/a11y-loop
+- Current release: 0.4.1 (2026-10-20) on npm, with provenance. The state of every release and
+  channel, and what is pending: docs/roadmap.md, section "State as of 2026-10-20"
 - Primary stack: Node.js / JavaScript (ESM), Playwright, axe-core
 - License: MIT (axe-core dependency is MPL-2.0 — see THIRD-PARTY-NOTICES.md)
 - Two layers: an Agent Skill (`skills/a11y-loop/`, open Agent Skills standard) covering the plan,
@@ -22,7 +24,8 @@ of the project for large language models and AI agents.
   `uses: ChanMeng666/a11y-loop@<tag>` with `target`, optional `baseline`, `fail-on`
   (`violations` | `new` | `never`) and `pr-comment`. It writes a step summary and an optional sticky
   PR comment, and never a score. Example: `examples/github-action/audit.yml`. Ships in release 0.4.0 and
-  later (0.3.2 and earlier do not contain it)
+  later (0.3.2 and earlier do not contain it); listed on the GitHub Marketplace from v0.4.1:
+  https://github.com/marketplace/actions/a11y-loop-audit
 - `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state
@@ -110,7 +113,7 @@ before a newly installed skill or hook takes effect.
 - [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
 - [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget, the status-message heuristic — and what to check before dismissing one
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
-- [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats; run against the v0.1.x skill, and a 2026-10 re-run is in progress
+- [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison (2026-10: three runs per condition, scored by a11y-loop, IBM Equal Access and Lighthouse), with caveats; the 2026-07 single run against the v0.1.x skill is kept in evals/benchmark-results-2026-07.md
 - [Roadmap](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/roadmap.md): what is shipped, in progress and planned
 - [Distribution briefing](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/research/distribution.md): where the project is listed and on what rules (2026-10)
 - [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history

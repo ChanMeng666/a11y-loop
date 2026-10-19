@@ -72,7 +72,8 @@ Claude-Code-specific mechanism — hooks, plugin manifests, slash commands, `Exi
 appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked to split it.
 
 **Don't edit the generated copies in `plugin/`.** `plugin/skills/a11y-loop/` (from
-`skills/a11y-loop/`, minus `evals/`), `plugin/hooks/lib/plan-gate.mjs` (from
+`skills/a11y-loop/`, minus `evals/`), `plugin/evals/` (from `skills/a11y-loop/evals/native/` and
+`trigger-evals.json`), `plugin/hooks/lib/plan-gate.mjs` (from
 `src/lib/plan-gate.js`), `plugin/hooks/lib/audit-gate.mjs` (from `src/lib/audit-gate.js`) and
 `plugin/LICENSE` (from `LICENSE`) are copies. Edit the original and run
 `npm run sync-plugin`. `test/unit/plugin-sync.test.js` fails while any copy differs from its
@@ -134,10 +135,14 @@ release is safe to re-run (`gh workflow run release.yml`).
 
 **Marketplace listing for the GitHub Action.** `action.yml` at the root is what makes
 `uses: ChanMeng666/a11y-loop@vX.Y.Z` work; the tag is the release. Listing it in the GitHub Marketplace
-is a manual step that needs the repository owner: on the first release that contains `action.yml`,
-open the release on GitHub, tick "Publish this Action to the GitHub Marketplace", choose the category
-and accept the Marketplace agreement. The `branding` block in `action.yml` is required for the
-listing. Later releases only need the box ticked again. Also push or move a major tag if you want
+is a manual step that needs the repository owner. It was first done for v0.4.1, and the listing is
+<https://github.com/marketplace/actions/a11y-loop-audit> (categories Code quality and Testing). The
+first time, open the release on GitHub, tick "Publish this Action to the GitHub Marketplace", choose
+the category and accept the Marketplace agreement. The `branding` block in `action.yml` is required
+for the listing. Later releases only need the box ticked again, on the Release that `release.yml`
+created, because the workflow cannot tick it. The Marketplace validates `action.yml` at that tag: a
+description of 125 characters or more, or missing branding, blocks the listing (v0.4.0 was refused
+for this), and `test/unit/action-manifest.test.js` checks both before you tag. Also push or move a major tag if you want
 `@v0` to work, and keep the version in the docs' `uses:` snippets in step with the release.
 
 Two things to know before you touch this setup:

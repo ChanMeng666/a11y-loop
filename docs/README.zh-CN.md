@@ -35,15 +35,19 @@ a11y-loop install-browser   # downloads Chromium for a11y-loop's own Playwright 
 a11y-loop doctor            # checks Node, the browser and where the skill is installed
 ```
 
-开启一个新的智能体会话，像平常一样请它写界面。智能体在规划和编写界面的过程中，技能就会生效。想自己审计一个页面：
+开启一个新的智能体会话，像平常一样请它写界面。智能体在规划和编写界面的过程中，技能就会生效。不在 Claude Code 计划模式中的智能体（Codex、Cursor、Copilot、CI）在构建界面之前运行 `a11y-loop plan-check --file plan.md`；当一个界面计划没有写明任何无障碍决策时，它以退出码 1 结束。想自己审计一个页面：
 
 ```bash
 a11y-loop audit http://localhost:3000
 ```
 
+只支持 MCP 的客户端：`a11y-loop mcp` 通过 stdio 把审计、diff、对比度、plan-check、doctor 命令和人工检查清单作为六个 MCP 工具提供（[设置方法](overview.md#mcp-server)）。
+
+GitHub Actions：`uses: ChanMeng666/a11y-loop@v0.4.1` 在 CI 中审计，并把结果写入作业摘要（[GitHub Marketplace](https://github.com/marketplace/actions/a11y-loop-audit)，[设置方法](overview.md#%EF%B8%8F-using-it-in-ci)）。
+
 ### Claude Code：用插件代替第 1 步
 
-插件包含技能、一个 `/a11y-plan` 命令和一个计划模式钩子。插件和技能只装其中一个，不要两个都装。
+插件包含技能、一个 `/a11y-plan` 命令和两个钩子：一个要求界面计划写明无障碍部分，另一个要求改动过界面的会话在结束前运行审计。插件和技能只装其中一个，不要两个都装。钩子只在 Claude Code 中运行；[其他客户端和 CI](agent-gates.md) 有各自的途径来做同样的计划检查和审计检查。
 
 ```text
 /plugin install a11y-loop --marketplace ChanMeng666/a11y-loop
@@ -96,7 +100,8 @@ cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
 ### 它在你的机器上运行什么
 
 - **技能**是文本，自身不运行任何东西。
-- **插件的钩子**在 Claude Code 离开计划模式之前，从插件自己的文件夹运行 `node hooks/plan-gate.mjs`。它读取计划文本，并向 Claude Code 的插件数据目录（或临时目录）写入一个很小的状态文件。它不发出任何网络请求。可用 `A11Y_LOOP_PLAN_GATE=off` 关闭。
+- **插件的计划钩子**在 Claude Code 离开计划模式之前，从插件自己的文件夹运行 `node hooks/plan-gate.mjs`。它读取计划文本，并向 Claude Code 的插件数据目录（或临时目录）写入一个很小的状态文件。它不发出任何网络请求。可用 `A11Y_LOOP_PLAN_GATE=off` 关闭。
+- **插件的审计钩子**在 Claude 即将结束时运行 `node hooks/audit-gate.mjs`。它读取 Claude Code 本来就保存的会话记录，查找界面文件的修改和审计命令，并向同一个目录写入一个很小的状态文件。它自己不运行审计，也不发出任何网络请求。可用 `A11Y_LOOP_AUDIT_GATE=off` 关闭。
 - **安装插件**只会把仓库的 `plugin/` 文件夹复制到 Claude Code 的插件缓存中，不下载任何包。0.3.0 及更早版本把整个仓库当作插件，因此安装时还会在缓存里运行 `npm ci`，下载约 24 MB 插件用不到的包。
 - **命令行工具**是单独安装的（`npm i -g a11y-loop`）。它会启动本地的 Chromium，在本机端口上为 `--file` 和 `--html` 目标提供服务，并且只打开你给出的 URL。它不发送任何遥测数据。
 - **`a11y-loop install-browser`** 从 Playwright 的 CDN 下载 Chromium 和一个无头 shell，磁盘占用约 700 MB。

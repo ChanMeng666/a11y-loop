@@ -98,7 +98,7 @@ rules, §1 generation rules, §2 the audit loop, §3 honest reporting.
 ### Optional: the Claude Code plugin layer
 
 The portable skill above is the whole product. This repository also ships a thin Claude-Code-only
-layer that adds one thing a skill cannot do — enforcement during plan mode:
+layer that adds what a skill cannot do — enforcement at plan approval and at the end of a session:
 
 ```bash
 claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # Claude Code 2.1.292 or later
@@ -139,7 +139,13 @@ nothing about accessibility, the plan is declined once and the `### Accessibilit
 back to fill in, naming any decision already in the plan that is hard to walk back later. It also
 adds `/a11y-plan`, to ask for that section directly.
 
-The hook runs only in Claude Code. The Anthropic plugin directory also lists the plugin on Cowork
+It also contributes a `Stop` hook. When Claude is about to finish a session that wrote UI files and
+has not run `a11y-loop audit` since the last one, the stop is declined once and Claude is handed
+the files and the exact `audit` and `diff` commands. It declines at most once per session, lets the
+session end on any failure of its own, and `A11Y_LOOP_AUDIT_GATE=off` turns it off. It checks that
+an audit ran, not what it found.
+
+The hooks run only in Claude Code. The Anthropic plugin directory also lists the plugin on Cowork
 and the Claude apps, where hooks do not run and the audit cannot, so there only the skill's rules
 apply. Outside plan mode, and in any other agent or CI job, `a11y-loop plan-check --file plan.md` runs
 the same check (see [CLI Usage](/guide/cli-usage#plan-check)).
@@ -154,8 +160,8 @@ that the question was asked — it cannot check that the answer is any good. Tha
 |  | Portable skill | Plugin layer |
 |---|---|---|
 | Install | copy `skills/a11y-loop` | `claude plugin install a11y-loop@…` |
-| Works in | 40+ Agent Skills clients | Claude Code (the hook and `/a11y-plan`) |
-| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
+| Works in | 40+ Agent Skills clients | Claude Code (the hooks and `/a11y-plan`) |
+| Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, §2 enforcement at Stop, `/a11y-plan` |
 | Required? | yes | no |
 
 See [Planning with Accessibility](/guide/planning) for what §0 actually asks a plan to carry.
