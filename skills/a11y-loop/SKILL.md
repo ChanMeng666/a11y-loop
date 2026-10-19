@@ -22,7 +22,7 @@ compatibility: >-
   setup). The generation and honesty rules apply with or without the CLI; every
   step that says "audit" requires it.
 metadata:
-  "a11y-loop/version": "0.2.6"
+  "a11y-loop/version": "0.3.0"
 allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *) Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)'
 ---
 

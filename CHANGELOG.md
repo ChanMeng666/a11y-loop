@@ -5,6 +5,159 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-19
+
+Almost certainly the first release that runs at all from an `npm i -g` or `npx` install on Linux
+and macOS (inferred from how npm links bins, reproduced through a symlink on Windows), and the
+first whose skill sits where standard skill installers look. **One change breaks manual skill
+copies:** the skill moved from `skill/a11y-loop` to `skills/a11y-loop` (see Changed).
+
+### Fixed
+- **0.2.x invoked through a symlink exited 0 with no output, which means `npm i -g a11y-loop` and
+  `npx a11y-loop` on Linux and macOS almost certainly did nothing at all.** The guard at the end of
+  `src/cli.js` compared `import.meta.url`, which Node resolves through symlinks and junctions to
+  the real path, with `process.argv[1]`, which keeps the path as invoked. npm installs the bin as a
+  symlink (`<prefix>/bin/a11y-loop -> ../lib/node_modules/a11y-loop/src/cli.js`) and `npx` links
+  into `node_modules/.bin` the same way, so the guard was false and the process ended silently —
+  which reads like a pass. The 0.2.6 field note about Windows junctions described this same bug
+  as a junction quirk; it was the general case. Windows npm installs were not affected, because
+  their `.cmd` shims pass the real path, which is why it went unseen. The Linux/macOS impact is
+  inferred from how npm links bins and reproduced through a symlink on Windows; it was not run on
+  a real Linux install. `isEntryPoint()` now resolves `argv[1]` with `realpathSync` before
+  comparing, falling back to the raw path if that throws. `test/integration/symlink-entry.test.js`
+  runs `--version` and a real `audit --html` through a file symlink (the shape npm creates;
+  skipped only on EPERM) and through a directory junction; without the fix both fail with
+  "printed nothing".
+- **The plan-gate hook had the same guard and the same bug.** If the plugin root was ever reached
+  through a link, `hooks/plan-gate.mjs` silently did nothing and the plan passed ungated. Same fix,
+  with the hook's own invariant kept: the realpath step falls back and never throws, so the hook
+  still never blocks on its own failure. New tests drive the hook through a symlink and a junction
+  with a realistic payload and expect `deny`; both fail with the old comparison.
+- **A missing browser no longer hangs `--file` and `--html` audits.** `runAudit()` started the local
+  HTTP server and launched Chromium outside its `try/finally`, so when the launch threw, the server
+  stayed listening and the CLI printed its error and never exited. URL targets were unaffected,
+  because their `close` is a no-op. Both resources now open inside the `try`, and the `finally`
+  closes whichever exists — the server even if closing the browser throws. With an empty
+  `PLAYWRIGHT_BROWSERS_PATH`, `--html` and `--file` now exit 2 in about a second; before, `--html`
+  had to be killed by a 20-second timeout. `missing-browser.test.js` fails by timeout when the fix
+  is reverted.
+- **The plan-gate reminder now reaches the model.** On its reminder path the hook returned
+  `permissionDecision: "defer"` with `additionalContext`. Per the Claude Code hooks reference,
+  `defer` is honoured only under `-p` (interactively it is logged and ignored), and
+  `additionalContext` is ignored alongside `defer`. `ExitPlanMode` exists only interactively, so
+  the reminder never arrived anywhere it could matter. It is now sent as `additionalContext` with
+  no `permissionDecision` key at all; the silent path is unchanged and the hook still never returns
+  `allow`. Not verified end to end: `ExitPlanMode` does not exist under `claude -p`, so the
+  decision logic, the emitted JSON and plugin loading are tested, not the interactive round trip.
+
+### Added
+- **`a11y-loop install-browser`** installs Chromium with a11y-loop's own bundled Playwright
+  (`process.execPath <bundled playwright>/cli.js install chromium`). The old hint,
+  `npx playwright install chromium`, resolved whichever Playwright came first on PATH; a different
+  version installs a build this copy cannot launch, and the audit then printed the same hint again.
+  Extra arguments pass through (`--with-deps`, `--dry-run`, `--only-shell`); stdin is ignored, so
+  `--with-deps` cannot answer a sudo prompt. The missing-browser message now names this command.
+- **`a11y-loop doctor [--json]`** reports plain facts and exits 0 when an audit can run here, 2 when
+  it cannot, never 1: Node against `engines`, the bundled Playwright version, its Chromium build,
+  `PLAYWRIGHT_BROWSERS_PATH`, the axe-core version actually resolved, skill copies under
+  `~/.claude/skills` and `~/.agents/skills`, the plugin (from `installed_plugins.json`, or "could
+  not check" when that undocumented file is missing), and a double-registration warning. **The
+  verdict comes from a real headless launch**, not from whether the full browser file exists, so
+  after `install-browser --only-shell`, where audits work, doctor agrees. Gating on the file was a
+  real bug, caught by Linux CI, which installs only the headless shell.
+- **GitHub Releases are created by the release workflow.** `release.yml` published to npm only, so
+  GitHub's "Latest" had stopped at 0.2.4 while npm was at 0.2.6. On a tag push it now extracts the
+  matching `## [x.y.z]` section of this file (failing loudly if it is missing) and creates the
+  Release. It also runs when the npm publish was skipped because the version already exists, so a
+  re-run can backfill a missing Release.
+- **`README.zh-CN.md`**, a Simplified Chinese version of the one-screen README. The honesty
+  sentences are translated literally ("a clean report … is never a conformance claim"), and the
+  headline demo number is deliberately not copied.
+- **README install section, one line per agent.** The skills route comes first
+  (`npx skills add ChanMeng666/a11y-loop -g -y`, for any agent that reads Agent Skills), then the
+  CLI with `a11y-loop install-browser` and `a11y-loop doctor`. Claude Code gets the plugin as an
+  alternative to the skill (`/plugin install a11y-loop --marketplace ChanMeng666/a11y-loop`, with
+  the terminal form for 2.1.292+ and the two-step form for older versions), Codex gets its plugin
+  commands, and Windows gets PowerShell and Git Bash copy commands. **`npx skills add -g` installs
+  `~/.claude/skills/a11y-loop` as a symlink**, so the manual copy block fails on that link
+  afterwards; the README now warns not to copy over a skill `npx skills add` already linked, since
+  the skill is already there.
+- **"What it runs on your machine"**, a plain disclosure in the README. The skill is text and runs
+  nothing. The hook runs `node hooks/plan-gate.mjs` before Claude Code leaves plan mode, writes one
+  small state file, makes no network requests, and turns off with `A11Y_LOOP_PLAN_GATE=off`. The
+  CLI launches a local Chromium, serves `--file`/`--html` targets on a localhost port, opens only
+  the URL you give it, and sends no telemetry. `install-browser` downloads about 700 MB from
+  Playwright's CDN. In claude.ai chat only the skill's rules apply.
+- **The docs site** puts the skills install command in its hero, gets an og:description that makes
+  no claim the tool cannot back, and loses a dead `#-introduction` link. `npx playwright install
+  chromium` is replaced by `a11y-loop install-browser` in the end-user docs, `llms.txt` and the
+  end-user section of `AGENTS.md`.
+
+### Changed
+- **BREAKING for manual skill copies: the skill moved from `skill/` to `skills/`.** `gh skill`,
+  `npx skills`, Gemini CLI and the Agent Plugins standard only scan `skills/<name>/SKILL.md`, so
+  none of them found the skill before. Manual installs now copy
+  `$(npm root -g)/a11y-loop/skills/a11y-loop` (was `.../skill/a11y-loop`). `npx skills add` now
+  reports `Found 1 skill`. Plugin installs need no action.
+  - **`plugin.json` drops its `"skills"` key**, because `skills/` is the default folder. A probe on
+    Claude Code 2.1.x settled what that key does: a plugin with `skills/alpha` and
+    `"skills": "./extra/"` loaded **both** skills, so for skills the key *adds* to the default
+    folder rather than replacing it. `AGENTS.md`'s earlier "replaces, not adds" gotcha was wrong
+    for skills and has been rewritten; the fatal duplicate-hooks case it described still stands.
+- **The `SKILL.md` description fits the Agent Skills spec**: 1,373 → 937 characters, against the
+  spec's 1,024 limit; `skills-ref validate` rejected the old one. Only the "Supplies …" inventory
+  moved into the body. Every should-trigger concept and the negative clause are still named, and
+  no `paths:` was added. A new `skill-frontmatter.test.js` fails on the old file. The always-on
+  token estimate reported by `claude --plugin-dir . plugin details` drops from ~599 to ~450.
+- **`SKILL.md` §2's audit commands now use `--out <file> --quiet`**, so each loop iteration prints
+  one short line instead of the full report into the agent's context; details are read from the
+  file. `compatibility` now names `a11y-loop install-browser` and `a11y-loop doctor`.
+- **The audit engine is pinned exactly**: `@axe-core/playwright` 4.14.0, a direct `axe-core`
+  4.14.0 (which dedupes with the wrapper's `~4.14.0`, so a patch release cannot move the engine),
+  and `playwright` 1.64.1. Caret ranges had let fresh installs pick up axe-core 4.14.0 silently.
+- **The demo count is 159 at axe-core 4.14.0; 163 was the count at 4.12.1.** The README card,
+  card SVG and overview had kept saying 163 after installs moved to 4.14.0, and no test caught it.
+  `demo.test.js` now asserts the count, the `diff` convergence and the figure the docs quote, and
+  goes red when the pin moves. `docs/demo.gif` is a raster recording and still shows 163; it is
+  captioned as recorded at 4.12.1. **The count varies by one between runs, and the cause is the
+  page, not the engine:** the seeded B14 ticker is a CSS animation, and whether its tenth name is
+  in the viewport when axe reads the page depends on timing. At 4.14.0, nine runs gave 159 and five
+  gave 160; at 4.12.1 the same effect gave 163 or 164, so the old documented 163 was the lower of
+  two values too. Everything outside the ticker is stable (150 at 4.14.0, 154 at 4.12.1), and
+  `diff` converges at either count.
+- **SARIF is written directly** in `src/lib/format/sarif.js`, in the shape `axe-sarif-converter`
+  produced, with three deliberate, tested differences. There is no `conversion` block, since no
+  converter ran. The taxonomy is WCAG 2.2, built from the same success-criterion table as the rest
+  of the report, so 2.5.8 and other 2.2-only criteria now get relationships, 4.1.1 is gone, and
+  2.5.5 is named "Target Size (Enhanced)". An `--html` fragment is stored as artifact `contents`;
+  the converter wrote the raw HTML as the URI, which failed the schema's `uri-reference` format.
+  Output validates against the SARIF 2.1.0 schema for `--file` and `--html`. Result
+  `message.text` is still empty, as it was with the converter; that is left for its own change.
+- **`npm audit --omit=dev`: 7 high and 1 moderate → 0.** All of them arrived through the
+  converter's `@puppeteer/browsers` dependency, for a code path that only builds JSON.
+- **EN 301 549 timing.** The plan-phase guidance, WCAG quick reference, overview and standards
+  briefing now say that V4.1.1 was published on 2026-09-02, with its Official Journal citation
+  expected on 2026-11-30 or 2026-12-16 (sources differ), as of 2026-10.
+- **The W4A'24 and W4A'25 citations are corrected. The earlier text misread W4A'25** (Gurita and
+  Vatavu, [10.1145/3744257.3744266](https://doi.org/10.1145/3744257.3744266)). It said
+  accessibility-oriented prompts measured a *slightly higher* violation rate (17.32% vs 15.93%)
+  and that prompting alone does not work. That figure is one cell of the paper's Table 2, from a
+  single automated tool (MAUVE++). The paper's own reading: with accessibility-oriented prompts,
+  expert-judged violation rates fell from 58% to 19% and average severity from 1.53 to 0.30, but
+  barriers persisted, particularly in semantic structure. Its scope is one task (a banking-app
+  homepage), two models (Claude 3.5 Haiku and GPT-4-turbo) and 40 first-pass UIs, and it measured
+  no verification loop. The corrected reading is now the same in all twelve places it appeared
+  (SKILL.md, the AI-failure-modes reference, the overview, the docs site, the market briefing and
+  the benchmark write-up): prompting helps substantially, barriers persist, and no loop was
+  measured. **W4A'24's 84%** is accurate but covers ChatGPT (GPT-3.5) in one 2024 study, and is
+  now narrowed to that everywhere instead of standing for "AI-generated pages". `SKILL.md` §1's
+  ARIA sentence and the APG reference also now carry WebAIM's own caveat that ARIA did not
+  necessarily introduce the errors it correlates with.
+
+### Removed
+- **`axe-sarif-converter`** and its section of `THIRD-PARTY-NOTICES.md`.
+- **The `"skills"` key in `.claude-plugin/plugin.json`** (see Changed).
+
 ## [0.2.6] - 2026-09-13
 
 Documentation only. No behaviour change, no change to the report shape.
