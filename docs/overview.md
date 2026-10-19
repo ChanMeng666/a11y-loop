@@ -233,8 +233,8 @@ of the other ~87%.
   SARIF-consuming tooling; the JSON report remains the primary, complete format.
 - Findings are tagged with the **lowest WCAG version** that contains them (2.0 / 2.1 / 2.2), so you
   can filter to the subset a given jurisdiction actually enforces — e.g. US ADA Title II and
-  Section 508 to the 2.0/2.1 AA subset, EU EN 301 549 to 2.1 AA (moving to 2.2 AA around October
-  2026), NZ and UK to the full 2.2 AA set.
+  Section 508 to the 2.0/2.1 AA subset, EU EN 301 549 v3.2.1 to 2.1 AA (V4.1.1, published 2026-09-02, moves it to 2.2 AA once cited
+  in the Official Journal, expected 2026-11-30 or 2026-12-16; as of 2026-10), NZ and UK to the full 2.2 AA set.
 
 ## 🔬 Field Notes
 

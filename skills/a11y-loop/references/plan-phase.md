@@ -46,7 +46,7 @@ advisories.
 |---|---|---|
 | New Zealand Web Accessibility Standard 1.2 | **WCAG 2.2 AA** | In force 17 Mar 2025 — the strictest baseline |
 | UK public sector | WCAG 2.2 AA | In force |
-| EU — EN 301 549 v3.2.1 (EAA / WAD) | WCAG 2.1 AA | In force; moves to 2.2 AA with v4.1.1, expected in the OJEU ~Oct 2026 |
+| EU — EN 301 549 v3.2.1 (EAA / WAD) | WCAG 2.1 AA | In force. V4.1.1 (2.2 AA) published 2026-09-02, applies once cited in the Official Journal (expected 2026-11-30 or 2026-12-16; sources differ). As of 2026-10 |
 | US — ADA Title II (DOJ 2024 rule) | WCAG 2.1 AA | Deadlines 26 Apr 2027 (population ≥50,000) / 26 Apr 2028 |
 | US — HHS Section 504 rule | WCAG 2.1 AA | First deadline 11 May 2026; **not** extended alongside DOJ's |
 | US — Section 508 | WCAG 2.0 AA | Unchanged since the 2017/2018 ICT refresh |
