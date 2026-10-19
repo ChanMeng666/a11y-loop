@@ -11,8 +11,11 @@ of the project for large language models and AI agents.
 - Primary stack: Node.js / JavaScript (ESM), Playwright, axe-core
 - License: MIT (axe-core dependency is MPL-2.0 — see THIRD-PARTY-NOTICES.md)
 - Two layers: an Agent Skill (`skills/a11y-loop/`, open Agent Skills standard) covering the plan,
-  generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff`)
-  for browser-verified checks
+  generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff` /
+  `plan-check` / `doctor` / `install-browser`) for browser-verified checks and the plan gate
+- `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
+  plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
+  TTY, no browser, no state
 - Plus one *optional*, Claude-Code-only layer (`.claude-plugin/`, `hooks/`, `commands/`) that
   enforces the plan phase at plan approval. Nothing under `skills/` depends on it.
 

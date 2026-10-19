@@ -582,6 +582,25 @@ and a human.
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, `/a11y-plan` |
 | Required? | yes | no |
 
+**Plan gate without Claude Code.** The hook only exists inside Claude Code's interactive plan mode:
+it fires on `ExitPlanMode`, and that tool is absent under `claude -p` and in every other client.
+`a11y-loop plan-check` is the non-interactive, agent-controllable equivalent, and it is what CI and
+other agents (Codex, Cursor, Copilot, a headless Claude Code run) should use:
+
+```bash
+a11y-loop plan-check --file plan.md          # or --text "<plan>", or pipe the plan on stdin
+a11y-loop plan-check --file plan.md --json   # verdict, isUiWork, hasA11yContent, missing items
+```
+
+It exits `0` when the plan carries accessibility content or is not UI work, `1` when a UI plan's
+accessibility content is thin or absent, and `2` on a usage or input error. It never prompts: with
+neither flag it reads stdin only when stdin is not a TTY, and gives up with `2` if a pipe stays
+open with no data. It is stateless, with no loop guard and no session cap, so the same plan always
+gets the same answer. The hook and the CLI call the same function in `src/lib/plan-gate.js`. The
+hook's interactive round trip remains unverifiable headlessly; that is now immaterial, because the
+decision is identical and fully tested, and the part only the hook adds (the stdin/stdout protocol,
+the once-per-plan guard) is tested by driving the script directly.
+
 ## ⚙️ Using it in CI
 
 Install the CLI and its browser once per job, then audit:
@@ -610,6 +629,9 @@ a11y-loop audit http://localhost:3000 --json --out report.json || exit 1
 gate: it fails only on genuinely `NEW` violations, so a PR that fixes ten and introduces none
 passes even though the raw count changed.
 
+`a11y-loop plan-check --file plan.md` gates the step before any of that: it exits `1` when a plan
+that changes UI work names no accessibility decisions, with no browser and no TTY needed.
+
 ## 📖 Usage Guide
 
 ### Basic Usage
@@ -632,13 +654,16 @@ a11y-loop contrast "#767676" "#ffffff" --fix
 
 # Compare two audit reports for regressions
 a11y-loop diff --before base.json --after head.json
+
+# Check a plan names its accessibility decisions before any UI is built
+a11y-loop plan-check --file plan.md
 ```
 
 ### Advanced Configuration
 
 | Flag | Applies to | Effect |
 |---|---|---|
-| `--json` | audit, contrast | machine-readable output on stdout |
+| `--json` | audit, contrast, diff, doctor, plan-check | machine-readable output on stdout |
 | `--out <path>` | audit | write the JSON report to a file |
 | `--sarif <path>` | audit | also write SARIF v2.1 (see [Honest Coverage](#-honest-coverage)) |
 | `--interact <path.mjs>` | audit | export `const states = { name: async (page) => {} }` to drive built states |
@@ -648,6 +673,8 @@ a11y-loop diff --before base.json --after head.json
 | `--large` | contrast | large-scale text thresholds (≥24px, or ≥18.5px bold) |
 | `--ui` | contrast | non-text / UI component threshold, 3:1, SC 1.4.11 |
 | `--fix` | contrast | suggest passing colors, lighter and darker, in OKLCh |
+| `--file <path>` | audit, plan-check | the HTML file to audit, or the plan to check |
+| `--text "<plan>"` | plan-check | the plan as an argument; with neither `--file` nor `--text`, a piped stdin is read |
 
 Run `a11y-loop --help` for the full, current reference.
 

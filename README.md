@@ -41,7 +41,7 @@ a11y-loop install-browser   # downloads Chromium for a11y-loop's own Playwright 
 a11y-loop doctor            # checks Node, the browser and where the skill is installed
 ```
 
-Start a new agent session and ask for UI as usual. The skill applies while the agent plans and writes it. To audit a page yourself:
+Start a new agent session and ask for UI as usual. The skill applies while the agent plans and writes it. Agents outside Claude Code's plan mode (Codex, Cursor, Copilot, CI) run `a11y-loop plan-check --file plan.md` before building UI; it exits 1 when a UI plan names no accessibility decisions. To audit a page yourself:
 
 ```bash
 a11y-loop audit http://localhost:3000
