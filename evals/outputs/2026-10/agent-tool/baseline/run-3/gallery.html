@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer Stories</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding:48px 16px}
+h1{text-align:center;margin:0 0 32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:1040px;margin:0 auto}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);display:flex;flex-direction:column}
+.card svg{display:block;width:100%;height:160px}
+.body{padding:20px;display:flex;flex-direction:column;flex:1}
+h2{margin:0 0 8px;font-size:1.1rem}
+blockquote{margin:0 0 16px;color:#334155;flex:1}
+a{color:#4338ca;font-weight:600}
+a:focus-visible{outline:3px solid #0f172a;outline-offset:2px}
+</style>
+</head>
+<body>
+<h1>Customer stories</h1>
+<div class="grid" id="g"></div>
+<script>
+const data=[
+["Maria Lopez","Brightside Bakery","We cut our ordering time in half in the first week.","#f97316"],
+["Daniel Kim","Northwind Labs","The analytics finally gave our team a shared view.","#0ea5e9"],
+["Priya Shah","Lumen Studio","Onboarding clients is now a one-click affair.","#8b5cf6"],
+["Tom Becker","Becker & Sons","Support answered in minutes, every single time.","#10b981"],
+["Aisha Bello","Kora Health","It scaled with us from 5 to 500 people.","#ec4899"],
+["Lucas Martin","Atlas Freight","Our delivery errors dropped by a third.","#eab308"]];
+document.getElementById('g').innerHTML=data.map(([n,c,q,col],i)=>`
+<article class="card">
+<svg viewBox="0 0 280 160" role="img" aria-label="Photo of ${n}"><rect width="280" height="160" fill="${col}" opacity=".25"/><circle cx="140" cy="66" r="30" fill="${col}"/><path d="M80 160c0-36 26-54 60-54s60 18 60 54z" fill="${col}"/></svg>
+<div class="body"><h2>${n}, ${c}</h2><blockquote>&ldquo;${q}&rdquo;</blockquote>
+<a href="#story-${i+1}">Read the full story</a></div></article>`).join('');
+</script>
+</body>
+</html>

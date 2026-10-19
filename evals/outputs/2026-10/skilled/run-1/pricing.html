@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pricing</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f4f8;--text:#1a1a2e;--muted:#52525b;--primary:#4338ca;--on-primary:#fff;--border:#71717a;--line:#d4d4d8;--err:#b91c1c;--ok:#15803d}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1020;--surface:#1b1c33;--text:#ececf4;--muted:#a8a8be;--primary:#a5b4fc;--on-primary:#12123a;--border:#8b8ba3;--line:#34354f;--err:#fca5a5;--ok:#86efac}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--primary)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+main{max-width:1100px;margin:0 auto;padding:56px 20px}
+header{text-align:center;margin-bottom:40px}
+h1{font-size:2.25rem;margin:0 0 8px}
+.lead{color:var(--muted);margin:0}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;list-style:none;padding:0;margin:0;align-items:stretch}
+.tier{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:32px 28px;display:flex;flex-direction:column;position:relative}
+.tier.pro{border-color:var(--primary);box-shadow:0 12px 40px rgba(67,56,202,.25)}
+.badge{align-self:flex-start;background:var(--primary);color:var(--on-primary);font-size:.8125rem;font-weight:700;padding:2px 12px;border-radius:999px;margin-bottom:12px}
+h2{margin:0 0 4px;font-size:1.5rem}
+.desc{color:var(--muted);margin:0 0 16px}
+.price{font-size:2.5rem;font-weight:800;margin:0 0 20px}
+.price small{font-size:1rem;font-weight:400;color:var(--muted)}
+.features{list-style:none;padding:0;margin:0 0 28px;flex:1}
+.features li{padding:6px 0 6px 30px;position:relative}
+.features li::before{content:"";position:absolute;left:4px;top:13px;width:12px;height:7px;border-left:3px solid var(--primary);border-bottom:3px solid var(--primary);transform:rotate(-45deg)}
+.btn{width:100%}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<header>
+<h1>Simple, transparent pricing</h1>
+<p class="lead">Pick a plan that fits your team. Change or cancel any time.</p>
+</header>
+<ul class="tiers">
+<li class="tier">
+<h2>Starter</h2>
+<p class="desc">For individuals trying things out.</p>
+<p class="price">$9 <small>per month</small></p>
+<ul class="features"><li>1 project</li><li>5 GB storage</li><li>Community support</li><li>Basic analytics</li></ul>
+<a class="btn secondary" href="#starter">Choose Starter</a>
+</li>
+<li class="tier pro">
+<p class="badge">Most popular</p>
+<h2>Pro</h2>
+<p class="desc">For growing teams that need more.</p>
+<p class="price">$29 <small>per month</small></p>
+<ul class="features"><li>Unlimited projects</li><li>100 GB storage</li><li>Priority email support</li><li>Advanced analytics</li><li>Team collaboration</li></ul>
+<a class="btn" href="#pro">Choose Pro</a>
+</li>
+<li class="tier">
+<h2>Enterprise</h2>
+<p class="desc">For organisations with custom needs.</p>
+<p class="price">Custom</p>
+<ul class="features"><li>Unlimited everything</li><li>Single sign-on (SSO)</li><li>Dedicated account manager</li><li>99.99% uptime SLA</li></ul>
+<a class="btn secondary" href="#enterprise">Contact sales</a>
+</li>
+</ul>
+</main>
+</body>
+</html>

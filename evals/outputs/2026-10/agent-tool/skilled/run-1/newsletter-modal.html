@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newsletter modal</title>
+<style>
+:root{--bg:#f3f4fb;--surface:#fff;--text:#1a1d29;--muted:#4a5068;--primary:#4338ca;--on-primary:#fff;--border:#6b7088;--soft:#e4e6f5;--error:#b42318;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1220;--surface:#181c2e;--text:#eef0f8;--muted:#b4b9d0;--primary:#a5b4fc;--on-primary:#14163a;--border:#8a90ac;--soft:#2a2f4d;--error:#ff9b8f;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:1rem/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+main{max-width:44rem;margin:0 auto;padding:4rem 1rem;text-align:center}
+h1{font-size:2.25rem;margin:0 0 .5rem}
+p.lead{color:var(--muted);margin:0 0 2rem}
+.btn{min-height:2.75rem;padding:.6rem 1.5rem;font:inherit;font-weight:700;color:var(--on-primary);background:var(--primary);border:2px solid var(--primary);border-radius:.5rem;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+dialog{border:1px solid var(--border);border-radius:1rem;padding:1.75rem;width:min(26rem,calc(100% - 2rem));background:var(--surface);color:var(--text);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,12,30,.6)}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;margin-bottom:1rem}
+dialog h2{margin:0;padding-top:.35rem;font-size:1.4rem}
+dialog p{margin:0 0 1rem;color:var(--muted);background:var(--surface)}
+.close{flex:none;margin:0;width:2.75rem;height:2.75rem;display:grid;place-items:center;background:transparent;color:var(--text);border:2px solid transparent;border-radius:.5rem;cursor:pointer}
+.close:hover{background:var(--soft)}
+.close svg{width:1.3rem;height:1.3rem;stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none}
+label{display:block;font-weight:600;margin-bottom:.35rem}
+input[type=email]{width:100%;min-height:2.75rem;padding:.5rem .75rem;font:inherit;color:var(--text);background:var(--surface);border:2px solid var(--border);border-radius:.5rem}
+input[aria-invalid=true]{border-color:var(--error)}
+.err{color:var(--error);font-weight:600;font-size:.875rem;margin:.3rem 0 0}
+form .btn{width:100%;margin-top:1rem}
+.status{margin-top:.75rem;font-weight:600}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:var(--surface);padding:.5rem;z-index:9}
+@media (forced-colors:active){body,.featured *{-webkit-text-fill-color:CanvasText}button,.cta{-webkit-text-fill-color:ButtonText}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+<h1>Stay in the loop</h1>
+<p class="lead">Subscribe to hear about new releases and tips.</p>
+<button type="button" class="btn" id="open">Subscribe</button>
+<div class="status" id="page-status" role="status"></div>
+</main>
+<dialog id="dlg" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+<div class="dh"><h2 id="dlg-title">Join our newsletter</h2>
+<button type="button" class="close" id="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19"/></svg><span class="vh">Close</span></button></div>
+<p id="dlg-desc">Enter your email address and we will send you the monthly digest.</p>
+<form id="form" novalidate>
+<label for="email">Email address</label>
+<input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-err">
+<p class="err" id="email-err" hidden></p>
+<button type="submit" class="btn">Subscribe</button>
+</form>
+</dialog>
+<script>
+const dlg=document.getElementById('dlg'),opener=document.getElementById('open'),em=document.getElementById('email'),er=document.getElementById('email-err'),ps=document.getElementById('page-status');
+opener.addEventListener('click',()=>{dlg.showModal();em.focus()});
+document.getElementById('close').addEventListener('click',()=>dlg.close());
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+dlg.addEventListener('close',()=>{opener.focus()});
+function check(){if(!/^\S+@\S+\.\S+$/.test(em.value)){er.textContent='Enter an email address like name@example.com.';er.hidden=false;em.setAttribute('aria-invalid','true');return false}er.hidden=true;em.removeAttribute('aria-invalid');return true}
+em.addEventListener('change',check);
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();
+  if(!check()){em.focus();return}
+  em.value='';dlg.close();ps.textContent='Thanks, you are subscribed.'});
+</script>
+</body>
+</html>

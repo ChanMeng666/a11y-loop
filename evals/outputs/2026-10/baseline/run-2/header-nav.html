@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header Navigation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #111827; min-height: 100vh; background: #f9fafb; }
+  header { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid #e5e7eb; }
+  .bar { max-width: 1100px; margin: 0 auto; height: 64px; padding: 0 20px; display: flex; align-items: center; gap: 24px; }
+  .logo { font-weight: 800; font-size: 1.35rem; color: #4f46e5; text-decoration: none; letter-spacing: -.02em; }
+  nav.main { margin-left: auto; }
+  nav ul { list-style: none; margin: 0; padding: 0; }
+  nav.main ul { display: flex; gap: 6px; }
+  nav a { display: block; padding: 8px 12px; border-radius: 8px; color: #374151; text-decoration: none; font-weight: 500; }
+  nav a:hover { background: #f3f4f6; color: #111827; }
+  .icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 0; background: transparent;
+    border-radius: 8px; cursor: pointer; color: #374151; }
+  .icon-btn:hover { background: #f3f4f6; }
+  .icon-btn svg { width: 22px; height: 22px; }
+  a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #c7d2fe; outline-offset: 1px; }
+  .burger { display: none; }
+  .search { display: none; border-top: 1px solid #e5e7eb; background: #fff; }
+  .search.open { display: block; }
+  .search form { max-width: 1100px; margin: 0 auto; padding: 12px 20px; }
+  .search input { width: 100%; padding: 10px 12px; font: inherit; border: 1px solid #d1d5db; border-radius: 8px; }
+  .scrim { position: fixed; inset: 0; background: rgba(17, 24, 39, .45); opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s; z-index: 30; }
+  .scrim.open { opacity: 1; visibility: visible; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 85vw); background: #fff; z-index: 40; padding: 16px;
+    transform: translateX(100%); visibility: hidden; transition: transform .25s, visibility .25s; box-shadow: -8px 0 24px rgba(0,0,0,.12); }
+  .drawer.open { transform: none; visibility: visible; }
+  .drawer .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .drawer a { padding: 14px 12px; font-size: 1.05rem; }
+  @media (max-width: 800px) {
+    nav.main { display: none; }
+    .burger { display: grid; }
+    .bar .spacer { margin-left: auto; }
+  }
+  @media (min-width: 801px) { .drawer, .scrim { display: none; } }
+  main { max-width: 1100px; margin: 0 auto; padding: 48px 20px; color: #6b7280; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="logo" href="#">Acme</a>
+    <nav class="main" aria-label="Main">
+      <ul>
+        <li><a href="#product">Product</a></li>
+        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#resources">Resources</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+    <button class="icon-btn" id="searchBtn" aria-label="Search" aria-expanded="false" aria-controls="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </button>
+    <button class="icon-btn burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div class="search" id="search">
+    <form role="search" onsubmit="return false"><input type="search" id="q" placeholder="Search…" aria-label="Search the site"></form>
+  </div>
+</header>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Mobile menu">
+  <div class="top">
+    <a class="logo" href="#">Acme</a>
+    <button class="icon-btn" id="closeDrawer" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav aria-label="Mobile">
+    <ul>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#solutions">Solutions</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main><p>Page content goes here. Resize the window below 800px to see the hamburger menu.</p></main>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const drawer = $('drawer'), scrim = $('scrim'), burger = $('burger');
+  const searchBtn = $('searchBtn'), search = $('search');
+
+  function setDrawer(open) {
+    drawer.classList.toggle('open', open);
+    scrim.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    (open ? $('closeDrawer') : burger).focus();
+  }
+  burger.addEventListener('click', () => setDrawer(true));
+  $('closeDrawer').addEventListener('click', () => setDrawer(false));
+  scrim.addEventListener('click', () => setDrawer(false));
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setDrawer(false)));
+
+  searchBtn.addEventListener('click', () => {
+    const open = search.classList.toggle('open');
+    searchBtn.setAttribute('aria-expanded', open);
+    if (open) $('q').focus();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (drawer.classList.contains('open')) setDrawer(false);
+    else if (search.classList.contains('open')) { search.classList.remove('open'); searchBtn.setAttribute('aria-expanded', false); searchBtn.focus(); }
+  });
+  // Close drawer if the viewport grows past the mobile breakpoint.
+  matchMedia('(min-width: 801px)').addEventListener('change', e => {
+    if (e.matches && drawer.classList.contains('open')) {
+      drawer.classList.remove('open'); scrim.classList.remove('open');
+      burger.setAttribute('aria-expanded', false); document.body.style.overflow = '';
+    }
+  });
+</script>
+</body>
+</html>

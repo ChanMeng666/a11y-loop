@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acme – Home</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f4f8;--text:#1a1a2e;--muted:#52525b;--primary:#4338ca;--on-primary:#fff;--border:#71717a;--line:#d4d4d8;--err:#b91c1c;--ok:#15803d}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1020;--surface:#1b1c33;--text:#ececf4;--muted:#a8a8be;--primary:#a5b4fc;--on-primary:#12123a;--border:#8b8ba3;--line:#34354f;--err:#fca5a5;--ok:#86efac}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--primary)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.bar{display:flex;align-items:center;gap:16px;max-width:1200px;margin:0 auto;padding:12px 20px}
+.logo{font-weight:800;font-size:1.375rem;color:var(--primary);text-decoration:none;margin-right:auto}
+header{border-bottom:1px solid var(--line);background:var(--bg);position:relative}
+.nav-list{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.nav-list a{display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-radius:8px;font-weight:500}
+.nav-list a:hover{background:var(--surface)}
+.nav-list a[aria-current=page]{color:var(--primary);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+.icon-btn{width:44px;height:44px;display:inline-grid;place-items:center;background:transparent;color:var(--text);border:2px solid transparent;border-radius:10px;cursor:pointer}
+.icon-btn:hover{background:var(--surface)}
+.icon-btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.menu-btn{display:none}
+.search{display:none;max-width:1200px;margin:0 auto;padding:0 20px 12px}
+.search.open{display:block}
+.search input{width:100%;min-height:44px;padding:8px 12px;font:inherit;color:var(--text);background:var(--bg);border:2px solid var(--border);border-radius:8px}
+.search label{display:block;font-weight:600;margin-bottom:4px}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(320px,85vw);background:var(--surface);border-left:1px solid var(--line);padding:16px;transform:translateX(100%);visibility:hidden;z-index:50}
+.drawer.open{transform:none;visibility:visible}
+.drawer ul{list-style:none;margin:16px 0 0;padding:0}
+.drawer a{display:block;padding:14px 12px;color:var(--text);text-decoration:none;font-size:1.125rem;border-radius:8px}
+.drawer a[aria-current=page]{color:var(--primary);font-weight:700}
+.drawer a:hover{background:var(--bg)}
+main{max-width:800px;margin:0 auto;padding:48px 20px}
+@media(max-width:760px){.nav-list{display:none}.menu-btn{display:inline-grid}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header>
+<div class="bar">
+<a class="logo" href="#">Acme</a>
+<nav aria-label="Main">
+<ul class="nav-list">
+<li><a href="#" aria-current="page">Home</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#about">About</a></li>
+</ul>
+</nav>
+<button type="button" class="icon-btn" id="search-btn" aria-expanded="false" aria-controls="search" aria-label="Search">
+<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+</button>
+<button type="button" class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="drawer" aria-label="Menu">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+</button>
+</div>
+<form class="search" id="search" role="search" aria-label="Site">
+<label for="q">Search the site</label>
+<input type="search" id="q" name="q" autocomplete="off">
+</form>
+</header>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Site menu">
+<button type="button" class="icon-btn" id="drawer-close" aria-label="Close menu">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+</button>
+<nav aria-label="Mobile">
+<ul>
+<li><a href="#" aria-current="page">Home</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#about">About</a></li>
+</ul>
+</nav>
+</div>
+<main id="main">
+<h1>Welcome to Acme</h1>
+<p>Page content goes here.</p>
+</main>
+<script>
+const mb=document.getElementById('menu-btn'),dr=document.getElementById('drawer'),dc=document.getElementById('drawer-close'),main=document.getElementById('main'),hdr=document.querySelector("header"),skip=document.querySelector(".skip");
+const sb=document.getElementById('search-btn'),sf=document.getElementById('search');
+dr.inert=true;
+function setDrawer(o){
+ dr.classList.toggle('open',o);dr.inert=!o;mb.setAttribute('aria-expanded',o);
+ main.inert=o;hdr.inert=o;skip.inert=o;
+ if(o)dc.focus();else mb.focus();
+}
+mb.addEventListener('click',()=>setDrawer(true));
+dc.addEventListener('click',()=>setDrawer(false));
+dr.addEventListener('click',e=>{if(e.target.closest('a'))setDrawer(false)});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){
+  if(dr.classList.contains('open'))setDrawer(false);
+  else if(sf.classList.contains('open')){sf.classList.remove('open');sb.setAttribute('aria-expanded','false');sb.focus()}
+ }
+});
+sb.addEventListener('click',()=>{
+ const o=!sf.classList.contains('open');sf.classList.toggle('open',o);sb.setAttribute('aria-expanded',o);
+ if(o)document.getElementById('q').focus();
+});
+matchMedia('(min-width:761px)').addEventListener('change',e=>{if(e.matches&&dr.classList.contains('open')){dr.classList.remove('open');dr.inert=true;main.inert=false;hdr.inert=false;skip.inert=false;mb.setAttribute('aria-expanded','false')}});
+</script>
+</body>
+</html>

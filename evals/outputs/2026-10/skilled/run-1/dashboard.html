@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics overview</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f4f8;--text:#1a1a2e;--muted:#52525b;--primary:#4338ca;--on-primary:#fff;--border:#71717a;--line:#d4d4d8;--err:#b91c1c;--ok:#15803d}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1020;--surface:#1b1c33;--text:#ececf4;--muted:#a8a8be;--primary:#a5b4fc;--on-primary:#12123a;--border:#8b8ba3;--line:#34354f;--err:#fca5a5;--ok:#86efac}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--primary)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:root{--up:#15803d;--down:#b91c1c}
+@media(prefers-color-scheme:dark){:root{--up:#86efac;--down:#fca5a5}}
+main{max-width:1000px;margin:0 auto;padding:48px 20px}
+h1{font-size:2rem;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 28px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;list-style:none;padding:0;margin:0 0 40px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.num{font-size:2rem;font-weight:800;margin:0}
+.label{color:var(--muted);margin:0 0 8px}
+.trend{font-weight:600;display:inline-flex;gap:6px;align-items:center;margin:0}
+.trend.up{color:var(--up)}.trend.down{color:var(--down)}
+.trend svg{width:16px;height:16px;fill:currentColor}
+h2{font-size:1.375rem;margin:0 0 12px}
+.activity{list-style:none;padding:0;margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.activity li{display:flex;justify-content:space-between;gap:16px;padding:14px 18px;background:var(--surface)}
+.activity li+li{border-top:1px solid var(--line)}
+.activity time{color:var(--muted);white-space:nowrap}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<h1>Analytics overview</h1>
+<p class="lead">Last 30 days compared with the previous 30 days.</p>
+<h2>Key metrics</h2>
+<ul class="tiles">
+<li class="tile"><p class="label">Visitors</p><p class="num">12,480</p><p class="trend up"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2l6 9H2z"/></svg>Up 8.2%</p></li>
+<li class="tile"><p class="label">Revenue</p><p class="num">$34,920</p><p class="trend up"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2l6 9H2z"/></svg>Up 3.1%</p></li>
+<li class="tile"><p class="label">Conversion rate</p><p class="num">2.8%</p><p class="trend down"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14L2 5h12z"/></svg>Down 0.4%</p></li>
+<li class="tile"><p class="label">Support tickets</p><p class="num">143</p><p class="trend down"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14L2 5h12z"/></svg>Down 12%</p></li>
+</ul>
+<h2>Recent activity</h2>
+<ul class="activity">
+<li><span>Maria Santos upgraded to the Pro plan</span><time datetime="2026-10-20T09:12">9:12 AM</time></li>
+<li><span>New signup from Kenji Tanaka</span><time datetime="2026-10-20T08:47">8:47 AM</time></li>
+<li><span>Invoice #1042 was paid</span><time datetime="2026-10-19T17:30">Yesterday</time></li>
+<li><span>Amara Okafor opened a support ticket</span><time datetime="2026-10-19T14:05">Yesterday</time></li>
+<li><span>Weekly report was sent to 1,204 subscribers</span><time datetime="2026-10-18T07:00">Sunday</time></li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pricing</title>
+<style>
+:root{--bg:#f6f7fb;--surface:#fff;--text:#1a1d23;--muted:#4b5563;--border:#6b7280;--line:#d6dae2;--accent:#1d4ed8;--on-accent:#fff;--accent-soft:#e8eefc;--error:#b42318;--ok:#0a6b3d;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b23;--text:#eceef2;--muted:#b0b8c5;--border:#8d96a5;--line:#2c333f;--accent:#8fb0ff;--on-accent:#0b1020;--accent-soft:#1d2740;--error:#ff9b8f;--ok:#6fdc9f;--focus:#8fb0ff}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:1100px;margin:0 auto;padding:56px 16px}
+header.top{text-align:center;margin-bottom:40px}
+h1{font-size:2.25rem;margin:0 0 8px}
+.sub{color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;align-items:stretch;list-style:none;padding:0;margin:0}
+.tier{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;height:100%}
+.tier.pro{border-color:var(--accent);box-shadow:0 14px 40px rgba(29,78,216,.22)}
+.badge{align-self:flex-start;background:var(--accent);color:var(--on-accent);font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:12px}
+h2{margin:0 0 4px;font-size:1.4rem}
+.desc{color:var(--muted);margin:0 0 16px}
+.price{font-size:2.6rem;font-weight:800;margin:0}
+.price small{font-size:1rem;font-weight:500;color:var(--muted)}
+ul.f{list-style:none;padding:0;margin:24px 0;flex:1}
+ul.f li{display:flex;gap:10px;padding:6px 0}
+ul.f svg{flex:none;width:20px;height:20px;margin-top:3px;color:var(--ok)}
+.btn{width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<header class="top"><h1>Simple, transparent pricing</h1><p class="sub">Pick a plan. Change or cancel any time.</p></header>
+<ul class="grid">
+<li><section class="tier" aria-labelledby="t1"><h2 id="t1">Starter</h2><p class="desc">For individuals trying things out.</p>
+<p class="price">$9 <small>per month</small></p>
+<ul class="f"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>1 project</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>5 GB storage</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Community support</li></ul>
+<a class="btn secondary" href="#start">Get started<span class="sr"> with Starter</span></a></section></li>
+<li><section class="tier pro" aria-labelledby="t2"><span class="badge">Most popular</span><h2 id="t2">Pro</h2><p class="desc">For growing teams that ship often.</p>
+<p class="price">$29 <small>per month</small></p>
+<ul class="f"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Unlimited projects</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>100 GB storage</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Priority email support</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Team analytics</li></ul>
+<a class="btn" href="#pro">Start free trial<span class="sr"> on Pro</span></a></section></li>
+<li><section class="tier" aria-labelledby="t3"><h2 id="t3">Enterprise</h2><p class="desc">For organisations with advanced needs.</p>
+<p class="price">Custom</p>
+<ul class="f"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Everything in Pro</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Single sign-on</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Dedicated manager</li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Custom contracts</li></ul>
+<a class="btn secondary" href="#sales">Contact sales<span class="sr"> for Enterprise</span></a></section></li>
+</ul></main></body></html>

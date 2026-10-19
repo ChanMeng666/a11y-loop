@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#111827;--muted:#4b5563;--line:#9ca3af;--primary:#4338ca;--on-primary:#fff;--focus:#4338ca;--check:#166534}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--line:#64748b;--primary:#a5b4fc;--on-primary:#1e1b4b;--focus:#a5b4fc;--check:#86efac}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+.skip{position:absolute;left:-999px;top:0;background:var(--card);color:var(--text);padding:.5rem 1rem;z-index:10}
+.skip:focus{left:1rem;top:1rem}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+main{max-width:70rem;margin:0 auto;padding:3rem 1rem}
+.intro{text-align:center;max-width:36rem;margin:0 auto 3rem}
+h1{font-size:2.25rem;margin:0 0 .5rem;line-height:1.2}
+.intro p{color:var(--muted);margin:0}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:1.5rem;list-style:none;padding:0;margin:0}
+.tier{background:var(--card);border:2px solid var(--line);border-radius:1rem;padding:2rem;display:flex;flex-direction:column}
+.tier.featured{border-color:var(--primary);box-shadow:0 12px 32px rgba(67,56,202,.25)}
+.badge{align-self:flex-start;background:var(--primary);color:var(--on-primary);font-size:.85rem;font-weight:700;padding:.2rem .7rem;border-radius:99px;margin:0 0 .75rem}
+h2{margin:0;font-size:1.4rem}
+.price{font-size:2.5rem;font-weight:800;margin:.75rem 0 0}
+.price small{font-size:1rem;font-weight:400;color:var(--muted)}
+.desc{color:var(--muted);margin:.25rem 0 1.25rem}
+.features{list-style:none;padding:0;margin:0 0 2rem;flex:1}
+.features li{display:flex;gap:.6rem;padding:.35rem 0}
+.features svg{flex:none;width:1.25rem;height:1.25rem;margin-top:.15rem;color:var(--check)}
+.cta{display:block;text-align:center;text-decoration:none;font-weight:700;padding:.8rem 1rem;min-height:2.75rem;border-radius:.5rem;border:2px solid var(--primary);color:var(--primary);background:transparent}
+.cta:hover{background:var(--primary);color:var(--on-primary)}
+.featured .cta{background:var(--primary);color:var(--on-primary)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <div class="intro">
+    <h1>Simple, transparent pricing</h1>
+    <p>Pick the plan that fits your team. Change or cancel any time.</p>
+  </div>
+  <ul class="tiers">
+    <li class="tier">
+      <h2 id="t-starter">Starter</h2>
+      <p class="price">$9 <small>/ month</small></p>
+      <p class="desc">For individuals getting started.</p>
+      <ul class="features">
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>1 project</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Basic analytics</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Community support</li>
+      </ul>
+      <a class="cta" href="#start" id="c-starter" aria-labelledby="c-starter t-starter">Start free trial</a>
+    </li>
+    <li class="tier featured">
+      <p class="badge">Most popular</p>
+      <h2 id="t-pro">Pro</h2>
+      <p class="price">$29 <small>/ month</small></p>
+      <p class="desc">For growing teams that need more.</p>
+      <ul class="features">
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Unlimited projects</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Advanced analytics</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Priority email support</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Team collaboration</li>
+      </ul>
+      <a class="cta" href="#pro" id="c-pro" aria-labelledby="c-pro t-pro">Get Pro</a>
+    </li>
+    <li class="tier">
+      <h2 id="t-ent">Enterprise</h2>
+      <p class="price">Custom</p>
+      <p class="desc">For organisations with advanced needs.</p>
+      <ul class="features">
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Everything in Pro</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Single sign-on (SSO)</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>Dedicated account manager</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 10l4 4 8-8"/></svg>99.99% uptime SLA</li>
+      </ul>
+      <a class="cta" href="#sales" id="c-ent" aria-labelledby="c-ent t-ent">Contact sales</a>
+    </li>
+  </ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer stories</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f4f8;--text:#1a1a2e;--muted:#52525b;--primary:#4338ca;--on-primary:#fff;--border:#71717a;--line:#d4d4d8;--err:#b91c1c;--ok:#15803d}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1020;--surface:#1b1c33;--text:#ececf4;--muted:#a8a8be;--primary:#a5b4fc;--on-primary:#12123a;--border:#8b8ba3;--line:#34354f;--err:#fca5a5;--ok:#86efac}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--primary)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+main{max-width:1100px;margin:0 auto;padding:56px 20px}
+h1{font-size:2.25rem;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 36px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;list-style:none;padding:0;margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;height:100%;display:flex;flex-direction:column}
+.card svg{display:block;width:100%;height:180px}
+.body{padding:20px;display:flex;flex-direction:column;flex:1}
+h2{font-size:1.125rem;margin:0 0 8px}
+blockquote{margin:0 0 16px;color:var(--muted);flex:1}
+.body a{color:var(--primary);font-weight:600;display:inline-block;padding:4px 0}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+<h1>Customer stories</h1>
+<p class="lead">See how teams around the world use our product.</p>
+<ul class="grid" id="grid"></ul>
+</main>
+<script>
+const data=[
+['Maria Santos','Setup took an afternoon and our reporting time dropped by half.','Maria Santos story','#4f46e5'],
+['Kenji Tanaka','The support team answered every question within the hour.','Kenji Tanaka story','#0f766e'],
+['Amara Okafor','We finally have one place for everything our team needs.','Amara Okafor story','#b45309'],
+['Liam O\'Connor','Onboarding new staff went from days to a single morning.','Liam O\'Connor story','#be185d'],
+['Priya Patel','The analytics changed how we plan every quarter.','Priya Patel story','#1d4ed8'],
+['Sven Eriksson','Reliable, fast, and our customers noticed the difference.','Sven Eriksson story','#15803d']];
+const g=document.getElementById('grid');
+data.forEach(([n,q,,c],i)=>{
+ const li=document.createElement('li');
+ li.innerHTML='<article class="card"><svg viewBox="0 0 300 180" role="img" aria-label="DRAFT: placeholder portrait for '+n.replace(/'/g,'&#39;')+'"><rect width="300" height="180" fill="'+c+'"/><circle cx="150" cy="72" r="34" fill="#fff" opacity=".9"/><path d="M80 180a70 70 0 0 1 140 0z" fill="#fff" opacity=".9"/></svg><div class="body"><h2>'+n+'</h2><blockquote><p>\u201c'+q+'\u201d</p></blockquote><a href="#story-'+(i+1)+'">Read '+n.replace(/'/g,'&#39;')+'\u2019s full story</a></div></article>';
+ g.appendChild(li);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,5153 @@
+[
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 1,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 3,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 4,
+   "manual": 2,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 1,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 14,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast",
+    "focus-indicator-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 8,
+   "manual": 2,
+   "rules": [
+    "skip_main_exists"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 1,
+  "file": "gallery",
+  "al": {
+   "v": 7,
+   "nr": 18,
+   "manual": 10,
+   "rules": [
+    "label-content-name-mismatch",
+    "reflow-horizontal-scroll"
+   ],
+   "nrRules": [
+    "color-contrast",
+    "focus-indicator-contrast",
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 7,
+   "pv": 13,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "label_name_visible"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "label_name_visible",
+     "reason": "Fail_1",
+     "msg": "Accessible name does not match or contain the visible label text",
+     "snippet": "<a aria-label=\"Read the full story of Maya Chen\" href=\"#story-1\">"
+    },
+    {
+     "rule": "label_name_visible",
+     "reason": "Fail_1",
+     "msg": "Accessible name does not match or contain the visible label text",
+     "snippet": "<a aria-label=\"Read the full story of Daniel Okafor\" href=\"#story-2\">"
+    },
+    {
+     "rule": "label_name_visible",
+     "reason": "Fail_1",
+     "msg": "Accessible name does not match or contain the visible label text",
+     "snippet": "<a aria-label=\"Read the full story of Sofia Rossi\" href=\"#story-3\">"
+    },
+    {
+     "rule": "label_name_visible",
+     "reason": "Fail_1",
+     "msg": "Accessible name does not match or contain the visible label text",
+     "snippet": "<a aria-label=\"Read the full story of Arjun Patel\" href=\"#story-4\">"
+    },
+    {
+     "rule": "label_name_visible",
+     "reason": "Fail_1",
+     "msg": "Accessible name does not match or contain the visible label text",
+     "snippet": "<a aria-label=\"Read the full story of Hannah Müller\" href=\"#story-5\">"
+    },
+    {
+     "rule": "label_name_visible",
+     "reason": "Fail_1",
+     "msg": "Accessible name does not match or contain the visible label text",
+     "snippet": "<a aria-label=\"Read the full story of Leo Tanaka\" href=\"#story-6\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 1,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 12,
+   "manual": 7,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 5,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 1,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 12,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast",
+    "focus-indicator-contrast",
+    "label-content-name-mismatch"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 3,
+   "manual": 2,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 1,
+  "file": "dashboard",
+  "al": {
+   "v": 11,
+   "nr": 0,
+   "manual": 6,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 12,
+   "pv": 10,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "text_contrast_sufficient"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.34 with its background is less than the WCAG AA minimum requirements for text of size 16px and weight of 400",
+     "snippet": "<p class=\"sub\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.47 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<div aria-hidden=\"true\" style=\"background:#6366f1\" class=\"av\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.77 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<div aria-hidden=\"true\" style=\"background:#0ea5e9\" class=\"av\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<div aria-hidden=\"true\" style=\"background:#10b981\" class=\"av\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.15 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<div aria-hidden=\"true\" style=\"background:#f59e0b\" class=\"av\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.53 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<div aria-hidden=\"true\" style=\"background:#ec4899\" class=\"av\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 2,
+   "failingNodes": 12,
+   "rules": [
+    "color-contrast",
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "color-contrast",
+     "nodes": [
+      "<p class=\"sub\">",
+      "<div class=\"av\" style=\"background:#6366f1\" aria-hidden=\"true\">",
+      "<time>",
+      "<div class=\"av\" style=\"background:#0ea5e9\" aria-hidden=\"true\">",
+      "<time>",
+      "<div class=\"av\" style=\"background:#10b981\" aria-hidden=\"true\">",
+      "<time>",
+      "<div class=\"av\" style=\"background:#f59e0b\" aria-hidden=\"true\">",
+      "<time>",
+      "<div class=\"av\" style=\"background:#ec4899\" aria-hidden=\"true\">",
+      "<time>"
+     ]
+    },
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 2,
+  "file": "signup-form",
+  "al": {
+   "v": 1,
+   "nr": 7,
+   "manual": 10,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 6,
+   "manual": 2,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "color-contrast"
+   ],
+   "items": [
+    {
+     "rule": "color-contrast",
+     "nodes": [
+      "<p class=\"small\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 2,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 5,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 2,
+  "file": "gallery",
+  "al": {
+   "v": 1,
+   "nr": 24,
+   "manual": 10,
+   "rules": [
+    "reflow-horizontal-scroll"
+   ],
+   "nrRules": [
+    "color-contrast",
+    "focus-indicator-contrast",
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 13,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 2,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 8,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 7,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 2,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 10,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "color-contrast",
+    "label-content-name-mismatch"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 2,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 2,
+  "file": "dashboard",
+  "al": {
+   "v": 11,
+   "nr": 0,
+   "manual": 6,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 12,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "text_contrast_sufficient"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.39 with its background is less than the WCAG AA minimum requirements for text of size 16px and weight of 400",
+     "snippet": "<p class=\"sub\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.47 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<span style=\"background:#6366f1\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<span style=\"background:#10b981\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.15 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<span style=\"background:#f59e0b\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.76 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<span style=\"background:#ef4444\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.77 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<span style=\"background:#0ea5e9\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 2,
+   "failingNodes": 12,
+   "rules": [
+    "color-contrast",
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "color-contrast",
+     "nodes": [
+      "<p class=\"sub\">",
+      "<span class=\"avatar\" style=\"background:#6366f1\">",
+      "<time>",
+      "<span class=\"avatar\" style=\"background:#10b981\">",
+      "<time>",
+      "<span class=\"avatar\" style=\"background:#f59e0b\">",
+      "<time>",
+      "<span class=\"avatar\" style=\"background:#ef4444\">",
+      "<time>",
+      "<span class=\"avatar\" style=\"background:#0ea5e9\">",
+      "<time>"
+     ]
+    },
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 3,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 4,
+   "manual": 2,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 3,
+  "file": "pricing",
+  "al": {
+   "v": 2,
+   "nr": 9,
+   "manual": 8,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 5,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 3,
+  "file": "gallery",
+  "al": {
+   "v": 1,
+   "nr": 6,
+   "manual": 9,
+   "rules": [
+    "reflow-horizontal-scroll"
+   ],
+   "nrRules": [
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 8,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 3,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 4,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 3,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 3,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast",
+    "label-content-name-mismatch"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 2,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline-clean",
+  "run": 3,
+  "file": "dashboard",
+  "al": {
+   "v": 11,
+   "nr": 0,
+   "manual": 5,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 14,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark",
+    "text_contrast_sufficient"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.34 with its background is less than the WCAG AA minimum requirements for text of size 16px and weight of 400",
+     "snippet": "<p class=\"sub\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.47 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 600",
+     "snippet": "<div style=\"background:#6366f1\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.77 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 600",
+     "snippet": "<div style=\"background:#0ea5e9\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.54 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 600",
+     "snippet": "<div style=\"background:#10b981\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.15 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 600",
+     "snippet": "<div style=\"background:#f59e0b\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.53 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 600",
+     "snippet": "<div style=\"background:#ec4899\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.56 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 400",
+     "snippet": "<time>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 2,
+   "failingNodes": 12,
+   "rules": [
+    "color-contrast",
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "color-contrast",
+     "nodes": [
+      "<p class=\"sub\">",
+      "<div class=\"avatar\" style=\"background:#6366f1\">",
+      "<time>",
+      "<div class=\"avatar\" style=\"background:#0ea5e9\">",
+      "<time>",
+      "<div class=\"avatar\" style=\"background:#10b981\">",
+      "<time>",
+      "<div class=\"avatar\" style=\"background:#f59e0b\">",
+      "<time>",
+      "<div class=\"avatar\" style=\"background:#ec4899\">",
+      "<time>"
+     ]
+    },
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 1,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "signup-form-error",
+    "signup-form-success"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 1,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 1,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 2,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 1,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 8,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 1,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "drawer-open"
+   ]
+  },
+  "alFirst": {
+   "v": 3,
+   "nr": 1,
+   "rules": [
+    "dialog-initial-focus",
+    "dialog-focus-not-trapped",
+    "dialog-escape-does-not-close"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 4,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 1,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "dialog-open",
+    "dialog-validation-error"
+   ]
+  },
+  "alFirst": {
+   "v": 1,
+   "nr": 1,
+   "rules": [
+    "dialog-focus-not-returned"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 1,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 2,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "form-validation-errors"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 1,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 2,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 2,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 2,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 8,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 2,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 2,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 2,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "dialog-open",
+    "dialog-validation-error"
+   ]
+  },
+  "alFirst": {
+   "v": 1,
+   "nr": 3,
+   "rules": [
+    "dialog-focus-not-returned"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 2,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 4,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 3,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "signup-form-error"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 1,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 3,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 2,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 3,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 8,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 3,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "drawer-open"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 3,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "dialog-open",
+    "dialog-validation-error"
+   ]
+  },
+  "alFirst": {
+   "v": 1,
+   "nr": 1,
+   "rules": [
+    "dialog-focus-not-returned"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled-clean",
+  "run": 3,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 5,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 5,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 1,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 5,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 1,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 10,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 2,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 1,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 6,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 8,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 1,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 7,
+   "rules": [],
+   "nrRules": [
+    "bypass"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 4,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 1,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 3,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast",
+    "label-content-name-mismatch"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 2,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 1,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 6,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 2,
+   "pv": 9,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 2,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 5,
+   "manual": 2,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 2,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 10,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 3,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 2,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 6,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 8,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 2,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 7,
+   "rules": [],
+   "nrRules": [
+    "bypass"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 4,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 2,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 5,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast",
+    "label-content-name-mismatch"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 2,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 2,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 6,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 3,
+   "pv": 9,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 3,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 5,
+   "manual": 2,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 3,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 5,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 3,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 6,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 8,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 3,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 3,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 3,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 3,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast",
+    "label-content-name-mismatch"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 2,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-baseline",
+  "run": 3,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 6,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 9,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 1,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "signup-form-error",
+    "signup-form-success"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 1,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 1,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 2,
+   "nr": 7,
+   "rules": [
+    "color-contrast"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 1,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 2,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 1,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "drawer-open-mobile"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 1,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 1,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": {
+   "v": 1,
+   "nr": 2,
+   "rules": [
+    "dialog-focus-not-returned"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 1,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 2,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 2,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "signup-form-error",
+    "signup-form-success"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 2,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 2,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 2,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 2,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 2,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 8,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 2,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 4,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 2,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "newsletter-dialog-open",
+    "newsletter-dialog-error"
+   ]
+  },
+  "alFirst": {
+   "v": 1,
+   "nr": 1,
+   "rules": [
+    "dialog-focus-not-returned"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 2,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 2,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 3,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "signup-form-error"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 1,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 3,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 2,
+   "nr": 2,
+   "rules": [
+    "label-content-name-mismatch"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 3,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 8,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 3,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 0,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 4,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 3,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 1,
+   "manual": 11,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "dialog-open",
+    "dialog-validation-error"
+   ]
+  },
+  "alFirst": {
+   "v": 1,
+   "nr": 1,
+   "rules": [
+    "dialog-focus-not-returned"
+   ]
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 3,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-10-skilled",
+  "run": 3,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 5,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": {
+   "v": 0,
+   "nr": 5,
+   "rules": []
+  },
+  "ibm": {
+   "v": 1,
+   "pv": 6,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main\" class=\"skip\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-baseline",
+  "run": 1,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 5,
+   "manual": 9,
+   "rules": [],
+   "nrRules": [
+    "focus-indicator-contrast",
+    "target-size-min",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 5,
+   "manual": 2,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-baseline",
+  "run": 1,
+  "file": "pricing",
+  "al": {
+   "v": 24,
+   "nr": 13,
+   "manual": 8,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [
+    "color-contrast",
+    "focus-indicator-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 22,
+   "pv": 9,
+   "manual": 2,
+   "rules": [
+    "skip_main_exists",
+    "text_contrast_sufficient",
+    "aria_content_in_landmark",
+    "svg_graphics_labelled"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.98 with its background is less than the WCAG AA minimum requirements for text of size 12.8px and weight of 700",
+     "snippet": "<div class=\"eyebrow\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.73 with its background is less than the WCAG AA minimum requirements for text of size 15.2px and weight of 700",
+     "snippet": "<a class=\"cta\" href=\"#\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"16\" width=\"16\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 2.73 with its background is less than the WCAG AA minimum requirements for text of size 15.2px and weight of 700",
+     "snippet": "<a class=\"cta\" href=\"#\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 2,
+   "failingNodes": 4,
+   "rules": [
+    "color-contrast",
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "color-contrast",
+     "nodes": [
+      "<div class=\"eyebrow\">",
+      "<a href=\"#\" class=\"cta\">",
+      "<a href=\"#\" class=\"cta\">"
+     ]
+    },
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-baseline",
+  "run": 1,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 6,
+   "manual": 7,
+   "rules": [],
+   "nrRules": [
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 20,
+   "pv": 9,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark",
+    "svg_graphics_labelled"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" viewBox=\"0 0 400 160\" class=\"photo\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<p class=\"quote\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a class=\"story-link\" href=\"#\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" viewBox=\"0 0 400 160\" class=\"photo\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<p class=\"quote\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a class=\"story-link\" href=\"#\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" viewBox=\"0 0 400 160\" class=\"photo\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<p class=\"quote\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a class=\"story-link\" href=\"#\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" viewBox=\"0 0 400 160\" class=\"photo\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<p class=\"quote\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a class=\"story-link\" href=\"#\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" viewBox=\"0 0 400 160\" class=\"photo\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<p class=\"quote\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a class=\"story-link\" href=\"#\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" viewBox=\"0 0 400 160\" class=\"photo\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<p class=\"quote\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a class=\"story-link\" href=\"#\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-baseline",
+  "run": 1,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 5,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [
+    "target-size-min"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 2,
+   "pv": 11,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<button aria-label=\"Close menu\" id=\"closeDrawerBtn\" class=\"icon-btn\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-baseline",
+  "run": 1,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 3,
+   "nr": 4,
+   "manual": 11,
+   "rules": [
+    "dialog-initial-focus",
+    "dialog-focus-not-trapped",
+    "dialog-escape-does-not-close"
+   ],
+   "nrRules": [
+    "color-contrast",
+    "focus-indicator-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 11,
+   "manual": 2,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 1,
+   "failingNodes": 1,
+   "rules": [
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-baseline",
+  "run": 1,
+  "file": "dashboard",
+  "al": {
+   "v": 8,
+   "nr": 2,
+   "manual": 6,
+   "rules": [
+    "color-contrast"
+   ],
+   "nrRules": [
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 15,
+   "pv": 10,
+   "manual": 1,
+   "rules": [
+    "skip_main_exists",
+    "aria_content_in_landmark",
+    "text_contrast_sufficient",
+    "svg_graphics_labelled"
+   ],
+   "items": [
+    {
+     "rule": "skip_main_exists",
+     "reason": "Fail_1",
+     "msg": "The page does not provide a way to quickly navigate to the main content (ARIA \"main\" landmark or a skip link)",
+     "snippet": "<body>"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h1>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.48 with its background is less than the WCAG AA minimum requirements for text of size 14.72px and weight of 400",
+     "snippet": "<p class=\"sub\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.58 with its background is less than the WCAG AA minimum requirements for text of size 13.12px and weight of 700",
+     "snippet": "<span class=\"trend up\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"12\" width=\"12\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.58 with its background is less than the WCAG AA minimum requirements for text of size 13.12px and weight of 700",
+     "snippet": "<span class=\"trend up\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"12\" width=\"12\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 4.41 with its background is less than the WCAG AA minimum requirements for text of size 13.12px and weight of 700",
+     "snippet": "<span class=\"trend down\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"12\" width=\"12\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.58 with its background is less than the WCAG AA minimum requirements for text of size 13.12px and weight of 700",
+     "snippet": "<span class=\"trend up\">"
+    },
+    {
+     "rule": "svg_graphics_labelled",
+     "reason": "fail_acc_name",
+     "msg": "The SVG element has no accessible name",
+     "snippet": "<svg stroke-width=\"3\" stroke=\"currentColor\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"12\" width=\"12\">"
+    },
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<h2>"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.68 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 700",
+     "snippet": "<div style=\"background:#0891b2;\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.19 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 700",
+     "snippet": "<div style=\"background:#d97706;\" class=\"avatar\">"
+    },
+    {
+     "rule": "text_contrast_sufficient",
+     "reason": "fail_contrast",
+     "msg": "Text contrast of 3.30 with its background is less than the WCAG AA minimum requirements for text of size 13.6px and weight of 700",
+     "snippet": "<div style=\"background:#16a34a;\" class=\"avatar\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 2,
+   "failingNodes": 9,
+   "rules": [
+    "color-contrast",
+    "landmark-one-main"
+   ],
+   "items": [
+    {
+     "rule": "color-contrast",
+     "nodes": [
+      "<p class=\"sub\">",
+      "<span class=\"trend up\">",
+      "<span class=\"trend up\">",
+      "<span class=\"trend down\">",
+      "<span class=\"trend up\">",
+      "<div class=\"avatar\" style=\"background:#0891b2;\">",
+      "<div class=\"avatar\" style=\"background:#d97706;\">",
+      "<div class=\"avatar\" style=\"background:#16a34a;\">"
+     ]
+    },
+    {
+     "rule": "landmark-one-main",
+     "nodes": [
+      "<html lang=\"en\">"
+     ]
+    }
+   ],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-skilled",
+  "run": 1,
+  "file": "signup-form",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "validation-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 6,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-skilled",
+  "run": 1,
+  "file": "pricing",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 6,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-skilled",
+  "run": 1,
+  "file": "gallery",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 8,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 7,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-skilled",
+  "run": 1,
+  "file": "header-nav",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "search-open",
+    "mobile-drawer-open"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 1,
+   "pv": 7,
+   "manual": 1,
+   "rules": [
+    "aria_content_in_landmark"
+   ],
+   "items": [
+    {
+     "rule": "aria_content_in_landmark",
+     "reason": "Fail_1",
+     "msg": "Content is not within a landmark element",
+     "snippet": "<a href=\"#main-content\" class=\"skip-link\">"
+    }
+   ]
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-skilled",
+  "run": 1,
+  "file": "newsletter-modal",
+  "al": {
+   "v": 0,
+   "nr": 2,
+   "manual": 10,
+   "rules": [],
+   "nrRules": [
+    "aria-valid-attr-value",
+    "color-contrast"
+   ],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": [
+    "subscribe-dialog-open",
+    "subscribe-dialog-error"
+   ]
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 2,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ },
+ {
+  "arm": "2026-07-skilled",
+  "run": 1,
+  "file": "dashboard",
+  "al": {
+   "v": 0,
+   "nr": 0,
+   "manual": 6,
+   "rules": [],
+   "nrRules": [],
+   "passes": [
+    "default",
+    "dark",
+    "forced-colors",
+    "reduced-motion",
+    "reflow"
+   ],
+   "states": []
+  },
+  "alFirst": null,
+  "ibm": {
+   "v": 0,
+   "pv": 5,
+   "manual": 1,
+   "rules": [],
+   "items": []
+  },
+  "lh": {
+   "failedAudits": 0,
+   "failingNodes": 0,
+   "rules": [],
+   "items": [],
+   "version": "13.5.0",
+   "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+  }
+ }
+]

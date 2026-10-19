@@ -342,20 +342,24 @@ process.exitCode = await main(['audit', 'http://localhost:3000', '--json']);
 
 ## 📈 Benchmark
 
-A small, illustrative comparison in [`evals/benchmark-results.md`](../evals/benchmark-results.md):
-the same six UI components, built by the same model (Claude Sonnet 5, as a Claude Code subagent),
-once with no accessibility guidance and once following the skill and running the audit loop to
-convergence.
+A small, repeated comparison in [`evals/benchmark-results.md`](../evals/benchmark-results.md)
+(2026-10). Claude Sonnet 5.5 built the same six UI components three times without guidance and
+three times following the skill, running the audit loop to convergence. Every file was then
+checked by a11y-loop, IBM Equal Access and Lighthouse.
 
-- **Baseline (no guidance): 35 violations across 6 components.** With the skill, **1 violation on
-  first generation** — before any audit ran.
-- **After the loop: 0 violations**, at an average of **1.67 completed audit iterations** per
-  component.
+- **Baseline: 45 a11y-loop violations across 18 files** (13 to 18 per run), plus 61 IBM
+  violations and 13 failed Lighthouse audits. **After the loop: 0 a11y-loop violations and 0
+  failed Lighthouse audits**, at 1.5 to 2.2 audit iterations per file on average.
+- **What the loop leaves, by the independent engine:** one IBM finding in every converged file,
+  a skip link placed outside any landmark. IBM's needs-review items barely moved. Lighthouse runs
+  the same axe-core rules as a11y-loop, so its agreement is weak evidence.
+- **Context mattered too.** Baseline runs that could see this repository's `AGENTS.md` produced
+  0 a11y-loop violations, so the headline arms were run from a clean directory.
 
-Read this with its stated caveats: **N = 6 components, a single run per condition, one model
-family, and the audits are produced by a11y-loop's own engine** (mitigated, not eliminated, by
-every finding being grounded in axe-core, a third-party rules engine) — a small, self-audited
-illustration of the effect's shape, not a controlled study or a precise effect size.
+Read it with its stated caveats: **three runs per condition, one model family, and only one of
+the three engines (IBM) independent of axe-core.** It is not a controlled study or a precise
+effect size. The 2026-07 single-run comparison is kept in
+[`evals/benchmark-results-2026-07.md`](../evals/benchmark-results-2026-07.md).
 
 It was also run against the skill as it stood at v0.1.x, before the §0 plan rules existed, so it
 says nothing about planning. A 2026-10 re-run against the current skill, scored against an

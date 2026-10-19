@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #111827; background: #f3f4f6; }
+  section { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+  h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  .sub { margin: 0 0 24px; color: #6b7280; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .tile, .activity { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+  .label { color: #6b7280; font-size: .85rem; margin: 0; }
+  .value { font-size: 2rem; font-weight: 800; margin: 6px 0; }
+  .trend { display: inline-flex; align-items: center; gap: 4px; font-size: .82rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+  .trend.up { color: #047857; background: #d1fae5; }
+  .trend.down { color: #b91c1c; background: #fee2e2; }
+  .trend svg { width: 10px; height: 10px; }
+  .trend.down svg { transform: rotate(180deg); }
+  .activity h2 { margin: 0 0 12px; font-size: 1.1rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #f3f4f6; }
+  li:first-child { border-top: 0; }
+  .avatar { width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center;
+    color: #fff; font-weight: 700; font-size: .8rem; }
+  .text { flex: 1; font-size: .93rem; }
+  time { color: #9ca3af; font-size: .8rem; white-space: nowrap; }
+</style>
+</head>
+<body>
+<section aria-labelledby="dash-title">
+  <h1 id="dash-title">Overview</h1>
+  <p class="sub">Last 30 days compared to the previous period.</p>
+
+  <div class="tiles">
+    <div class="tile">
+      <p class="label">Total revenue</p>
+      <div class="value">$48,290</div>
+      <span class="trend up"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1l4 7H1z" fill="currentColor"/></svg>12.4% <span style="position:absolute;left:-9999px">increase</span></span>
+    </div>
+    <div class="tile">
+      <p class="label">Active users</p>
+      <div class="value">8,214</div>
+      <span class="trend up"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1l4 7H1z" fill="currentColor"/></svg>5.1% <span style="position:absolute;left:-9999px">increase</span></span>
+    </div>
+    <div class="tile">
+      <p class="label">Conversion rate</p>
+      <div class="value">3.8%</div>
+      <span class="trend down"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1l4 7H1z" fill="currentColor"/></svg>0.6% <span style="position:absolute;left:-9999px">decrease</span></span>
+    </div>
+    <div class="tile">
+      <p class="label">Churn</p>
+      <div class="value">1.9%</div>
+      <span class="trend up"><svg viewBox="0 0 10 10" aria-hidden="true" style="transform:rotate(180deg)"><path d="M5 1l4 7H1z" fill="currentColor"/></svg>0.3% <span style="position:absolute;left:-9999px">decrease, which is good</span></span>
+    </div>
+  </div>
+
+  <div class="activity">
+    <h2>Recent activity</h2>
+    <ul>
+      <li><span class="avatar" style="background:#6366f1">MJ</span><span class="text"><strong>Maya Johnson</strong> upgraded to the Pro plan</span><time>2 min ago</time></li>
+      <li><span class="avatar" style="background:#10b981">LC</span><span class="text"><strong>Liam Chen</strong> invited 3 teammates</span><time>18 min ago</time></li>
+      <li><span class="avatar" style="background:#f59e0b">SP</span><span class="text"><strong>Sara Patel</strong> exported the monthly report</span><time>1 hr ago</time></li>
+      <li><span class="avatar" style="background:#ef4444">DO</span><span class="text"><strong>Diego Ortiz</strong> cancelled his subscription</span><time>3 hr ago</time></li>
+      <li><span class="avatar" style="background:#0ea5e9">EW</span><span class="text"><strong>Emma Wilson</strong> connected the Slack integration</span><time>Yesterday</time></li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>
