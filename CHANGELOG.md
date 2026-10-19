@@ -12,13 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   each part reads and writes on your machine, and what goes over the network (only Chromium's
   download by `install-browser`, from Playwright's CDN). It is linked from the README, `llms.txt`
   and the plugin manifest's new `privacyPolicyUrl`. The manifest now also carries the docs site as
-  `homepage`, plus `documentationUrl`, `supportUrl` and `termsOfServiceUrl` (the MIT license):
-  the Anthropic plugin directory had reported 3 of 6 link fields filled.
+  `homepage`, plus `documentationUrl` and `supportUrl`: the Anthropic plugin directory had
+  reported 3 of 6 link fields filled. `termsOfServiceUrl` stays empty, because there is no
+  terms-of-service document and the MIT license is not one.
 - `npm run sync-plugin` (`scripts/sync-plugin.mjs`) and `test/unit/plugin-sync.test.js`, which
   keep the plugin's copies identical to their sources and fail on drift, on a `../` path or
   `${CLAUDE_SKILL_DIR}` inside `plugin/`, on a `package.json` or lockfile there, and on the version
   disagreeing across its four files. `test/unit/text-encoding.test.js` fails on a BOM, invalid
-  UTF-8 or a raw control byte in `src/`, `plugin/`, `skills/` or `scripts/`.
+  UTF-8 or a raw control byte in `src/`, `plugin/`, `skills/`, `scripts/`, root and `docs/`
+  Markdown, `llms.txt` or the marketplace manifest.
 - **`plugin/.claude-plugin/icon.png`**, a 1024×1024 PNG rendered from the brand logo, so the Claude Code plugin directory has a listing icon. The directory reads it only the first time a plugin is saved or submitted there, so it has to ship in the release that is submitted.
 - **CI now installs the packed tarball with `npm i -g` on Ubuntu (Node 20 and 22), macOS and Windows
   and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`

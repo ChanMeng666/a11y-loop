@@ -274,8 +274,8 @@ rather than left to be rediscovered.
   approve each `node src/cli.js` call, or run `npm link` once so `a11y-loop` resolves to it.
 - **Shipped text must be plain text.** A raw NUL inside a string literal made the plugin directory
   class `src/lib/fingerprint.js` as binary and hold it as uninspectable. Write control characters
-  as escapes (`'\u0000'`); `test/unit/text-encoding.test.js` scans `src/`, `plugin/`, `skills/` and
-  `scripts/`.
+  as escapes (`'\u0000'`); `test/unit/text-encoding.test.js` scans `src/`, `plugin/`, `skills/`, `scripts/`, root and
+  `docs/` Markdown, `llms.txt` and the marketplace manifest.
 - **`ExitPlanMode` does not exist under `claude -p`.** It is absent from the toolset in print mode,
   so the hook's full round trip — Claude Code fires the hook, the hook denies, Claude revises and
   calls `ExitPlanMode` again — cannot be exercised headlessly, only in an interactive session.

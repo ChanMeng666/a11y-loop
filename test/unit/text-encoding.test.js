@@ -10,23 +10,44 @@ import { fileURLToPath } from 'node:url';
 // and no control characters other than tab, line feed and carriage return
 // (`core.autocrlf` checkouts carry CRLF).
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const ROOTS = ['src', 'plugin', 'skills', 'scripts'];
-const TEXT = /\.(m?js|json|md|txt)$|(^|[\\/])LICENSE$/;
 
-function walk(dir) {
+/** Whole trees scanned for every text file in them; images and other binaries are skipped by extension. */
+const ROOTS = ['src', 'plugin', 'skills', 'scripts'];
+const TEXT = /\.(m?js|json|md|txt)$|^LICENSE$/;
+
+function walk(dir, match = TEXT) {
   const out = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walk(full));
-    else if (TEXT.test(entry.name)) out.push(full);
+    if (entry.isDirectory()) out.push(...walk(full, match));
+    else if (match.test(entry.name)) out.push(full);
   }
   return out;
 }
 
+/** Files directly in `dir` (not below it) whose name matches. */
+const shallow = (dir, match) =>
+  readdirSync(path.join(REPO, dir), { withFileTypes: true })
+    .filter((e) => e.isFile() && match.test(e.name))
+    .map((e) => path.join(REPO, dir, e.name));
+
+/**
+ * Prose is scanned too: a raw NUL slipped into AGENTS.md and CHANGELOG.md while
+ * this test was being written. Root-level Markdown and llms.txt, all Markdown
+ * under docs/, and the marketplace manifest.
+ */
+const extra = () => [
+  ...shallow('.', /\.md$|^llms\.txt$/),
+  ...walk(path.join(REPO, 'docs'), /\.md$/),
+  ...shallow('.claude-plugin', /\.json$/),
+];
+
 test('shipped text files are UTF-8 without a BOM or stray control bytes', () => {
   const decoder = new TextDecoder('utf-8', { fatal: true });
-  const files = ROOTS.flatMap((r) => walk(path.join(REPO, r)));
-  assert.ok(files.length > 20, `scanned ${files.length} files`);
+  const files = [...ROOTS.flatMap((r) => walk(path.join(REPO, r))), ...extra()];
+  for (const must of ['AGENTS.md', 'CHANGELOG.md', path.join('docs', 'overview.md'), path.join('.claude-plugin', 'marketplace.json'), path.join('plugin', 'README.md')]) {
+    assert.ok(files.includes(path.join(REPO, must)), `${must} is scanned`);
+  }
   const problems = [];
   for (const file of files) {
     const bytes = readFileSync(file);
