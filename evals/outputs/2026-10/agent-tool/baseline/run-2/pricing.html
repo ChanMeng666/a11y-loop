@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;padding:56px 16px}
+header{text-align:center;margin-bottom:40px}
+h1{margin:0 0 8px;font-size:2.2rem}
+header p{margin:0;color:#475569}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:1000px;margin:0 auto;align-items:stretch}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px;display:flex;flex-direction:column;position:relative}
+.card.pro{background:#1e1b4b;color:#fff;border-color:#4338ca;transform:scale(1.04);box-shadow:0 20px 40px rgba(67,56,202,.35)}
+.badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#fbbf24;color:#1e1b4b;font-size:.75rem;font-weight:700;padding:5px 12px;border-radius:999px}
+h2{margin:0 0 8px;font-size:1.3rem}
+.price{font-size:2.6rem;font-weight:800;margin:8px 0 20px}
+.price small{font-size:1rem;font-weight:400;opacity:.7}
+ul{list-style:none;padding:0;margin:0 0 28px;flex:1}
+li{padding:8px 0 8px 28px;position:relative}
+li::before{content:"\2713";position:absolute;left:0;color:#16a34a;font-weight:700}
+.pro li::before{color:#fcd34d}
+.cta{display:block;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:600;border:2px solid #4338ca;color:#4338ca}
+.cta:hover{background:#eef2ff}
+.pro .cta{background:#fbbf24;border-color:#fbbf24;color:#1e1b4b}
+.pro .cta:hover{background:#fcd34d}
+.cta:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+</style>
+</head>
+<body>
+<header><h1>Simple, transparent pricing</h1><p>Pick a plan that grows with you.</p></header>
+<section class="grid">
+  <article class="card">
+    <h2>Starter</h2><div class="price">$9<small>/mo</small></div>
+    <ul><li>1 project</li><li>5 GB storage</li><li>Community support</li><li>Basic analytics</li></ul>
+    <a class="cta" href="#">Start free trial</a>
+  </article>
+  <article class="card pro">
+    <span class="badge">Most popular</span>
+    <h2>Pro</h2><div class="price">$29<small>/mo</small></div>
+    <ul><li>Unlimited projects</li><li>100 GB storage</li><li>Priority email support</li><li>Advanced analytics</li><li>Team collaboration</li></ul>
+    <a class="cta" href="#">Get Pro</a>
+  </article>
+  <article class="card">
+    <h2>Enterprise</h2><div class="price">Custom</div>
+    <ul><li>Unlimited everything</li><li>SSO and audit logs</li><li>Dedicated manager</li><li>99.99% uptime SLA</li></ul>
+    <a class="cta" href="#">Contact sales</a>
+  </article>
+</section>
+</body>
+</html>

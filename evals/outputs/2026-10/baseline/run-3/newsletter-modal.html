@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newsletter Modal</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f8fafc;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#0f172a;text-align:center;padding:24px}
+  h1{margin:0 0 8px}
+  p{color:#64748b}
+  button{font:inherit;cursor:pointer}
+  .primary{background:#4f46e5;color:#fff;border:0;padding:12px 24px;border-radius:8px;font-weight:600}
+  .primary:hover{background:#4338ca}
+  button:focus-visible,input:focus-visible{outline:2px solid #4f46e5;outline-offset:2px}
+  dialog{border:0;border-radius:16px;padding:32px;width:min(420px,calc(100vw - 32px));box-shadow:0 20px 60px rgba(15,23,42,.3);text-align:left;position:fixed;margin:auto}
+  dialog::backdrop{background:rgba(15,23,42,.55)}
+  dialog h2{margin:0 0 6px}
+  dialog p{margin:0 0 20px}
+  .close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;background:transparent;border-radius:8px;font-size:1.5rem;line-height:1;color:#64748b}
+  .close:hover{background:#f1f5f9}
+  label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px}
+  input{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;margin-bottom:16px}
+  dialog .primary{width:100%}
+  .ok{display:none;color:#15803d;font-weight:600;margin:12px 0 0;text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <h1>Never miss an update</h1>
+  <p>Get product news delivered to your inbox.</p>
+  <button class="primary" id="open">Subscribe</button>
+</main>
+
+<dialog id="modal" aria-labelledby="m-title">
+  <button class="close" id="close" aria-label="Close dialog" type="button">&times;</button>
+  <h2 id="m-title">Subscribe</h2>
+  <p>Enter your email and we'll keep you posted.</p>
+  <form id="form" novalidate>
+    <label for="email">Email address</label>
+    <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+    <button class="primary" type="submit">Subscribe</button>
+    <div class="ok" id="ok" role="status">You're on the list!</div>
+  </form>
+</dialog>
+
+<script>
+  const modal = document.getElementById('modal');
+  const form = document.getElementById('form');
+  const email = document.getElementById('email');
+  const ok = document.getElementById('ok');
+  document.getElementById('open').addEventListener('click', () => { ok.style.display = 'none'; modal.showModal(); });
+  document.getElementById('close').addEventListener('click', () => modal.close());
+  // close on backdrop click
+  modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!email.checkValidity() || !email.value) { email.setCustomValidity('Please enter a valid email.'); email.reportValidity(); email.setCustomValidity(''); return; }
+    ok.style.display = 'block';
+    form.reset();
+    setTimeout(() => modal.close(), 1200);
+  });
+</script>
+</body>
+</html>

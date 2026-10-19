@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics dashboard</title>
+<style>
+:root{--bg:#fff;--surface:#f1f5f9;--text:#111827;--muted:#4b5563;--line:#cbd5e1;--primary:#4338ca;--on-primary:#fff;--focus:#1d4ed8;--up:#166534;--down:#b91c1c;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--line:#334155;--primary:#a5b4fc;--on-primary:#0f172a;--focus:#93c5fd;--up:#86efac;--down:#fca5a5}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--surface);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+main{max-width:1100px;margin:0 auto;padding:40px 20px}
+h1{font-size:2rem;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 28px}
+h2{font-size:1.3rem;margin:36px 0 12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px;list-style:none;padding:0;margin:0}
+.tile{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:20px}
+.tile .val{display:block;font-size:2rem;font-weight:800;line-height:1.2}
+.tile .lbl{display:block;color:var(--muted)}
+.trend{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-weight:600}
+.trend.up{color:var(--up)}
+.trend.down{color:var(--down)}
+.trend svg{width:16px;height:16px;fill:currentColor}
+.act{list-style:none;margin:0;padding:0;background:var(--bg);border:1px solid var(--line);border-radius:16px}
+.act li{display:flex;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.act li:last-child{border-bottom:0}
+.act time{color:var(--muted);white-space:nowrap}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+<h1>Analytics overview</h1>
+<p class="lead">Last 30 days compared with the previous 30 days.</p>
+<section aria-labelledby="stats-h">
+<h2 id="stats-h" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Key metrics</h2>
+<ul class="stats">
+<li class="tile"><span class="val">48,210</span><span class="lbl">Page views</span><span class="trend up"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3l6 8H2z"/></svg>12.4% increase</span></li>
+<li class="tile"><span class="val">3,872</span><span class="lbl">New signups</span><span class="trend up"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3l6 8H2z"/></svg>5.1% increase</span></li>
+<li class="tile"><span class="val">2.9%</span><span class="lbl">Conversion rate</span><span class="trend down"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 13L2 5h12z"/></svg>0.4% decrease</span></li>
+<li class="tile"><span class="val">$18,940</span><span class="lbl">Revenue</span><span class="trend up"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3l6 8H2z"/></svg>8.7% increase</span></li>
+</ul>
+</section>
+<section aria-labelledby="act-h">
+<h2 id="act-h">Recent activity</h2>
+<ul class="act">
+<li><span>Maria Santos upgraded to the Pro plan</span><time datetime="2026-10-20T09:12">9:12 AM</time></li>
+<li><span>New signup from New Zealand</span><time datetime="2026-10-20T08:47">8:47 AM</time></li>
+<li><span>Weekly report was sent to 1,204 subscribers</span><time datetime="2026-10-20T08:00">8:00 AM</time></li>
+<li><span>Liam O'Connor opened a support ticket</span><time datetime="2026-10-19T17:30">Yesterday</time></li>
+<li><span>Payment of $29 received from Priya Patel</span><time datetime="2026-10-19T14:05">Yesterday</time></li>
+</ul>
+</section>
+</main>
+</body>
+</html>

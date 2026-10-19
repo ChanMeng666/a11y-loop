@@ -1,0 +1,21 @@
+You are a web developer building six small front-end deliverables, and you MUST follow the a11y-loop skill throughout. FIRST read `D:\github_repository\a11y-loop\.claude\worktrees\bench\skills\a11y-loop\SKILL.md` completely and treat it as binding standing instructions, including §2 (the loop); consult its `references/` files when you implement a pattern they cover. Do not modify anything under `D:\github_repository\`.
+
+Each deliverable is ONE self-contained HTML file (inline CSS in a `<style>` tag, inline JS in a `<script>` tag if needed, no external assets, no CDN). Make them look reasonably polished and modern. Vanilla HTML/CSS/JS only.
+
+Write the six files to `D:\.claude-scratch\2026-10-20\bench\skilled-clean\run-NNN\`:
+
+1. `signup-form.html` — an email newsletter signup form: name, email, a country dropdown, a marketing-consent checkbox, submit button.
+2. `pricing.html` — a three-tier pricing section (Starter / Pro / Enterprise) with feature lists and a call-to-action per tier; highlight the Pro tier.
+3. `gallery.html` — a "customer stories" card grid: 6 cards, each with a photo (use inline SVG placeholders or data URIs), customer name, quote, and a link to the full story.
+4. `header-nav.html` — a site header: logo (text is fine), horizontal nav with 5 links, a search icon button, and a hamburger menu that toggles a mobile drawer.
+5. `newsletter-modal.html` — a page with a "Subscribe" button that opens a modal dialog containing a one-field email form and a close button.
+6. `dashboard.html` — a small analytics dashboard section: 4 stat tiles (number + label + trend indicator) and a recent-activity list.
+
+The audit loop (mandatory, per file). Use the Bash tool. Set `export PLAYWRIGHT_BROWSERS_PATH='D:\playwright-browsers'` in every command that audits. The CLI is `node D:/github_repository/a11y-loop/.claude/worktrees/bench/src/cli.js` (call it A11Y below; each audit takes ~30 s).
+- After writing each file, audit it: `A11Y audit --file <dir>/<name>.html --out <dir>/reports/<name>.run1.json --quiet`. For any file with interaction states (at least header-nav: drawer open, search if it has a state; newsletter-modal: dialog open, and validation-error state if you built one), write `<dir>/<name>.states.mjs` (`export const states = { name: async (page) => { ... } }`) and add `--interact <dir>/<name>.states.mjs` to every audit of that file.
+- Read `findings.violations` AND `findings.needsReview` in the JSON. Fix in source. Re-audit to `<name>.run2.json`, then `A11Y diff --before <run1> --after <run2>`. Repeat until violations are 0 and diff reports no NEW. Copy the final converged report to `<dir>/reports/<name>.json`.
+- Write the final report's `manualChecklist` array (it is in the JSON; there is no checklist output flag) to `<dir>/<name>.checklist.md` as a Markdown list (one item per entry: text, then the why).
+- Keep an honest `<dir>/loop-log.md`: per file, first-audit violations and needsReview counts with rule ids, what you changed, each iteration's counts, number of completed audit iterations (a tool error before an audit completes is noted, not counted), and what needsReview remained and why.
+- Run `date -Iseconds` at the very start and the very end and include both in the log.
+
+Final message (keep it under 250 words): start/end timestamps, then a table per file: first-audit violations, first-audit needsReview, iterations, final violations, final needsReview, manual-checklist item count. Report actual numbers from the JSON; do not round or guess.

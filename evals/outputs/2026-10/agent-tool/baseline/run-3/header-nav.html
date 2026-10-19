@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Header</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;color:#0f172a}
+header{display:flex;align-items:center;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #e2e8f0}
+.logo{font-weight:800;font-size:1.3rem;color:#4338ca;text-decoration:none}
+nav.desktop{margin-left:auto}
+nav ul{list-style:none;margin:0;padding:0;display:flex;gap:20px}
+nav a{color:#0f172a;text-decoration:none;font-weight:500;padding:6px 2px}
+nav a:hover{color:#4338ca;text-decoration:underline}
+.icon-btn{background:none;border:0;padding:8px;border-radius:8px;cursor:pointer;color:#0f172a;display:grid;place-items:center}
+.icon-btn:hover{background:#eef2ff}
+.icon-btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+a:focus-visible,button:focus-visible{outline:3px solid #4338ca;outline-offset:2px}
+#burger{display:none}
+#drawer{position:fixed;top:0;right:0;height:100%;width:min(300px,80vw);background:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.2);padding:64px 24px 24px;transform:translateX(100%);transition:transform .25s,visibility .25s;z-index:10;visibility:hidden}
+#drawer.open{transform:none;visibility:visible}
+#drawer ul{flex-direction:column;gap:8px}
+#drawer a{display:block;padding:12px 8px;font-size:1.1rem}
+#close{position:absolute;top:12px;right:12px}
+@media(max-width:720px){nav.desktop{display:none}#burger{display:grid}.search{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){#drawer{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">Acme</a>
+  <nav class="desktop" aria-label="Main">
+    <ul><li><a href="#">Product</a></li><li><a href="#">Solutions</a></li><li><a href="#">Pricing</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul>
+  </nav>
+  <button class="icon-btn search" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+  <button class="icon-btn" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+</header>
+<nav id="drawer" aria-label="Mobile">
+  <button class="icon-btn" id="close" aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  <ul><li><a href="#">Product</a></li><li><a href="#">Solutions</a></li><li><a href="#">Pricing</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul>
+</nav>
+<main style="padding:24px"><h1>Welcome</h1><p>Page content goes here.</p></main>
+<script>
+const b=document.getElementById('burger'),d=document.getElementById('drawer'),c=document.getElementById('close');
+function set(o){d.classList.toggle('open',o);b.setAttribute('aria-expanded',o);(o?c:b).focus();}
+b.onclick=()=>set(true);c.onclick=()=>set(false);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('open'))set(false);});
+</script>
+</body>
+</html>

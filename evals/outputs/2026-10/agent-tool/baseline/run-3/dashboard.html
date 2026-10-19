@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding:32px 16px}
+main{max-width:960px;margin:0 auto}
+h1{margin:0 0 24px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.tile{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.num{font-size:2rem;font-weight:800;margin:0}
+.label{color:#475569;margin:4px 0 8px}
+.trend{font-weight:600;font-size:.9rem}
+.up{color:#047857}.down{color:#b91c1c}
+section.activity{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+h2{margin:0 0 12px;font-size:1.1rem}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #e2e8f0}
+li:first-child{border-top:0}
+time{color:#475569;font-size:.85rem;white-space:nowrap}
+</style>
+</head>
+<body>
+<main>
+<h1>Analytics overview</h1>
+<section class="tiles" aria-label="Key stats">
+  <div class="tile"><p class="num">24,310</p><p class="label">Visitors</p><span class="trend up">&#9650; Up 12.4% vs last week</span></div>
+  <div class="tile"><p class="num">1,842</p><p class="label">Signups</p><span class="trend up">&#9650; Up 5.1% vs last week</span></div>
+  <div class="tile"><p class="num">$48.2k</p><p class="label">Revenue</p><span class="trend down">&#9660; Down 2.3% vs last week</span></div>
+  <div class="tile"><p class="num">3.8%</p><p class="label">Conversion rate</p><span class="trend up">&#9650; Up 0.4% vs last week</span></div>
+</section>
+<section class="activity" aria-labelledby="ra">
+  <h2 id="ra">Recent activity</h2>
+  <ul>
+    <li><span>Dana Ruiz upgraded to Pro</span><time datetime="2026-10-20T09:42">9:42 AM</time></li>
+    <li><span>New signup from Berlin</span><time datetime="2026-10-20T09:15">9:15 AM</time></li>
+    <li><span>Invoice #1042 paid</span><time datetime="2026-10-20T08:50">8:50 AM</time></li>
+    <li><span>Sam Okoye cancelled Starter</span><time datetime="2026-10-19T17:30">Yesterday</time></li>
+    <li><span>Weekly report generated</span><time datetime="2026-10-19T08:00">Yesterday</time></li>
+  </ul>
+</section>
+</main>
+</body>
+</html>

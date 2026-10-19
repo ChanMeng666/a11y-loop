@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; color: #0f172a; }
+  section { max-width: 1040px; margin: 0 auto; padding: 40px 24px; }
+  h1 { margin: 0 0 4px; font-size: 1.7rem; }
+  .sub { margin: 0 0 28px; color: #64748b; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .tile, .activity { background: #fff; border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 3px rgba(15,23,42,.08); }
+  .label { color: #64748b; font-size: .85rem; font-weight: 500; }
+  .num { font-size: 2rem; font-weight: 800; margin: 6px 0; letter-spacing: -.02em; }
+  .trend { display: inline-flex; align-items: center; gap: 4px; font-size: .82rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+  .trend.up { color: #15803d; background: #dcfce7; }
+  .trend.down { color: #b91c1c; background: #fee2e2; }
+  .trend svg { width: 12px; height: 12px; fill: currentColor; }
+  .trend.down svg { transform: rotate(180deg); }
+  h2 { margin: 0 0 12px; font-size: 1.1rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #f1f5f9; }
+  li:first-child { border-top: 0; }
+  .av { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: .8rem; }
+  .txt { flex: 1; font-size: .93rem; }
+  .txt span { color: #64748b; }
+  time { color: #94a3b8; font-size: .8rem; white-space: nowrap; }
+</style>
+</head>
+<body>
+<section aria-labelledby="dash-title">
+  <h1 id="dash-title">Overview</h1>
+  <p class="sub">Last 30 days compared to the previous period.</p>
+
+  <div class="stats">
+    <div class="tile">
+      <div class="label">Total revenue</div>
+      <div class="num">$48,290</div>
+      <span class="trend up"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l5 8H1z"/></svg><span class="sr">Up</span> 12.4%</span>
+    </div>
+    <div class="tile">
+      <div class="label">Active users</div>
+      <div class="num">8,942</div>
+      <span class="trend up"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l5 8H1z"/></svg><span class="sr">Up</span> 5.1%</span>
+    </div>
+    <div class="tile">
+      <div class="label">Conversion rate</div>
+      <div class="num">3.8%</div>
+      <span class="trend down"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l5 8H1z"/></svg><span class="sr">Down</span> 0.6%</span>
+    </div>
+    <div class="tile">
+      <div class="label">Churn</div>
+      <div class="num">1.2%</div>
+      <span class="trend up"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l5 8H1z"/></svg><span class="sr">Improved</span> 0.3%</span>
+    </div>
+  </div>
+
+  <div class="activity">
+    <h2>Recent activity</h2>
+    <ul>
+      <li><div class="av" style="background:#6366f1" aria-hidden="true">MC</div><div class="txt"><strong>Maya Chen</strong> <span>upgraded to the Pro plan</span></div><time>2 min ago</time></li>
+      <li><div class="av" style="background:#0ea5e9" aria-hidden="true">DO</div><div class="txt"><strong>Daniel Okafor</strong> <span>invited 3 teammates</span></div><time>18 min ago</time></li>
+      <li><div class="av" style="background:#10b981" aria-hidden="true">SR</div><div class="txt"><strong>Sofia Rossi</strong> <span>exported the monthly report</span></div><time>1 hr ago</time></li>
+      <li><div class="av" style="background:#f59e0b" aria-hidden="true">AP</div><div class="txt"><strong>Arjun Patel</strong> <span>cancelled their subscription</span></div><time>3 hr ago</time></li>
+      <li><div class="av" style="background:#ec4899" aria-hidden="true">HM</div><div class="txt"><strong>Hannah Müller</strong> <span>created a new project</span></div><time>Yesterday</time></li>
+    </ul>
+  </div>
+</section>
+<style>.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }</style>
+</body>
+</html>

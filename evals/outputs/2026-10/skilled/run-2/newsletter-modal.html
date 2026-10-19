@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog – Subscribe</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--surface:#f4f5fb;--text:#1a1a2e;--muted:#4b5563;--accent:#4338ca;--on-accent:#fff;--border:#6b7280;--line:#d1d5db;--ok:#166534;--bad:#b91c1c;--focus:#1d4ed8}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#e5e7eb;--muted:#a8b0be;--accent:#a5b4fc;--on-accent:#0f172a;--border:#94a3b8;--line:#334155;--ok:#86efac;--bad:#fca5a5;--focus:#93c5fd}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--accent);color:var(--on-accent);padding:.6rem 1rem;border-radius:.4rem;z-index:100}
+.skip:focus{top:.5rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.6rem 1.25rem;border-radius:.6rem;border:2px solid var(--accent);background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+@media (forced-colors:active){.btn{border-color:ButtonText}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{max-width:42rem;margin:0 auto;padding:3rem 1.25rem}
+h1{font-size:2.2rem;margin:0 0 1rem}
+p{color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:1rem;padding:2rem;max-width:26rem;width:calc(100% - 2rem);background:var(--bg);color:var(--text);box-shadow:0 20px 50px rgb(0 0 0/.35)}
+dialog::backdrop{background:rgb(0 0 0/.6)}
+dialog h2{margin:0 0 .5rem;font-size:1.4rem;padding-right:6rem}
+.close{position:absolute;top:.75rem;right:.75rem;min-width:44px;height:44px;padding:0 .75rem;border:2px solid var(--border);border-radius:.5rem;background:transparent;color:var(--text);font:inherit;cursor:pointer}
+.close:hover{background:var(--surface)}
+label{display:block;font-weight:600;margin:1rem 0 .35rem}
+input[type=email]{width:100%;min-height:44px;padding:.5rem .75rem;font:inherit;background:var(--bg);color:var(--text);border:2px solid var(--border);border-radius:.5rem}
+[aria-invalid=true]{border-color:var(--bad)}
+.error{color:var(--bad);margin:.25rem 0 0;font-size:.9rem}
+.actions{margin-top:1.25rem}
+.done{color:var(--ok);font-weight:600}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<main id="main">
+  <h1>The Weekly Dispatch</h1>
+  <p>Stories on design, engineering and the web, delivered every Friday.</p>
+  <button type="button" class="btn" id="open">Subscribe</button>
+  <p class="done" id="done" role="status"></p>
+</main>
+<dialog id="dlg" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+  <button type="button" class="close" id="close" ><span aria-hidden="true">&times;</span> Close</button>
+  <h2 id="dlg-title">Subscribe to updates</h2>
+  <p id="dlg-desc">Enter your email and we'll send you the next issue.</p>
+  <form id="form" novalidate>
+    <label for="email">Email address</label>
+    <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-err">
+    <p class="error" id="email-err" role="alert"></p>
+    <div class="actions"><button class="btn" type="submit">Subscribe</button></div>
+  </form>
+</dialog>
+<script>
+const dlg=document.getElementById('dlg'),open=document.getElementById('open'),em=document.getElementById('email'),err=document.getElementById('email-err');
+open.addEventListener('click',()=>dlg.showModal());
+document.getElementById('close').addEventListener('click',()=>dlg.close());
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+dlg.addEventListener('close',()=>{open.focus();err.textContent='';em.removeAttribute('aria-invalid')});
+function check(){
+  if(!em.value.trim()||!em.checkValidity()){
+    em.setAttribute('aria-invalid','true');err.textContent='Enter a valid email address, like name@example.com.';return false}
+  em.removeAttribute('aria-invalid');err.textContent='';return true}
+em.addEventListener('change',()=>{if(em.value.trim())check()});
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();
+  if(!check()){em.focus();return}
+  em.value='';dlg.close();
+  document.getElementById('done').textContent='Thanks! Check your inbox to confirm.';
+});
+</script>
+</body>
+</html>

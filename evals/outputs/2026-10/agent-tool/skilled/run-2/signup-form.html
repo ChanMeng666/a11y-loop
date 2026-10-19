@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newsletter signup</title>
+<style>
+:root{--bg:#fff;--surface:#f1f5f9;--text:#111827;--muted:#4b5563;--border:#6b7280;--line:#cbd5e1;--primary:#4338ca;--on-primary:#fff;--focus:#1d4ed8;--ok:#166534;--bad:#b91c1c;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--text:#f1f5f9;--muted:#cbd5e1;--border:#94a3b8;--line:#334155;--primary:#a5b4fc;--on-primary:#0f172a;--focus:#93c5fd;--ok:#86efac;--bad:#fca5a5}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:6px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:10px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+main{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,var(--surface),var(--bg))}
+.card{width:100%;max-width:480px;background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+h1{margin:0 0 8px;font-size:1.75rem}
+.lead{margin:0 0 24px;color:var(--muted)}
+.field{margin-bottom:18px}
+label{display:block;font-weight:600;margin-bottom:6px}
+.hint{color:var(--muted);font-size:.9rem;margin:4px 0 0}
+input[type=text],input[type=email],select{width:100%;min-height:44px;padding:8px 12px;font:inherit;color:var(--text);background:var(--bg);border:2px solid var(--border);border-radius:10px}
+.check{display:flex;gap:10px;align-items:flex-start}
+.check input{flex:none;width:24px;height:24px;margin:2px 0 0;accent-color:var(--primary)}
+.check label{font-weight:400;margin:0}
+.err{color:var(--bad);font-size:.9rem;margin:4px 0 0}
+input[aria-invalid=true]{border-color:var(--bad)}
+.ok{color:var(--ok);font-weight:600}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+<div class="card">
+<h1>Join our newsletter</h1>
+<p class="lead">One email a month with product news and tips. Fields marked required must be filled in.</p>
+<form id="f" novalidate>
+<div class="field"><label for="name">Full name (required)</label>
+<input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-err"><p class="err" id="name-err"></p></div>
+<div class="field"><label for="email">Email address (required)</label>
+<input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-hint email-err">
+<p class="hint" id="email-hint">We will never share your address.</p><p class="err" id="email-err"></p></div>
+<div class="field"><label for="country">Country</label>
+<select id="country" name="country" autocomplete="country-name"><option value="">Select a country</option><option>Australia</option><option>Canada</option><option>China</option><option>Germany</option><option>New Zealand</option><option>United Kingdom</option><option>United States</option></select></div>
+<div class="field check"><input type="checkbox" id="consent" name="consent"><label for="consent">I agree to receive marketing emails. I can unsubscribe at any time.</label></div>
+<button class="btn" type="submit">Subscribe</button>
+<p id="status" role="status" class="ok"></p>
+</form></div></main>
+<script>
+const f=document.getElementById('f'),st=document.getElementById('status');
+function setErr(id,msg){const i=document.getElementById(id),e=document.getElementById(id+'-err');e.textContent=msg;if(msg)i.setAttribute('aria-invalid','true');else i.removeAttribute('aria-invalid');return !msg}
+f.addEventListener('submit',e=>{e.preventDefault();st.textContent='';
+const n=setErr('name',f.elements.name.value.trim()?'':'Enter your name.');
+const em=setErr('email',/^\S+@\S+\.\S+$/.test(f.elements.email.value)?'':'Enter a valid email address, like name@example.com.');
+if(!n){f.elements.name.focus()}else if(!em){f.elements.email.focus()}else{st.textContent='Thanks! You are subscribed.'}});
+</script>
+</body>
+</html>

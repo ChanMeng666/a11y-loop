@@ -1,0 +1,24 @@
+# Manual checklist — header-nav.html
+
+- Test with a real screen reader (NVDA or JAWS on Windows, VoiceOver on macOS/iOS).
+  - Why: No automated tool, and no simulator, reproduces real AT behaviour — NVDA, JAWS and VoiceOver diverge from each other and from the specification.
+- Tab through the page and confirm the focus order is logical, not merely present. (SC 2.4.3)
+  - Why: a11y-loop can see that focus moves and where it goes, but whether the sequence makes sense for this content is a human judgment.
+- Complete the page’s main task using only the keyboard. (SC 2.1.1)
+  - Why: Automated checks probe individual controls; they do not know what the user is trying to accomplish.
+- Submit the form with 1 field in an invalid state and confirm each error is announced, identifies the field, and says how to fix it. (SC 3.3.3)
+  - Why: SC 3.3.1 and 3.3.3 are about whether an error message is actionable, which no tool can assess. Error states also usually only exist after interaction — audit them with --interact.
+- Confirm every field label describes what to enter, not just that a label exists. (SC 2.4.6)
+  - Why: A label of "Field 1" satisfies every automated rule and tells the user nothing.
+- Read each link text out of context and confirm the destination is still clear. (SC 2.4.4)
+  - Why: SC 2.4.4 permits vague link text when the surrounding context supplies the purpose — whether it does is a judgment call.
+- Confirm the heading structure describes the content hierarchy, not the visual sizes. (SC 1.3.1)
+  - Why: Automation can detect skipped levels but not whether the outline reflects the actual structure of the page.
+- Review the 19 ARIA attributes on this page: is each one appropriate, or merely valid? (SC 4.1.2)
+  - Why: Pages using ARIA average more accessibility errors than pages without it (WebAIM Million 2026: 59.1 vs 42.0). A role is a promise — role="button" commits to the full keyboard behaviour of a button. No ARIA is better than bad ARIA.
+- Confirm each dialog announces itself on open and describes how to dismiss it. (SC 2.1.2)
+  - Why: a11y-loop tests the focus trap, Escape, and focus return mechanically. Whether the dialog is comprehensible when announced is a screen-reader test.
+- Confirm colour is never the only way information is conveyed. (SC 1.4.1)
+  - Why: SC 1.4.1 is one of the criteria no tool can test: recognising that "the required fields are in red" needs comprehension of the content.
+- Tab through the page and confirm the focused element is never hidden behind sticky or fixed content. (SC 2.4.11)
+  - Why: SC 2.4.11 (new in WCAG 2.2) has no automated rule. This page has position:sticky or position:fixed elements, which are the usual cause.

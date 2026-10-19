@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newsletter Modal</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 24px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #111827; background: #f9fafb; }
+  h1 { margin: 0 0 8px; }
+  p { color: #6b7280; }
+  .btn { padding: 12px 22px; font: inherit; font-weight: 600; color: #fff; background: #4f46e5; border: 0; border-radius: 8px; cursor: pointer; }
+  .btn:hover { background: #4338ca; }
+  button:focus-visible, input:focus-visible { outline: 3px solid #c7d2fe; outline-offset: 1px; }
+  dialog { border: 0; border-radius: 16px; padding: 32px; width: min(420px, calc(100vw - 32px)); text-align: left;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .3); }
+  dialog::backdrop { background: rgba(17, 24, 39, .55); }
+  dialog h2 { margin: 0 0 6px; }
+  dialog p { margin: 0 0 20px; }
+  .close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; background: transparent;
+    border-radius: 8px; font-size: 1.5rem; line-height: 1; color: #6b7280; cursor: pointer; }
+  .close:hover { background: #f3f4f6; color: #111827; }
+  label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 6px; }
+  input[type=email] { width: 100%; padding: 11px 12px; font: inherit; border: 1px solid #d1d5db; border-radius: 8px; margin-bottom: 16px; }
+  input[aria-invalid=true] { border-color: #dc2626; }
+  .msg { min-height: 1.2em; font-size: .85rem; margin: -8px 0 12px; color: #b91c1c; }
+  .msg.ok { color: #047857; }
+  dialog .btn { width: 100%; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Never miss an update</h1>
+  <p>Get our best content delivered to your inbox.</p>
+  <button class="btn" id="open" type="button">Subscribe</button>
+</main>
+
+<dialog id="modal" aria-labelledby="modal-title">
+  <button class="close" type="button" id="close" aria-label="Close dialog">&times;</button>
+  <h2 id="modal-title">Subscribe to our newsletter</h2>
+  <p>One email a month. Unsubscribe anytime.</p>
+  <form id="form" novalidate>
+    <label for="email">Email address</label>
+    <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
+    <button class="btn" type="submit">Subscribe</button>
+  </form>
+</dialog>
+
+<script>
+  const modal = document.getElementById('modal');
+  const form = document.getElementById('form');
+  const email = document.getElementById('email');
+  const msg = document.getElementById('msg');
+
+  document.getElementById('open').addEventListener('click', () => modal.showModal());
+  document.getElementById('close').addEventListener('click', () => modal.close());
+  // Click on the backdrop (the dialog element itself, outside its content box) closes it.
+  modal.addEventListener('click', e => {
+    const r = modal.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) modal.close();
+  });
+  modal.addEventListener('close', () => {
+    form.reset(); msg.textContent = ''; msg.className = 'msg'; email.removeAttribute('aria-invalid');
+  });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value);
+    email.setAttribute('aria-invalid', String(!ok));
+    msg.className = ok ? 'msg ok' : 'msg';
+    msg.textContent = ok ? 'Thanks! You are subscribed.' : 'Please enter a valid email address.';
+    if (!ok) email.focus(); else setTimeout(() => modal.close(), 1200);
+  });
+</script>
+</body>
+</html>

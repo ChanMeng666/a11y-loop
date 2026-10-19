@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Header</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;color:#0f172a;min-height:100vh;background:#f8fafc}
+header{background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0}
+.bar{max-width:1100px;margin:0 auto;padding:0 16px;height:64px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:1.3rem;color:#4338ca;text-decoration:none;margin-right:auto}
+nav ul{display:flex;gap:24px;list-style:none;margin:0;padding:0}
+nav a{color:#334155;text-decoration:none;font-weight:500;padding:6px 2px}
+nav a:hover{color:#4338ca}
+button{background:none;border:0;padding:8px;border-radius:8px;cursor:pointer;color:#334155;display:grid;place-items:center}
+button:hover{background:#eef2ff}
+a:focus-visible,button:focus-visible{outline:3px solid #4338ca;outline-offset:2px}
+svg{width:22px;height:22px}
+#menu-btn{display:none}
+#drawer{display:none;border-top:1px solid #e2e8f0;background:#fff}
+#drawer.open{display:block}
+#drawer ul{list-style:none;margin:0;padding:8px 16px}
+#drawer a{display:block;padding:12px 4px;color:#334155;text-decoration:none;font-weight:500;border-bottom:1px solid #f1f5f9}
+@media(max-width:720px){nav.desktop{display:none}#menu-btn{display:grid}}
+@media(min-width:721px){#drawer.open{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="logo" href="#">Acme</a>
+    <nav class="desktop" aria-label="Main">
+      <ul><li><a href="#">Product</a></li><li><a href="#">Solutions</a></li><li><a href="#">Pricing</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul>
+    </nav>
+    <button type="button" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+    <button type="button" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+  <nav id="drawer" aria-label="Mobile">
+    <ul><li><a href="#">Product</a></li><li><a href="#">Solutions</a></li><li><a href="#">Pricing</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul>
+  </nav>
+</header>
+<script>
+const b=document.getElementById('menu-btn'),d=document.getElementById('drawer');
+b.addEventListener('click',()=>{const o=d.classList.toggle('open');b.setAttribute('aria-expanded',o)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('open')){d.classList.remove('open');b.setAttribute('aria-expanded','false');b.focus()}});
+</script>
+</body>
+</html>

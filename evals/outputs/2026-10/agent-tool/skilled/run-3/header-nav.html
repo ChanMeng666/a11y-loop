@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Header navigation</title>
+<style>
+:root{--bg:#f6f7fb;--surface:#fff;--text:#1a1d23;--muted:#4b5563;--border:#6b7280;--line:#d6dae2;--accent:#1d4ed8;--on-accent:#fff;--accent-soft:#e8eefc;--error:#b42318;--ok:#0a6b3d;--focus:#1d4ed8;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1117;--surface:#171b23;--text:#eceef2;--muted:#b0b8c5;--border:#8d96a5;--line:#2c333f;--accent:#8fb0ff;--on-accent:#0b1020;--accent-soft:#1d2740;--error:#ff9b8f;--ok:#6fdc9f;--focus:#8fb0ff}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:transparent;color:var(--accent)}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
+header.site{background:var(--surface);border-bottom:1px solid var(--line);position:relative}
+.bar{max-width:1200px;margin:0 auto;padding:0 16px;min-height:68px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:1.4rem;color:var(--text);text-decoration:none;margin-right:auto;letter-spacing:-.02em}
+.logo span{color:var(--accent)}
+nav.main ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+nav.main a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;color:var(--text);text-decoration:none;font-weight:500}
+nav.main a:hover{background:var(--accent-soft)}
+nav.main a[aria-current=page]{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:6px}
+.icon-btn{width:44px;height:44px;display:inline-grid;place-items:center;border:2px solid transparent;border-radius:10px;background:transparent;color:var(--text);cursor:pointer}
+.icon-btn:hover{background:var(--accent-soft)}
+.icon-btn svg{width:24px;height:24px}
+.menu-btn{display:none}
+.drawer{display:none;border-top:1px solid var(--line);background:var(--surface);padding:8px 16px 16px}
+.drawer ul{list-style:none;margin:0;padding:0}
+.drawer a{display:flex;align-items:center;min-height:48px;color:var(--text);text-decoration:none;font-weight:500;border-bottom:1px solid var(--line)}
+.drawer a[aria-current=page]{color:var(--accent);font-weight:700}
+.drawer.open{display:block}
+.search{display:none;border-top:1px solid var(--line);padding:12px 16px}
+.search.open{display:flex;gap:8px;max-width:1200px;margin:0 auto}
+.search input{flex:1;min-height:44px;padding:8px 12px;font:inherit;color:var(--text);background:var(--surface);border:2px solid var(--border);border-radius:10px}
+.search label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.hero{max-width:1200px;margin:0 auto;padding:48px 16px}
+@media (max-width:760px){nav.main{display:none}.menu-btn{display:inline-grid}}
+</style></head><body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="site">
+<div class="bar">
+<a class="logo" href="#home">Acme<span>Co</span></a>
+<nav class="main" aria-label="Main"><ul>
+<li><a href="#home" aria-current="page">Home</a></li><li><a href="#products">Products</a></li><li><a href="#solutions">Solutions</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#about">About</a></li></ul></nav>
+<button type="button" class="icon-btn" id="search-btn" aria-expanded="false" aria-controls="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="sr">Search</span></button>
+<button type="button" class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="sr">Menu</span></button>
+</div>
+<form class="search" id="search" role="search" aria-label="Site">
+<label for="q">Search the site</label><input type="search" id="q" name="q" autocomplete="off"><button class="btn" type="submit">Search</button></form>
+<nav class="drawer" id="drawer" aria-label="Mobile"><ul>
+<li><a href="#home" aria-current="page">Home</a></li><li><a href="#products">Products</a></li><li><a href="#solutions">Solutions</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#about">About</a></li></ul></nav>
+</header>
+<main id="main"><div class="hero"><h1>Build something people love</h1><p>Resize the window below 760px to use the menu button.</p></div></main>
+<script>
+const sr=document.createElement('style');sr.textContent='.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';document.head.append(sr);
+function toggler(btn,panel){btn.addEventListener('click',()=>{const o=btn.getAttribute('aria-expanded')!=='true';btn.setAttribute('aria-expanded',o);panel.classList.toggle('open',o);if(o&&panel.querySelector('input'))panel.querySelector('input').focus()});
+ return ()=>{btn.setAttribute('aria-expanded','false');panel.classList.remove('open')}}
+const closeS=toggler(document.getElementById('search-btn'),document.getElementById('search'));
+const closeM=toggler(document.getElementById('menu-btn'),document.getElementById('drawer'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const a=document.querySelector('[aria-expanded=true]');if(a){closeS();closeM();a.focus()}}});
+</script></body></html>

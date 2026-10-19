@@ -1,44 +1,69 @@
-# a11y-loop benchmark: baseline vs. skilled generation
+# a11y-loop benchmark: baseline vs. skilled generation (2026-10)
 
-A small, illustrative comparison of the same six UI components built twice by
-the same model — once with no accessibility guidance, once following
-`skills/a11y-loop/SKILL.md` and running the audit loop to convergence. This is
-**not a controlled study**: N=6 components, a single run per condition, one
-model family, and the audits are produced by a11y-loop's own engine. Read the
-numbers with that in mind; the point is to show the shape of the effect, not
-to claim a precise size.
+The same six UI components, built by the same model with and without the
+a11y-loop skill, three runs per condition. Every file was then checked by three
+engines: a11y-loop itself, IBM Equal Access, and Lighthouse. This is **not a
+controlled study.** It is a small, repeated comparison from one model family.
+Read it for the shape of the effect, not for a precise effect size.
 
-**Scope note.** This benchmark was run against the skill as it stood at v0.1.x,
-which covered generation (§1) and the audit loop (§2). It says nothing about
-§0, the plan rules added afterwards: every task here handed the model a fully
-specified component to build, so there was no planning phase to measure. These
-numbers are a record of that earlier comparison, not of the current skill.
+The previous run is kept unchanged as
+[benchmark-results-2026-07.md](benchmark-results-2026-07.md). Its files now live
+under `outputs/2026-07/`, so the paths quoted inside it point one level higher
+than they used to.
+
+## What changed since 2026-07
+
+- **Three runs per condition, not one**, so the tables show min and max as
+  well as means.
+- **Two engines that are not a11y-loop.** IBM Equal Access has its own rule
+  engine. Lighthouse runs axe-core, the same rule engine a11y-loop uses, under
+  its own configuration. So only IBM is an independent rules engine. Lighthouse
+  cross-checks the harness, not the rules.
+- **A clean baseline.** A probe showed that Claude Code subagents started from
+  inside this repository can read its `AGENTS.md` and the project's memory
+  index, both of which talk about accessibility. The as-designed baseline was
+  therefore not a no-guidance condition. Both conditions were re-run from an
+  empty directory outside the repository, and **those clean runs are the
+  headline arms.** The contaminated runs are reported alongside them, because
+  the difference is itself a finding. See
+  [outputs/2026-10/contamination-probe.md](outputs/2026-10/contamination-probe.md).
+- **A model review** of two converged files, labelled for what it is.
 
 ## Method
 
-Both conditions built the same six components: a signup form, a pricing
-page, an image gallery, a header navigation (with a mobile drawer), a
-newsletter modal, and a dashboard. Both were built by Claude Sonnet 5, run as
-a Claude Code subagent (not a raw model API call) — see the honesty notes
-below for what that implies.
+**Components.** A signup form, a pricing section, a customer-stories gallery, a
+header with a mobile drawer, a newsletter modal, and a small dashboard. These
+are the same six task descriptions as 2026-07, word for word.
 
-**Baseline — the exact prompt, verbatim:**
+**Model.** Claude Sonnet 5.5 (`claude-sonnet-5-5`) in both conditions, in a fresh
+session per run.
 
-> You are a web developer knocking out six small front-end deliverables for
-> a startup's marketing site. Work quickly and pragmatically, the way you'd
-> normally write this kind of code. Each deliverable is ONE self-contained
-> HTML file (inline CSS in a `<style>` tag, inline JS in a `<script>` tag if
-> needed, no external assets, no CDN). Make them look reasonably polished and
-> modern.
+**Arms.** The 2026-10 runs produced 72 HTML files across four arms.
+
+| Arm | Harness | Context | Runs × files | Output |
+|---|---|---|---|---|
+| **baseline** (headline) | `claude -p --model sonnet`, Claude Code 2.1.303, started in an empty directory outside the repo | no project file, no memory index, a11y-loop plugin disabled | 3 × 6 | `outputs/2026-10/baseline/run-N/` |
+| **skilled** (headline) | same | same, plus the prompt below | 3 × 6 | `outputs/2026-10/skilled/run-N/` |
+| agent-tool baseline | Claude Code Agent tool, `model: "sonnet"` | inherits this repo's `AGENTS.md` and memory index | 3 × 6 | `outputs/2026-10/agent-tool/baseline/run-N/` |
+| agent-tool skilled | same | same, plus the prompt below | 3 × 6 | `outputs/2026-10/agent-tool/skilled/run-N/` |
+
+**Baseline prompt, verbatim.** Only the directory changed between runs. The
+words accessibility, a11y, WCAG and ARIA do not appear in it. It is the 2026-07
+baseline prompt unchanged.
+
+> You are a web developer knocking out six small front-end deliverables for a
+> startup's marketing site. Work quickly and pragmatically, the way you'd
+> normally write this kind of code. Each deliverable is ONE self-contained HTML
+> file (inline CSS in a `<style>` tag, inline JS in a `<script>` tag if needed,
+> no external assets, no CDN). Make them look reasonably polished and modern.
 >
-> Write the six files to `[a scratchpad path outside this repo, named
-> "ui-tasks"]` (create the directory):
+> Write the six files to `D:\.claude-scratch\2026-10-20\ui-tasks-clean-N\`
+> (create the directory):
 >
 > 1. `signup-form.html` — an email newsletter signup form: name, email, a
 >    country dropdown, a marketing-consent checkbox, submit button.
-> 2. `pricing.html` — a three-tier pricing section (Starter / Pro /
->    Enterprise) with feature lists and a call-to-action per tier; highlight
->    the Pro tier.
+> 2. `pricing.html` — a three-tier pricing section (Starter / Pro / Enterprise)
+>    with feature lists and a call-to-action per tier; highlight the Pro tier.
 > 3. `gallery.html` — a "customer stories" card grid: 6 cards, each with a
 >    photo (use inline SVG placeholders or data URIs), customer name, quote,
 >    and a link to the full story.
@@ -52,187 +77,314 @@ below for what that implies.
 >
 > Constraints: vanilla HTML/CSS/JS only. Do not read any other files or
 > documentation — just write the six files from your own knowledge, the way
-> you'd typically build them. When done, list the six file paths as your
-> final message.
+> you'd typically build them. When done, list the six file paths as your final
+> message.
 
-The words accessibility/a11y/WCAG/ARIA never appear anywhere in that prompt.
-Output: `evals/outputs/baseline/*.html`.
+**Skilled prompt.** It carried the same six task descriptions and the same
+single-file constraints. Instead of the "work quickly" preamble, it told the
+agent to read `skills/a11y-loop/SKILL.md` as binding standing instructions,
+including §2. It then spelled out the loop for each file:
 
-**Skilled — same six task descriptions, verbatim, with a different
-preamble and an added loop requirement:**
+- audit with `a11y-loop audit --file … --out … --quiet`, adding `--interact`
+  with a states module for the drawer and the modal;
+- read both `violations` and `needsReview`, fix in source, re-audit, and run
+  `diff` until there are zero violations and nothing NEW;
+- write the report's `manualChecklist` to `<name>.checklist.md`;
+- keep an honest `loop-log.md` with start and end timestamps.
 
-> You are a web developer building six small front-end deliverables, and you
-> MUST follow the a11y-loop skill throughout. FIRST read
-> `skills/a11y-loop/SKILL.md` completely and treat its instructions as
-> binding … consult its `references/` files when you implement a pattern
-> they cover.
->
-> … after writing each file, run `a11y-loop audit` … fix ALL violations,
-> re-audit until zero violations, and for the modal page ALSO audit the
-> modal-open state via `--interact`.
+The full text is in
+[`outputs/2026-10/method/skilled-prompt.template.txt`](outputs/2026-10/method/skilled-prompt.template.txt).
+There is no checklist output flag in 0.3.2, so the checklist was copied from the
+JSON. The skill's §0 plan rules were not exercised, because each task arrived
+fully specified.
 
-The skilled agent was also required to log first-audit violations and
-iteration counts honestly to `loop-log.md`. Output:
-`evals/outputs/skilled/*.html`, reports in
-`evals/outputs/skilled/reports/*.json`, iteration-by-iteration record in
-`evals/outputs/skilled/loop-log.md`.
+**Engines and versions**
 
-**Two honesty notes this comparison depends on:**
-1. The baseline agent's output directory was a neutral scratchpad path named
-   "ui-tasks", outside this repository, specifically so no trace of the
-   a11y-loop skill, its `SKILL.md`, or its tooling could leak into that
-   agent's context by proximity.
-2. Both agents are Claude Code subagents, not raw, unscaffolded model calls
-   — and the skilled agent knew in advance that its output would be
-   audited. That means this benchmark measures **the skill+loop system**
-   (rules + the knowledge of being checked + the mechanical loop itself),
-   not the intrinsic, unprompted behavior of the underlying model in a
-   vacuum. A raw-API, no-agent-framework comparison would isolate the
-   model's prior alone; this one does not attempt that.
+| Engine | Version | What it ran |
+|---|---|---|
+| a11y-loop | 0.3.2, axe-core 4.14.0, Chromium 156.0.8078.4 headless | five passes (default, dark, forced-colors, reduced-motion, 320×256 reflow) plus its own keyboard, dialog and focus probes; `--interact` states for header-nav and newsletter-modal on every arm, and for signup-form where the skilled agent wrote one |
+| IBM Equal Access | `accessibility-checker` 4.0.34, policy `IBM_Accessibility`, rule archive `latest` = 2026.07.13, Puppeteer 25.14.0 driving Chromium 156.0.8078.4 | page load, one desktop viewport, no interaction |
+| Lighthouse | 13.5.0, accessibility category only, its bundled axe-core 4.14.0, Chromium 156.0.8078.4 | page load, default mobile emulation (412×823), no interaction |
 
-Both sets were audited with the same tool and the same passes: `a11y-loop
-audit` runs five rendering passes per file (default, dark, forced-colors,
-reduced-motion, and a 320×256 reflow viewport) using axe-core 4.12.1 in
-headless Chromium. `header-nav` and `newsletter-modal` were additionally
-driven through their interactive states with `--interact` (opening the
-mobile drawer / search field; opening the newsletter dialog and triggering
-its validation-error state), mirroring exactly how the skilled side was
-audited. Baseline reports: `evals/outputs/baseline/reports/*.json`.
+All pages were served over local HTTP, never `file://`. The a11y-loop audit of
+every file was re-run by the benchmark operator, independently of the skilled
+agents' own reports, and the two agree on every converged file. The oracle
+installs were kept out of the repository.
 
-**The circularity to state plainly:** the loop optimizes exactly what the
-auditor measures. A11y-loop grading its own output is not independent
-verification. This is mitigated, not eliminated, by the fact that every
-finding is axe-core-grounded (a third-party, industry-standard rules engine,
-not a bespoke scorer a11y-loop's author could tune to flatter itself) and by
-the loop-log's practice of investigating rather than dismissing ambiguous
-findings — but a genuinely independent audit (a different tool, or a human)
-would be needed to close this gap.
+**What the counts mean.**
 
-## Results
+- **a11y-loop:** `summary.violations`, `summary.needsReview` and
+  `summary.manualChecklist`.
+- **IBM:** results at level `violation`. Its `potentialviolation` level is IBM's
+  equivalent of needs-review and is reported separately.
+- **Lighthouse:** weighted accessibility audits with score 0 ("failed audits"),
+  and the number of elements they list.
 
-Violations are grouped by axe/a11y-loop `impact`; "final" is the skilled
-file's state after its loop converged (all numbers from the JSON reports, not
-estimates).
+No engine's numbers are summed with another's, and no score is reported.
 
-| Component | Baseline violations (impact) | Baseline needsReview | Skilled first-audit violations | Skilled first-audit needsReview | Skilled final violations | Skilled final needsReview | Loop iterations |
-|---|---|---|---|---|---|---|---|
-| signup-form | 0 | 5 | 0 | 1 | 0 | 0 | 2 |
-| pricing | 24 (serious: 24) | 13 | 0 | 1 | 0 | 0 | 2 |
-| gallery | 0 | 6 | 0 | 6 | 0 | 0 | 2 |
-| header-nav | 0 | 5 | 0 | 0 | 0 | 0 | 1 |
-| newsletter-modal | 3 (serious: 3) | 5 | 1 (serious: 1) | 2 | 0 | 2 | 2 |
-| dashboard | 8 (serious: 8) | 2 | 0 | 0 | 0 | 0 | 1 |
-| **Total** | **35** | **36** | **1** | **10** | **0** | **2** | avg 1.67 |
+## Results: headline arms (clean context, N = 18 files per condition)
 
-Distinct WCAG success criteria hit by **baseline violations**: 1.4.3
-(Contrast Minimum — `pricing`, `newsletter-modal`, `dashboard`), 2.4.3 (Focus
-Order — `newsletter-modal`), 2.1.2 (No Keyboard Trap — `newsletter-modal`),
-2.1.1 (Keyboard — `newsletter-modal`). Adding needsReview widens this to six
-SCs, also touching 1.4.11 (Non-text Contrast) and 2.5.8 (Target Size
-Minimum, WCAG 2.2).
+Per-file counts, shown as mean [min–max], with the total over 18 files after
+the semicolon.
 
-Baseline violation detail by rule:
-- `pricing`: 24× `color-contrast` (serious) — the pricing page's body text
-  and "Most popular" badge fail 4.5:1 against their backgrounds.
-- `newsletter-modal`: `dialog-initial-focus`, `dialog-focus-not-trapped`,
-  `dialog-escape-does-not-close` (one each, serious) — the modal is a plain
-  `div[role="dialog"]` with no focus management: focus does not move into it
-  on open, Tab escapes it into the page behind, and Escape does not close it.
-- `dashboard`: 8× `color-contrast` (serious).
+| Engine · measure | Baseline | Skilled, first audit | Skilled, converged |
+|---|---|---|---|
+| a11y-loop · violations | 2.50 [0–11]; 45 | 0.33 [0–3]; 6 | **0 [0–0]; 0** |
+| a11y-loop · needsReview | 7.39 [0–24]; 133 | 1.44 [0–5]; 26 | 0.94 [0–5]; 17 |
+| a11y-loop · manual-checklist items | 8.72 [5–11]; 157 | — | 9.33 [8–11]; 168 |
+| IBM · violations | 3.39 [0–14]; 61 | not measured | **1.00 [1–1]; 18** |
+| IBM · potential violations | 6.00 [2–13]; 108 | not measured | 5.72 [3–8]; 103 |
+| Lighthouse · failed audits | 0.72 [0–2]; 13 | not measured | **0 [0–0]; 0** |
+| Lighthouse · failing elements | 2.39 [0–12]; 43 | not measured | 0 [0–0]; 0 |
+| Files with ≥1 finding: a11y-loop / IBM / Lighthouse | 8 / 9 / 10 of 18 | 2 / — / — | 0 / 18 / 0 of 18 |
 
-Baseline needsReview detail by rule: `color-contrast` (16, across
-signup-form/pricing/newsletter-modal/dashboard), `target-size-min` (12,
-across signup-form/gallery/header-nav), `focus-indicator-contrast` (8, across
-signup-form/pricing/newsletter-modal).
+The oracles saw only the converged files. Each skilled agent edited its files in
+place, so the first-pass HTML does not survive, and the first-audit column comes
+from the agents' own `reports/<name>.run1.json`.
 
-Skilled side: the one first-audit violation (`newsletter-modal`,
-`dialog-focus-not-returned`) and both remaining final needsReview items are
-documented finding-by-finding, with root cause and disposition, in
-`evals/outputs/skilled/loop-log.md`.
+**Per run (sum over six files).** The spread between runs is as large as the
+spread between components.
 
-## The headline numbers
+| Run | Baseline: a11y-loop v · IBM v · LH failed audits | Skilled converged: a11y-loop v · IBM v · LH failed audits | Skilled loop iterations per file, self-reported |
+|---|---|---|---|
+| 1 | 18 · 20 · 4 | 0 · 6 · 0 | 1, 2, 1, 2, 3, 1 (mean 1.67) |
+| 2 | 13 · 14 · 5 | 0 · 6 · 0 | 2, 2, 2, 2, 3, 2 (mean 2.17) |
+| 3 | 14 · 27 · 4 | 0 · 6 · 0 | 1, 1, 1, 1, 4, 1 (mean 1.50) |
 
-- **Baseline: 35 violations across 6 components** (average 5.8 per
-  component) versus **1 violation on first generation** with the skill
-  (average 0.17 per component) — roughly a 97% reduction from generation-time
-  rules alone, before any audit loop ran.
-- **0 violations after the loop**, on both files that started with any
-  (`newsletter-modal`'s single violation, plus the loop closing out every
-  needsReview it could resolve on the other five).
-- **Average 1.67 completed audit iterations per component** to reach that
-  state (range 1–2; see `loop-log.md` for the per-file record, including one
-  pre-audit tooling fix on `header-nav` that was a Playwright script error,
-  not a violation, and is not counted as an iteration).
-- **needsReview: 36 on the baseline set versus 10 on the skilled set's first
-  audit, versus 2 after the loop** — and those final 2 are not silently
-  dismissed: `loop-log.md` records the investigation for each (one is axe's
-  own uncertainty about a native `<dialog>`'s accessibility-tree visibility
-  while closed, confirmed correct by reading the markup; the other is a
-  contrast value axe could not compute due to a transient overlap during the
-  modal's open transition, manually verified with `a11y-loop contrast` at
-  6.53:1 and 7.11:1 against a 4.5:1 threshold).
+Iterations are listed in the order signup-form, pricing, gallery, header-nav,
+newsletter-modal, dashboard.
 
-## Reading the result
+**Per component, baseline, mean over three runs.** The violations are
+concentrated in a few components.
 
-Two different things happened here, and the benchmark is only useful if they
-are kept separate:
+| Component | a11y-loop v | IBM v | LH failed audits | What the engines flagged |
+|---|---|---|---|---|
+| dashboard | 11.0 | 12.7 | 2.0 | Muted text contrast in all three runs, flagged by all three engines; no `<main>` |
+| gallery | 3.0 | 5.3 | 1.0 | Link `aria-label` not containing the visible text (a11y-loop `label-content-name-mismatch`, IBM `label_name_visible`); a card overflowing at 320px (a11y-loop's own reflow check, which neither oracle runs); no `<main>` |
+| pricing | 0.7 | 2.3 | 1.0 | Contrast in one run; no `<main>` |
+| signup-form | 0.3 | 0 | 0.3 | One small-print contrast failure in one run |
+| header-nav | 0 | 0 | 0 | — |
+| newsletter-modal | 0 | 0 | 0 | — |
 
-**What the generation rules alone contributed** (baseline → skilled
-first-audit): violations dropped from 35 to 1 before a single audit ran.
-On this run, standing generation-time rules (SKILL.md's failure-mode
-checklist — clickable divs, icon-button names, `outline: none`, dangling ARIA
-refs, focus management, etc.) did most of the work of avoiding the *loud*
-failures: broken dialog focus management, systemic contrast failures. That is
-a first-pass effect not directly comparable to W4A'25, a one-task study of two
-models where accessibility-oriented prompts cut expert-judged violation rates
-from 58% to 19%, while one automated tool (MAUVE++) showed 17.32% against
-15.93% for neutral prompts (see `docs/research/market.md` §A3). The
-comparison is not apples-to-apples: different task, models, metrics and sample
-sizes. W4A'25 evaluated 40 first-pass UIs from two models on one task; this
-benchmark has 12 files, six components per condition, from one model. W4A'25's
-accessibility-oriented condition was also a one-sentence prompt naming four
-WCAG 2.1 AA requirements, where SKILL.md is an itemized failure-mode
-checklist.
+On the a11y-loop side, the baseline's missing `<main>` appears under
+best-practice (`landmark-one-main`), not as a violation. Lighthouse counts the
+same axe rule as a weighted failure, which explains most of its baseline
+failures.
 
-**What the loop contributed** (skilled first-audit → final): the generation
-rules did *not* get to zero on their own — one real violation
-(`newsletter-modal`'s focus management) still needed a fix, and, more
-tellingly, **10 needsReview findings existed after generation that the rules
-alone did not touch at all** (forced-colors button contrast from a
-`background`-shorthand CSS property, undersized tap targets, indeterminate
-focus-indicator contrast). None of these are things a "write accessible code"
-instruction reliably catches, because they depend on how the rendered page
-actually measures under specific conditions (forced-colors mode, a 24×24px
-minimum, dark mode). The loop is what converted "unknown" into "fixed" or
-"investigated and reasoned about" for every one of them. This is consistent
-with W4A'25's observation that barriers persist under accessibility-oriented
-prompting (see `docs/research/market.md` §A3): instructions here got close on
-raw violation count but left the entire needsReview surface — arguably the
-harder, more judgment-dependent half of the audit — untouched until the loop
-ran.
+## What a converged run still leaves, according to the oracles
 
-## Threats to validity
+This is the honest headline: what is left after a11y-loop reports zero
+violations, as judged by engines other than a11y-loop's own.
 
-- **Single run per condition.** No repeated sampling; a different seed could
-  land differently, especially for `newsletter-modal` and `pricing`, which
-  had the only non-zero baseline/skilled-first-audit violation counts.
-- **Self-audited.** The auditor and the artifact being scored share an
-  author (a11y-loop's own engine); see the circularity note in Method.
-- **Same model family both sides.** No comparison across model providers or
-  capability tiers; a weaker or stronger base model could compress or widen
-  the gap between conditions.
-- **Small N.** Six components is enough to see a pattern, not enough to
-  support a confidence interval.
-- **Baseline is not a strawman.** Modern models write partially accessible
-  code even with no prompting — three of six baseline files
-  (`signup-form`, `gallery`, `header-nav`) had **zero** automated violations
-  and differed from the skilled side mainly in needsReview volume
-  (undersized targets, indeterminate focus contrast). The effect shown here
-  is concentrated in the two/three components where the baseline model made
-  a structural mistake (unmanaged custom dialog, systemic contrast), not a
-  uniform "every baseline component is broken."
-- **Fixture-style pages, not real apps.** All twelve files are single-file
-  static demos with no routing, real data, or backend; some real-world
-  failure modes (async content, SPA focus management across route changes,
-  live regions under real state changes) are structurally out of scope for
-  both conditions.
+- **Lighthouse: nothing.** All 36 converged skilled files had zero failed
+  audits. That includes the agent-tool arm. Lighthouse shares a11y-loop's rules
+  engine, so this agreement is expected and is weak evidence.
+- **IBM Equal Access: exactly one violation in every converged file, all 36.**
+  It is `aria_content_in_landmark` on the skip link, `<a href="#main"
+  class="skip">`. The skill asks for a skip link to `<main>` on full pages, and
+  every agent placed it as the first child of `<body>`, outside any landmark.
+  IBM requires all content, including a skip link, to sit inside a
+  landmark. axe does not apply that to skip links. The fix is cheap: put the
+  skip link inside the `<header>` landmark. Whether this is a barrier or a
+  ruleset difference is for a human to judge. It is reported here as IBM
+  reports it.
+- **IBM potential violations barely move.** The converged skilled files average
+  5.72 per file against the baseline's 6.00. These are IBM's review items: focus
+  visibility on styled controls, text that may be a heading, a missing
+  `<blockquote cite>`, and colour as the only cue. The skill also adds a new
+  review item IBM does not raise on the baseline: a skip link that is invisible
+  until focused (`element_tabbable_visible`, 18 files). a11y-loop's needsReview
+  falls much further, from 7.39 to 0.94, partly because the loop drives it down
+  directly. The other engine's uncertain items stay roughly constant. This
+  suggests the loop reduces the uncertainty a11y-loop can see more than
+  uncertainty in general.
+- **a11y-loop's own leftovers.** The 17 needsReview rows left after convergence
+  are all `color-contrast` in the forced-colors pass, on light text over a
+  coloured fill. They match the known forced-colors false positive documented
+  in `docs/overview.md` § Field Notes. The agents left them visible rather than
+  suppressing them, as §3 requires.
+
+**The manual checklist** averaged 9.33 items per converged skilled file, 168 in
+total. That is slightly more than the baseline's 8.72, because the skilled pages
+contain more of the things the checklist asks about, such as forms with error
+states. Automated checks reach a minority of WCAG failures: Deque puts it at 57%
+of issues by volume of individual instances. The checklist is the part of each
+file no engine above judged.
+
+## First audit vs. converged (skilled)
+
+Six first-audit violations appeared across the 18 headline skilled files.
+
+- **Three were real.** All three were in header-nav run 1: the drawer took no
+  initial focus, did not trap focus, and did not close on Escape. The agent
+  fixed them in source.
+- **Three were a tool artifact.** Each was `dialog-focus-not-returned` on
+  newsletter-modal, one per run. a11y-loop 0.3.2 treats the last clicked element
+  as the dialog's trigger. A validation-error state that clicks the dialog's own
+  submit button therefore makes the probe expect focus to return to that
+  button. All three agents traced this and changed their states module rather
+  than the page, by calling `requestSubmit()` or tabbing out of the field. The
+  2026-07 skilled log records the same artifact.
+
+The same artifact hit the benchmark operator's own baseline states module. Its
+first version clicked the submit button and produced one false violation per
+baseline modal. The baseline numbers above use a `requestSubmit()` driver, which
+is the shape the skilled agents converged on. The click-driven reports are kept
+as `audit/newsletter-modal.click-driver.json` in the agent-tool baseline runs.
+Counting this artifact as a real defect would overstate both conditions.
+
+## The contaminated arms: the context effect
+
+Before they could see a project file about accessibility, the baseline runs
+averaged 15 a11y-loop violations per six-file set. With `AGENTS.md` and the
+memory index in context, they averaged **zero**.
+
+| Engine · measure (N = 18 per arm) | Clean baseline | Agent-tool baseline | Agent-tool skilled, converged |
+|---|---|---|---|
+| a11y-loop · violations | 2.50 [0–11]; 45 | **0 [0–0]; 0** | 0 [0–0]; 0 |
+| a11y-loop · needsReview | 7.39 [0–24]; 133 | 3.28 [0–10]; 59 | 0.83 [0–5]; 15 |
+| IBM · violations | 3.39 [0–14]; 61 | 1.94 [0–8]; 35 | 1.00 [1–1]; 18 |
+| Lighthouse · failed audits | 0.72 [0–2]; 13 | 0.72 [0–1]; 13 | 0 [0–0]; 0 |
+
+The agent-tool baseline's remaining oracle findings are all landmark rules:
+`landmark-one-main` in Lighthouse, and `aria_content_in_landmark` plus
+`skip_main_exists` in IBM. It had no contrast failures at all. The agent-tool
+skilled arm's first audits had seven violations: two contrast, two
+label-in-name, and three of the dialog-trigger artifact. Its loops took 1 to 6
+iterations per file, means of 2.67, 2.00 and 1.50 per run.
+
+This is an uncontrolled observation: one prompt and three runs per arm. It still
+says something useful. **An accessibility-minded project instruction file,
+never mentioned in the prompt, removed every a11y-loop violation from this
+model's baseline output.** It did not remove the landmark findings that the
+other two engines flag. Whether the 2026-07 baseline was exposed the same way
+cannot be established now.
+
+## The 2026-07 files under today's engines
+
+The twelve 2026-07 files were re-audited with a11y-loop 0.3.2 and checked by
+both oracles. Their reports are in `outputs/2026-10/reaudit-2026-07/`.
+
+| Engine · measure (N = 6 per arm) | 2026-07 baseline | 2026-07 skilled, converged |
+|---|---|---|
+| a11y-loop · violations | 5.83 [0–24]; 35 | 0 [0–0]; 0 |
+| a11y-loop · needsReview | 5.83 [2–13]; 35 | 0.33 [0–2]; 2 |
+| IBM · violations | 10.17 [1–22]; 61 | 0.17 [0–1]; 1 |
+| Lighthouse · failed audits | 1.33 [1–2]; 8 | 0 [0–0]; 0 |
+
+On axe-core 4.14.0, a11y-loop finds the same 35 baseline violations it found on
+4.12.1 in July. needsReview is 35, not 36, because one `focus-indicator-contrast`
+row on the modal no longer appears. Only one 2026-07 skilled file, header-nav,
+has a skip link. Its single IBM finding is the same `aria_content_in_landmark`
+on that skip link. The 2026-10 skilled files put a skip link in every file, so
+they carry that finding in every file.
+
+## What no engine can see
+
+One Claude Opus 5.5 subagent read two converged headline files, `skilled/run-1`
+newsletter-modal and header-nav, against
+`skills/a11y-loop/references/manual-testing.md`. **This was a model reading
+code, not a human review and not an assistive-technology test.** Its notes are
+in [outputs/2026-10/model-review.md](outputs/2026-10/model-review.md).
+
+The one item it rated likely was in header-nav. Below 760px only the list is
+hidden, so the "Main" navigation landmark stays in the accessibility tree,
+empty. The items it rated possible include these:
+
+- an error message that is both an alert and the field's description, spoken
+  twice or cut off;
+- a success status filled after focus has already moved, so it may go
+  unannounced;
+- focus dropping to `<body>` when the viewport widens with the drawer open,
+  which no audited state does;
+- the drawer's current-page link marked by colour and weight only.
+
+None of these appear in any engine's output above. Each needs a person, and
+ideally a screen reader such as NVDA (free on Windows) or VoiceOver (built into
+macOS and iOS), to confirm or dismiss.
+
+## Relation to published work
+
+W4A'25 (Gurita and Vatavu, [doi:10.1145/3744257.3744266](https://doi.org/10.1145/3744257.3744266))
+is the only study cited here, and only like this. It was a one-task study
+(a banking-app homepage) of two models, with 40 first-pass UIs. Accessibility-
+oriented prompts cut expert-judged violation rates from 58% to 19%, while one
+automated tool (MAUVE++) showed 17.32% against 15.93%. Barriers persisted,
+particularly in semantic structure.
+
+That is not directly comparable to this benchmark. The tasks, models, metrics
+and sample sizes all differ. W4A'25's prompt was one sentence naming WCAG 2.1 AA
+requirements, where SKILL.md is an itemized rule set with an audit loop, and no
+verification loop was tested there. The persistent semantic-structure barriers
+are at least consistent with what remains here: landmark placement in every
+converged file, and an empty navigation landmark in the model review.
+
+## Honesty notes and threats to validity
+
+- **Not a controlled study.** There are three runs per condition and six
+  components. The run-to-run spread is wide (13 to 18 baseline violations per
+  set on a11y-loop, 14 to 27 on IBM), and there are no confidence intervals.
+- **Same model family on every side.** Sonnet 5.5 generated everything. The
+  model review used Opus 5.5 from the same family, and the benchmark operator
+  was a Claude agent too. Nothing here was produced by a person.
+- **a11y-loop is one of the three engines, and the loop optimizes for it.**
+  Zero a11y-loop violations after convergence holds by construction. Lighthouse
+  shares a11y-loop's axe-core rules, so its agreement is close to circular. IBM
+  Equal Access is the only independent rules engine here. The one thing it
+  consistently disagrees on is the skip link.
+- **The oracles saw less than a11y-loop did.** IBM and Lighthouse checked the
+  load state at one viewport each. They saw no dark mode, no forced colors, no
+  reflow, no drawer and no open dialog. Findings that exist only in those states
+  are invisible to them on both sides.
+- **States were not symmetric.** The benchmark operator wrote the baseline
+  states modules: drawer and search for header-nav, open and error for the
+  modal. The skilled agents wrote their own, and some added signup-form error
+  states. That gives a11y-loop more surface to find problems on the skilled
+  side, not less.
+- **The headline arms and the specified design differ.** The specified design
+  used the Agent tool for both conditions. That design is still reported, as
+  the agent-tool arms, but its baseline turned out to be contaminated. The clean
+  arms use a different harness, `claude -p`, with the same model, the same
+  prompts and the same user-level instructions, which say nothing about
+  accessibility.
+- **The contamination probe is a self-report.** A model answered a question
+  about its own context. The behavioural gap between the clean and agent-tool
+  baselines is the stronger evidence.
+- **Fixture-style pages.** These are single-file static demos with no routing,
+  real data or backend.
+- **No accessibility verdict.** Nothing in this report says any of these files
+  is accessible or conforms to WCAG. a11y-loop found no automatically
+  detectable failures in the states it drove on the converged files. The other
+  engines' remaining findings and each file's manual checklist say what is
+  still open.
+
+## Cost
+
+| Arm | Wall time per run (s) | Tokens per run |
+|---|---|---|
+| baseline (clean) | 68, 72, 60 | 10.4k–12.9k output; $0.19–0.23 list |
+| skilled (clean) | 308, 275, 383 | 27.1k–31.6k output, 1.0M–1.6M cache reads; $0.62–0.80 list |
+| agent-tool baseline | 108, 104, 90 | 58k–61k subagent tokens |
+| agent-tool skilled | 925, 374, 472 | 102k–126k subagent tokens |
+| model review (Opus) | 66 | 72k subagent tokens |
+
+Per-run detail is in `outputs/2026-10/method/generation-runs.json`. A skilled
+run cost about three to five times its clean baseline in wall time.
+
+## Files
+
+- `outputs/2026-10/{baseline,skilled}/run-N/` holds each run's HTML and states
+  modules. The skilled runs also hold the agent's `reports/` (each iteration's
+  raw a11y-loop JSON and CLI output), `loop-log.md` and `<name>.checklist.md`.
+  `audit/` holds the operator's independent raw a11y-loop JSON for the final
+  files.
+- `outputs/2026-10/agent-tool/{baseline,skilled}/run-N/` has the same layout for
+  the contaminated arms.
+- `outputs/2026-10/oracles/ibm-equal-access.json` and `lighthouse.json` are
+  trimmed to the counts and findings the tables use, keyed by published path.
+- `outputs/2026-10/reaudit-2026-07/` holds a11y-loop 0.3.2 reports for the
+  2026-07 files.
+- `outputs/2026-10/method/` holds the prompts, the serve, audit, oracle and
+  aggregation scripts, the IBM config, the aggregated per-file data
+  (`aggregate.json`, which uses scratch arm names: `baseline-clean` means
+  `baseline`, and `baseline` means `agent-tool/baseline`) and the run costs.

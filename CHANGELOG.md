@@ -58,6 +58,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   submitted, as of 2026-10). `docs/research/market.md` and `tooling.md` gain a dated
   "Update 2026-10" section. `docs/research/standards.md` corrects the DOJ ADA Title II extension
   to 20 April 2026 (91 FR 20902) and records that HHS extended its Section 504 deadlines too.
+- **The baseline-vs-skilled benchmark was re-run (2026-10) with three runs per condition and two
+  engines besides a11y-loop.** Claude Sonnet 5.5 built the same six components with the same
+  prompts. Each file was checked by a11y-loop 0.3.2, IBM Equal Access (`accessibility-checker`
+  4.0.34) and Lighthouse 13.5.0. The baseline had 45 a11y-loop violations across 18 files. The
+  converged skilled runs had none, and no failed Lighthouse audits. IBM still flags one finding
+  in every converged file: a skip link outside any landmark. Lighthouse uses the same axe-core
+  rules as a11y-loop, so only IBM is an independent engine. Subagents started inside this repo
+  can read `AGENTS.md`, and that alone removed every a11y-loop violation from the baseline, so the
+  headline arms ran from a clean directory. The contaminated runs are reported as well. The
+  2026-07 report and outputs are kept unchanged in `evals/benchmark-results-2026-07.md` and
+  `evals/outputs/2026-07/`.
 
 ## [0.3.2] - 2026-10-19
 

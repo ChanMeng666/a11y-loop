@@ -1,0 +1,2576 @@
+{
+ "baseline/run-1/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "baseline/run-1/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "baseline/run-1/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 46
+ },
+ "baseline/run-1/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "baseline/run-1/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "baseline/run-1/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "color-contrast",
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "nodes": [
+     "<p class=\"sub\">",
+     "<div class=\"av\" style=\"background:#6366f1\" aria-hidden=\"true\">",
+     "<time>",
+     "<div class=\"av\" style=\"background:#0ea5e9\" aria-hidden=\"true\">",
+     "<time>",
+     "<div class=\"av\" style=\"background:#10b981\" aria-hidden=\"true\">",
+     "<time>",
+     "<div class=\"av\" style=\"background:#f59e0b\" aria-hidden=\"true\">",
+     "<time>",
+     "<div class=\"av\" style=\"background:#ec4899\" aria-hidden=\"true\">",
+     "<time>"
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "baseline/run-2/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "color-contrast",
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "nodes": [
+     "<p class=\"small\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 53
+ },
+ "baseline/run-2/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "baseline/run-2/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 46
+ },
+ "baseline/run-2/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "baseline/run-2/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "baseline/run-2/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "color-contrast",
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "nodes": [
+     "<p class=\"sub\">",
+     "<span class=\"avatar\" style=\"background:#6366f1\">",
+     "<time>",
+     "<span class=\"avatar\" style=\"background:#10b981\">",
+     "<time>",
+     "<span class=\"avatar\" style=\"background:#f59e0b\">",
+     "<time>",
+     "<span class=\"avatar\" style=\"background:#ef4444\">",
+     "<time>",
+     "<span class=\"avatar\" style=\"background:#0ea5e9\">",
+     "<time>"
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "baseline/run-3/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 53
+ },
+ "baseline/run-3/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 54
+ },
+ "baseline/run-3/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "baseline/run-3/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "baseline/run-3/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "baseline/run-3/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "color-contrast",
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "nodes": [
+     "<p class=\"sub\">",
+     "<div class=\"avatar\" style=\"background:#6366f1\">",
+     "<time>",
+     "<div class=\"avatar\" style=\"background:#0ea5e9\">",
+     "<time>",
+     "<div class=\"avatar\" style=\"background:#10b981\">",
+     "<time>",
+     "<div class=\"avatar\" style=\"background:#f59e0b\">",
+     "<time>",
+     "<div class=\"avatar\" style=\"background:#ec4899\">",
+     "<time>"
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "skilled/run-1/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 43
+ },
+ "skilled/run-1/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 53
+ },
+ "skilled/run-1/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 44
+ },
+ "skilled/run-1/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "skilled/run-1/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "skilled/run-1/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 52
+ },
+ "skilled/run-2/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 43
+ },
+ "skilled/run-2/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 53
+ },
+ "skilled/run-2/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 44
+ },
+ "skilled/run-2/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "skilled/run-2/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "skilled/run-2/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "skilled/run-3/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 43
+ },
+ "skilled/run-3/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 46
+ },
+ "skilled/run-3/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 46
+ },
+ "skilled/run-3/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "skilled/run-3/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 45
+ },
+ "skilled/run-3/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "agent-tool/baseline/run-1/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "agent-tool/baseline/run-1/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "agent-tool/baseline/run-1/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "agent-tool/baseline/run-1/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "agent-tool/baseline/run-1/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "agent-tool/baseline/run-1/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 51
+ },
+ "agent-tool/baseline/run-2/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 45
+ },
+ "agent-tool/baseline/run-2/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 54
+ },
+ "agent-tool/baseline/run-2/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "agent-tool/baseline/run-2/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "agent-tool/baseline/run-2/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "agent-tool/baseline/run-2/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 51
+ },
+ "agent-tool/baseline/run-3/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "agent-tool/baseline/run-3/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "agent-tool/baseline/run-3/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "agent-tool/baseline/run-3/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 49
+ },
+ "agent-tool/baseline/run-3/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "agent-tool/baseline/run-3/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 51
+ },
+ "agent-tool/skilled/run-1/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 43
+ },
+ "agent-tool/skilled/run-1/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "agent-tool/skilled/run-1/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 44
+ },
+ "agent-tool/skilled/run-1/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "agent-tool/skilled/run-1/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "agent-tool/skilled/run-1/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 45
+ },
+ "agent-tool/skilled/run-2/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 43
+ },
+ "agent-tool/skilled/run-2/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "agent-tool/skilled/run-2/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 44
+ },
+ "agent-tool/skilled/run-2/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "agent-tool/skilled/run-2/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "agent-tool/skilled/run-2/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "agent-tool/skilled/run-3/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 43
+ },
+ "agent-tool/skilled/run-3/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "agent-tool/skilled/run-3/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 44
+ },
+ "agent-tool/skilled/run-3/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "agent-tool/skilled/run-3/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "agent-tool/skilled/run-3/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 47
+ },
+ "2026-07/baseline/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 54
+ },
+ "2026-07/baseline/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "color-contrast",
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "nodes": [
+     "<div class=\"eyebrow\">",
+     "<a href=\"#\" class=\"cta\">",
+     "<a href=\"#\" class=\"cta\">"
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 54
+ },
+ "2026-07/baseline/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "2026-07/baseline/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "2026-07/baseline/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 46
+ },
+ "2026-07/baseline/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [
+   {
+    "id": "color-contrast",
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "nodes": [
+     "<p class=\"sub\">",
+     "<span class=\"trend up\">",
+     "<span class=\"trend up\">",
+     "<span class=\"trend down\">",
+     "<span class=\"trend up\">",
+     "<div class=\"avatar\" style=\"background:#0891b2;\">",
+     "<div class=\"avatar\" style=\"background:#d97706;\">",
+     "<div class=\"avatar\" style=\"background:#16a34a;\">"
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "title": "Document does not have a main landmark.",
+    "nodes": [
+     "<html lang=\"en\">"
+    ]
+   }
+  ],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 56
+ },
+ "2026-07/skilled/signup-form.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "2026-07/skilled/pricing.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "2026-07/skilled/gallery.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 52
+ },
+ "2026-07/skilled/header-nav.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 48
+ },
+ "2026-07/skilled/newsletter-modal.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ },
+ "2026-07/skilled/dashboard.html": {
+  "lighthouseVersion": "13.5.0",
+  "axeCore": "4.14.0",
+  "hostUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+  "formFactor": "mobile",
+  "screenEmulation": {
+   "mobile": true,
+   "width": 412,
+   "height": 823,
+   "deviceScaleFactor": 1.75,
+   "disabled": false
+  },
+  "failed": [],
+  "manual": [
+   "focusable-controls",
+   "interactive-element-affordance",
+   "logical-tab-order",
+   "visual-order-follows-dom",
+   "focus-traps",
+   "managed-focus",
+   "use-landmarks",
+   "offscreen-content-hidden",
+   "custom-controls-labels",
+   "custom-controls-roles"
+  ],
+  "notApplicable": 50
+ }
+}
