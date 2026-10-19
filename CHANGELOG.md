@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and the PR comment.
 - `.github/workflows/action-selftest.yml` runs the action on Ubuntu and Windows against the demo
   pages and asserts its outputs.
+- **A `release` branch for the plugin directory to track.** The release workflow now fast-forwards
+  (or creates) `release` to each tagged release, so a directory listing tracking that branch picks
+  up new versions without a manual re-validate. The branch only ever points at tagged commits.
 
 ## [0.3.2] - 2026-10-19
 

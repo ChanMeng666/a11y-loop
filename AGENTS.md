@@ -301,6 +301,11 @@ rather than left to be rediscovered.
   is verified on the strength of those. The equivalent non-interactive path is `a11y-loop
   plan-check`: the same decision function, drivable from any agent or CI job, and covered by
   `test/unit/plan-check.test.js` and `test/unit/non-interactive.test.js`.
+- **The `release` branch exists only for the Anthropic plugin directory and always equals the latest
+  tagged release.** `release.yml` fast-forwards it on every `v*` tag push and nothing else should
+  ever write to it. When the maintainer next edits the directory submission, switch the tracked ref
+  from the tag to the `release` branch and keep auto-publish on, so new releases are picked up
+  without a manual re-validate.
 
 ## Testing the plugin layer
 
