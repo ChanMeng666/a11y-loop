@@ -195,12 +195,18 @@ or Playwright will report a missing browser.
   id **and** `passName === 'forced-colors'` would route these to needs-review. That is a
   recommendation, not a decision — it changes what counts as a violation and therefore the exit
   code, so it needs its own measurement and its own release note.
-- **An entry guard on `import.meta.url === process.argv[1]` silently no-ops through a junction.**
-  `src/cli.js` ends with that guard so tests can import `main` freely. Node resolves
+- **An entry guard must realpath `process.argv[1]` before comparing it with `import.meta.url`.**
+  `src/cli.js` ends with an entry guard so tests can import `main` freely. Node resolves
   `import.meta.url` through a junction or symlink to the real path while `process.argv[1]` keeps
-  the literal path, so running the CLI from a checkout reached through a junction — a Windows
-  worktree, most often — exits **0 with no output**, which reads like a pass. Run it by its real
-  path, or import `main(argv, io)` and call it.
+  the path as invoked. Up to 0.2.x the guard compared the two raw values, so the CLI exited
+  **0 with no output** — which reads like a pass — whenever it was started through a link: a
+  Windows worktree reached through a junction, and every `npm i -g` / `npx` install on Linux and
+  macOS, where npm installs the bin as a symlink into `lib/node_modules` (Windows got `.cmd` shims
+  that pass the real path, which is why it went unnoticed). Fixed in 0.3.0: `isEntryPoint()`
+  resolves `argv[1]` with `realpathSync` first, falling back to the raw path if that throws.
+  `test/integration/symlink-entry.test.js` runs `--version` and a real `audit` through a file
+  symlink and a directory junction. Any new entry point (a second bin, a hook script) needs the same
+  treatment.
 
 ### Skill frontmatter and the plugin layer
 

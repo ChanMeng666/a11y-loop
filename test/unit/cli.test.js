@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { parseCli, resolveAuditTarget, main, EXIT } from '../../src/cli.js';
+import { parseCli, resolveAuditTarget, main, EXIT, isEntryPoint } from '../../src/cli.js';
 import { ToolError } from '../../src/lib/axe-runner.js';
 import { loadStates } from '../../src/commands/audit.js';
 import { contrastResult, formatContrastHuman } from '../../src/commands/contrast.js';
@@ -26,7 +26,7 @@ import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -554,8 +554,6 @@ describe('doctor', () => {
     return {
       env: {},
       home,
-      argv1: CLI_PATH,
-      realpath: (p) => p,
       executablePath: async () => CLI_PATH, // any file that exists
       launchProbe: async () => '151.0.0.0',
       ...overrides,
@@ -581,7 +579,7 @@ describe('doctor', () => {
     });
     assert.equal(await runDoctorCommand({ flags: {} }, io, deps), EXIT.ERROR);
     assert.match(stdout(), /headless launch failed \(browserType\.launch: Executable doesn't exist/);
-    assert.match(stdout(), /no full browser at /);
+    assert.match(stdout(), /chrome\.exe does not exist/);
     assert.match(stdout(), /Fix: a11y-loop install-browser/);
   });
 
@@ -594,7 +592,8 @@ describe('doctor', () => {
     assert.equal(report.canAudit, true);
     const [chromium] = byId(report, 'chromium');
     assert.equal(chromium.status, STATUS.OK);
-    assert.match(chromium.detail, /headless launch succeeded.*; no full browser at /);
+    assert.match(chromium.detail, /headless launch succeeded \(151\.0\.0\.0\)$/);
+    assert.doesNotMatch(chromium.detail, /does not exist|not installed/);
   });
 
   test('an executable that will not launch is a failure, not a pass', async () => {
@@ -608,7 +607,7 @@ describe('doctor', () => {
     assert.equal(report.canAudit, false);
     const [chromium] = byId(report, 'chromium');
     assert.equal(chromium.status, STATUS.FAIL);
-    assert.match(chromium.detail, /headless launch failed \(Host system is missing dependencies\); full browser at /);
+    assert.match(chromium.detail, /headless launch failed \(Host system is missing dependencies\)$/);
   });
 
   test('a Node below engines is a failure', async () => {
@@ -666,22 +665,6 @@ describe('doctor', () => {
     assert.equal(byId(report, 'double-registration').length, 0);
   });
 
-  test('starting through a junction or symlink is a warning that gives the real path', async () => {
-    const report = await collectDoctorReport(
-      healthy({ argv1: 'D:/link/src/cli.js', realpath: () => 'D:/real/src/cli.js', platform: 'win32' }),
-    );
-    const [warning] = byId(report, 'entry-path');
-    assert.equal(warning.status, STATUS.WARN);
-    assert.match(warning.fix, /real\/src\/cli\.js$/);
-  });
-
-  test('a drive-letter case difference on Windows is not a junction', async () => {
-    const report = await collectDoctorReport(
-      healthy({ argv1: 'd:/repo/src/cli.js', realpath: () => 'D:/repo/src/cli.js', platform: 'win32' }),
-    );
-    assert.equal(byId(report, 'entry-path').length, 0);
-  });
-
   test('the human format lists each distinct fix once', () => {
     const text = formatDoctorHuman({
       canAudit: false,
@@ -691,5 +674,30 @@ describe('doctor', () => {
       ],
     });
     assert.equal(text.match(/^Fix: a11y-loop install-browser$/gm).length, 1);
+  });
+});
+
+describe('isEntryPoint', () => {
+  test('matches when argv[1] is the module itself', () => {
+    assert.equal(isEntryPoint(pathToFileURL(CLI_PATH).href, CLI_PATH), true);
+  });
+
+  test('is false with no argv[1] (imported, not run)', () => {
+    assert.equal(isEntryPoint(pathToFileURL(CLI_PATH).href, undefined), false);
+  });
+
+  test('is false for a different script', () => {
+    assert.equal(isEntryPoint(pathToFileURL(CLI_PATH).href, join(REPO, 'package.json')), false);
+  });
+
+  test('an unresolvable argv[1] is compared as given rather than throwing', () => {
+    const missing = join(tmpdir(), 'a11y-loop-does-not-exist', 'cli.js');
+    assert.equal(isEntryPoint(pathToFileURL(missing).href, missing), true);
+  });
+
+  test('install-browser help says stdin is ignored, so --with-deps cannot answer sudo', async () => {
+    const { io, stdout } = captureIo();
+    await main(['--help'], io);
+    assert.match(stdout(), /stdin is ignored, so --with-deps cannot answer a sudo password prompt/);
   });
 });

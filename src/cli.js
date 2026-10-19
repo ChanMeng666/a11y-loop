@@ -11,6 +11,7 @@
 import { parseArgs } from 'node:util';
 import { pathToFileURL } from 'node:url';
 import { readFile } from 'node:fs/promises';
+import { realpathSync } from 'node:fs';
 
 import { runAuditCommand } from './commands/audit.js';
 import { runContrastCommand } from './commands/contrast.js';
@@ -73,6 +74,8 @@ DOCTOR OPTIONS
 INSTALL-BROWSER OPTIONS
   Extra arguments go to Playwright's installer unchanged, e.g. --with-deps or --dry-run.
   PLAYWRIGHT_BROWSERS_PATH is honoured; set it the same way when you audit.
+  stdin is ignored, so --with-deps cannot answer a sudo password prompt: run it where
+  sudo needs no password (CI, root), or install the OS dependencies separately.
 
 EXIT CODES
   0  no violations / threshold met / no regression / doctor: an audit can run
@@ -231,7 +234,27 @@ function reportError(error, out) {
   return EXIT.ERROR;
 }
 
-// Only run when invoked as a program, so tests can import `main` freely.
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+/**
+ * Was this file started as the program (rather than imported by a test)?
+ *
+ * Node resolves the entry module through symlinks and junctions, so
+ * `import.meta.url` is always the REAL path, while `process.argv[1]` keeps the
+ * path as invoked. `npm i -g` and `npx` on Linux and macOS install the bin as a
+ * symlink (`<prefix>/bin/a11y-loop -> ../lib/node_modules/a11y-loop/src/cli.js`),
+ * so comparing the two raw values made the CLI exit 0 with no output there,
+ * which reads like a pass. Resolve argv[1] the same way before comparing.
+ */
+export function isEntryPoint(moduleUrl, argv1) {
+  if (!argv1) return false;
+  let entry = argv1;
+  try {
+    entry = realpathSync(argv1);
+  } catch {
+    // Not resolvable (deleted, permissions): compare the path as given.
+  }
+  return moduleUrl === pathToFileURL(entry).href;
+}
+
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   process.exitCode = await main(process.argv.slice(2));
 }

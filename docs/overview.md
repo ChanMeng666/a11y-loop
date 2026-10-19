@@ -307,21 +307,23 @@ signature. Confirm by hand with the five-minute keyboard test in
 [`references/manual-testing.md`](../skills/a11y-loop/references/manual-testing.md), and audit narrower
 states so each walk fits.
 
-### Invoking the CLI through a Windows junction silently does nothing
+### Up to 0.2.x, invoking the CLI through a link silently did nothing (fixed in 0.3.0)
 
-`src/cli.js` runs `main()` only when `import.meta.url === pathToFileURL(process.argv[1]).href`.
-Node resolves `import.meta.url` through a junction to the real path while `process.argv[1]` keeps
-the literal path you typed, so the guard is false, nothing runs, and the process exits **0 with no
-output** — which reads like a pass:
+`src/cli.js` runs `main()` only when it is the program being run. Up to 0.2.x it decided that with
+`import.meta.url === pathToFileURL(process.argv[1]).href`. Node resolves `import.meta.url` through
+a junction or symlink to the real path while `process.argv[1]` keeps the path as invoked, so through
+any link the guard was false, nothing ran, and the process exited **0 with no output**, which reads
+like a pass:
 
 ```bash
-node D:\link-to-repo\src\cli.js --version   # prints nothing, exit 0
-node D:\github_repository\a11y-loop\src\cli.js --version   # 0.2.6
+node D:\link-to-repo\src\cli.js --version   # 0.2.x: prints nothing, exit 0
 ```
 
-This bites git worktrees and any checkout reached through a junction or symlink. Use the real path,
-the installed `a11y-loop` binary, or import the entry point and call it directly — `main` is
-exported for this:
+That covered Windows worktrees reached through a junction and, more widely, `npm i -g` and `npx`
+on Linux and macOS, where npm installs the bin as a symlink. Since 0.3.0 the guard resolves
+`process.argv[1]` with `realpathSync` before comparing, and a test runs the CLI through a file
+symlink and a directory junction. If you are on 0.2.x, run the CLI by its real path. To embed it,
+import the entry point and call it directly; `main` is exported for this:
 
 ```js
 import { main } from './src/cli.js';

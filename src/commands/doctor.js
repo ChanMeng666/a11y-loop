@@ -11,9 +11,9 @@
  */
 
 import { createRequire } from 'node:module';
-import { existsSync, readFileSync, realpathSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 
 import { bundledPlaywright } from './install-browser.js';
 
@@ -92,13 +92,6 @@ async function defaultLaunchProbe() {
   }
 }
 
-function samePath(a, b, platform) {
-  const norm = (p) => resolve(p);
-  return platform === 'win32'
-    ? norm(a).toLowerCase() === norm(b).toLowerCase()
-    : norm(a) === norm(b);
-}
-
 /** Skill version from the `a11y-loop/version` metadata line, if readable. */
 function skillVersion(skillMd) {
   try {
@@ -146,10 +139,7 @@ function detectPlugin(claudeDir) {
 export async function collectDoctorReport({
   env = process.env,
   home = homedir(),
-  argv1 = process.argv[1],
-  platform = process.platform,
   nodeVersion = process.versions.node,
-  realpath = realpathSync,
   executablePath = defaultExecutablePath,
   launchProbe = defaultLaunchProbe,
 } = {}) {
@@ -177,20 +167,20 @@ export async function collectDoctorReport({
 
     const expected = expectedChromium();
     const build = expected ? `chromium build ${expected.revision} (${expected.browserVersion})` : 'chromium';
-    // The verdict comes from the launch, never from the file check alone. A
-    // headless audit runs on Playwright's separate headless-shell build, so
-    // `install --only-shell chromium` (as CI does) gives a working audit with
+    // The verdict comes from the launch, never from a file check. A headless
+    // audit runs on Playwright's separate headless-shell build, so
+    // `install-browser --only-shell` (as CI does) gives a working audit with
     // no full `chrome` at executablePath(), and a full `chrome` alone does
-    // not. The file check only adds context to the report.
-    const exe = await executablePath();
-    const where = existsSync(exe) ? `full browser at ${exe}` : `no full browser at ${exe}`;
+    // not. The file is mentioned only to explain a launch that failed.
     try {
       const version = await launchProbe();
       browserOk = true;
-      add('chromium', STATUS.OK, `${build}: headless launch succeeded (${version}); ${where}`);
+      add('chromium', STATUS.OK, `${build}: headless launch succeeded (${version})`);
     } catch (error) {
       const firstLine = String(error?.message ?? error).split('\n')[0];
-      add('chromium', STATUS.FAIL, `${build}: headless launch failed (${firstLine}); ${where}`, INSTALL_FIX);
+      const exe = await executablePath().catch(() => null);
+      const context = exe && !existsSync(exe) ? `; ${exe} does not exist` : '';
+      add('chromium', STATUS.FAIL, `${build}: headless launch failed (${firstLine})${context}`, INSTALL_FIX);
     }
   } catch (error) {
     add('playwright', STATUS.FAIL, `could not resolve the bundled Playwright: ${error.message}`, 'reinstall a11y-loop');
@@ -240,25 +230,6 @@ export async function collectDoctorReport({
     );
   } else if (claudeSkillPresent && plugin.state === 'unknown') {
     add('double-registration', STATUS.INFO, 'double registration: could not check (plugin state unknown)');
-  }
-
-  // Junction / symlink entry: the CLI's entry guard no-ops through one.
-  if (argv1) {
-    let real = null;
-    try {
-      real = realpath(argv1);
-    } catch {
-      add('entry-path', STATUS.INFO, `entry path: could not check (${argv1} did not resolve)`);
-    }
-    if (real && !samePath(real, argv1, platform)) {
-      add(
-        'entry-path',
-        STATUS.WARN,
-        `the CLI was started through a junction or symlink (${argv1} resolves to ${real}); ` +
-          'run directly through a link like this, the CLI can exit 0 with no output',
-        `run it by its real path: node ${real}`,
-      );
-    }
   }
 
   return { canAudit: nodeOk && browserOk, checks };
