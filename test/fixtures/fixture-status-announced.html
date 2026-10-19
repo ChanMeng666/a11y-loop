@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- FIXTURE: status-announced. The same form as fixture-status-not-announced.html,
+     done right, plus a disclosure. Nothing here is a defect.
+
+     "Save display name" writes its confirmation into a role="status" paragraph
+     that is in the page, empty, from the start, so the change is announced.
+     "Shipping details" is a disclosure button (aria-expanded, aria-controls)
+     that reveals a short paragraph: text the user asked to see, which is not a
+     status message and must not be reported as one. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — status message in a live region</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 1.75rem 0 0.5rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 1rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Profile</h1>
+  <form id="profile">
+    <label for="displayName">Display name</label>
+    <input id="displayName" type="text" autocomplete="nickname" value="Ari">
+    <button type="button" id="save">Save display name</button>
+    <p id="saveStatus" role="status"></p>
+  </form>
+
+  <h2>Delivery</h2>
+  <button type="button" id="detailsToggle" aria-expanded="false" aria-controls="shipDetails">Shipping details</button>
+  <div id="shipDetails" hidden>
+    <p>Orders ship within two working days. Saved addresses can be changed until dispatch.</p>
+  </div>
+</main>
+<script>
+  document.getElementById('save').addEventListener('click', () => {
+    document.getElementById('saveStatus').textContent = 'Saved. Your display name is updated.';
+  });
+  const toggle = document.getElementById('detailsToggle');
+  const details = document.getElementById('shipDetails');
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    details.hidden = open;
+  });
+</script>
+</body>
+</html>

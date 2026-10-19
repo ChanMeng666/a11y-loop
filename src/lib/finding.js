@@ -60,6 +60,10 @@ export const INFERRED_RULES = new Set([
   'dialog-focus-not-returned',
   'role-button-keyboard-activation',
   'div-button',
+  // What an --interact state's action did: where focus went after a route
+  // change, and whether text that appeared reached a live region.
+  'route-change-focus-lost',
+  'status-message-not-announced',
 ]);
 
 /** The evidence tier a finding gets when its producer does not say. */

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- FIXTURE: route-focus-lost. A client-side route change that drops focus.
+
+     The orders list links to each order. A click handler cancels the
+     navigation, pushes the order's URL with history.pushState and replaces the
+     contents of <main> with the order view, the way a single-page app router
+     does. The link that had focus is removed with the old view, nothing moves
+     focus to the new one and nothing announces it, so focus falls to <body>.
+     That is the one defect; the new view itself is clean.
+
+     See fixture-route-focus-managed.html for the same router done right. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — route change drops focus</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --link: #0b5a52;   /*  8.08:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  a { color: var(--link); display: inline-block; padding: 0.75rem 0; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+</style>
+</head>
+<body>
+<main id="view">
+  <h1>Your orders</h1>
+  <ul>
+    <li><a href="/orders/1042" data-route>Order 1042, placed 1 October</a></li>
+    <li><a href="/orders/1043" data-route>Order 1043, placed 9 October</a></li>
+  </ul>
+</main>
+<script>
+  const view = document.getElementById('view');
+  view.addEventListener('click', (event) => {
+    const link = event.target.closest('a[data-route]');
+    if (!link) return;
+    event.preventDefault();
+    const id = link.getAttribute('href').split('/').pop();
+    history.pushState({ id }, '', link.getAttribute('href'));
+    // DEFECT: the view is replaced and focus is left where it was, on a link
+    // that no longer exists.
+    view.innerHTML =
+      '<h1>Order ' + id + '</h1>' +
+      '<p>Two items. Shipped on 3 October by tracked post.</p>' +
+      '<p><a href="/orders">Back to your orders</a></p>';
+  });
+</script>
+</body>
+</html>

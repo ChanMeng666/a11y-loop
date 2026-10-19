@@ -24,7 +24,8 @@
     "allowNeedsReview": "true if the finding may legitimately land in needsReview / incomplete rather than violations",
     "requiresPass": "the audit pass this finding needs: default, dark, forced-colors, reduced-motion, or viewport-320",
     "requiresAxeOption": "an axe run option the finding depends on",
-    "routedFrom": "the severity the engine reported before a documented a11y-loop rule moved the row to needsReview; asserts the row carries routedFrom, note and noteUrl"
+    "routedFrom": "the severity the engine reported before a documented a11y-loop rule moved the row to needsReview; asserts the row carries routedFrom, note and noteUrl",
+    "mustNotReport": "fixture-level: rule ids that must produce no row in ANY bucket (violations, needsReview or bestPractice). The guard for a check's known false-positive shape, which expectClean cannot express because it ignores needsReview."
   },
   "assertAlso": "For every fixture except the one under test, no other rule in the wcag2a/wcag2aa/wcag21a/wcag21aa/wcag22aa tag set should report a violation. A new finding in an unrelated fixture means either the fixture drifted or a runner regression.",
   "verifiedAgainst": {
@@ -417,6 +418,7 @@
         "note": "There is no dialog in the document at all until the menu is opened - it is portalled in on click, as the last child of <body>."
       },
       "defects": [],
+      "mustNotReport": ["dialog-focus-not-returned", "status-message-not-announced", "live-region-injected-late", "route-change-focus-lost"],
       "note": "The INVERSE of fixture-modal-no-trap.html: this dialog's focus management is correct in every respect, so no a11y-loop dialog or keyboard rule may fire on it. It is a regression guard for the survey root, not for a defect. Before the fix, tabbableRoot() was \"document.querySelector(':modal') || document.body\", and :modal matches ONLY a native <dialog> opened with showModal(). This dialog is a portalled <div role=\"dialog\"> with no aria-modal attribute, hiding the page behind it with aria-hidden on its siblings - the shape Base UI, Radix, Headless UI and everything else built on floating-ui ships, and the currently recommended pattern. So the root fell back to document.body and the survey put its focus sentinel at body.firstChild: outside the open dialog, in the one region the focus trap exists to keep focus out of. Measured on this fixture at 0.2.4, three runs, identical every time: keyboard-unreachable(3) on the start guard, on the link behind the sheet and on the trigger, plus dialog-focus-not-trapped(1) on the sheet, plus focus-order-diverges(1) in needsReview. All five are artifacts of the survey, not of the page. The guards hand focus back on the NEXT Tab rather than one animation frame later, which is what floating-ui's enqueueFocus does. Same shape and the same code path - focus rests outside the dialog for exactly one tick - but a keypress is deterministic where a frame is a race, and a fixture that reproduced the bug only sometimes would prove nothing. See the fixture's own comments."
     },
 
@@ -568,6 +570,176 @@
         }
       ],
       "note": "Regression target for the forced-colors routing in findingsFromAxeResult. Measured 2026-10-20 at axe-core 4.14.0: on 0.3.2 this fixture reported one violation and exited 1; with the routing it reports zero violations, one needsReview row, and exits 0."
+    },
+
+    "fixture-dialog-submit-inside.html": {
+      "class": "dialog-trigger-misattribution",
+      "title": "A CORRECT dialog whose own Submit button a state clicks",
+      "expectClean": true,
+      "expect": [],
+      "mustNotReport": ["dialog-focus-not-returned"],
+      "interact": {
+        "required": true,
+        "script": "fixture-dialog-submit-inside.interact.mjs",
+        "stateName": "submit-invalid",
+        "steps": [
+          "submit-invalid: click #openSub, click the dialog's own #submitSub with the field empty; the dialog stays open with an error, and the Escape probe then closes it",
+          "submit-valid: click #openSub, fill the field, click #submitSub; the state's own action closes the dialog"
+        ],
+        "onLoadIsClean": true
+      },
+      "defects": [],
+      "note": "Regression guard for the dialog-focus-not-returned false positive in evals/benchmark-results.md (2026-10). Up to 0.3.x the dialog's trigger was the last clicked element, which in the submit-invalid state is the dialog's own Submit button, so the Escape probe expected focus to return to Submit and reported the dialog when it correctly went to Subscribe. Measured 2026-10-20: with the trigger logic mutated back to the last click, this fixture reports dialog-focus-not-returned (violation, inferred) in submit-invalid; with the fix it reports no row in either state. The trigger is now the last activation or focus OUTSIDE the dialog before it opened, as recorded by the state recorder in src/lib/browser-utils.js."
+    },
+
+    "fixture-dialog-focus-lost.html": {
+      "class": "dialog-focus-lost-on-submit",
+      "title": "A dialog closed by its own Submit drops focus to the body",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "dialog-focus-not-returned",
+          "detector": "a11y-loop",
+          "scHint": "2.4.3",
+          "scName": "Focus Order",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "Reported by closedDialogFindings, not by the Escape probe: no dialog is open when the state returns, so the probe never runs. The opener is still on the page, so the row is a violation, evidence inferred."
+        }
+      ],
+      "interact": {
+        "required": true,
+        "script": "fixture-dialog-focus-lost.interact.mjs",
+        "stateName": "submit-valid",
+        "steps": ["click #openSub", "fill #subEmail", "click #submitSub, which removes the dialog"],
+        "onLoadIsClean": true
+      },
+      "defects": ["the dialog is removed with focus inside it and focus is not returned to the opener"],
+      "note": "The inverse of fixture-dialog-submit-inside.html: the same click on the dialog's own Submit, but focus really is lost."
+    },
+
+    "fixture-route-focus-lost.html": {
+      "class": "route-focus-lost",
+      "title": "A client-side route change drops focus to the body",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "route-change-focus-lost",
+          "detector": "a11y-loop",
+          "scHint": "2.4.3",
+          "scName": "Focus Order",
+          "level": "A",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false
+        }
+      ],
+      "mustNotReport": ["status-message-not-announced"],
+      "interact": {
+        "required": true,
+        "script": "fixture-route-focus-lost.interact.mjs",
+        "stateName": "open-order",
+        "steps": ["click the Order 1042 link; the page's router pushes /orders/1042 and replaces <main>"],
+        "onLoadIsClean": true
+      },
+      "defects": ["the focused link is removed with the old view and nothing moves focus to the new one"],
+      "note": "The new view's text is a route change, not a status message, so status-message-not-announced must not fire on it."
+    },
+
+    "fixture-route-focus-managed.html": {
+      "class": "route-focus-managed",
+      "title": "A CORRECT client-side route change that moves focus to the new heading",
+      "expectClean": true,
+      "expect": [],
+      "mustNotReport": ["route-change-focus-lost", "status-message-not-announced", "live-region-injected-late"],
+      "interact": {
+        "required": true,
+        "script": "fixture-route-focus-managed.interact.mjs",
+        "stateName": "open-order",
+        "steps": ["click the Order 1042 link; the router pushes /orders/1042, replaces <main> and focuses the new h1"],
+        "onLoadIsClean": true
+      },
+      "defects": [],
+      "note": "Passing counterpart of fixture-route-focus-lost.html."
+    },
+
+    "fixture-status-not-announced.html": {
+      "class": "status-not-announced",
+      "title": "A status message outside any live region",
+      "expectClean": false,
+      "expect": [
+        {
+          "ruleIdOrCheck": "status-message-not-announced",
+          "detector": "a11y-loop",
+          "scHint": "4.1.3",
+          "scName": "Status Messages",
+          "level": "AA",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": false,
+          "note": "A violation, evidence inferred, because every confidence signal is present: the text is short, reads like a status (\"Saved\"), and appeared in the same form as the button the state pressed."
+        }
+      ],
+      "interact": {
+        "required": true,
+        "script": "fixture-status-not-announced.interact.mjs",
+        "stateName": "saved",
+        "steps": ["click #save, which appends a plain paragraph to the form"],
+        "onLoadIsClean": true
+      },
+      "defects": ["the confirmation is a plain paragraph, not in a live region, and focus stays on the button"]
+    },
+
+    "fixture-status-announced.html": {
+      "class": "status-announced",
+      "title": "A CORRECT status message, and a disclosure that is not one",
+      "expectClean": true,
+      "expect": [],
+      "mustNotReport": ["status-message-not-announced", "live-region-injected-late"],
+      "interact": {
+        "required": true,
+        "script": "fixture-status-announced.interact.mjs",
+        "stateName": "saved",
+        "steps": [
+          "saved: click #save, which writes into a role=\"status\" region that was in the page from the start",
+          "details-expanded: click the aria-expanded disclosure, which reveals its aria-controls target"
+        ],
+        "onLoadIsClean": true
+      },
+      "defects": [],
+      "note": "Passing counterpart of fixture-status-not-announced.html, plus the disclosure exclusion: the revealed paragraph contains the word \"Saved\" on purpose, so it is the aria-controls relationship, not the wording, that keeps it from being reported."
+    },
+
+    "fixture-live-region-late.html": {
+      "class": "live-region-late",
+      "title": "A live region inserted already holding its text",
+      "expectClean": true,
+      "expect": [
+        {
+          "ruleIdOrCheck": "live-region-injected-late",
+          "detector": "a11y-loop",
+          "scHint": "4.1.3",
+          "scName": "Status Messages",
+          "level": "AA",
+          "axeTag": null,
+          "minNodes": 1,
+          "allowNeedsReview": true,
+          "landsIn": "incomplete",
+          "note": "Always needsReview: the region carries the right role, and whether its initial content is announced depends on the browser and screen reader."
+        }
+      ],
+      "mustNotReport": ["status-message-not-announced"],
+      "interact": {
+        "required": true,
+        "script": "fixture-live-region-late.interact.mjs",
+        "stateName": "added-to-cart",
+        "steps": ["click #addToCart, which appends <div role=\"status\">Added to cart.</div> in one mutation"],
+        "onLoadIsClean": true
+      },
+      "defects": ["the live region and its text are inserted in the same mutation batch"],
+      "note": "expectClean is true because the row is needs-review: the page has no violation, and exits 0."
     }
   }
 }

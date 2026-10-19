@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!-- FIXTURE: dialog-submit-inside. A CORRECT modal dialog whose own Submit button
+     an interaction state clicks. Nothing here is a defect.
+
+     The newsletter dialog is a native <dialog> opened with showModal() from the
+     "Subscribe" button. Focus moves into it on open, the platform traps focus,
+     Escape closes it, and the close handler returns focus to "Subscribe".
+     Submitting with an empty field keeps the dialog open, writes the error into
+     a role="alert" region that is in the page from the start, marks the field
+     aria-invalid and moves focus back to it. Submitting a valid address closes
+     the dialog, returns focus to "Subscribe" and writes the confirmation into a
+     role="status" region that is also in the page from the start.
+
+     It exists because a11y-loop 0.3.x took the last clicked element as the
+     dialog's trigger. The "submit-invalid" state's last click is the dialog's
+     own Submit button, so the Escape probe expected focus to go back to Submit,
+     saw it go to "Subscribe", and reported dialog-focus-not-returned: the
+     artifact the 2026-10 benchmark found on every newsletter-modal run (see
+     evals/benchmark-results.md). The trigger is now the last activation OUTSIDE
+     the dialog before it opened. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — dialog submitted from inside</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --link: #0b5a52;   /*  8.08:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --border: #5d6d78; /*  5.35:1 on --page */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+    --error: #9b1c1c;  /*  7.98:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h2 { font-size: 1.25rem; margin: 0 0 0.75rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+  input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 0.5rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  dialog {
+    max-width: 28rem;
+    padding: 1.5rem;
+    background: var(--page);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+  }
+  dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+  .error { color: var(--error); margin: 0 0 1rem; min-height: 1.6em; }
+  .actions { display: flex; gap: 0.75rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Newsletter</h1>
+  <p>One email a month about new releases.</p>
+  <button type="button" id="openSub">Subscribe</button>
+  <p id="pageStatus" role="status"></p>
+
+  <dialog id="subDialog" aria-labelledby="subTitle">
+    <h2 id="subTitle">Subscribe to the newsletter</h2>
+    <label for="subEmail">Email address</label>
+    <input id="subEmail" type="email" autocomplete="email">
+    <p id="subError" class="error" role="alert"></p>
+    <div class="actions">
+      <button type="button" id="submitSub">Submit</button>
+      <button type="button" id="cancelSub">Cancel</button>
+    </div>
+  </dialog>
+</main>
+<script>
+  const opener = document.getElementById('openSub');
+  const dialog = document.getElementById('subDialog');
+  const email = document.getElementById('subEmail');
+  const error = document.getElementById('subError');
+  const status = document.getElementById('pageStatus');
+
+  opener.addEventListener('click', () => {
+    error.textContent = '';
+    email.removeAttribute('aria-invalid');
+    dialog.showModal();
+  });
+  // Escape (the native cancel) and both buttons all end here.
+  dialog.addEventListener('close', () => opener.focus());
+  document.getElementById('cancelSub').addEventListener('click', () => dialog.close());
+  document.getElementById('submitSub').addEventListener('click', () => {
+    if (!email.value.includes('@')) {
+      error.textContent = 'Enter an email address, like name@example.com.';
+      email.setAttribute('aria-invalid', 'true');
+      email.setAttribute('aria-describedby', 'subError');
+      email.focus();
+      return;
+    }
+    dialog.close();
+    status.textContent = 'Thanks, you are subscribed.';
+  });
+</script>
+</body>
+</html>

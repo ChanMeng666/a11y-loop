@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- FIXTURE: live-region-late. A live region that arrives already full.
+
+     "Add to cart" appends <div role="status">Added to cart.</div>: the region and
+     its text are inserted together, in one mutation. Screen readers announce
+     changes to a live region they already know about, so a region inserted with
+     its content is often read out by nobody. The role is right; the timing is
+     not. That is the one defect, and a11y-loop reports it as needs-review,
+     because whether it is announced depends on the browser and screen reader.
+
+     It must NOT also be reported as status-message-not-announced: the text is
+     inside a live region, and the late-region row already covers it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — live region inserted with its content</title>
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #1f2a33;    /* 14.61:1 on --page */
+    --brand: #0d6157;  /*  7.33:1 behind white text */
+    --focus: #0a5cc7;  /*  6.23:1 on --page */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--page);
+  }
+  button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.625rem 1.125rem;
+    background: var(--brand);
+    color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kawakawa balm, 50 ml</h1>
+  <p>Hand-made in small batches.</p>
+  <div id="product">
+    <button type="button" id="addToCart">Add to cart</button>
+  </div>
+</main>
+<script>
+  document.getElementById('addToCart').addEventListener('click', () => {
+    // DEFECT: the live region and its text are inserted in the same mutation.
+    const status = document.createElement('div');
+    status.setAttribute('role', 'status');
+    status.textContent = 'Added to cart.';
+    document.getElementById('product').append(status);
+  });
+</script>
+</body>
+</html>

@@ -122,6 +122,27 @@ export const SC_TABLE = {
   '4.1.3': { name: 'Status Messages', level: 'AA', minVersion: '2.1' },
 };
 
+/**
+ * The success criterion behind each of a11y-loop's own state checks: the rules
+ * that judge what an --interact state's action did, rather than what the page
+ * looks like. axe rules carry their criterion in their tags; these have no
+ * tags, so the mapping is written down here once. (The older own checks pass
+ * the same `sc` literal to makeFinding directly.)
+ *
+ *  - route-change-focus-lost: focus fell to <body> after a client-side route
+ *    change. SC 2.4.3 Focus Order is the obligation that focus moves in an
+ *    order that preserves meaning and operability.
+ *  - status-message-not-announced, live-region-injected-late: SC 4.1.3 Status
+ *    Messages, which asks that a status message be programmatically
+ *    determinable through role or properties so that assistive technology can
+ *    present it without it receiving focus.
+ */
+export const OWN_CHECK_SC = Object.freeze({
+  'route-change-focus-lost': '2.4.3',
+  'status-message-not-announced': '4.1.3',
+  'live-region-injected-late': '4.1.3',
+});
+
 /** WCAG 2.2 A/AA conformance-set size, for honest denominators in reports. */
 export const CONFORMANCE_SET = Object.freeze({
   total: 86,

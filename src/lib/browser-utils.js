@@ -257,6 +257,195 @@ export const HELPERS_SOURCE = `
     return window.__a11yLoopLastClick || null;
   }
 
+  // ---------------------------------------------------------------------------
+  // Interaction history and the state recorder.
+  //
+  // An --interact state is a black box: a function that does things to the
+  // page. Three checks need to know what it did (which control opened a
+  // dialog, whether the route changed, what text appeared), so the page keeps
+  // a short history of activations and focus moves from the moment it loads,
+  // and armStateRecorder() starts watching dialogs open and close just before
+  // the state runs. Nothing here changes the page; it only listens.
+  // ---------------------------------------------------------------------------
+
+  /** Once per document: a full load gets a new token, a client-side route keeps it. */
+  window.__a11yLoopPageToken = Math.random().toString(36).slice(2);
+
+  var HISTORY_CAP = 8;
+  var activations = [];
+  var focusHistory = [];
+  var routeLog = [];
+
+  /** The element a user would say they activated: the control, not the span inside it. */
+  function controlFor(el) {
+    if (!el || el.nodeType !== 1) return null;
+    var control = el.closest(
+      'button, a[href], input, select, textarea, summary, [role="button"], [role="link"], ' +
+        '[role="menuitem"], [role="tab"], [tabindex]',
+    );
+    return control || el;
+  }
+
+  function remember(list, el) {
+    if (!el || el.nodeType !== 1) return;
+    if (list.length && list[list.length - 1].el === el) return;
+    list.push({ el: el, path: cssPath(el), html: shortHtml(el) });
+    if (list.length > HISTORY_CAP) list.shift();
+  }
+
+  // Window, capture phase, registered before any page script: these run before
+  // the page's own handlers, so an activation is on record before whatever it
+  // triggers (a dialog opening, a route changing) has happened. pointerdown is
+  // here because some menus open on it rather than on click.
+  window.addEventListener('pointerdown', function (event) { remember(activations, controlFor(event.target)); }, true);
+  window.addEventListener('click', function (event) { remember(activations, controlFor(event.target)); }, true);
+  window.addEventListener(
+    'keydown',
+    function (event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      var active = document.activeElement;
+      if (active && active !== document.body && active !== document.documentElement) remember(activations, active);
+    },
+    true,
+  );
+  document.addEventListener('focusin', function (event) { remember(focusHistory, event.target); }, true);
+
+  /** A client-side route change, with what had focus at that moment. */
+  function noteRoute(kind) {
+    var active = document.activeElement;
+    var focused = active && active !== document.body && active !== document.documentElement ? active : null;
+    routeLog.push({
+      kind: kind,
+      href: location.href,
+      focused: focused,
+      focusedPath: focused ? cssPath(focused) : null,
+      focusedHtml: focused ? shortHtml(focused) : null,
+    });
+    if (routeLog.length > 32) routeLog.shift();
+  }
+  ['pushState', 'replaceState'].forEach(function (name) {
+    var original = History.prototype[name];
+    if (typeof original !== 'function') return;
+    History.prototype[name] = function () {
+      var result = original.apply(this, arguments);
+      try { noteRoute(name); } catch (e) { /* never break the page's router */ }
+      return result;
+    };
+  });
+  window.addEventListener('hashchange', function () { noteRoute('hashchange'); });
+  window.addEventListener('popstate', function () { noteRoute('popstate'); });
+
+  var DIALOG_ROLES = '[role="dialog"], [role="alertdialog"], dialog';
+
+  /**
+   * Is this dialog open, as far as assistive technology is concerned? Opacity
+   * is deliberately not consulted: a dialog faded to opacity 0 is still in the
+   * accessibility tree, and one fading in is already open.
+   */
+  function dialogIsOpen(el) {
+    if (!el || !el.isConnected) return false;
+    if (el.tagName === 'DIALOG' && !el.open) return false;
+    if (el.closest('[aria-hidden="true"]')) return false;
+    if (!el.getClientRects().length) return false;
+    return getComputedStyle(el).visibility !== 'hidden';
+  }
+
+  var tracker = null;
+
+  /**
+   * The control that opened this dialog: the most recent activation, failing
+   * that the most recent focus, that is NOT inside the dialog itself. A button
+   * inside the dialog (its own Submit or Save) can never be its opener, however
+   * recently it was clicked. Up to 0.3.x the last click of any kind was taken
+   * as the trigger, which is how a state that submitted a dialog's form came to
+   * be reported for not returning focus to the submit button.
+   */
+  function pickOpener(dialog) {
+    var lists = [activations, focusHistory];
+    for (var l = 0; l < lists.length; l++) {
+      for (var i = lists[l].length - 1; i >= 0; i--) {
+        var entry = lists[l][i];
+        if (!entry.el.isConnected || dialog.contains(entry.el)) continue;
+        if (entry.el === document.body || entry.el === document.documentElement) continue;
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  function scanDialogs() {
+    if (!tracker) return;
+    var nowOpen = [];
+    document.querySelectorAll(DIALOG_ROLES).forEach(function (el) {
+      if (dialogIsOpen(el)) nowOpen.push(el);
+    });
+    nowOpen.forEach(function (el) {
+      if (tracker.open.has(el)) return;
+      var opener = tracker.armed ? pickOpener(el) : null;
+      tracker.open.set(el, {
+        el: el,
+        selector: cssPath(el),
+        html: shortHtml(el),
+        opener: opener ? opener.el : null,
+        openerPath: opener ? opener.path : null,
+        openerHtml: opener ? opener.html : null,
+        preexisting: !tracker.armed,
+      });
+    });
+    tracker.open.forEach(function (record, el) {
+      if (nowOpen.indexOf(el) !== -1) return;
+      tracker.open.delete(el);
+      tracker.closed.push(record);
+    });
+  }
+
+  /**
+   * Start recording, immediately before an --interact state runs. Dialogs
+   * already open now are recorded as pre-existing, with no opener: whatever the
+   * state does next did not open them.
+   */
+  function armStateRecorder() {
+    if (tracker) return;
+    tracker = { open: new Map(), closed: [], armed: false, routeLogStart: routeLog.length };
+    scanDialogs();
+    tracker.armed = true;
+    activations.length = 0;
+    focusHistory.length = 0;
+    var pending = false;
+    var observer = new MutationObserver(function () {
+      scanDialogs();
+      // A dialog shown by a class toggle and then revealed by a transition is
+      // checked again shortly after, so its opening is not missed.
+      if (pending) return;
+      pending = true;
+      setTimeout(function () { pending = false; scanDialogs(); }, 60);
+    });
+    observer.observe(document, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['open', 'class', 'style', 'hidden', 'aria-hidden', 'role'],
+    });
+  }
+
+  /** The recorded opener of an open dialog, or null when the recorder cannot say. */
+  function dialogOpener(dialog) {
+    if (!tracker) return null;
+    scanDialogs();
+    var record = tracker.open.get(dialog);
+    return record && record.opener ? record.opener : null;
+  }
+
+  /** The recorder's state, refreshed, or null before armStateRecorder() ran. */
+  function recorder() {
+    if (tracker) scanDialogs();
+    return tracker;
+  }
+
+  function lastActivation() {
+    return activations.length ? activations[activations.length - 1] : null;
+  }
+
   window.__a11yLoop = {
     cssPath: cssPath,
     shortHtml: shortHtml,
@@ -266,6 +455,14 @@ export const HELPERS_SOURCE = `
     modalDialogRoot: modalDialogRoot,
     tabbableRoot: tabbableRoot,
     lastClickSelector: lastClickSelector,
+    lastActivation: lastActivation,
+    focusHistory: function () { return focusHistory.slice(); },
+    routeLog: function () { return routeLog.slice(); },
+    dialogIsOpen: dialogIsOpen,
+    dialogRoles: DIALOG_ROLES,
+    armStateRecorder: armStateRecorder,
+    recorder: recorder,
+    dialogOpener: dialogOpener,
     interactiveElements: interactiveElements,
     backdropColor: backdropColor,
   };
