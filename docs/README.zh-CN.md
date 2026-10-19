@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/brand/a11y-loop-logo-dark.svg">
-  <img src="./.github/brand/a11y-loop-logo-light.svg" alt="a11y-loop" width="88" height="88">
+  <source media="(prefers-color-scheme: dark)" srcset="../.github/brand/a11y-loop-logo-dark.svg">
+  <img src="../.github/brand/a11y-loop-logo-light.svg" alt="a11y-loop" width="88" height="88">
 </picture>
 
 # a11y-loop
@@ -11,9 +11,9 @@
 
 你的编码智能体编写无障碍的界面，审计渲染后的页面，修复发现的问题，并告诉你它没能检查什么。
 
-[English](README.md) · 简体中文
+[English](../README.md) · 简体中文
 
-<a href="https://ChanMeng666.github.io/a11y-loop/"><img src="./.github/readme/pill-docs.svg" height="40" alt="文档"></a> <a href="https://www.npmjs.com/package/a11y-loop"><img src="./.github/readme/pill-npm.svg" height="40" alt="npm"></a> <a href="evals/benchmark-results.md"><img src="./.github/readme/pill-benchmark.svg" height="40" alt="基准测试"></a> <a href="docs/overview.md#-field-notes"><img src="./.github/readme/pill-field-notes.svg" height="40" alt="现场笔记"></a>
+<a href="https://ChanMeng666.github.io/a11y-loop/"><img src="../.github/readme/pill-docs.svg" height="40" alt="文档"></a> <a href="https://www.npmjs.com/package/a11y-loop"><img src="../.github/readme/pill-npm.svg" height="40" alt="npm"></a> <a href="../evals/benchmark-results.md"><img src="../.github/readme/pill-benchmark.svg" height="40" alt="基准测试"></a> <a href="overview.md#-field-notes"><img src="../.github/readme/pill-field-notes.svg" height="40" alt="现场笔记"></a>
 
 </div>
 
@@ -119,8 +119,8 @@ flowchart LR
 
 ## 给你的智能体
 
-对人来说，这一页就够了。其余内容都是写给智能体的：克隆仓库，让你的智能体读取 [`AGENTS.md`](AGENTS.md) 和 [`skills/a11y-loop/SKILL.md`](skills/a11y-loop/SKILL.md)，或者从 [`llms.txt`](llms.txt) 开始。
+对人来说，这一页就够了。其余内容都是写给智能体的：克隆仓库，让你的智能体读取 [`AGENTS.md`](../AGENTS.md) 和 [`skills/a11y-loop/SKILL.md`](../skills/a11y-loop/SKILL.md)，或者从 [`llms.txt`](../llms.txt) 开始。
 
-<sub>[完整概览](docs/overview.md) · [如实的覆盖范围](docs/overview.md#-honest-coverage) · [在 CI 中使用](docs/overview.md#%EF%B8%8F-using-it-in-ci) · [更新日志](CHANGELOG.md) · [贡献指南](CONTRIBUTING.md) · [第三方声明](THIRD-PARTY-NOTICES.md) · [MIT](LICENSE)</sub>
+<sub>[完整概览](overview.md) · [如实的覆盖范围](overview.md#-honest-coverage) · [在 CI 中使用](overview.md#%EF%B8%8F-using-it-in-ci) · [更新日志](../CHANGELOG.md) · [贡献指南](../CONTRIBUTING.md) · [第三方声明](../THIRD-PARTY-NOTICES.md) · [MIT](../LICENSE)</sub>
 
 <sub>作者 [Chan Meng](https://github.com/ChanMeng666)。以上链接指向的文档均为英文。</sub>
