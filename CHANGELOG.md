@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **A `release` branch for the plugin directory to track.** The release workflow now fast-forwards
+  (or creates) `release` to each tagged release, so a directory listing tracking that branch picks
+  up new versions without a manual re-validate. The branch only ever points at tagged commits.
+
 ## [0.3.2] - 2026-10-19
 
 Documentation only. No behaviour change, no change to the report shape.
