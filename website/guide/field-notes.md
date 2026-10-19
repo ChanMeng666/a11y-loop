@@ -2,8 +2,8 @@
 
 Things a report says that are not what they look like. These came out of running a11y-loop against
 a production app across a full audit-fix cycle; each one cost an hour to work out from the report
-alone, so it is written down here. Every number below is reproducible from a checkout at axe-core
-4.12.1.
+alone, so it is written down here. Every number below that can be reproduced from a checkout
+was reproduced at axe-core 4.12.1, and at 4.14.0 (checked 2026-10-19).
 
 ## `color-contrast` in the forced-colors pass is usually not a defect
 

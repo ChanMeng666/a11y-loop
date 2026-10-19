@@ -54,7 +54,7 @@
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -69,6 +69,33 @@ const BEFORE_HTML = join(REPO, 'demo', 'before', 'index.html');
 const AFTER_HTML = join(REPO, 'demo', 'after', 'index.html');
 const BEFORE_INTERACT = join(HERE, 'interact', 'demo-before.mjs');
 const AFTER_INTERACT = join(HERE, 'interact', 'demo-after.mjs');
+
+/**
+ * The demo count at the pinned engine. 163 was the figure at axe-core 4.12.1;
+ * 4.14.0 reports 159, and nothing caught the drift because the dependency was a
+ * caret range and no test held the number. The engine is now pinned exactly
+ * in package.json and this suite holds both: bump axe-core and the count test
+ * goes red until the new count is measured and the docs are updated with it.
+ *
+ * Why there is a range at all: the demo's ticker (B14, "reduced-motion
+ * ignored") is a CSS animation, and one of its ten spans is inside the
+ * viewport or not depending on where the animation is when axe reads the
+ * page. That is the page moving, not the engine wobbling, so it is held
+ * apart: everything outside the ticker is exact, the ticker is 9 or 10. The
+ * documented figure is the 9-ticker run, the same convention 163 used.
+ */
+const PINNED_AXE_CORE = '4.14.0';
+const EXPECTED_OUTSIDE_TICKER = 150;
+const TICKER_SELECTOR = /^html > body > div:nth-child\(3\) > div > span:nth-child\(\d+\)$/;
+const TICKER_NAMES = new Set([
+  'Kōwhai Digital',
+  'Tūrangi Cloud',
+  'Mahi Labs',
+  'Southerly Systems',
+  'Pipiwharauroa Design',
+  'Fernbird Hosting',
+]);
+const DOCUMENTED_COUNT = EXPECTED_OUTSIDE_TICKER + 9;
 
 function runCli(args) {
   return spawnSync(process.execPath, [CLI, ...args], { encoding: 'utf8' });
@@ -261,5 +288,71 @@ describe('loop e2e — real CLI process, demo/before to demo/after', () => {
   test('a fragment with a seeded violation exits 1 through the real CLI process', { timeout: 30_000 }, () => {
     const run = runCli(['audit', '--html', '<button></button>', '--quiet']);
     assert.equal(run.status, 1, run.stderr);
+  });
+});
+
+describe('demo/before — the documented count, at the pinned axe-core', () => {
+  let dir;
+  let report;
+  let diffRun;
+
+  before(async () => {
+    dir = await mkdtemp(join(tmpdir(), 'a11y-loop-demo-count-'));
+    const beforeOut = join(dir, 'before.json');
+    const afterOut = join(dir, 'after.json');
+    // The exact commands the docs quote: no --interact, default options.
+    const beforeRun = runCli(['audit', '--file', BEFORE_HTML, '--out', beforeOut, '--quiet']);
+    assert.equal(beforeRun.status, 1, beforeRun.stderr);
+    const afterRun = runCli(['audit', '--file', AFTER_HTML, '--out', afterOut, '--quiet']);
+    assert.equal(afterRun.status, 0, afterRun.stderr);
+    report = JSON.parse(await readFile(beforeOut, 'utf8'));
+    diffRun = runCli(['diff', '--before', beforeOut, '--after', afterOut]);
+  }, { timeout: 120_000 });
+
+  after(async () => {
+    if (dir) await rm(dir, { recursive: true, force: true });
+  });
+
+  test('package.json pins axe-core exactly, and the audit ran that version', async () => {
+    const pkg = JSON.parse(await readFile(join(REPO, 'package.json'), 'utf8'));
+    assert.equal(pkg.dependencies['axe-core'], PINNED_AXE_CORE);
+    assert.equal(pkg.dependencies['@axe-core/playwright'], PINNED_AXE_CORE);
+    assert.equal(report.tool.axeCoreVersion, PINNED_AXE_CORE);
+  });
+
+  test(`exactly ${EXPECTED_OUTSIDE_TICKER} violations outside the animated ticker, 9 or 10 inside it`, () => {
+    const { violations } = report.findings;
+    const ticker = violations.filter((f) => TICKER_SELECTOR.test(f.selector));
+    for (const f of ticker) {
+      assert.equal(f.ruleId, 'color-contrast', f.selector);
+      assert.ok(TICKER_NAMES.has(f.html.replace(/<\/?span>/g, '')), f.html);
+    }
+    assert.equal(
+      violations.length - ticker.length,
+      EXPECTED_OUTSIDE_TICKER,
+      `axe-core ${report.tool.axeCoreVersion}: measure the new demo count and update docs/overview.md, README.md and .github/readme/card.svg`,
+    );
+    assert.ok(ticker.length === 9 || ticker.length === 10, `ticker reported ${ticker.length}`);
+    assert.equal(report.summary.violations, violations.length);
+  });
+
+  test('diff converges, in the words the docs quote', () => {
+    assert.equal(diffRun.status, 0, diffRun.stderr);
+    const total = report.findings.violations.length;
+    assert.equal(diffRun.stdout.trimEnd().split('\n').at(-1), `Converged: all ${total} violations fixed, none introduced`);
+  });
+
+  test('the docs carry the measured figure', async () => {
+    const overview = await readFile(join(REPO, 'docs', 'overview.md'), 'utf8');
+    assert.ok(overview.includes(`**${DOCUMENTED_COUNT} detectable failures**`), 'docs/overview.md demo paragraph');
+    assert.ok(
+      overview.includes(`Converged: all ${DOCUMENTED_COUNT} violations fixed, none introduced`),
+      'docs/overview.md quoted diff output',
+    );
+    const readme = await readFile(join(REPO, 'README.md'), 'utf8');
+    assert.ok(readme.includes(`${DOCUMENTED_COUNT} detectable failures across five rendering passes`), 'README.md card alt text');
+    const card = await readFile(join(REPO, '.github', 'readme', 'card.svg'), 'utf8');
+    assert.ok(card.includes(`${DOCUMENTED_COUNT} detectable failures across five rendering passes`), 'card.svg title');
+    assert.equal(card.includes('demo page: 163'), false, 'card.svg title still says 163');
   });
 });

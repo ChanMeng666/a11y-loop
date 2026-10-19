@@ -47,10 +47,10 @@
     "THIRD-PARTY-NOTICES.md"
   ],
   "dependencies": {
-    "@axe-core/playwright": "^4.12.1",
-    "axe-sarif-converter": "^3.1.0",
+    "@axe-core/playwright": "4.14.0",
+    "axe-core": "4.14.0",
     "culori": "^4.0.2",
-    "playwright": "^1.62.0",
+    "playwright": "1.64.1",
     "tabbable": "^6.5.0"
   }
 }

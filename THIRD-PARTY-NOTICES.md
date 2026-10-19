@@ -24,9 +24,3 @@ a11y-loop is MIT-licensed. It depends on and gratefully acknowledges the followi
 
 - License: MIT
 - Source: https://github.com/focus-trap/tabbable
-
-## axe-sarif-converter
-
-- Copyright Microsoft Corporation
-- License: MIT
-- Source: https://github.com/microsoft/axe-sarif-converter
