@@ -16,13 +16,19 @@ of the project for large language models and AI agents.
 - GitHub Actions: the repository root is a composite action (`action.yml`):
   `uses: ChanMeng666/a11y-loop@<tag>` with `target`, optional `baseline`, `fail-on`
   (`violations` | `new` | `never`) and `pr-comment`. It writes a step summary and an optional sticky
-  PR comment, and never a score. Example: `examples/github-action/audit.yml`
+  PR comment, and never a score. Example: `examples/github-action/audit.yml`. Merged on `main`,
+  not in a release yet (0.3.2 does not contain it): the `uses:` line resolves once a release that
+  contains it is tagged
 - `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state
 - Plus one *optional*, Claude-Code-only layer (`plugin/`, the plugin root, published by the root
   `.claude-plugin/marketplace.json`) that enforces the plan phase at plan approval. Installing it
-  copies only `plugin/` and fetches no packages. Nothing under `skills/` depends on it.
+  copies only `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hook
+  runs only in Claude Code: on Cowork and the Claude apps, where the plugin directory also lists
+  it, only the skill's rules apply and nothing is verified.
+- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items (a
+  Stop-hook audit gate, an MCP server) do not exist yet; do not describe them as if they did
 - Privacy: nothing is collected or sent anywhere; see PRIVACY.md
   (https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md)
 
@@ -55,14 +61,18 @@ installed, run these yourself rather than handing them back:
 
 ```bash
 npm i -g a11y-loop
-a11y-loop install-browser                                            # Chromium for a11y-loop's own Playwright
-npx skills add ChanMeng666/a11y-loop -g -y                           # portable skill, any client
-claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
-claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
+a11y-loop install-browser                     # Chromium for a11y-loop's own Playwright
+a11y-loop doctor                              # exit 0 when an audit can run here
+# then ONE of:
+npx skills add ChanMeng666/a11y-loop -g -y    # portable skill, any client
+claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop   # OR Claude Code plugin, 2.1.292+
 ```
 
-Verify: `a11y-loop --version`; `test -f ~/.claude/skills/a11y-loop/references/plan-phase.md`;
-`claude plugin list | grep -A2 'a11y-loop@'` (expect `Status: ✔ enabled`).
+Verify: `a11y-loop --version`; `test -f ~/.claude/skills/a11y-loop/references/plan-phase.md` (skill
+route); `claude plugin list | grep -A2 'a11y-loop@'` (plugin route, expect `Status: ✔ enabled`).
+Do not use `npx playwright install chromium` for an installed CLI: it can resolve a different
+Playwright and install a browser this copy cannot launch. Set `PLAYWRIGHT_BROWSERS_PATH` the same
+way for `install-browser` and for every audit, or leave it unset for both.
 
 Upgrading is a different command from installing (`claude plugin install` on an already-installed
 plugin does nothing): `npm i -g a11y-loop@latest`, re-run `npx skills add ChanMeng666/a11y-loop -g -y` (or the `cp`) if using the skill, then
@@ -72,8 +82,10 @@ a11y-loop@chanmeng-a11y-loop`. Teardown is `claude plugin disable|enable|uninsta
 
 No `git clone` is required. `npx skills add` fetches the skill from GitHub, and it also ships inside the
 npm package (`$(npm root -g)/a11y-loop/skills/a11y-loop`), so a manual `cp -r` into `~/.claude/skills/` works too.
-On Claude Code the plugin pair can be one command: `claude plugin install a11y-loop --marketplace
-ChanMeng666/a11y-loop` (2.1.292 or later). Codex: `codex plugin marketplace add ChanMeng666/a11y-loop`, then
+On Claude Code older than 2.1.292 the plugin takes two commands: `claude plugin marketplace add
+ChanMeng666/a11y-loop`, then `claude plugin install a11y-loop@chanmeng-a11y-loop --scope user`.
+Do not `cp` over a skill that `npx skills add` installed: it is a symlink, and the copy fails on it.
+On Windows use PowerShell or Git Bash, not cmd.exe. Codex: `codex plugin marketplace add ChanMeng666/a11y-loop`, then
 `codex plugin add a11y-loop@chanmeng-a11y-loop`. Install the skill *or* the
 plugin, not both: the plugin carries its own copy, and doing both makes the model see `a11y-loop`
 and the directory-qualified `a11y-loop:a11y-loop`. Prefer `--scope user`; `--scope project` writes a
@@ -90,7 +102,9 @@ before a newly installed skill or hook takes effect.
 - [plan-phase.md](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/plan-phase.md): conformance targets by jurisdiction, acceptance criteria, foreclosing decisions, color-token and structure planning
 - [Field Notes](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#-field-notes): rows a real report produces that are not defects — forced-colors contrast, `div-button` on the body, contrast read mid-animation, an exhausted Tab budget — and what to check before dismissing one
 - [CONTRIBUTING](https://github.com/ChanMeng666/a11y-loop/blob/main/CONTRIBUTING.md): development setup and contribution workflow
-- [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats
+- [Benchmark](https://github.com/ChanMeng666/a11y-loop/blob/main/evals/benchmark-results.md): baseline-vs-skilled comparison, with caveats; run against the v0.1.x skill, and a 2026-10 re-run is in progress
+- [Roadmap](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/roadmap.md): what is shipped, in progress and planned
+- [Distribution briefing](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/research/distribution.md): where the project is listed and on what rules (2026-10)
 - [CHANGELOG](https://github.com/ChanMeng666/a11y-loop/blob/main/CHANGELOG.md): version history
 - [Docs site](https://ChanMeng666.github.io/a11y-loop/): the same material as a guide
 

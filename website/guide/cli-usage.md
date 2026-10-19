@@ -1,6 +1,8 @@
 # CLI Usage
 
-a11y-loop ships three commands: `audit`, `contrast`, and `diff`.
+a11y-loop ships six commands: `audit`, `contrast` and `diff` for verification, `plan-check` for
+the plan, and `doctor` and `install-browser` for setup. Exit codes are the same contract
+everywhere: `0` pass, `1` findings, `2` tool or usage error.
 
 ## `audit`
 
@@ -34,8 +36,8 @@ Checks a foreground/background pair against WCAG 2.x (1.4.3: 4.5:1 normal text /
 directions (lighter and darker) in OKLCh, so a fix stays close to the original hue instead of
 jumping to black or white.
 
-Unlike `audit`, `contrast` needs no browser, no render, and no code — which makes it the one
-command usable at plan time, before a single component exists. Run every pair the design intends
+Unlike `audit`, `contrast` needs no browser, no render, and no code — which makes it usable at plan
+time, before a single component exists, along with `plan-check`. Run every pair the design intends
 (body, muted, link, error, disabled, focus ring, control border) in light *and* dark, and let the
 passing values become the tokens: see [Planning with Accessibility](/guide/planning).
 
@@ -50,11 +52,57 @@ Matches findings across two reports by rule + selector + WCAG success criterion 
 each as `FIXED`, `NEW` (a regression — fails the command even if the total count went down), or
 `REMAINING`.
 
+## `plan-check`
+
+```bash
+# Check that a written plan names its accessibility decisions before UI is built
+a11y-loop plan-check --file plan.md
+a11y-loop plan-check --text "Add a settings page with a modal dialog and tabs"
+cat plan.md | a11y-loop plan-check --json
+```
+
+Runs the same decision as the Claude Code plan-mode hook, from any agent or CI job. It exits `0`
+when the plan carries accessibility content, is not UI work, or is too short to assess, `1` when a
+UI plan has thin or absent accessibility content, and `2` on a usage or input error. `--json`
+returns the verdict, `isUiWork`, `hasA11yContent`, the missing items and the plan rule each one
+stands for. It never prompts: stdin is read only when it is not a terminal, and a pipe held open
+with no data gives up with `2` after 3 seconds (`A11Y_LOOP_STDIN_IDLE_MS` overrides that). It is
+stateless, so the same plan always gets the same answer. It checks that the questions were asked
+in the plan, not that the answers are any good.
+
+## `doctor`
+
+```bash
+a11y-loop doctor
+a11y-loop doctor --json
+```
+
+Reports Node against the required version, the bundled Playwright and its Chromium build,
+`PLAYWRIGHT_BROWSERS_PATH`, the axe-core version actually loaded, skill copies under
+`~/.claude/skills` and `~/.agents/skills`, the Claude Code plugin, and a warning when both the skill
+and the plugin are installed. It exits `0` when an audit can run here and `2` when it cannot, never
+`1`. The verdict comes from a real headless browser launch, not from whether a file exists.
+
+## `install-browser`
+
+```bash
+a11y-loop install-browser                # Chromium plus the headless shell, about 700 MB
+a11y-loop install-browser --only-shell   # headless shell only, enough for audits (CI)
+```
+
+Installs Chromium with a11y-loop's own bundled Playwright. Use it instead of
+`npx playwright install chromium`, which runs whichever Playwright comes first and can install a
+build this copy cannot launch. Extra arguments go to Playwright's installer unchanged
+(`--with-deps`, `--dry-run`, `--only-shell`). stdin is ignored, so `--with-deps` cannot answer a
+sudo prompt. Set `PLAYWRIGHT_BROWSERS_PATH` the same way here and when you audit.
+
 ## Flags reference
 
 | Flag | Applies to | Effect |
 |---|---|---|
-| `--json` | audit, contrast | machine-readable output on stdout |
+| `--json` | audit, contrast, diff, doctor, plan-check | machine-readable output on stdout |
+| `--file <path>` | audit, plan-check | the HTML file to audit, or the plan to check |
+| `--text "<plan>"` | plan-check | the plan as an argument; with neither `--file` nor `--text`, a piped stdin is read |
 | `--out <path>` | audit | write the JSON report to a file |
 | `--sarif <path>` | audit | also write SARIF v2.1 — see [Honest Coverage](/guide/honest-coverage) for a documented limitation |
 | `--interact <path.mjs>` | audit | export `const states = { name: async (page) => {} }` to drive built states |
