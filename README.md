@@ -29,7 +29,7 @@ https://github.com/user-attachments/assets/33ff8672-7690-4581-9ceb-d95476883c54
 npm i -g a11y-loop
 npx playwright install chromium
 mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
 ```
 
 That is the command-line tool, its browser and the skill. Start a new agent session and ask for UI as usual: the skill applies while the agent writes it. To audit a page yourself:
@@ -56,7 +56,7 @@ flowchart LR
 
 ## For your agent
 
-This page is all a person needs. Everything else is written for agents: clone the repo and point yours at [`AGENTS.md`](AGENTS.md) and [`skill/a11y-loop/SKILL.md`](skill/a11y-loop/SKILL.md), or start from [`llms.txt`](llms.txt).
+This page is all a person needs. Everything else is written for agents: clone the repo and point yours at [`AGENTS.md`](AGENTS.md) and [`skills/a11y-loop/SKILL.md`](skills/a11y-loop/SKILL.md), or start from [`llms.txt`](llms.txt).
 
 <sub>[Full overview](docs/overview.md) · [Honest coverage](docs/overview.md#-honest-coverage) · [Using it in CI](docs/overview.md#%EF%B8%8F-using-it-in-ci) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Third-party notices](THIRD-PARTY-NOTICES.md) · [MIT](LICENSE)</sub>
 

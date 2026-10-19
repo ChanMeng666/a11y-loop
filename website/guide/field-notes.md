@@ -64,7 +64,7 @@ own message names the budget.
 
 A cluster of unreachable findings that is contiguous and sits at the end of document order is the
 signature. Confirm by hand with the five-minute keyboard test in
-[`manual-testing.md`](https://github.com/ChanMeng666/a11y-loop/blob/main/skill/a11y-loop/references/manual-testing.md),
+[`manual-testing.md`](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/manual-testing.md),
 and audit narrower states so each walk fits.
 
 ## Invoking the CLI through a Windows junction silently does nothing

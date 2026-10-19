@@ -8,10 +8,10 @@ Codex, etc.) working with this repository. Read it before writing or changing an
 a11y-loop — makes AI coding agents decide accessibility while the work is still being planned and
 write accessible UI by default, then proves what it can prove with a real browser audit across the
 states it built, and tells you exactly what it could not check. Two layers: an Agent Skill
-(`skill/a11y-loop/`, open Agent Skills standard) supplying plan rules, standing generation rules
+(`skills/a11y-loop/`, open Agent Skills standard) supplying plan rules, standing generation rules
 and honesty rules, and a Node CLI (`src/`) supplying `audit` / `contrast --fix` / `diff`. A third,
 *optional* layer (`.claude-plugin/`, `hooks/`, `commands/`) enforces the plan phase in Claude Code
-only; nothing under `skill/` may depend on it.
+only; nothing under `skills/` may depend on it.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
@@ -28,7 +28,7 @@ non-interactive, idempotent, and needs no TTY, so do it yourself rather than han
 npm i -g a11y-loop
 npx playwright install chromium
 mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # portable skill
+cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # portable skill
 claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
 ```
@@ -44,7 +44,7 @@ claude plugin list | grep -A2 'a11y-loop@'    # expect: Status: ✔ enabled
 Notes that matter when scripting this:
 
 - **No `git clone` needed** — the skill ships inside the npm package at
-  `$(npm root -g)/a11y-loop/skill/a11y-loop`.
+  `$(npm root -g)/a11y-loop/skills/a11y-loop`.
 - **Install the skill or the plugin, not both.** The plugin carries its own copy. Doing both
   registers the skill twice — the model sees `a11y-loop` *and* the directory-qualified
   `a11y-loop:a11y-loop`, and pays the always-on token cost twice. If you see both names, delete
@@ -57,7 +57,7 @@ Notes that matter when scripting this:
   already-installed plugin reports "already installed" and does nothing. Use:
   ```bash
   npm i -g a11y-loop@latest
-  cp -r "$(npm root -g)/a11y-loop/skill/a11y-loop" ~/.claude/skills/   # if using the skill
+  cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # if using the skill
   claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
   claude plugin update a11y-loop@chanmeng-a11y-loop
   ```
@@ -92,18 +92,18 @@ or Playwright will report a missing browser.
 
 ## Architecture & Conventions
 
-- **`skill/a11y-loop/SKILL.md`** — the agent-facing standing instructions, in four sections that
+- **`skills/a11y-loop/SKILL.md`** — the agent-facing standing instructions, in four sections that
   follow the lifecycle: §0 plan rules (decisions made while scoping, before any code), §1 generation
   rules, §2 the mandatory audit loop, §3 honesty rules for talking about results.
-  `skill/a11y-loop/references/` holds the supporting docs (plan-phase guidance, AI-specific failure
+  `skills/a11y-loop/references/` holds the supporting docs (plan-phase guidance, AI-specific failure
   modes, APG patterns, manual-testing guidance, a WCAG 2.2 quick reference) loaded on demand, not
-  upfront. `skill/a11y-loop/evals/` holds trigger-accuracy and behavior evals for the skill itself.
+  upfront. `skills/a11y-loop/evals/` holds trigger-accuracy and behavior evals for the skill itself.
 - **`.claude-plugin/`, `hooks/`, `commands/`** — an *optional* Claude-Code-only layer.
   `plugin.json` is the plugin manifest; `marketplace.json` makes the repo installable
   (`claude plugin marketplace add ChanMeng666/a11y-loop`) and is why the marketplace is named
   `chanmeng-a11y-loop` while the plugin inside it is `a11y-loop` — installs are
   `a11y-loop@chanmeng-a11y-loop`. `hooks/plan-gate.mjs` is a `PreToolUse` hook on `ExitPlanMode`
-  that declines a plan changing UI work with no accessibility content in it. Nothing in `skill/`
+  that declines a plan changing UI work with no accessibility content in it. Nothing in `skills/`
   may depend on this layer, and nothing in this layer may appear in `SKILL.md` or `references/` —
   the skill has to stay portable across the 40+ clients that implement the Agent Skills standard.
   The hook's own invariants are documented in its header comment; the load-bearing ones are that it
@@ -183,7 +183,7 @@ or Playwright will report a missing browser.
   `test/integration/fixtures.test.js`.
 - **Known false positives are documented, never suppressed — and if that ever changes, the
   mechanism already exists.** `docs/overview.md` § Field Notes and
-  `skill/a11y-loop/references/manual-testing.md` carry the rows a production run produces that are
+  `skills/a11y-loop/references/manual-testing.md` carry the rows a production run produces that are
   not defects. The loudest by far is `color-contrast` in the forced-colors pass: axe-core 4.12.1
   reads an element's foreground from `-webkit-text-fill-color` before `color` (`getTextColor()`),
   and Chromium's forced-colors emulation forces `color` and the background but leaves
@@ -214,12 +214,17 @@ rather than left to be rediscovered.
   files."* This skill must fire while planning, before any UI file exists, and on audit requests
   that name only a URL. `paths` made both unreachable. Solve over-triggering in the `description`'s
   negative clauses and in `evals/trigger-evals.json` instead.
-- **A manifest component key replaces the default folder; it does not add to it.** So
-  `.claude-plugin/plugin.json` must only name *non-standard* locations. `"skills": "./skill/"` is
-  required because this repo uses `skill/`, not the conventional `skills/`. Declaring
-  `"hooks": "./hooks/hooks.json"` or `"commands": "./commands/"` re-registers what Claude Code
-  already loads by convention — the hooks case is fatal (*"Duplicate hooks file detected"*) and
-  takes the whole plugin down with it.
+- **`plugin.json` names no `skills` key, on purpose.** The skill lives in `skills/a11y-loop/`, the
+  conventional folder, so Claude Code, Codex, `npx skills`, `gh skill` and the Agent Plugins
+  standard all find it with no manifest help. This repo used to keep it in `skill/`, which needed
+  a `skills` manifest key and hid it from every standard installer. Observed on Claude Code 2.1.x
+  (2026-10-19): a `skills` key *adds* to the default `skills/` folder rather than replacing it
+  (a probe plugin with `skills/alpha` plus `"skills": "./extra/"` loaded both). Do not re-add the
+  key pointing at a second location: it is unneeded and would risk registering a skill twice.
+  The older belief that component keys replace the default folder is not true for skills. The
+  `hooks` case is different and fatal: declaring `"hooks": "./hooks/hooks.json"` or
+  `"commands": "./commands/"` re-registers what Claude Code already loads by convention
+  (*"Duplicate hooks file detected"*) and takes the whole plugin down with it.
 - **`claude plugin validate --strict` passes on manifests that fail to load.** It validated the
   broken manifest above cleanly. It checks shape, not loadability. Treat it as a linter, never as
   proof: the only real check is installing the plugin and reading `claude plugin list` for
@@ -273,7 +278,7 @@ marketplace add ./` — so the plugin tracks your edits rather than the publishe
 When onboarding to this repo, read in this order:
 1. `README.md` (one screen), then `docs/overview.md` — what the project is and how to run it
 2. This `AGENTS.md` — how to work in it
-3. `skill/a11y-loop/SKILL.md` — the product's actual contract with an agent; §3 also governs how
+3. `skills/a11y-loop/SKILL.md` — the product's actual contract with an agent; §3 also governs how
    anything in this repo is allowed to describe its own results
 4. `CONTRIBUTING.md` — contribution workflow and quality gates
 
