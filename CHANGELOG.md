@@ -12,6 +12,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`
   and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
   Windows and in a test; this checks a real install on each OS on every PR.
+- **`a11y-loop plan-check`, the plan gate for any agent and any CI job.** The plan gate used to
+  exist only as a Claude Code `PreToolUse` hook on `ExitPlanMode`, a tool that exists only in
+  interactive Claude Code sessions, so Codex, Cursor, Copilot, CI and headless Claude Code runs
+  could not use it at all. `plan-check` runs the same decision on a plan from `--file`, `--text`
+  or a piped stdin and exits `0` (the plan carries accessibility content, is not UI work, or is
+  too short to assess), `1` (a UI plan with thin or absent accessibility content), or `2` (usage
+  or input error). `--json` returns the verdict, `isUiWork`, `hasA11yContent`, the missing items
+  and the SKILL.md §0 plan rule each one stands for. It never prompts: stdin is read only when it
+  is not a TTY, and a pipe held open with no data gives up with `2` after 3 seconds
+  (`A11Y_LOOP_STDIN_IDLE_MS` overrides). It is stateless, with no loop guard and no session cap,
+  so the same plan always gets the same answer. It checks that the questions were asked in the
+  plan, not that the answers are any good.
+- `test/unit/non-interactive.test.js`: every subcommand, and the hook with an empty stdin, run as
+  a child process with stdin closed and a hard timeout, asserting each exits with a documented code
+  and none hangs.
+
+### Changed
+- The plan gate's decision logic moved from `hooks/plan-gate.mjs` to `src/lib/plan-gate.js`,
+  shared by the hook and `plan-check`. The hook keeps its stdin/stdout protocol, its
+  once-per-plan guard, its session cap and `A11Y_LOOP_PLAN_GATE=off` unchanged, and re-exports the
+  detectors it used to define. A plan the hook denied before is denied now, and vice versa.
+- SKILL.md §0 now ends with: run `plan-check` on the written plan and address what it names
+  before building.
 
 ### Fixed
 

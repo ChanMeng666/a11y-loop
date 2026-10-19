@@ -1,6 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { mkdtempSync, rmdirSync, rmSync, symlinkSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -347,5 +348,47 @@ describe('the hook runs when invoked through a link', () => {
     assert.equal(isEntryPoint('file:///x.mjs', undefined), false);
     assert.equal(isEntryPoint('file:///x.mjs', ' bad'), false);
     assert.equal(isEntryPoint(import.meta.url, fileURLToPath(import.meta.url)), true);
+  });
+});
+
+describe('the hook without its shared logic', () => {
+  /**
+   * Copy the hook into a temp layout whose ../src/lib/plan-gate.js is missing,
+   * or present but throwing at load, and run it on a plan it would deny.
+   */
+  function runDetached(libSource) {
+    const root = mkdtempSync(path.join(tmpdir(), 'a11y-gate-nolib-'));
+    try {
+      mkdirSync(path.join(root, 'hooks'));
+      mkdirSync(path.join(root, 'src', 'lib'), { recursive: true });
+      copyFileSync(GATE, path.join(root, 'hooks', 'plan-gate.mjs'));
+      if (libSource !== undefined) writeFileSync(path.join(root, 'src', 'lib', 'plan-gate.js'), libSource);
+      return spawnSync(process.execPath, [path.join(root, 'hooks', 'plan-gate.mjs')], {
+        input: JSON.stringify(hookInput(UI_PLAN)),
+        encoding: 'utf8',
+        timeout: 15_000,
+        env: { ...process.env, CLAUDE_PLUGIN_DATA: path.join(root, 'data'), A11Y_LOOP_PLAN_GATE: '' },
+      });
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  test('a missing src/lib/plan-gate.js exits 0 with no verdict', () => {
+    const r = runDetached(undefined);
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(r.stdout.trim(), '');
+    assert.match(r.stderr, /did not load/);
+  });
+
+  test('a src/lib/plan-gate.js that throws at load exits 0 with no verdict', () => {
+    const r = runDetached("throw new Error('broken on purpose');\n");
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(r.stdout.trim(), '');
+    assert.match(r.stderr, /broken on purpose/);
+  });
+
+  test('the same plan in the real layout is denied, so the cases above are not passing by accident', () => {
+    assert.equal(runGate(hookInput(UI_PLAN))?.permissionDecision, 'deny');
   });
 });

@@ -110,9 +110,11 @@ or Playwright will report a missing browser.
   The hook's own invariants are documented in its header comment; the load-bearing ones are that it
   never blocks on its own failure, never returns `allow` (off the deny path it returns
   `additionalContext` with no `permissionDecision` at all, so the user's plan-approval prompt still
-  appears), and declines a given plan at most once.
+  appears), and declines a given plan at most once. The hook holds none of the decision itself: it
+  imports `src/lib/plan-gate.js` (see below), which is why `hooks/` reaches into `src/` — the
+  plugin root is the repository, so the path resolves in an installed plugin too.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
-  `src/commands/{audit,contrast,diff}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
+  `src/commands/{audit,contrast,diff,doctor,install-browser,plan-check}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
   `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
 - **`src/lib/`** — the engine: `axe-runner.js` (Playwright + axe-core orchestration across the
   five rendering passes), `checks/` (a11y-loop's own checks that axe can't run — dialog focus
@@ -121,7 +123,11 @@ or Playwright will report a missing browser.
   (stable finding IDs for `diff`), `diff.js` (FIXED/NEW/REMAINING classification), `finding.js`
   (the shared finding shape), `format/` (`json.js`, `human.js`, `sarif.js`, `checklist.js` — one
   serializer per output format), `wcag-map.js` (rule → WCAG SC + ACT ID mapping), `serve.js` and
-  `browser-utils.js` (local static serving for `--file`/`--html`, and Playwright lifecycle helpers).
+  `browser-utils.js` (local static serving for `--file`/`--html`, and Playwright lifecycle helpers),
+  and `plan-gate.js` — the plan gate's pure decision (is this UI work, does it carry accessibility
+  content), shared by `hooks/plan-gate.mjs` and `a11y-loop plan-check`. No I/O, no state, nothing
+  Claude-Code-specific: the loop guard, session cap and kill switch stay in the hook, and the CLI
+  is stateless.
 - **`demo/before/` and `demo/after/`** — the seeded-violation fixture and its fixed counterpart
   that back the README's headline claim and `test/integration/demo.test.js`. `VIOLATIONS.md` and
   `FIXES.md` are the finding-by-finding record — keep them in sync with the actual markup if you
@@ -247,7 +253,9 @@ rather than left to be rediscovered.
   What *is* covered headlessly: the hook's decision logic (`test/unit/plan-gate.test.js`, including
   invoking the script over stdin with realistic payloads), and that the plugin loads and registers
   the hook (`claude plugin details a11y-loop` → `Hooks (1) PreToolUse`). Don't claim the round trip
-  is verified on the strength of those.
+  is verified on the strength of those. The equivalent non-interactive path is `a11y-loop
+  plan-check`: the same decision function, drivable from any agent or CI job, and covered by
+  `test/unit/plan-check.test.js` and `test/unit/non-interactive.test.js`.
 
 ## Testing the plugin layer
 

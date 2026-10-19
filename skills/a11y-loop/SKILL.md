@@ -59,6 +59,7 @@ A11Y audit --html "<fragment>"       # wrap + serve generated markup
     --headed --no-best-practice --quiet
 A11Y contrast <fg> <bg> [--large] [--ui] [--fix] [--json]
 A11Y diff --before before.json --after after.json
+A11Y plan-check --file plan.md [--json]   # or --text "<plan>", or piped stdin
 ```
 
 Exit codes: `0` no violations · `1` violations found · `2` tool error.
@@ -149,6 +150,10 @@ Then include this section in the plan, in this shape:
 - **Verification:** <states needing --interact | where the audit gate sits>
 - **Manual budget:** <what automation cannot judge here>
 ```
+
+After writing the plan, run `A11Y plan-check --file <plan>` and address what it
+names before building; exit `1` means a UI plan with thin or absent
+accessibility content. It checks that the questions were asked, not the answers.
 
 ---
 

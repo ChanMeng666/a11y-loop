@@ -4,7 +4,9 @@
  *
  * Exit codes are the loop's contract:
  *   0 — no violations (audit) / threshold met (contrast) / no regression (diff)
+ *       / plan carries accessibility content or is not UI work (plan-check)
  *   1 — violations found / threshold missed / regression introduced
+ *       / UI plan with no accessibility content (plan-check)
  *   2 — tool error (bad arguments, missing browser, unreadable report)
  */
 
@@ -18,6 +20,7 @@ import { runContrastCommand } from './commands/contrast.js';
 import { runDiffCommand } from './commands/diff.js';
 import { runDoctorCommand } from './commands/doctor.js';
 import { runInstallBrowserCommand } from './commands/install-browser.js';
+import { runPlanCheckCommand } from './commands/plan-check.js';
 import { ToolError } from './lib/axe-runner.js';
 
 export const EXIT = { OK: 0, FINDINGS: 1, ERROR: 2 };
@@ -33,6 +36,7 @@ const OPTIONS = {
   quiet: { type: 'boolean', default: false },
   file: { type: 'string' },
   html: { type: 'string' },
+  text: { type: 'string' },
   large: { type: 'boolean', default: false },
   ui: { type: 'boolean', default: false },
   fix: { type: 'boolean', default: false },
@@ -52,6 +56,8 @@ USAGE
   a11y-loop diff --before a.json --after b.json    compare two audits
   a11y-loop doctor                   check whether an audit can run here, and what blocks it
   a11y-loop install-browser          install the Chromium build a11y-loop's own Playwright needs
+  a11y-loop plan-check --file plan.md   check a plan names its accessibility decisions before UI is built
+  a11y-loop plan-check --text "<plan>"  the same, plan given inline (or piped on stdin)
 
 AUDIT OPTIONS
   --json                 machine-readable report on stdout
@@ -71,6 +77,15 @@ CONTRAST OPTIONS
 DOCTOR OPTIONS
   --json                 machine-readable result
 
+PLAN-CHECK OPTIONS
+  --file <path>          read the plan from a file
+  --text "<plan>"        the plan as an argument
+                         with neither, a piped (non-TTY) stdin is read; it never prompts
+  --json                 machine-readable result: verdict, isUiWork, hasA11yContent,
+                         missing items, and the plan rule each one stands for
+  Stateless: the same plan always gets the same answer. It checks that the questions
+  were asked, not that the answers are any good.
+
 INSTALL-BROWSER OPTIONS
   Extra arguments go to Playwright's installer unchanged, e.g. --with-deps or --dry-run.
   PLAYWRIGHT_BROWSERS_PATH is honoured; set it the same way when you audit.
@@ -79,7 +94,9 @@ INSTALL-BROWSER OPTIONS
 
 EXIT CODES
   0  no violations / threshold met / no regression / doctor: an audit can run
+     / plan-check: the plan carries accessibility content, or is not UI work
   1  violations found / threshold missed / new violations introduced
+     / plan-check: a UI plan with thin or absent accessibility content
   2  tool error / doctor: an audit cannot run here
 
 Five rendering passes run per audit: default, dark, forced-colors, reduced-motion,
@@ -212,6 +229,10 @@ export async function main(argv, io) {
 
     if (command === 'doctor') {
       return await runDoctorCommand({ flags }, out);
+    }
+
+    if (command === 'plan-check') {
+      return await runPlanCheckCommand({ flags }, out);
     }
 
     out.writeError(`a11y-loop: unknown command "${command}"\n\n${USAGE}`);
