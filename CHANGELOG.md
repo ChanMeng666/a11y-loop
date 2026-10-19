@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **A `Stop` hook that declines ending a session with unaudited UI changes, once.** The skill's §2
+  says the audit loop is mandatory after any UI change; until now nothing enforced it. The plugin's
+  new `hooks/audit-gate.mjs` reads the session transcript when Claude is about to finish. If UI
+  files were written (`.html`, `.htm`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.css`,
+  `.scss`, `.mdx`, or `.js`/`.ts` whose new content touches the DOM) and no `a11y-loop audit`
+  ran after the last one, it returns `decision: "block"` with the files and the exact `audit` and
+  `diff` commands. It blocks at most once per session, never while `stop_hook_active` is true,
+  and on any failure of its own lets the session end. `A11Y_LOOP_AUDIT_GATE=off` turns it off.
+  `Stop` fires under `claude -p`, so unlike the plan gate its full round trip runs headlessly.
+  The decision lives in `src/lib/audit-gate.js`, copied into the plugin by `npm run sync-plugin`.
+  It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
 - **Native plugin evals.** `plugin/evals/` is a suite for `claude plugin eval` (Claude Code 2.1.269 or later): one trigger case per prompt in `trigger-evals.json` (21 should-trigger, 11 should-not) and 7 behaviour cases with graders for the plan, the APG modal and tabs contracts, the audit loop, and the honesty rules. Hand-written cases live in `skills/a11y-loop/evals/native/`; `npm run sync-plugin` generates the rest. `npm run eval:skill` runs it with and without the plugin and prints the delta. First measured results are in `evals/skill-eval-report-2026-10.md`.
 - **A composite GitHub Action** (`action.yml` at the repository root, usable as
   `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version and the
@@ -29,6 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   up new versions without a manual re-validate. The branch only ever points at tagged commits.
 
 ### Changed
+- **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
+  `.a11y/run-1.json` in a project with no `.a11y/` failed with ENOENT after the audit had run, and the
+  run was lost. The skill's own examples use that path.
 - **The skill description now names planning and discussion, small edits, and alt text.** Measured on the new eval suite, should-trigger prompts fire the skill 74% of the time (31 of 42 runs) instead of 52% (11 of 21), with no false trigger on the should-not prompts.
 - **`docs/demo.gif` is re-recorded at 0.3.2.** It showed 163 failures from axe-core 4.12.1. It now shows the real output at the pinned 4.14.0: 159 failures converging to 0, ending in `Converged: all 159 violations fixed, none introduced`. The GIF is rendered from captured CLI text, and the source is in `docs/demo-gif-src/`.
 - **Documentation synchronised with 0.3.2, read end to end against the code.** `AGENTS.md` now

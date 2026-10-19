@@ -12,6 +12,7 @@
  *                                   which is development material the skill
  *                                   never loads)
  *   - `src/lib/plan-gate.js`     -> `plugin/hooks/lib/plan-gate.mjs`
+ *   - `src/lib/audit-gate.js`    -> `plugin/hooks/lib/audit-gate.mjs`
  *   - `LICENSE`                  -> `plugin/LICENSE`
  *
  * Edit the canonical file, then run `npm run sync-plugin`. Never edit a copy:
@@ -37,6 +38,7 @@ const DIRS = [
 /** Single files copied as they are. */
 const FILES = [
   { from: 'src/lib/plan-gate.js', to: 'plugin/hooks/lib/plan-gate.mjs' },
+  { from: 'src/lib/audit-gate.js', to: 'plugin/hooks/lib/audit-gate.mjs' },
   { from: 'LICENSE', to: 'plugin/LICENSE' },
 ];
 

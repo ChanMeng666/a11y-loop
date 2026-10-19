@@ -337,7 +337,9 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
 built.** If the CLI cannot run — no Chromium, no dev server, a sandbox with no
 browser — say so plainly, state that the change is unverified, and give the
 exact command the user should run. Do not substitute your own reading of the
-code for the audit.
+code for the audit. Some clients enforce this step with a hook that declines to
+end a session with unaudited UI changes; where none does, the same audit in CI
+exits 1 on findings and fails the job.
 
 For a fragment with no app around it, pass the markup inline with `--html`, or
 write it to a scratch file and use `--file` (safer on any shell, and required

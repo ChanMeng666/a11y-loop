@@ -23,12 +23,15 @@ of the project for large language models and AI agents.
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state
 - Plus one *optional*, Claude-Code-only layer (`plugin/`, the plugin root, published by the root
-  `.claude-plugin/marketplace.json`) that enforces the plan phase at plan approval. Installing it
-  copies only `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hook
-  runs only in Claude Code: on Cowork and the Claude apps, where the plugin directory also lists
-  it, only the skill's rules apply and nothing is verified.
-- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items (a
-  Stop-hook audit gate, an MCP server) do not exist yet; do not describe them as if they did
+  `.claude-plugin/marketplace.json`) that enforces the plan phase at plan approval, and the
+  audit loop with a `Stop` hook that declines, once per session, to end a session that changed UI
+  files without running `a11y-loop audit` afterwards (on `main`, not yet in a tagged release).
+  Other clients rely on the skill text plus `a11y-loop audit` in CI. Installing it copies only
+  `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hooks run only in
+  Claude Code: on Cowork and the Claude apps, where the plugin directory also lists it, only the
+  skill's rules apply and nothing is verified.
+- Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items (an MCP
+  server) do not exist yet; do not describe them as if they did
 - Privacy: nothing is collected or sent anywhere; see PRIVACY.md
   (https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md)
 

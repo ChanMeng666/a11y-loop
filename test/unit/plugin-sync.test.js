@@ -34,6 +34,7 @@ describe('plugin/ copies of canonical sources', () => {
     const targets = copyPlan().pairs.map((p) => p.to);
     assert.ok(targets.includes('plugin/skills/a11y-loop/SKILL.md'));
     assert.ok(targets.includes('plugin/hooks/lib/plan-gate.mjs'));
+    assert.ok(targets.includes('plugin/hooks/lib/audit-gate.mjs'));
     assert.ok(!targets.some((t) => t.startsWith('plugin/skills/a11y-loop/evals/')), 'skill evals stay out of the plugin');
   });
 });
