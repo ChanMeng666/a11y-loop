@@ -13,7 +13,7 @@ on:
 
 permissions:
   id-token: write # the OIDC exchange with npm
-  contents: read
+  contents: write # create the GitHub Release (replaces contents: read)
 
 jobs:
   publish:
@@ -48,3 +48,24 @@ jobs:
       - name: Publish to npm
         if: ${{ success() && steps.check.outputs.exists != 'true' }}
         run: npm publish --provenance --access public
+
+      # GitHub Release for the tag. Runs when the npm step was skipped too
+      # (version already published), so a re-run can backfill a missing Release.
+      # Idempotent: an existing Release is left alone. Only tag pushes qualify,
+      # since workflow_dispatch has no tag to release.
+      - name: Create GitHub Release
+        if: ${{ success() && github.ref_type == 'tag' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          awk -v ver="$ver" '
+            /^## \[/ { if (found) exit; found = index($0, "## [" ver "]") == 1 }
+            found
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "No CHANGELOG.md section for $ver" >&2
+            exit 1
+          fi
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" --title "a11y-loop $ver" --notes-file notes.md --verify-tag
