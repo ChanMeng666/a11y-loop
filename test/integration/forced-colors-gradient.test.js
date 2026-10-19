@@ -20,10 +20,12 @@
  *
  * Every other pass (default, dark, reduced-motion, reflow), and a plain
  * default axe.run() with no emulation and no runOnly restriction at all,
- * correctly report the same element as incomplete. The fix (see
- * src/lib/finding.js, dedupeFindings, FORCED_COLORS_FRAGILE_RULES) refuses to
- * let a lone, uncorroborated forced-colors violation override an
- * already-established needs-review verdict from every other pass.
+ * correctly report the same element as incomplete. The fix was first a guard
+ * in dedupeFindings that stopped a lone forced-colors violation overriding the
+ * other passes' needs-review verdicts. It is now reviewRouting() in
+ * src/lib/axe-runner.js, which routes every color-contrast and
+ * color-contrast-enhanced violation from the forced-colors pass to
+ * needs-review, so the guard became unreachable and was removed.
  */
 
 import { test, describe } from 'node:test';

@@ -11,6 +11,24 @@
 
 const byFingerprint = (findings = []) => new Map(findings.map((f) => [f.fingerprint, f]));
 
+/**
+ * A before-violation that is gone from the after violations because a
+ * documented rule moved it to needs-review, not because anything changed on
+ * the page. Reporting it as FIXED would claim a fix nobody made: on the
+ * upgrade from 0.3.2, every forced-colors-only contrast row would read as
+ * fixed. Matched by fingerprint against after-needsReview rows that carry
+ * `routedFrom`.
+ */
+function splitReclassified(fixed, afterNeedsReview = []) {
+  const routed = new Map(
+    afterNeedsReview.filter((f) => f.routedFrom).map((f) => [f.fingerprint, f]),
+  );
+  return {
+    fixed: fixed.filter((f) => !routed.has(f.fingerprint)),
+    reclassified: fixed.filter((f) => routed.has(f.fingerprint)).map((f) => routed.get(f.fingerprint)),
+  };
+}
+
 function diffBucket(before = [], after = []) {
   const beforeMap = byFingerprint(before);
   const afterMap = byFingerprint(after);
@@ -31,35 +49,51 @@ function diffBucket(before = [], after = []) {
  * }}
  */
 export function diffReports(before, after) {
-  const violations = diffBucket(before?.findings?.violations, after?.findings?.violations);
+  const raw = diffBucket(before?.findings?.violations, after?.findings?.violations);
+  const { fixed, reclassified } = splitReclassified(raw.fixed, after?.findings?.needsReview);
+  const violations = { fixed, new: raw.new, remaining: raw.remaining };
   const needsReview = diffBucket(before?.findings?.needsReview, after?.findings?.needsReview);
 
   const regression = violations.new.length > 0;
   const converged = !regression && violations.remaining.length === 0;
+  const s = (n) => (n === 1 ? '' : 's');
+  const reclassifiedNote = reclassified.length
+    ? `, ${reclassified.length} reclassified to needs-review`
+    : '';
 
   let verdict;
   if (regression) {
     verdict =
-      `REGRESSION: ${violations.new.length} new violation${violations.new.length === 1 ? '' : 's'} ` +
-      `introduced (${violations.fixed.length} fixed, ${violations.remaining.length} still present)`;
+      `REGRESSION: ${violations.new.length} new violation${s(violations.new.length)} ` +
+      `introduced (${violations.fixed.length} fixed${reclassifiedNote}, ` +
+      `${violations.remaining.length} still present)`;
   } else if (converged) {
-    verdict =
-      violations.fixed.length > 0
-        ? `Converged: all ${violations.fixed.length} violation${violations.fixed.length === 1 ? '' : 's'} fixed, none introduced`
-        : 'No violations in either report';
+    if (violations.fixed.length > 0) {
+      verdict =
+        `Converged: all ${violations.fixed.length} violation${s(violations.fixed.length)} fixed` +
+        `${reclassifiedNote}, none introduced`;
+    } else if (reclassified.length > 0) {
+      verdict =
+        `Converged: no violations fixed, ${reclassified.length} reclassified to needs-review, ` +
+        'none introduced';
+    } else {
+      verdict = 'No violations in either report';
+    }
   } else {
     verdict =
-      `Progress: ${violations.fixed.length} fixed, ${violations.remaining.length} still present, ` +
-      'none introduced';
+      `Progress: ${violations.fixed.length} fixed${reclassifiedNote}, ` +
+      `${violations.remaining.length} still present, none introduced`;
   }
 
   return {
     ...violations,
+    reclassified,
     needsReview,
     summary: {
       fixed: violations.fixed.length,
       new: violations.new.length,
       remaining: violations.remaining.length,
+      reclassified: reclassified.length,
       needsReviewFixed: needsReview.fixed.length,
       needsReviewNew: needsReview.new.length,
       regression,
@@ -81,6 +115,7 @@ export function formatDiffHuman(diff, { beforePath, afterPath } = {}) {
 
   const rows = [
     ...diff.fixed.map((f) => ({ status: 'FIXED', ...label(f) })),
+    ...(diff.reclassified ?? []).map((f) => ({ status: 'RECLASSIFIED', ...label(f) })),
     ...diff.new.map((f) => ({ status: 'NEW', ...label(f) })),
     ...diff.remaining.map((f) => ({ status: 'REMAINING', ...label(f) })),
   ];
@@ -103,6 +138,14 @@ export function formatDiffHuman(diff, { beforePath, afterPath } = {}) {
         ].join('  '),
       );
     }
+  }
+
+  if (diff.summary.reclassified > 0) {
+    lines.push(
+      '',
+      `${diff.summary.reclassified} RECLASSIFIED: still on the page, now reported under needs-review ` +
+        'by a documented rule (see each row\'s note in the after report). Not fixed.',
+    );
   }
 
   if (diff.summary.needsReviewNew > 0) {

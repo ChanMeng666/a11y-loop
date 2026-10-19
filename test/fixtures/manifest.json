@@ -23,7 +23,8 @@
     "minNodes": "assert at least this many findings; tests should use >= rather than ==",
     "allowNeedsReview": "true if the finding may legitimately land in needsReview / incomplete rather than violations",
     "requiresPass": "the audit pass this finding needs: default, dark, forced-colors, reduced-motion, or viewport-320",
-    "requiresAxeOption": "an axe run option the finding depends on"
+    "requiresAxeOption": "an axe run option the finding depends on",
+    "routedFrom": "the severity the engine reported before a documented a11y-loop rule moved the row to needsReview; asserts the row carries routedFrom, note and noteUrl"
   },
   "assertAlso": "For every fixture except the one under test, no other rule in the wcag2a/wcag2aa/wcag21a/wcag21aa/wcag22aa tag set should report a violation. A new finding in an unrelated fixture means either the fixture drifted or a runner regression.",
   "verifiedAgainst": {
@@ -545,6 +546,28 @@
         }
       ],
       "note": "tabindex=\"1\" and tabindex=\"2\" on the last two controls, pulling them to the front of the document's tab order ahead of a link and a button that precede them visually."
+    },
+
+    "fixture-forced-colors-dark-surface.html": {
+      "class": "forced-colors-routing",
+      "title": "Light text on a dark surface, read by axe under forced colors",
+      "expectClean": true,
+      "expect": [
+        {
+          "ruleIdOrCheck": "color-contrast",
+          "detector": "axe",
+          "scHint": "1.4.3",
+          "scName": "Contrast (Minimum)",
+          "level": "AA",
+          "axeTag": "wcag2aa",
+          "minNodes": 1,
+          "landsIn": "incomplete",
+          "requiresPass": "forced-colors",
+          "routedFrom": "violation",
+          "note": "Not a seeded defect: #e8e6ef on #141218 is 15.04:1 and silent in every other pass. Under forced-colors emulation axe reads -webkit-text-fill-color (the author's #e8e6ef) against the forced #ffffff and reports 1.23:1 as a violation. Up to 0.3.2 that one row made this page exit 1. a11y-loop now routes color-contrast from the forced-colors pass to needsReview with a note pointing at the Field Note, so the page exits 0 and the row is still reported. The #6d6975 paragraph (5.34:1) is the control: dark-on-light text survives the same comparison and produces no row."
+        }
+      ],
+      "note": "Regression target for the forced-colors routing in findingsFromAxeResult. Measured 2026-10-20 at axe-core 4.14.0: on 0.3.2 this fixture reported one violation and exited 1; with the routing it reports zero violations, one needsReview row, and exits 0."
     }
   }
 }

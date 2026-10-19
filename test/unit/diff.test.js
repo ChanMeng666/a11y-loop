@@ -137,3 +137,67 @@ describe('formatDiffHuman', () => {
     assert.match(text, /1 new needs-review finding\(s\) — not blocking, but new/);
   });
 });
+
+describe('diffReports: RECLASSIFIED, never FIXED', () => {
+  // A 0.3.2-style report: the forced-colors row is a violation, no routedFrom.
+  const before = () =>
+    makeReport({
+      findings: [
+        emptyButtonFinding(),
+        contrastFinding({ selector: 'html > body > div.card > p', passes: ['forced-colors'] }),
+      ],
+    });
+  // The same page now: the button is fixed, the card row was only routed.
+  const after = () =>
+    makeReport({
+      findings: [
+        contrastFinding({
+          selector: 'html > body > div.card > p',
+          passes: ['forced-colors'],
+          severity: 'needsReview',
+          suggestions: undefined,
+          note: 'axe-core reads -webkit-text-fill-color first.',
+          noteUrl: 'https://example.test/note',
+          routedFrom: 'violation',
+        }),
+      ],
+    });
+
+  test('a violation that moved to needs-review by a documented rule is reclassified, not fixed', () => {
+    const diff = diffReports(before(), after());
+    assert.equal(diff.summary.fixed, 1);
+    assert.equal(diff.summary.reclassified, 1);
+    assert.deepEqual(fps(diff.fixed), fps([emptyButtonFinding()]));
+    assert.equal(diff.reclassified[0].routedFrom, 'violation');
+    assert.equal(diff.summary.converged, true);
+    assert.equal(
+      diff.summary.verdict,
+      'Converged: all 1 violation fixed, 1 reclassified to needs-review, none introduced',
+    );
+  });
+
+  test('when the only change is the reclassification, nothing is called fixed', () => {
+    const onlyRouted = makeReport({ findings: [before().findings.violations[1]] });
+    const diff = diffReports(onlyRouted, after());
+    assert.equal(diff.summary.fixed, 0);
+    assert.equal(diff.summary.reclassified, 1);
+    assert.equal(diff.summary.verdict, 'Converged: no violations fixed, 1 reclassified to needs-review, none introduced');
+    assert.doesNotMatch(diff.summary.verdict, /all \d+ violations? fixed/);
+  });
+
+  test('a row that left violations into needs-review WITHOUT routedFrom is still fixed', () => {
+    const plain = makeReport({
+      findings: [contrastFinding({ selector: 'html > body > div.card > p', passes: ['forced-colors'], severity: 'needsReview' })],
+    });
+    const diff = diffReports(before(), plain);
+    assert.equal(diff.summary.reclassified, 0);
+    assert.equal(diff.summary.fixed, 2);
+  });
+
+  test('the human table labels the row RECLASSIFIED and says it is not fixed', () => {
+    const text = formatDiffHuman(diffReports(before(), after()));
+    assert.match(text, /^RECLASSIFIED\s+SC 1\.4\.3\s+color-contrast/m);
+    assert.match(text, /1 RECLASSIFIED: still on the page, now reported under needs-review/);
+    assert.match(text, /Not fixed\./);
+  });
+});

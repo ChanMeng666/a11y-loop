@@ -38,6 +38,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **A `release` branch for the plugin directory to track.** The release workflow now fast-forwards
   (or creates) `release` to each tagged release, so a directory listing tracking that branch picks
   up new versions without a manual re-validate. The branch only ever points at tagged commits.
+- **An evidence tier on every finding.** `evidence` is `measured` (a value read off the page
+  against a threshold or a required attribute: every axe violation and the static own checks),
+  `inferred` (a conclusion from a driven, bounded probe: `keyboard-unreachable`, the `dialog-*`
+  rules, `role-button-keyboard-activation`, `div-button`) or `needs-review` (every needsReview
+  row). It never changes severity or the exit code. When the probe behind a row ran out of budget
+  the row also carries `confidence: { level: "reduced", reason }`: `keyboard-unreachable` when the
+  Tab walk used all 60 presses without wrapping, `dialog-focus-not-trapped` when the verdict came
+  from the wrap budget rather than from focus reaching real content.
+- **Root-cause clusters.** A new top-level `clusters` array groups rows within a bucket and state
+  that share a cause: (rule, foreground, background, required ratio) for contrast, from the values
+  axe measured, and (rule, selector with every `:nth-child`/`:nth-of-type` index replaced) for
+  everything else. Each cluster has a stable `id`, `count`, `cause` and `causeText`, a
+  representative row, its members' fingerprints, the passes they appeared in, and for contrast the
+  suggestion and the `a11y-loop contrast … --fix` command once. Clusters need two members, and a
+  row belongs to at most one. Every row stays in `findings`. On `demo/before`: 12 colour pairs
+  account for the 104 contrast violations, and 20 clusters cover 135 of the 159 violations.
+- **Measured contrast values on contrast findings,** as `data.contrast` (`fgColor`, `bgColor`,
+  `contrastRatio`, `expectedContrastRatio`, `fontSize`, `fontWeight`, and axe's `messageKey` when
+  it could not measure).
+- **`schemaVersion: 2` on the JSON report.** Reports without the field are version 1. Version 2
+  only adds: the finding fields above, `clusters`, and `summary.evidence`, `summary.clusters` and
+  `summary.colourPairs`. Nothing was renamed or removed. Fingerprints are unchanged, so `diff`
+  matches across versions.
+- **SARIF results carry a message.** `message.text` and `message.markdown` hold the finding's own
+  message, the measured contrast pair when the message does not already name it, the passes and
+  state, the evidence tier, and any confidence caveat or note. The converter this writer replaced
+  left them empty. Each result also has a `properties` bag with its fingerprint and evidence tier.
+  Rule ids, kinds, levels and locations are unchanged and still checked against the golden file.
+  Logs from `demo/before` (200 results), the new fixture, an `--html` fragment and an `--interact`
+  dialog fixture validate against the SARIF 2.1.0 schema, with no empty messages.
 
 ### Changed
 - **`audit --out` and `--sarif` create missing parent directories.** Before, writing to
@@ -69,6 +99,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   headline arms ran from a clean directory. The contaminated runs are reported as well. The
   2026-07 report and outputs are kept unchanged in `evals/benchmark-results-2026-07.md` and
   `evals/outputs/2026-07/`.
+- **`color-contrast` and `color-contrast-enhanced` rows from the forced-colors pass are now
+  reported under `needsReview`, not as violations.** This changes the exit code for a page whose only violations were those rows: it
+  now exits 0 where it used to exit 1. axe-core reads the foreground from `-webkit-text-fill-color`
+  before `color`, and Chromium's forced-colors emulation leaves that at the author's value, so
+  light-on-dark text was compared against a forced white background (the Field Note in
+  `docs/overview.md`). A `color-contrast` or `color-contrast-enhanced` violation from the
+  `forced-colors` pass, and only from that pass, is routed by rule id and pass name through the
+  mechanism that already downgraded `target-size`. `color-contrast-enhanced` is AAA and not in the
+  default run; it is routed because it reads the foreground the same way. Each routed row keeps its place in the report and carries `routedFrom:
+  "violation"`, a `note` with the explanation and a `noteUrl` to the Field Note. It no longer
+  carries a colour suggestion, because one computed from that pair fails in the default pass. The
+  same element failing in any other pass is still a violation. Measured at axe-core 4.14.0 across
+  `demo/before`, `demo/after` (each with and without `--interact`) and all 19 existing fixtures:
+  **0 rows moved**, because every forced-colors contrast failure there also fails in another pass.
+  The demo count stays 159 and its per-pass counts are unchanged. A new fixture,
+  `fixture-forced-colors-dark-surface.html`, reproduces the Field Note: on 0.3.2 it reported 1
+  violation and exited 1; now it reports 0 violations and 1 needs-review row, and exits 0.
+  **`diff` reports these rows as RECLASSIFIED, never FIXED.** A before-violation whose
+  fingerprint is among the after report's needs-review rows with `routedFrom` set is counted in a
+  new `reclassified[]` array and `summary.reclassified`. It is listed as `RECLASSIFIED` in the
+  table and left out of the fixed count. So diffing a 0.3.2 report against a new one says, for
+  example, `Converged: no violations fixed, 1 reclassified to needs-review, none introduced`
+  rather than claiming a fix nobody made. The `dedupeFindings` guard that stopped a lone
+  forced-colors contrast violation overriding the other passes was removed: the routing now
+  handles every such row before dedupe, so no audit could reach it. The gradient regression test
+  still passes, now through the routing, and fails when the routing is disabled.
+- **The terminal report prints a summary first.** Before any finding it states what the exit code
+  means, violations by evidence tier, the needs-review, best-practice and manual-check counts, and
+  how many colour pairs and clusters account for the violations. Each bucket then lists its
+  clusters, one example each with `+N more like this`, before the rows no cluster explains.
+  `demo/before` prints 356 lines instead of 565 for the same 159 violations. The new `--verbose`
+  flag lists every member of every cluster (457 lines on the demo). `--json`, `--out` and
+  `--quiet` output are unchanged apart from the additive fields below.
+- **Field Note figures corrected.** The forced-colors table gave 4.9:1 and 14:1 for the two
+  default-pass pairs; a11y-loop's own contrast math gives 5.34:1 and 15.04:1, which the new
+  fixture now pins.
 
 ## [0.3.2] - 2026-10-19
 

@@ -48,6 +48,9 @@ export const MAX_WRAP_TICKS = 3;
  * @param {boolean|null} observation.escapeClosed
  * @param {boolean|null} observation.focusReturnedToTrigger
  * @param {string|null} observation.trigger
+ * @param {boolean} [observation.wrapBudgetExhausted] focus sat outside on
+ *   transient stops for more than MAX_WRAP_TICKS presses, so the escape verdict
+ *   came from the wrap budget rather than from focus reaching real content
  * @param {{passes:string[], state:string|null}} ctx
  */
 export function dialogFindings(observation, ctx) {
@@ -89,6 +92,15 @@ export function dialogFindings(observation, ctx) {
           `Tabbing inside this dialog moved focus out of it (reached ${observation.escapedTo ?? 'content behind the dialog'}). ` +
           'A modal dialog must keep Tab and Shift+Tab within itself while it is open.',
         data: { escapedTo: observation.escapedTo ?? null },
+        confidence: observation.wrapBudgetExhausted
+          ? {
+              level: 'reduced',
+              reason:
+                `Focus stayed on stops no user can act on for more than ${MAX_WRAP_TICKS} Tab ` +
+                'presses and never reached real content outside the dialog. A slow focus guard ' +
+                'looks the same. Confirm by tabbing through the open dialog by hand.',
+            }
+          : undefined,
       }),
     );
   }
@@ -321,6 +333,7 @@ export async function surveyDialog(page, found) {
   let insideAtLeastOnce = false;
   let consecutiveWrapTicks = 0;
   let tornDownMidProbe = false;
+  let wrapBudgetExhausted = false;
   for (let i = 0; enteredDialog && i < TRAP_PROBE_STEPS; i++) {
     await page.keyboard.press('Tab');
     await settleFrames(page);
@@ -384,6 +397,7 @@ export async function surveyDialog(page, found) {
     }
     focusTrapped = false;
     escapedTo = check.label;
+    wrapBudgetExhausted = check.transient && insideAtLeastOnce;
     break;
   }
 
@@ -413,7 +427,14 @@ export async function surveyDialog(page, found) {
     focusReturnedToTrigger = activeSelector === found.trigger;
   }
 
-  return { ...found, focusTrapped, escapedTo, escapeClosed, focusReturnedToTrigger };
+  return {
+    ...found,
+    focusTrapped,
+    escapedTo,
+    escapeClosed,
+    focusReturnedToTrigger,
+    wrapBudgetExhausted,
+  };
 }
 
 /**

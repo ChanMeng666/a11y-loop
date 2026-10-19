@@ -404,13 +404,61 @@ describe('SARIF output matches the axe-sarif-converter golden file', () => {
   const run = toSarif(makeReport({ findings: goldenFindings(), targetType: 'url' })).runs[0];
   const withoutRelationships = (rules) => rules.map(({ relationships, ...rule }) => rule);
 
-  test('same results: rule ids, count, kinds, levels, message text and locations', () => {
+  // Everything the converter wrote, except the two things schema 2 adds on
+  // purpose: a message (the converter's was empty) and a properties bag.
+  const asConverterWroteIt = ({ message: _m, properties: _p, ...result }) => result;
+
+  test('same results: rule ids, count, kinds, levels, rule indices and locations', () => {
     assert.equal(run.results.length, golden.results.length);
     assert.deepEqual(
-      run.results.map((r) => [r.ruleId, r.kind, r.level, r.message.text]),
-      golden.results.map((r) => [r.ruleId, r.kind, r.level, r.message.text]),
+      run.results.map((r) => [r.ruleId, r.ruleIndex, r.kind, r.level]),
+      golden.results.map((r) => [r.ruleId, r.ruleIndex, r.kind, r.level]),
     );
-    assert.deepEqual(run.results, golden.results);
+    assert.deepEqual(run.results.map(asConverterWroteIt), golden.results.map(asConverterWroteIt));
+  });
+
+  test('the golden messages were empty; ours carry the finding, its values and its evidence', () => {
+    for (const result of golden.results) assert.deepEqual(result.message, { text: '', markdown: '' });
+    const findings = goldenFindings();
+    run.results.forEach((result, i) => {
+      assert.ok(result.message.text.length > 0, result.ruleId);
+      assert.ok(result.message.markdown.length > 0, result.ruleId);
+      assert.ok(result.message.text.includes('Evidence: '), result.message.text);
+      assert.match(result.properties.fingerprint, /^[0-9a-f]{12}$/);
+      assert.ok(['measured', 'inferred', 'needs-review'].includes(result.properties.evidence));
+    });
+    const button = run.results.find((r) => r.ruleId === 'button-name');
+    assert.ok(button.message.text.startsWith(findings[0].message), button.message.text);
+    assert.match(button.message.text, /Evidence: measured\./);
+    const dialog = run.results.find((r) => r.ruleId === 'dialog-focus-not-trapped');
+    assert.match(dialog.message.text, /Evidence: inferred\./);
+    assert.match(dialog.message.text, /State: dialog-open\./);
+    const review = run.results.find((r) => r.ruleId === 'target-size-min');
+    assert.match(review.message.text, /Evidence: needs-review\./);
+    assert.equal(review.level, 'none');
+  });
+
+  test('a contrast result names the measured pair, and a routed row carries its note', () => {
+    const measured = contrastFinding({
+      data: { contrast: { fgColor: '#999999', bgColor: '#ffffff', contrastRatio: 2.84, expectedContrastRatio: '4.5:1' } },
+    });
+    const routed = contrastFinding({
+      severity: SEVERITY.NEEDS_REVIEW,
+      selector: 'html > body > div > p',
+      passes: ['forced-colors'],
+      suggestions: undefined,
+      data: { contrast: { fgColor: '#e8e6ef', bgColor: '#ffffff', contrastRatio: 1.23, expectedContrastRatio: '4.5:1' } },
+      note: 'axe-core reads -webkit-text-fill-color first.',
+      noteUrl: 'https://example.test/field-note',
+      routedFrom: 'violation',
+    });
+    const results = toSarif(makeReport({ findings: [measured, routed], targetType: 'url' })).runs[0].results;
+    const fail = results.find((r) => r.kind === 'fail');
+    assert.match(fail.message.text, /Measured: 2\.84:1 for foreground #999999 on background #ffffff, 4\.5:1 required\./);
+    assert.match(fail.message.markdown, /\*\*Measured:\*\* 2\.84:1/);
+    const open = results.find((r) => r.kind === 'open');
+    assert.match(open.message.text, /Note: axe-core reads -webkit-text-fill-color first\. See https:\/\/example\.test\/field-note/);
+    assert.match(open.message.text, /Passes: forced-colors\./);
   });
 
   test('same rules, tool driver, invocations, artifacts and run properties', () => {

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- FIXTURE: forced-colors contrast on a dark surface. Expected to produce
+     zero violations, and one or more color-contrast needs-review rows from the
+     forced-colors pass only.
+
+     This is NOT a seeded defect. Both pairs pass SC 1.4.3 comfortably in the
+     default and dark passes. It reproduces the Field Note in docs/overview.md:
+     axe-core reads the foreground from -webkit-text-fill-color before color,
+     and Chromium's forced-colors emulation forces color and the background but
+     leaves -webkit-text-fill-color at the author's value, so light-on-dark
+     text is compared against a forced white background and reads 1.23:1.
+     Dark-on-light text survives the same comparison. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — forced-colors contrast on a dark surface</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: #1f2a33;
+    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 34rem; padding: 1.5rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  .muted { color: #6d6975; }               /* 5.34:1 on #ffffff, survives forced colors */
+  .card {                                   /* DEFECT-SHAPED, NOT A DEFECT: */
+    background: #141218;                    /* light text on a dark card, 15.04:1 */
+    color: #e8e6ef;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Forced-colors contrast fixture</h1>
+  <p class="muted">Dark-on-light text: the forced-colors pass leaves this one alone.</p>
+  <div class="card">
+    <p>Light-on-dark text: readable in every real rendering mode.</p>
+  </div>
+</main>
+</body>
+</html>

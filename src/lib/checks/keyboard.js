@@ -60,6 +60,8 @@ export function diffTabOrder({ expected = [], observed = [] } = {}) {
  * @param {string[]} survey.expected
  * @param {string[]} survey.observed
  * @param {Array<{selector:string,html:string}>} [survey.expectedDetails]
+ * @param {boolean} [survey.budgetExhausted] the walk used all MAX_TAB_STEPS
+ *   presses without wrapping or leaving the page
  * @param {{passes:string[], state:string|null}} ctx
  */
 export function keyboardFindings(survey, ctx) {
@@ -101,6 +103,19 @@ export function keyboardFindings(survey, ctx) {
   // reporting) is already captured, more precisely, by positive-tabindex above.
   // Reporting both would double-count the same element under two rule ids and
   // mislabel a "reachable too early" problem as "unreachable".
+  // A walk that ran out of presses never saw the end of the tab sequence, so
+  // "never received focus" may only mean "the walk stopped first". The row is
+  // still reported — the Field Note in docs/overview.md says how to tell — but
+  // it says so itself.
+  const confidence = survey.budgetExhausted
+    ? {
+        level: 'reduced',
+        reason:
+          `The Tab walk used all ${MAX_TAB_STEPS} presses without wrapping, so elements after the ` +
+          'last one it reached may be reachable and simply beyond the budget. Confirm by hand.',
+      }
+    : undefined;
+
   for (const selector of diff.unreachable.filter((sel) => !positiveTabindexSelectors.has(sel))) {
     findings.push(
       makeFinding({
@@ -117,6 +132,7 @@ export function keyboardFindings(survey, ctx) {
           'a focus trap earlier in the page, or tabindex="-1".',
         passes,
         state,
+        confidence,
       }),
     );
   }
@@ -212,6 +228,7 @@ export async function surveyKeyboard(page) {
 
   const observed = [];
   const seen = new Set();
+  let budgetExhausted = true;
   for (let i = 0; i < MAX_TAB_STEPS; i++) {
     await page.keyboard.press('Tab');
     const current = await page.evaluate(() => {
@@ -220,8 +237,11 @@ export async function surveyKeyboard(page) {
       if (el.hasAttribute?.('data-a11y-loop-sentinel')) return null;
       return window.__a11yLoop.cssPath(el);
     });
-    if (current === null) break;
-    if (seen.has(current)) break; // wrapped around
+    if (current === null || seen.has(current)) {
+      // Left the page or wrapped around: the walk saw the whole sequence.
+      budgetExhausted = false;
+      break;
+    }
     seen.add(current);
     observed.push(current);
   }
@@ -233,5 +253,6 @@ export async function surveyKeyboard(page) {
     expectedDetails,
     observed,
     positiveTabindex,
+    budgetExhausted,
   };
 }
