@@ -45,9 +45,8 @@ installed, run these yourself rather than handing them back:
 
 ```bash
 npm i -g a11y-loop
-npx playwright install chromium
-mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # portable skill, any client
+a11y-loop install-browser                                            # Chromium for a11y-loop's own Playwright
+npx skills add ChanMeng666/a11y-loop -g -y                           # portable skill, any client
 claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
 ```
@@ -56,12 +55,16 @@ Verify: `a11y-loop --version`; `test -f ~/.claude/skills/a11y-loop/references/pl
 `claude plugin list | grep -A2 'a11y-loop@'` (expect `Status: ✔ enabled`).
 
 Upgrading is a different command from installing (`claude plugin install` on an already-installed
-plugin does nothing): `npm i -g a11y-loop@latest`, re-run the `cp` if using the skill, then
+plugin does nothing): `npm i -g a11y-loop@latest`, re-run `npx skills add ChanMeng666/a11y-loop -g -y` (or the `cp`) if using the skill, then
 `claude plugin marketplace update chanmeng-a11y-loop && claude plugin update
 a11y-loop@chanmeng-a11y-loop`. Teardown is `claude plugin disable|enable|uninstall`; only
 `uninstall --prune` needs `-y`.
 
-No `git clone` is required — the skill ships inside the npm package. Install the skill *or* the
+No `git clone` is required. `npx skills add` fetches the skill from GitHub, and it also ships inside the
+npm package (`$(npm root -g)/a11y-loop/skills/a11y-loop`), so a manual `cp -r` into `~/.claude/skills/` works too.
+On Claude Code the plugin pair can be one command: `claude plugin install a11y-loop --marketplace
+ChanMeng666/a11y-loop` (2.1.292 or later). Codex: `codex plugin marketplace add ChanMeng666/a11y-loop`, then
+`codex plugin add a11y-loop@chanmeng-a11y-loop`. Install the skill *or* the
 plugin, not both: the plugin carries its own copy, and doing both makes the model see `a11y-loop`
 and the directory-qualified `a11y-loop:a11y-loop`. Prefer `--scope user`; `--scope project` writes a
 committable `.claude/settings.json` but puts the plugin behind Claude Code's workspace-trust prompt

@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js ≥ 20
-- A Chromium install for Playwright (installed below)
+- A Chromium install for a11y-loop's own Playwright (`a11y-loop install-browser`, below)
 
 ## Everything at once (agent-runnable)
 
@@ -13,14 +13,17 @@ you to click anything:
 
 ```bash
 npm i -g a11y-loop
-npx playwright install chromium
-mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
+a11y-loop install-browser
+npx skills add ChanMeng666/a11y-loop -g -y        # portable skill, any Agent Skills client
 claude plugin marketplace add ChanMeng666/a11y-loop
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user
 ```
 
-No `git clone` — the skill ships inside the npm package. Verify:
+No `git clone` needed. `npx skills add` fetches the skill from GitHub. The same skill also ships inside
+the npm package, so `cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/` works too.
+On Claude Code you can skip the `claude plugin` pair and use the one-liner
+`claude plugin install a11y-loop --marketplace ChanMeng666/a11y-loop` (Claude Code 2.1.292 or later).
+Verify:
 
 ```bash
 a11y-loop --version
@@ -52,21 +55,28 @@ npm install --save-dev a11y-loop
 npx a11y-loop --help
 ```
 
-Then install the Chromium build Playwright needs to run audits:
+Then install the Chromium build a11y-loop's own Playwright needs to run audits, and check the setup:
 
 ```bash
-npx playwright install chromium
+a11y-loop install-browser
+a11y-loop doctor
 ```
 
 If you keep browser binaries off your system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
-`npx playwright install chromium` (and before running your own test suite, if it launches the same
+`a11y-loop install-browser` (and before running your own test suite, if it launches the same
 browser) — for example `PLAYWRIGHT_BROWSERS_PATH=D:\playwright-browsers` on Windows.
 
 ## Install the Agent Skill
 
 The Agent Skill is what makes your AI coding agent plan for accessibility and write accessible UI
-*by default*, before any audit ever runs. Copy the skill directory into any
+*by default*, before any audit ever runs. The one-line route works for any
 [Agent Skills](https://agentskills.io/specification)-compatible client:
+
+```bash
+npx skills add ChanMeng666/a11y-loop -g -y
+```
+
+Or copy the skill directory yourself:
 
 ```bash
 # Personal, all projects (Claude Code and other clients that read ~/.claude/skills)

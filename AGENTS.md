@@ -26,9 +26,8 @@ non-interactive, idempotent, and needs no TTY, so do it yourself rather than han
 
 ```bash
 npm i -g a11y-loop
-npx playwright install chromium
-mkdir -p ~/.claude/skills
-cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # portable skill
+a11y-loop install-browser                                            # Chromium for a11y-loop's own Playwright
+npx skills add ChanMeng666/a11y-loop -g -y                           # portable skill, any client
 claude plugin marketplace add ChanMeng666/a11y-loop                  # Claude Code only
 claude plugin install a11y-loop@chanmeng-a11y-loop --scope user      # Claude Code only
 ```
@@ -43,8 +42,10 @@ claude plugin list | grep -A2 'a11y-loop@'    # expect: Status: ✔ enabled
 
 Notes that matter when scripting this:
 
-- **No `git clone` needed** — the skill ships inside the npm package at
-  `$(npm root -g)/a11y-loop/skills/a11y-loop`.
+- **No `git clone` needed** — `npx skills add` fetches the skill from GitHub, and it also ships
+  inside the npm package at `$(npm root -g)/a11y-loop/skills/a11y-loop` for a manual copy.
+- **Claude Code one-liner (2.1.292 or later):** `claude plugin install a11y-loop --marketplace
+  ChanMeng666/a11y-loop` adds the marketplace and installs the plugin in one step.
 - **Install the skill or the plugin, not both.** The plugin carries its own copy. Doing both
   registers the skill twice — the model sees `a11y-loop` *and* the directory-qualified
   `a11y-loop:a11y-loop`, and pays the always-on token cost twice. If you see both names, delete
@@ -57,7 +58,7 @@ Notes that matter when scripting this:
   already-installed plugin reports "already installed" and does nothing. Use:
   ```bash
   npm i -g a11y-loop@latest
-  cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/   # if using the skill
+  npx skills add ChanMeng666/a11y-loop -g -y                           # if using the skill
   claude plugin marketplace update chanmeng-a11y-loop                  # if using the plugin
   claude plugin update a11y-loop@chanmeng-a11y-loop
   ```
