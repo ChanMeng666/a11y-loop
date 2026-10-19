@@ -25,8 +25,8 @@ the audit: there the skill's rules apply, but nothing is verified. `plugin/READM
 
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
 describe a planned or in-progress item as existing, and do not describe something merged on `main`
-but not yet tagged (the GitHub Action, the Stop-hook audit gate and `a11y-loop mcp`, as of this
-writing) as usable from a release.
+but not yet tagged as usable from a release. The GitHub Action, the Stop-hook audit gate and
+`a11y-loop mcp` ship in 0.4.0; nothing is merged-but-untagged at the time of this release.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
@@ -170,7 +170,9 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   section is missing, then fast-forwards the `release` branch to the tag for the plugin directory.
   Do not rename the file: its name is part of the npm trusted-publisher contract.
 - **`.github/workflows/action-selftest.yml`** — runs the composite action (`uses: ./`) on Ubuntu and
-  Windows against the demo pages and asserts its outputs.
+  Windows against the demo pages and asserts its outputs. A release PR runs it before the version is
+  published, so, when no `version` input is given, the action's install step falls back to its own checkout if
+  `npm view` does not find the version (an explicit `version` that is missing still fails); without that fallback the self-test could never pass on a release PR.
 - **`.github/workflows/deploy-docs.yml`** — builds the VitePress site in `website/` and deploys it to
   GitHub Pages on pushes to `main` that touch it.
 
@@ -603,7 +605,8 @@ publishes until a tag is pushed, and publishing is the one irreversible step.
    `git grep -n '<old-version>' -- package.json package-lock.json .claude-plugin plugin skills`.
 3. **Move `## [Unreleased]` in `CHANGELOG.md` to `## [x.y.z] - YYYY-MM-DD`.** The release workflow
    copies that exact section into the GitHub Release and fails without it.
-4. **Open the PR, wait for CI** (tests plus the three-OS install smoke), and merge.
+4. **Open the PR, wait for CI** (tests plus the three-OS install smoke, and the action self-test,
+   which installs from the checkout because this version is not on npm until step 5), and merge.
 5. **Tag `main` and push the tag:** `git tag vX.Y.Z && git push origin vX.Y.Z`. `release.yml`
    publishes to npm with provenance and creates the GitHub Release. Check both:
    `npm view a11y-loop version` and `gh release view vX.Y.Z`.

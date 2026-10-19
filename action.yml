@@ -129,9 +129,20 @@ runs:
       shell: bash
       env:
         VERSION: ${{ steps.configure.outputs.version }}
+        IN_VERSION: ${{ inputs.version }}
         IN_BROWSER: ${{ inputs.browser }}
       run: |
-        npm i -g "a11y-loop@$VERSION"
+        if npm view "a11y-loop@$VERSION" version >/dev/null 2>&1; then
+          npm i -g "a11y-loop@$VERSION"
+        elif [ -z "$IN_VERSION" ]; then
+          echo "::notice::a11y-loop@$VERSION is not on npm yet; installing the action's own checkout at this ref"
+          # A directory install would only symlink the checkout and skip its dependencies, so pack it.
+          tarball="$(cd "$GITHUB_ACTION_PATH" && npm pack --json --pack-destination "$RUNNER_TEMP" | node -p "JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename")"
+          test -f "$RUNNER_TEMP/$tarball"
+          npm i -g "$RUNNER_TEMP/$tarball"
+        else
+          echo "::error::a11y-loop@$VERSION is not on npm (version input: '$IN_VERSION')"; exit 2
+        fi
         a11y-loop --version
         if [ "$IN_BROWSER" = "chromium" ]; then
           a11y-loop install-browser

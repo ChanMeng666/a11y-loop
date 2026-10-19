@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-20
+
+**Behaviour change.** Three things can change an exit code or a report you already parse. `color-contrast` and `color-contrast-enhanced` rows from the forced-colors pass are now `needsReview`, so a page whose only violations were those rows exits 0 where it used to exit 1. The JSON report is now `schemaVersion: 2`; it only adds fields, and a report without the field is version 1. And `--interact` now runs new checks on built states: `route-change-focus-lost` and `status-message-not-announced` can be violations, so a page with built states can exit 1 where it used to exit 0, and `live-region-injected-late` is always needs-review. An audit without `--interact` is not affected by the new checks.
+
 ### Docs
 - **Plan-gate and audit-gate equivalents for other agent clients** (`docs/agent-gates.md`, and `website/guide/agent-gates.md` on the site). For Codex CLI, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline and OpenCode it records, with the date and URL read, which hook events exist, which can ask the agent to continue, and what could not be verified. One script serves the four clients that can; a git hook and a CI job cover the rest. The script has been run on its own, not yet inside those clients.
 
@@ -38,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
 - **Native plugin evals.** `plugin/evals/` is a suite for `claude plugin eval` (Claude Code 2.1.269 or later): one trigger case per prompt in `trigger-evals.json` (21 should-trigger, 11 should-not) and 7 behaviour cases with graders for the plan, the APG modal and tabs contracts, the audit loop, and the honesty rules. Hand-written cases live in `skills/a11y-loop/evals/native/`; `npm run sync-plugin` generates the rest. `npm run eval:skill` runs it with and without the plugin and prints the delta. First measured results are in `evals/skill-eval-report-2026-10.md`.
 - **A composite GitHub Action** (`action.yml` at the repository root, usable as
-  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version and the
+  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version (falling back to the action's own checkout when no `version` input is given and that version is not on npm yet) and the
   headless-shell browser, runs `doctor` and `audit`, and writes a step summary with the totals, the
   first violations, the manual-check count and the sentence about what a clean report means. Inputs:
   `target`, `interact`, `baseline`, `fail-on` (`violations`, `new` or `never`), `sarif`, `pr-comment`,
@@ -202,6 +206,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixture now pins.
 
 ### Fixed
+- **The MCP SDK is loaded only by `a11y-loop mcp`.** `src/cli.js` used to import the MCP server
+  module at start-up, so every command, `--version` included, failed if the SDK was missing. The
+  import is now lazy.
 - **`dialog-focus-not-returned` no longer treats a button inside the dialog as its trigger.** Up to
   0.3.2 the trigger was the last clicked element. A state that opened a dialog and clicked the
   dialog's own Submit made Submit the "trigger", so when Escape closed the dialog and focus

@@ -13,9 +13,8 @@ To cache the browser between runs, set `PLAYWRIGHT_BROWSERS_PATH` to a cached di
 `install-browser` and the audit, and key the cache on a11y-loop's Playwright version. Every
 command is non-interactive: none of them prompts, and `install-browser` ignores stdin.
 
-A composite GitHub Action (`action.yml`) is merged on `main` but is not in a release yet: 0.3.2
-does not contain it, so `uses: ChanMeng666/a11y-loop@<tag>` resolves only once a release that
-contains it is tagged. Until then, call the CLI from a `run:` step as above. The
+A composite GitHub Action (`action.yml`) ships in release 0.4.0 and later:
+`uses: ChanMeng666/a11y-loop@v0.4.0`. On 0.3.2 or earlier, call the CLI from a `run:` step as above. The
 [overview](https://github.com/ChanMeng666/a11y-loop/blob/main/docs/overview.md#%EF%B8%8F-using-it-in-ci)
 lists its inputs and outputs.
 

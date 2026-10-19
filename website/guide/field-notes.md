@@ -86,7 +86,7 @@ signature. Confirm by hand with the five-minute keyboard test in
 [`manual-testing.md`](https://github.com/ChanMeng666/a11y-loop/blob/main/skills/a11y-loop/references/manual-testing.md),
 and audit narrower states so each walk fits.
 
-## `dialog-focus-not-returned` used to name the dialog's own Submit button (fixed on `main`, unreleased)
+## `dialog-focus-not-returned` used to name the dialog's own Submit button (fixed in 0.4.0)
 
 Up to 0.3.x the dialog check took the last clicked element as the dialog's trigger. An
 `--interact` state that opened a dialog and then clicked the dialog's own Submit (to reach its
@@ -160,6 +160,12 @@ second after a route change, is reported. For a route that waits on a long fetch
 wait for the focus move before it returns; the second is counted from when the state returns. For a
 dialog the second is counted from the close itself, so waiting in the state does not extend it, and
 a state that acts again within the second freezes the snapshot at that moment.
+
+The status-message check (`status-message-not-announced`) stands down entirely in a state where the page
+moved focus somewhere other than the control the state activated. So an unannounced status shown in
+that same state is not reported. This is a deliberate choice against false positives: focus moving
+to a new place is how many pages announce a change, and the check cannot tell which message that
+move covered.
 
 ## Up to 0.2.x, invoking the CLI through a link silently did nothing (fixed in 0.3.0)
 
