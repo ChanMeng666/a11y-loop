@@ -13,6 +13,10 @@ of the project for large language models and AI agents.
 - Two layers: an Agent Skill (`skills/a11y-loop/`, open Agent Skills standard) covering the plan,
   generation and reporting phases, and a CLI (`src/cli.js`: `audit` / `contrast --fix` / `diff` /
   `plan-check` / `doctor` / `install-browser`) for browser-verified checks and the plan gate
+- GitHub Actions: the repository root is a composite action (`action.yml`):
+  `uses: ChanMeng666/a11y-loop@<tag>` with `target`, optional `baseline`, `fail-on`
+  (`violations` | `new` | `never`) and `pr-comment`. It writes a step summary and an optional sticky
+  PR comment, and never a score. Example: `examples/github-action/audit.yml`
 - `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state

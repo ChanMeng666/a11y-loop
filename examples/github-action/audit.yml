@@ -1,0 +1,84 @@
+# Copy to .github/workflows/a11y.yml in your repository.
+#
+# - Pull requests: audit the page, fail only on violations that are NEW against the report from
+#   the latest successful run on main, and keep one comment on the PR up to date.
+# - Pushes to main: audit, keep the report as the next baseline, never fail the push.
+#
+# A clean report means no automatically detectable failures were found. It is not a conformance
+# claim; the step summary lists the manual checks that still need a person.
+
+name: a11y
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read          # download the baseline report from the latest main run
+  pull-requests: write   # the sticky PR comment; drop this and pr-comment if you do not want it
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # The action needs Node 20 or newer on the runner. It does not install Node for you.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Cache the browser. The path is the action's default, so no input is needed.
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw-browsers
+          key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      # Replace with however your app starts. A static file needs no server: use
+      # `target: dist/index.html` below instead and delete these two steps.
+      - name: Start the app
+        run: |
+          npm run build
+          npm start &
+          npx --yes wait-on http://localhost:3000
+
+      # Pull requests only: fetch the report the latest successful main run produced.
+      # If there is none yet, the action says so and carries on.
+      - name: Fetch the baseline from main
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id="$(gh run list --workflow a11y.yml --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          if [ -n "$run_id" ]; then
+            gh run download "$run_id" --name a11y-baseline --dir baseline || echo "No baseline artifact on run $run_id."
+          fi
+
+      - name: Audit
+        id: a11y
+        uses: ChanMeng666/a11y-loop@v0.4.0
+        with:
+          target: http://localhost:3000
+          baseline: baseline/report.json
+          # On main there is no baseline to regress against, so never fail the push there.
+          fail-on: ${{ github.event_name == 'pull_request' && 'new' || 'never' }}
+          pr-comment: 'true'
+
+      - name: Keep this report as the next baseline
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-baseline
+          path: ${{ steps.a11y.outputs.report-path }}
+          retention-days: 30
+
+      # Optional. Code Scanning drops results located by URL and selector, so this is secondary.
+      # Add `sarif: 'true'` to the audit step, grant `security-events: write`, then:
+      # - uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: ${{ steps.a11y.outputs.sarif-path }}

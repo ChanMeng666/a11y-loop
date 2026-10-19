@@ -1,0 +1,270 @@
+name: a11y-loop audit
+description: >-
+  Audit a page in a real browser (axe-core plus a11y-loop's own checks) and report what it can
+  detect automatically, with a step summary, an optional baseline diff and a sticky PR comment.
+  It does not claim conformance; a manual-testing checklist comes with every run.
+author: Chan Meng
+branding:
+  icon: eye
+  color: purple
+
+# Run actions/setup-node (Node 20 or newer) before this action. To cache the browser, restore
+# ${{ runner.temp }}/pw-browsers with actions/cache first; see examples/github-action/audit.yml.
+
+inputs:
+  target:
+    description: >-
+      What to audit. An http(s) URL is audited as is. Anything else is treated as an HTML file path,
+      relative to the workspace, and served over local http (never file://).
+    required: true
+  interact:
+    description: >-
+      Path to a module that exports `states = { name: async (page) => {} }`, to audit interaction
+      states (a11y-loop audit --interact). Empty means the page as loaded.
+    required: false
+    default: ''
+  baseline:
+    description: >-
+      Path to a JSON report from an earlier run. When the file exists, `a11y-loop diff` runs and
+      reports FIXED / NEW / REMAINING. A missing file is not an error: there is nothing to compare yet.
+    required: false
+    default: ''
+  fail-on:
+    description: >-
+      When the step fails. `violations` fails on any violation (audit exit code 1). `new` fails only
+      on violations that are new against `baseline`. `never` never fails on findings. A tool error
+      (exit code 2) always fails, whatever this is set to.
+    required: false
+    default: violations
+  sarif:
+    description: >-
+      `true` also writes a SARIF file and returns its path in the `sarif-path` output. This action
+      does not upload it. GitHub Code Scanning drops results located by URL and selector, so treat
+      SARIF as secondary; the JSON report and step summary are the primary output.
+    required: false
+    default: 'false'
+  version:
+    description: >-
+      The a11y-loop npm version to install. Empty means the version of the action ref you are using
+      (read from its package.json). `latest` installs the newest release.
+    required: false
+    default: ''
+  browser:
+    description: '`headless-shell` (default, smaller) or `chromium` (the full build).'
+    required: false
+    default: headless-shell
+  playwright-browsers-path:
+    description: >-
+      Where the browser is installed (PLAYWRIGHT_BROWSERS_PATH). Empty means `$RUNNER_TEMP/pw-browsers`,
+      the same path as `runner.temp/pw-browsers` in an actions/cache step.
+    required: false
+    default: ''
+  pr-comment:
+    description: >-
+      `true` posts or updates one comment on the pull request, identified by a hidden marker. Only runs
+      on `pull_request` events and needs `pull-requests: write`. A token without that permission (for
+      example on a fork) produces a warning, never a failure.
+    required: false
+    default: 'false'
+  github-token:
+    description: Token used for the PR comment.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  violations:
+    description: Automatically detectable failures found.
+    value: ${{ steps.report.outputs.violations }}
+  needs-review:
+    description: Findings the tools could not judge alone.
+    value: ${{ steps.report.outputs.needs-review }}
+  manual:
+    description: Manual checks that still need a person.
+    value: ${{ steps.report.outputs.manual }}
+  new:
+    description: Violations new against the baseline (0 without a baseline).
+    value: ${{ steps.report.outputs.new }}
+  fixed:
+    description: Violations fixed against the baseline (0 without a baseline).
+    value: ${{ steps.report.outputs.fixed }}
+  remaining:
+    description: Violations still present against the baseline (0 without a baseline).
+    value: ${{ steps.report.outputs.remaining }}
+  report-path:
+    description: Path of the JSON report. Empty when the audit could not run.
+    value: ${{ steps.report.outputs.report-path }}
+  sarif-path:
+    description: Path of the SARIF file when `sarif` is true, else empty.
+    value: ${{ steps.report.outputs.sarif-path }}
+  exit-code:
+    description: The audit's exit code (0 no violations, 1 violations, 2 tool error).
+    value: ${{ steps.report.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - name: Configure
+      id: configure
+      shell: bash
+      env:
+        IN_VERSION: ${{ inputs.version }}
+        IN_FAIL_ON: ${{ inputs.fail-on }}
+        IN_BROWSER: ${{ inputs.browser }}
+        IN_BROWSERS_PATH: ${{ inputs.playwright-browsers-path }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        case "$IN_FAIL_ON" in violations|new|never) ;; *) echo "::error::fail-on must be violations, new or never (got '$IN_FAIL_ON')"; exit 2 ;; esac
+        case "$IN_BROWSER" in headless-shell|chromium) ;; *) echo "::error::browser must be headless-shell or chromium (got '$IN_BROWSER')"; exit 2 ;; esac
+        version="$IN_VERSION"
+        if [ -z "$version" ]; then
+          version="$(node -p "require(process.argv[1]).version" "$ACTION_PATH/package.json")"
+        fi
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "PLAYWRIGHT_BROWSERS_PATH=${IN_BROWSERS_PATH:-$RUNNER_TEMP/pw-browsers}" >> "$GITHUB_ENV"
+        # One directory per invocation, so a second use of the action cannot overwrite the first one's report.
+        out="$(mktemp -d "$RUNNER_TEMP/a11y-loop.XXXXXX")"
+        echo "out=$out" >> "$GITHUB_OUTPUT"
+
+    - name: Install a11y-loop
+      shell: bash
+      env:
+        VERSION: ${{ steps.configure.outputs.version }}
+        IN_BROWSER: ${{ inputs.browser }}
+      run: |
+        npm i -g "a11y-loop@$VERSION"
+        a11y-loop --version
+        if [ "$IN_BROWSER" = "chromium" ]; then
+          a11y-loop install-browser
+        else
+          a11y-loop install-browser --only-shell
+        fi
+        a11y-loop doctor
+
+    - name: Audit
+      id: audit
+      shell: bash
+      env:
+        TARGET: ${{ inputs.target }}
+        INTERACT: ${{ inputs.interact }}
+        SARIF: ${{ inputs.sarif }}
+        OUT: ${{ steps.configure.outputs.out }}
+      run: |
+        args=()
+        case "$TARGET" in
+          http://*|https://*) args+=("$TARGET") ;;
+          *) args+=(--file "$TARGET") ;;
+        esac
+        if [ -n "$INTERACT" ]; then args+=(--interact "$INTERACT"); fi
+        if [ "$SARIF" = "true" ]; then args+=(--sarif "$OUT/report.sarif"); fi
+        # Exit code 1 means findings, not a broken step; tee would mask the status, so read PIPESTATUS.
+        set +e
+        a11y-loop audit "${args[@]}" --out "$OUT/report.json" 2>&1 | tee "$OUT/report.txt"
+        code=${PIPESTATUS[0]}
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        echo "a11y-loop audit exit code: $code"
+
+    - name: Diff against the baseline
+      id: diff
+      if: inputs.baseline != ''
+      shell: bash
+      env:
+        BASELINE: ${{ inputs.baseline }}
+        OUT: ${{ steps.configure.outputs.out }}
+        FAIL_ON: ${{ inputs.fail-on }}
+      run: |
+        if [ ! -f "$BASELINE" ]; then
+          echo "state=missing" >> "$GITHUB_OUTPUT"
+          echo "::notice::No baseline report at '$BASELINE'; nothing to compare against."
+          if [ "$FAIL_ON" = "new" ]; then
+            echo "::warning::fail-on is 'new' but there is no baseline, so this run cannot fail on new violations."
+          fi
+          exit 0
+        fi
+        if [ ! -f "$OUT/report.json" ]; then
+          echo "state=no-report" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        code=0
+        a11y-loop diff --before "$BASELINE" --after "$OUT/report.json" --json > "$OUT/diff.json" || code=$?
+        echo "state=compared" >> "$GITHUB_OUTPUT"
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        echo "a11y-loop diff exit code: $code"
+
+    - name: Write the report
+      id: report
+      if: always() && steps.configure.outcome == 'success'
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        OUT: ${{ steps.configure.outputs.out }}
+        TARGET: ${{ inputs.target }}
+        AUDIT_EXIT: ${{ steps.audit.outputs.exit-code }}
+        BASELINE: ${{ inputs.baseline }}
+        BASELINE_STATE: ${{ steps.diff.outputs.state }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        note=""
+        if [ "$BASELINE_STATE" = "missing" ]; then
+          note="No baseline report at $BASELINE, so there is nothing to compare against yet."
+        fi
+        diff_args=()
+        if [ "$BASELINE_STATE" = "compared" ]; then diff_args=(--diff "$OUT/diff.json"); fi
+        node "$ACTION_PATH/action/report.mjs" \
+          --report "$OUT/report.json" "${diff_args[@]}" \
+          --audit-exit "${AUDIT_EXIT:-2}" --target "$TARGET" --baseline-note "$note" \
+          --sarif-path "$OUT/report.sarif" --run-url "$RUN_URL" \
+          --summary-out "$GITHUB_STEP_SUMMARY" --comment-out "$OUT/comment.json" \
+          --outputs-out "$GITHUB_OUTPUT"
+
+    - name: Pull request comment
+      if: always() && steps.report.outcome == 'success' && inputs.pr-comment == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ github.repository }}
+        PR: ${{ github.event.pull_request.number }}
+        OUT: ${{ steps.configure.outputs.out }}
+      run: |
+        # One comment, found by its hidden marker and edited in place. Never fails the build.
+        id="$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+          --jq '.[] | select(.body | contains("<!-- a11y-loop-report -->")) | .id' 2>/dev/null | head -n 1)" || id=""
+        if [ -n "$id" ]; then
+          if gh api --method PATCH "repos/$REPO/issues/comments/$id" --input "$OUT/comment.json" > /dev/null; then
+            echo "Updated comment $id."
+          else
+            echo "::warning::Could not update the a11y-loop PR comment. Does the token have pull-requests: write?"
+          fi
+        else
+          if gh api --method POST "repos/$REPO/issues/$PR/comments" --input "$OUT/comment.json" > /dev/null; then
+            echo "Posted a new comment."
+          else
+            echo "::warning::Could not post the a11y-loop PR comment. Does the token have pull-requests: write? Fork PRs get a read-only token."
+          fi
+        fi
+
+    - name: Apply fail-on
+      if: always() && steps.configure.outcome == 'success'
+      shell: bash
+      env:
+        FAIL_ON: ${{ inputs.fail-on }}
+        AUDIT_EXIT: ${{ steps.audit.outputs.exit-code }}
+        DIFF_EXIT: ${{ steps.diff.outputs.exit-code }}
+      run: |
+        audit="${AUDIT_EXIT:-2}"
+        if [ "$audit" = "2" ]; then
+          echo "::error::The audit could not run (exit code 2). Nothing was checked."
+          exit 2
+        fi
+        if [ "${DIFF_EXIT:-0}" = "2" ]; then
+          echo "::error::a11y-loop diff failed (exit code 2). Is the baseline a valid a11y-loop JSON report?"
+          exit 2
+        fi
+        if [ "$FAIL_ON" = "violations" ] && [ "$audit" = "1" ]; then
+          echo "::error::a11y-loop found automatically detectable failures."
+          exit 1
+        fi
+        if [ "$FAIL_ON" = "new" ] && [ "${DIFF_EXIT:-0}" = "1" ]; then
+          echo "::error::a11y-loop found violations that are new against the baseline."
+          exit 1
+        fi
+        exit 0

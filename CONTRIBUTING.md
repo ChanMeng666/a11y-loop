@@ -109,6 +109,14 @@ credential, so every release is signed with build provenance and no long-lived s
 workflow only publishes — tests run in `ci.yml` on every push. It also skips any version already on
 the registry, so a failed release is safe to re-run (`gh workflow run release.yml`).
 
+**Marketplace listing for the GitHub Action.** `action.yml` at the root is what makes
+`uses: ChanMeng666/a11y-loop@vX.Y.Z` work; the tag is the release. Listing it in the GitHub Marketplace
+is a manual step that needs the repository owner: on the first release that contains `action.yml`,
+open the release on GitHub, tick "Publish this Action to the GitHub Marketplace", choose the category
+and accept the Marketplace agreement. The `branding` block in `action.yml` is required for the
+listing. Later releases only need the box ticked again. Also push or move a major tag if you want
+`@v0` to work, and keep the version in the docs' `uses:` snippets in step with the release.
+
 Two things to know before you touch this setup:
 
 - **Do not rename `release.yml`.** The workflow filename is part of the trust contract registered
