@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **`release.yml` now fast-forwards the `release` branch from a full checkout.** The shallow checkout of the tag could not prove the push was a fast-forward, so the v0.4.1 run was rejected with "fetch first" and only warned. The step now fails when the tag descends from the branch tip and still warns for an older tag.
+
 ## [0.4.1] - 2026-10-20
 
 ### Fixed

@@ -516,7 +516,10 @@ rather than left to be rediscovered.
   tagged release.** `release.yml` fast-forwards it on every `v*` tag push and nothing else should
   ever write to it. When the maintainer next edits the directory submission, switch the tracked ref
   from the tag to the `release` branch and keep auto-publish on, so new releases are picked up
-  without a manual re-validate.
+  without a manual re-validate. The workflow must check out with `fetch-depth: 0`: from a shallow
+  checkout of the tag git cannot prove the push is a fast-forward and the server rejects it with
+  "fetch first" (v0.4.1 hit this). The step fails loudly when the tag descends from the branch tip
+  and only warns for an older tag.
 
 ## Testing the plugin layer
 

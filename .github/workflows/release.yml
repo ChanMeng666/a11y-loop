@@ -20,7 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # Full history: the fast-forward step below needs the release branch tip and its ancestry. A
+      # shallow checkout of the tag cannot prove a push is a fast-forward, so the server refuses it
+      # with "fetch first". A full fetch is simpler than a deepened one and cannot miss the merge base.
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -82,5 +87,15 @@ jobs:
           if git push origin "$GITHUB_SHA:refs/heads/release"; then
             echo "release -> $GITHUB_REF_NAME ($GITHUB_SHA)"
           else
-            echo "::warning::release branch not fast-forwarded to $GITHUB_REF_NAME (older tag re-run, or push refused)"
+            git fetch --no-tags origin +refs/heads/release:refs/remotes/origin/release 2>/dev/null || true
+            if ! git rev-parse --verify --quiet refs/remotes/origin/release >/dev/null; then
+              echo "::error::could not create or update the release branch for $GITHUB_REF_NAME"
+              exit 1
+            elif git merge-base --is-ancestor refs/remotes/origin/release "$GITHUB_SHA"; then
+              # The tag is a descendant of the branch tip, so this push was a fast-forward and was refused.
+              echo "::error::release branch not fast-forwarded to $GITHUB_REF_NAME although it descends from the branch tip"
+              exit 1
+            else
+              echo "::warning::release branch not fast-forwarded to $GITHUB_REF_NAME (older tag re-run, or the branch is ahead)"
+            fi
           fi
