@@ -136,7 +136,10 @@ runs:
           npm i -g "a11y-loop@$VERSION"
         elif [ -z "$IN_VERSION" ]; then
           echo "::notice::a11y-loop@$VERSION is not on npm yet; installing the action's own checkout at this ref"
-          npm i -g "$GITHUB_ACTION_PATH"
+          # A directory install would only symlink the checkout and skip its dependencies, so pack it.
+          tarball="$(cd "$GITHUB_ACTION_PATH" && npm pack --json --pack-destination "$RUNNER_TEMP" | node -p "JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename")"
+          test -f "$RUNNER_TEMP/$tarball"
+          npm i -g "$RUNNER_TEMP/$tarball"
         else
           echo "::error::a11y-loop@$VERSION is not on npm (version input: '$IN_VERSION')"; exit 2
         fi

@@ -20,7 +20,6 @@ import { runContrastCommand } from './commands/contrast.js';
 import { runDiffCommand } from './commands/diff.js';
 import { runDoctorCommand } from './commands/doctor.js';
 import { runInstallBrowserCommand } from './commands/install-browser.js';
-import { runMcpCommand } from './commands/mcp.js';
 import { runPlanCheckCommand } from './commands/plan-check.js';
 import { ToolError } from './lib/axe-runner.js';
 
@@ -211,6 +210,8 @@ export async function main(argv, io) {
     }
 
     if (command === 'mcp') {
+      // Loaded only when the server is asked for, so the MCP SDK is not needed by any other command.
+      const { runMcpCommand } = await import('./commands/mcp.js');
       return await runMcpCommand({ flags }, out);
     }
 

@@ -206,6 +206,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixture now pins.
 
 ### Fixed
+- **The MCP SDK is loaded only by `a11y-loop mcp`.** `src/cli.js` used to import the MCP server
+  module at start-up, so every command, `--version` included, failed if the SDK was missing. The
+  import is now lazy.
 - **`dialog-focus-not-returned` no longer treats a button inside the dialog as its trigger.** Up to
   0.3.2 the trigger was the last clicked element. A state that opened a dialog and clicked the
   dialog's own Submit made Submit the "trigger", so when Escape closed the dialog and focus
