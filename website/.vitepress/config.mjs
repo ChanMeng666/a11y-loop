@@ -87,6 +87,7 @@ export default withMermaid({
           { text: 'Planning with Accessibility', link: '/guide/planning' },
           { text: 'CLI Usage', link: '/guide/cli-usage' },
           { text: 'Using it in CI', link: '/guide/ci-integration' },
+          { text: 'Gates in other agents', link: '/guide/agent-gates' },
           { text: 'Architecture & the Loop', link: '/guide/architecture' },
           { text: 'Honest Coverage', link: '/guide/honest-coverage' },
           { text: 'Field Notes', link: '/guide/field-notes' }

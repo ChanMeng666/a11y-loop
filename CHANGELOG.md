@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+- **Plan-gate and audit-gate equivalents for other agent clients** (`docs/agent-gates.md`, and `website/guide/agent-gates.md` on the site). For Codex CLI, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline and OpenCode it records, with the date and URL read, which hook events exist, which can ask the agent to continue, and what could not be verified. One script serves the four clients that can; a git hook and a CI job cover the rest. The script has been run on its own, not yet inside those clients.
+
 ### Added
 - **`a11y-loop mcp`, a stdio MCP server for clients that load MCP servers but not Agent Skills.**
   It serves six tools: `a11y_loop_audit`, `a11y_loop_diff`, `a11y_loop_contrast_fix`,
