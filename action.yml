@@ -1,8 +1,5 @@
 name: a11y-loop audit
-description: >-
-  Audit a page in a real browser (axe-core plus a11y-loop's own checks) and report what it can
-  detect automatically, with a step summary, an optional baseline diff and a sticky PR comment.
-  It does not claim conformance; a manual-testing checklist comes with every run.
+description: "Real-browser accessibility audit: axe-core plus a11y-loop's own checks, a PR comment and a manual-testing checklist."
 author: Chan Meng
 branding:
   icon: eye

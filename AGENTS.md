@@ -614,7 +614,10 @@ publishes until a tag is pushed, and publishing is the one irreversible step.
    the submission tracks `release`, confirm the portal picked up the new commit; if it still tracks
    a tag, move it to the new tag and re-validate. Either way, read the hold and warning counts.
    On the first release that contains `action.yml`, also tick "Publish this Action to the GitHub
-   Marketplace" on the GitHub Release (see `CONTRIBUTING.md`).
+   Marketplace" on the GitHub Release (see `CONTRIBUTING.md`). The Marketplace validates `action.yml`
+   at the release's own tag (description under 125 characters, branding present), so
+   `test/unit/action-manifest.test.js` holds both before the tag; 0.4.0 was rejected for a
+   260-character description.
 7. **Check what users get:** that npmjs.com shows the English README, that
    `npx skills add ChanMeng666/a11y-loop -g -y` reports `Found 1 skill` and skills.sh lists it, that
    `gh skill` finds it, and that `claude plugin marketplace update chanmeng-a11y-loop` followed by

@@ -374,7 +374,7 @@ want it to. In GitHub Actions, from release 0.4.0:
 ```yaml
 - uses: actions/setup-node@v4
   with: { node-version: 22 }
-- uses: ChanMeng666/a11y-loop@v0.4.0
+- uses: ChanMeng666/a11y-loop@v0.4.1
   with:
     target: ./dist/index.html
     fail-on: violations

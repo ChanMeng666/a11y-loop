@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-20
+
+### Fixed
+- **The action's description now fits GitHub Marketplace's 125-character limit.** The Marketplace validates `action.yml` at the release's own tag and rejected v0.4.0 for a description of about 260 characters, which blocked listing it. `test/unit/action-manifest.test.js` holds the description under the limit and checks the name and branding. There is no other behaviour change.
+
 ## [0.4.0] - 2026-10-20
 
 **Behaviour change.** Three things can change an exit code or a report you already parse. `color-contrast` and `color-contrast-enhanced` rows from the forced-colors pass are now `needsReview`, so a page whose only violations were those rows exits 0 where it used to exit 1. The JSON report is now `schemaVersion: 2`; it only adds fields, and a report without the field is version 1. And `--interact` now runs new checks on built states: `route-change-focus-lost` and `status-message-not-announced` can be violations, so a page with built states can exit 1 where it used to exit 0, and `live-region-injected-late` is always needs-review. An audit without `--interact` is not affected by the new checks.

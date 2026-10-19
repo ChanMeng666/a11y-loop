@@ -503,8 +503,8 @@ skill only. See [`roadmap.md`](roadmap.md).
   [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 638 tests across unit and integration suites
-  (0.4.0), including a 32-fixture matrix of seeded violations and correct-behaviour regression
+- **Tests:** the built-in `node --test` runner, 641 tests across unit and integration suites
+  (0.4.1), including a 32-fixture matrix of seeded violations and correct-behaviour regression
   guards, a demo end-to-end run, a forced-colors gradient regression test, and release guards:
   plugin-copy sync and version agreement, skill frontmatter against the Agent Skills spec, text
   encoding, every subcommand run with stdin closed, the CLI and hook run through a symlink and a
@@ -798,7 +798,7 @@ it, so the `uses:` line below resolves from the v0.4.0 tag on.
   with:
     path: ${{ runner.temp }}/pw-browsers
     key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-- uses: ChanMeng666/a11y-loop@v0.4.0
+- uses: ChanMeng666/a11y-loop@v0.4.1
   with:
     target: http://localhost:3000      # a URL, or the path of an HTML file
     fail-on: violations                # violations | new | never
