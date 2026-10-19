@@ -10,23 +10,17 @@ description: >-
   navigation, pricing pages, dark mode, colors. Also whenever the user asks for
   an accessibility audit, an a11y check or fix, a WCAG review, a contrast fix,
   or help with screen readers, keyboard navigation, focus order, ARIA, alt
-  text. Supplies plan-phase rules (conformance target, per-component acceptance
-  criteria, product decisions that foreclose accessibility, color-token and
-  structure planning), standing generation rules (semantic HTML first, ARIA
-  discipline, APG keyboard contracts, labels, focus visibility, AA contrast in
-  light and dark, reduced motion, 24x24 targets), a mandatory
-  audit-fix-re-audit loop driven by the `a11y-loop` CLI (axe-core in Chromium
-  across default, dark, forced-colors, reduced-motion and 320px passes), and
-  honest reporting of what automation cannot judge. Keywords: accessibility,
+  text. Runs an audit-fix-re-audit loop with the `a11y-loop` CLI (axe-core in
+  Chromium) and reports what automation cannot judge. Keywords: accessibility,
   a11y, WCAG 2.2 AA, ARIA, axe-core, contrast ratio, screen reader. Not for
   backend-only work with no UI.
 license: MIT
 compatibility: >-
   Verification needs Node.js >= 20 and Playwright Chromium. Install with
-  `npm i -g a11y-loop && npx playwright install chromium` (set
-  PLAYWRIGHT_BROWSERS_PATH first if you keep browsers off the system drive).
-  The generation and honesty rules apply with or without the CLI; every step
-  that says "audit" requires it.
+  `npm i -g a11y-loop && a11y-loop install-browser` (set PLAYWRIGHT_BROWSERS_PATH
+  first if you keep browsers off the system drive; `a11y-loop doctor` checks the
+  setup). The generation and honesty rules apply with or without the CLI; every
+  step that says "audit" requires it.
 metadata:
   "a11y-loop/version": "0.2.6"
 allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *) Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)'
@@ -79,6 +73,15 @@ JSON report shape: `findings.violations`, `findings.needsReview`,
 stable `fingerprint`, a `wcag` block (`sc`, `name`, `level`, `minVersion`,
 `wcag22Only`), `act[]` rule IDs, and — for contrast — concrete
 `suggestions[]` with hex values and before/after ratios.
+
+**What this skill supplies.** Plan-phase rules (conformance target,
+per-component acceptance criteria, product decisions that foreclose
+accessibility, color-token and structure planning); standing generation rules
+(semantic HTML first, ARIA discipline, APG keyboard contracts, labels, focus
+visibility, AA contrast in light and dark, reduced motion, 24x24 targets); a
+mandatory audit-fix-re-audit loop driven by the `a11y-loop` CLI (axe-core in
+Chromium across default, dark, forced-colors, reduced-motion and 320px passes);
+and honest reporting of what automation cannot judge.
 
 ---
 
@@ -282,10 +285,12 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
    own state if you need it audited.
 
    ```
-   A11Y audit http://localhost:5173 --interact .a11y/states.mjs --json --out .a11y/run-1.json
+   A11Y audit http://localhost:5173 --interact .a11y/states.mjs --out .a11y/run-1.json --quiet
    ```
 
-3. **Read `findings.violations` and `findings.needsReview`.** Both. A
+3. **Read `findings.violations` and `findings.needsReview`.** Both. `--quiet`
+   prints a one-line summary and the full report is in the `--out` file, so open
+   that file for the details instead of dumping it into context. A
    needsReview item is a place the engine knows it could not decide — usually
    contrast over a gradient, image, or translucent layer. Resolve it by
    reasoning about the source, not by ignoring it.
@@ -308,7 +313,7 @@ ignored reduced motion, SPA focus loss, unannounced updates, positive
 5. **Re-audit to a new file, then diff.**
 
    ```
-   A11Y audit http://localhost:5173 --interact .a11y/states.mjs --json --out .a11y/run-2.json
+   A11Y audit http://localhost:5173 --interact .a11y/states.mjs --out .a11y/run-2.json --quiet
    A11Y diff --before .a11y/run-1.json --after .a11y/run-2.json
    ```
 
@@ -330,8 +335,8 @@ write it to a scratch file and use `--file` (safer on any shell, and required
 when the fragment contains quotes):
 
 ```
-A11Y audit --html "<button class='icon'><svg/></button>" --json --out .a11y/frag.json
-A11Y audit --file .a11y/scratch/price-card.html --json --out .a11y/card.json
+A11Y audit --html "<button class='icon'><svg/></button>" --out .a11y/frag.json --quiet
+A11Y audit --file .a11y/scratch/price-card.html --out .a11y/card.json --quiet
 ```
 
 `--headed` when you need to watch a state fail. `--no-best-practice` when

@@ -17,7 +17,7 @@ and `getElementById`), but they are no longer a WCAG failure. Never cite 4.1.1.
 
 **Target Level AA.** Every major regulation references AA: New Zealand Web
 Accessibility Standard 1.2 and UK public sector at WCAG 2.2 AA, US ADA Title II
-and EU EN 301 549 v3.2.1 at 2.1 AA (EU moves to 2.2 AA with v4.1.1), US Section
+and EU EN 301 549 v3.2.1 at 2.1 AA (EU moves to 2.2 AA with V4.1.1, published 2026-09-02, once it is cited in the Official Journal, expected 2026-11-30 or 2026-12-16; as of 2026-10), US Section
 508 at 2.0 AA. WCAG 2.2 is backward compatible, so hitting 2.2 AA satisfies all
 of them at once. W3C states explicitly that AAA is not a realistic
 whole-site target; treat individual AAA criteria as opt-in advisories.
