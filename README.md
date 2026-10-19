@@ -51,7 +51,7 @@ MCP-only clients: `a11y-loop mcp` serves the audit, diff, contrast, plan-check a
 
 ### Claude Code: the plugin instead of step 1
 
-The plugin carries the skill, a `/a11y-plan` command and a plan-mode hook. Install the plugin **or** the skill, not both.
+The plugin carries the skill, a `/a11y-plan` command and a plan-mode hook. Install the plugin **or** the skill, not both. The hooks run only in Claude Code; [other clients and CI](docs/agent-gates.md) have their own routes to the same plan and audit checks.
 
 ```text
 /plugin install a11y-loop --marketplace ChanMeng666/a11y-loop
