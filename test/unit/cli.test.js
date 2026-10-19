@@ -571,12 +571,30 @@ describe('doctor', () => {
     assert.match(stdout(), /Playwright \d+\.\d+\.\d+ \(bundled/);
   });
 
-  test('a missing executable means it cannot (exit 2) and names install-browser', async () => {
+  test('a missing browser means it cannot (exit 2) and names install-browser', async () => {
     const { io, stdout } = captureIo();
-    const deps = healthy({ executablePath: async () => join(home, 'no', 'chrome.exe') });
+    const deps = healthy({
+      executablePath: async () => join(home, 'no', 'chrome.exe'),
+      launchProbe: async () => {
+        throw new Error("browserType.launch: Executable doesn't exist at /x/chrome-headless-shell");
+      },
+    });
     assert.equal(await runDoctorCommand({ flags: {} }, io, deps), EXIT.ERROR);
-    assert.match(stdout(), /is not installed/);
+    assert.match(stdout(), /headless launch failed \(browserType\.launch: Executable doesn't exist/);
+    assert.match(stdout(), /no full browser at /);
     assert.match(stdout(), /Fix: a11y-loop install-browser/);
+  });
+
+  test('a headless-shell-only install (no full chrome) can still run an audit', async () => {
+    // `playwright install --only-shell chromium`, as CI does: executablePath()
+    // names a full chrome that is absent, yet the headless audit launches.
+    const report = await collectDoctorReport(
+      healthy({ executablePath: async () => join(home, 'no', 'chrome') }),
+    );
+    assert.equal(report.canAudit, true);
+    const [chromium] = byId(report, 'chromium');
+    assert.equal(chromium.status, STATUS.OK);
+    assert.match(chromium.detail, /headless launch succeeded.*; no full browser at /);
   });
 
   test('an executable that will not launch is a failure, not a pass', async () => {
@@ -590,7 +608,7 @@ describe('doctor', () => {
     assert.equal(report.canAudit, false);
     const [chromium] = byId(report, 'chromium');
     assert.equal(chromium.status, STATUS.FAIL);
-    assert.match(chromium.detail, /headless launch failed: Host system is missing dependencies$/);
+    assert.match(chromium.detail, /headless launch failed \(Host system is missing dependencies\); full browser at /);
   });
 
   test('a Node below engines is a failure', async () => {

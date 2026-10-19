@@ -177,18 +177,20 @@ export async function collectDoctorReport({
 
     const expected = expectedChromium();
     const build = expected ? `chromium build ${expected.revision} (${expected.browserVersion})` : 'chromium';
+    // The verdict comes from the launch, never from the file check alone. A
+    // headless audit runs on Playwright's separate headless-shell build, so
+    // `install --only-shell chromium` (as CI does) gives a working audit with
+    // no full `chrome` at executablePath(), and a full `chrome` alone does
+    // not. The file check only adds context to the report.
     const exe = await executablePath();
-    if (!existsSync(exe)) {
-      add('chromium', STATUS.FAIL, `${build} is not installed: ${exe} does not exist`, INSTALL_FIX);
-    } else {
-      try {
-        const version = await launchProbe();
-        browserOk = true;
-        add('chromium', STATUS.OK, `${build} found at ${exe}; headless launch succeeded (${version})`);
-      } catch (error) {
-        const firstLine = String(error?.message ?? error).split('\n')[0];
-        add('chromium', STATUS.FAIL, `${build} found at ${exe}, but headless launch failed: ${firstLine}`, INSTALL_FIX);
-      }
+    const where = existsSync(exe) ? `full browser at ${exe}` : `no full browser at ${exe}`;
+    try {
+      const version = await launchProbe();
+      browserOk = true;
+      add('chromium', STATUS.OK, `${build}: headless launch succeeded (${version}); ${where}`);
+    } catch (error) {
+      const firstLine = String(error?.message ?? error).split('\n')[0];
+      add('chromium', STATUS.FAIL, `${build}: headless launch failed (${firstLine}); ${where}`, INSTALL_FIX);
     }
   } catch (error) {
     add('playwright', STATUS.FAIL, `could not resolve the bundled Playwright: ${error.message}`, 'reinstall a11y-loop');
