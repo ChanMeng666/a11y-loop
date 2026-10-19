@@ -3,12 +3,13 @@
 These are not edge cases. They are what the training data contains, so they are
 what gets generated unless you actively resist them.
 
-- 84% of LLM-generated websites in a controlled study had accessibility issues
-  ([W4A'24](https://doi.org/10.1145/3677846.3677854)).
-- Accessibility-oriented *prompts alone* produced a slightly **worse** violation
-  rate than agnostic prompts — 17.32% vs 15.93%
-  ([W4A'25](https://doi.org/10.1145/3744257.3744266)). Instructions without
-  verification do not work.
+- 84% of the websites ChatGPT (GPT-3.5) generated in a 2024 study had
+  accessibility problems ([W4A'24](https://doi.org/10.1145/3677846.3677854)).
+- Accessibility-oriented prompts cut expert-judged violation rates from 58% to
+  19%, but persistent barriers remained, particularly in semantic structure; one
+  automated tool even reported a slightly higher violation rate (17.32% vs
+  15.93%) ([W4A'25](https://doi.org/10.1145/3744257.3744266)). Prompting helps but
+  does not reach every criterion.
 - "Bad patterns are not edge cases in the training set. They *are* the training
   set." — Simon Miner (IAAP), *AI-Generated Code is Inaccessible by Default*.
 - **Broken ARIA references**, hallucinated image descriptions, and misleading

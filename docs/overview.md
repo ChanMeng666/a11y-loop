@@ -53,10 +53,12 @@ check.
 
 ## 🌟 Introduction
 
-AI coding agents write inaccessible UI by default — 84% of AI-generated web pages carry
-accessibility issues (W4A'24), and telling the model to "be accessible" barely moves that number:
-accessibility-oriented prompts have measured a *slightly higher* violation rate than
-accessibility-agnostic ones (W4A'25, 17.32% vs. 15.93%). Instructions alone are not the fix.
+AI coding agents write inaccessible UI by default: in one 2024 study, 84% of the websites ChatGPT
+generated had accessibility problems ([W4A'24](https://doi.org/10.1145/3677846.3677854)). Asking for accessibility
+helps but does not finish the job: in a 2025 study, accessibility-oriented prompts cut
+expert-judged violation rates from 58% to 19%, yet barriers persisted, especially in semantic
+structure and status messages ([W4A'25](https://doi.org/10.1145/3744257.3744266)). Instructions are the setup; the
+verified audit is the check.
 
 a11y-loop is two things working together:
 
