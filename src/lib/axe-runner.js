@@ -293,8 +293,6 @@ async function runDefaultPassChecks(page, ctx) {
 export async function runAudit({ target, options = {} }) {
   const { headed = false, bestPractice = true, states = {} } = options;
 
-  const served = await resolveTarget(target);
-  const browser = await launchBrowser({ headed });
   const findings = [];
   const passesRun = [];
   const statesRun = [];
@@ -302,7 +300,17 @@ export async function runAudit({ target, options = {} }) {
   let browserVersion = 'unknown';
   let userAgent = null;
 
+  // Both resources are opened INSIDE the try, so whichever of them exists is
+  // closed however the run ends. For --file and --html, resolveTarget starts a
+  // local HTTP server; if launchBrowser then throws (no Chromium installed)
+  // and the server is left listening, the process prints its error and never
+  // exits. A URL target's close is a no-op, which is why only those two hung.
+  let served = null;
+  let browser = null;
+
   try {
+    served = await resolveTarget(target);
+    browser = await launchBrowser({ headed });
     browserVersion = browser.version();
 
     for (const pass of PASSES) {
@@ -374,8 +382,11 @@ export async function runAudit({ target, options = {} }) {
       }
     }
   } finally {
-    await browser.close();
-    await served.close();
+    try {
+      await browser?.close();
+    } finally {
+      await served?.close();
+    }
   }
 
   const deduped = dedupeFindings(findings);
