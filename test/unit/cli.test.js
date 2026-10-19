@@ -10,6 +10,27 @@ import { loadStates } from '../../src/commands/audit.js';
 import { contrastResult, formatContrastHuman } from '../../src/commands/contrast.js';
 import { makeReport, cleanReport, emptyButtonFinding } from '../helpers/report-fixture.js';
 import { serializeReport } from '../../src/lib/format/json.js';
+import { MISSING_BROWSER_HINT } from '../../src/lib/axe-runner.js';
+import {
+  bundledPlaywright,
+  installBrowserArgs,
+  runInstallBrowserCommand,
+} from '../../src/commands/install-browser.js';
+import {
+  collectDoctorReport,
+  formatDoctorHuman,
+  runDoctorCommand,
+  STATUS,
+} from '../../src/commands/doctor.js';
+import { spawnSync } from 'node:child_process';
+import { EventEmitter } from 'node:events';
+import { mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const CLI_PATH = join(REPO, 'src', 'cli.js');
 
 /** Capture stdout/stderr instead of writing to the terminal. */
 function captureIo() {
@@ -431,5 +452,226 @@ describe('main — audit output plumbing', () => {
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe('missing-browser hint', () => {
+  test('names a11y-loop install-browser and never a bare npx playwright', () => {
+    assert.match(MISSING_BROWSER_HINT, /a11y-loop install-browser/);
+    assert.doesNotMatch(MISSING_BROWSER_HINT, /npx playwright/);
+    assert.match(MISSING_BROWSER_HINT, /PLAYWRIGHT_BROWSERS_PATH/);
+  });
+
+  test('usage lists doctor and install-browser', async () => {
+    const { io, stdout } = captureIo();
+    await main(['--help'], io);
+    assert.match(stdout(), /a11y-loop doctor/);
+    assert.match(stdout(), /a11y-loop install-browser/);
+  });
+});
+
+describe('install-browser', () => {
+  test('runs the bundled Playwright cli.js and passes extra arguments through', () => {
+    const args = installBrowserArgs(['--with-deps', '--dry-run']);
+    assert.equal(args[0], join(bundledPlaywright().dir, 'cli.js'));
+    assert.deepEqual(args.slice(1), ['install', 'chromium', '--with-deps', '--dry-run']);
+  });
+
+  test('--dry-run prints the build the bundled Playwright expects, even with another playwright first on PATH', () => {
+    // The revision a11y-loop's own tree expects. playwright-core does not
+    // export browsers.json, so read it from the package directory that the
+    // bundled playwright resolves.
+    const fromPlaywright = createRequire(join(bundledPlaywright().dir, 'package.json'));
+    const coreDir = dirname(fromPlaywright.resolve('playwright-core/package.json'));
+    const browsers = JSON.parse(readFileSync(join(coreDir, 'browsers.json'), 'utf8')).browsers;
+    const { revision } = browsers.find((b) => b.name === 'chromium');
+
+    // A decoy `playwright` and `npx` first on PATH. If either were used, its
+    // marker would show up and the exit code would be 3.
+    const decoyDir = join(tmpdir(), `a11y-loop-decoy-${process.pid}`);
+    mkdirSync(decoyDir, { recursive: true });
+    for (const name of ['playwright', 'npx']) {
+      writeFileSync(join(decoyDir, name), '#!/bin/sh\necho DECOY-PLAYWRIGHT\nexit 3\n', { mode: 0o755 });
+      writeFileSync(join(decoyDir, `${name}.cmd`), '@echo DECOY-PLAYWRIGHT\r\n@exit /b 3\r\n');
+    }
+    const pathKey = Object.keys(process.env).find((k) => k.toUpperCase() === 'PATH') ?? 'PATH';
+    const sep = process.platform === 'win32' ? ';' : ':';
+    try {
+      const result = spawnSync(process.execPath, [CLI_PATH, 'install-browser', '--dry-run'], {
+        encoding: 'utf8',
+        env: { ...process.env, [pathKey]: `${decoyDir}${sep}${process.env[pathKey]}` },
+        timeout: 60_000,
+      });
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stdout, new RegExp(`playwright chromium v${revision}\\b`));
+      assert.doesNotMatch(result.stdout + result.stderr, /DECOY-PLAYWRIGHT/);
+    } finally {
+      rmSync(decoyDir, { recursive: true, force: true });
+    }
+  });
+
+  function fakeSpawn(exitCode) {
+    const calls = [];
+    const impl = (command, args, options) => {
+      calls.push({ command, args, options });
+      const child = new EventEmitter();
+      setImmediate(() => child.emit('close', exitCode, null));
+      return child;
+    };
+    return { impl, calls };
+  }
+
+  test('a successful installer returns 0, inherits the environment and never waits on stdin', async () => {
+    const { io } = captureIo();
+    const { impl, calls } = fakeSpawn(0);
+    assert.equal(await runInstallBrowserCommand({ args: ['--dry-run'] }, io, { spawnImpl: impl }), EXIT.OK);
+    assert.equal(calls[0].command, process.execPath);
+    assert.equal(calls[0].options.env, process.env);
+    assert.equal(calls[0].options.stdio[0], 'ignore');
+  });
+
+  test('a failing installer is a tool error (exit 2), never 1', async () => {
+    const { io } = captureIo();
+    const { impl } = fakeSpawn(1);
+    await assert.rejects(
+      runInstallBrowserCommand({}, io, { spawnImpl: impl }),
+      (error) => error instanceof ToolError && /exited with code 1/.test(error.message),
+    );
+  });
+});
+
+describe('doctor', () => {
+  let home;
+  test.before(async () => {
+    home = await mkdtemp(join(tmpdir(), 'a11y-loop-doctor-'));
+  });
+  test.after(async () => {
+    await rm(home, { recursive: true, force: true });
+  });
+
+  /** Deps for a machine where an audit can run, with nothing else installed. */
+  function healthy(overrides = {}) {
+    return {
+      env: {},
+      home,
+      argv1: CLI_PATH,
+      realpath: (p) => p,
+      executablePath: async () => CLI_PATH, // any file that exists
+      launchProbe: async () => '151.0.0.0',
+      ...overrides,
+    };
+  }
+  const byId = (report, id) => report.checks.filter((c) => c.id === id);
+
+  test('a launchable browser means an audit can run (exit 0)', async () => {
+    const { io, stdout } = captureIo();
+    assert.equal(await runDoctorCommand({ flags: {} }, io, healthy()), EXIT.OK);
+    assert.match(stdout(), /An audit can run here\./);
+    assert.match(stdout(), /axe-core \d+\.\d+\.\d+/);
+    assert.match(stdout(), /Playwright \d+\.\d+\.\d+ \(bundled/);
+  });
+
+  test('a missing executable means it cannot (exit 2) and names install-browser', async () => {
+    const { io, stdout } = captureIo();
+    const deps = healthy({ executablePath: async () => join(home, 'no', 'chrome.exe') });
+    assert.equal(await runDoctorCommand({ flags: {} }, io, deps), EXIT.ERROR);
+    assert.match(stdout(), /is not installed/);
+    assert.match(stdout(), /Fix: a11y-loop install-browser/);
+  });
+
+  test('an executable that will not launch is a failure, not a pass', async () => {
+    const report = await collectDoctorReport(
+      healthy({
+        launchProbe: async () => {
+          throw new Error('Host system is missing dependencies\nmore detail');
+        },
+      }),
+    );
+    assert.equal(report.canAudit, false);
+    const [chromium] = byId(report, 'chromium');
+    assert.equal(chromium.status, STATUS.FAIL);
+    assert.match(chromium.detail, /headless launch failed: Host system is missing dependencies$/);
+  });
+
+  test('a Node below engines is a failure', async () => {
+    const report = await collectDoctorReport(healthy({ nodeVersion: '18.19.0' }));
+    assert.equal(report.canAudit, false);
+    assert.equal(byId(report, 'node')[0].status, STATUS.FAIL);
+  });
+
+  test('--json emits canAudit and the checks', async () => {
+    const { io, stdout } = captureIo();
+    assert.equal(await runDoctorCommand({ flags: { json: true } }, io, healthy()), EXIT.OK);
+    const parsed = JSON.parse(stdout());
+    assert.equal(parsed.canAudit, true);
+    assert.ok(parsed.checks.some((c) => c.id === 'chromium' && c.status === 'ok'));
+  });
+
+  test('reports PLAYWRIGHT_BROWSERS_PATH, set or not', async () => {
+    const unset = await collectDoctorReport(healthy());
+    assert.match(byId(unset, 'browsers-path')[0].detail, /is not set/);
+    const set = await collectDoctorReport(healthy({ env: { PLAYWRIGHT_BROWSERS_PATH: '/srv/pw' } }));
+    assert.match(byId(set, 'browsers-path')[0].detail, /PLAYWRIGHT_BROWSERS_PATH=\/srv\/pw/);
+  });
+
+  test('without a plugin registry, the plugin and double registration are "could not check"', async () => {
+    mkdirSync(join(home, '.claude', 'skills', 'a11y-loop'), { recursive: true });
+    writeFileSync(join(home, '.claude', 'skills', 'a11y-loop', 'SKILL.md'), '  a11y-loop/version: "0.2.6"\n');
+    const report = await collectDoctorReport(healthy());
+    assert.match(byId(report, 'skill-copy')[0].detail, /^skill copy at .*\(version 0\.2\.6\)$/);
+    assert.match(byId(report, 'skill-copy')[1].detail, /^no skill copy at .*\.agents/);
+    assert.match(byId(report, 'plugin')[0].detail, /could not check/);
+    assert.match(byId(report, 'double-registration')[0].detail, /could not check/);
+  });
+
+  test('a skill copy plus the installed plugin is a double-registration warning', async () => {
+    mkdirSync(join(home, '.claude', 'plugins'), { recursive: true });
+    writeFileSync(
+      join(home, '.claude', 'plugins', 'installed_plugins.json'),
+      JSON.stringify({ version: 2, plugins: { 'a11y-loop@chanmeng-a11y-loop': [{ version: '0.2.6' }] } }),
+    );
+    const report = await collectDoctorReport(healthy());
+    assert.match(byId(report, 'plugin')[0].detail, /installed: a11y-loop@chanmeng-a11y-loop 0\.2\.6/);
+    const [warning] = byId(report, 'double-registration');
+    assert.equal(warning.status, STATUS.WARN);
+    assert.match(warning.fix, /^delete .*a11y-loop and keep the plugin$/);
+    assert.equal(report.canAudit, true, 'a warning does not stop an audit');
+  });
+
+  test('a registry without a11y-loop says not installed, and raises no warning', async () => {
+    writeFileSync(
+      join(home, '.claude', 'plugins', 'installed_plugins.json'),
+      JSON.stringify({ version: 2, plugins: { 'other@market': [{ version: '1.0.0' }] } }),
+    );
+    const report = await collectDoctorReport(healthy());
+    assert.match(byId(report, 'plugin')[0].detail, /not installed/);
+    assert.equal(byId(report, 'double-registration').length, 0);
+  });
+
+  test('starting through a junction or symlink is a warning that gives the real path', async () => {
+    const report = await collectDoctorReport(
+      healthy({ argv1: 'D:/link/src/cli.js', realpath: () => 'D:/real/src/cli.js', platform: 'win32' }),
+    );
+    const [warning] = byId(report, 'entry-path');
+    assert.equal(warning.status, STATUS.WARN);
+    assert.match(warning.fix, /real\/src\/cli\.js$/);
+  });
+
+  test('a drive-letter case difference on Windows is not a junction', async () => {
+    const report = await collectDoctorReport(
+      healthy({ argv1: 'd:/repo/src/cli.js', realpath: () => 'D:/repo/src/cli.js', platform: 'win32' }),
+    );
+    assert.equal(byId(report, 'entry-path').length, 0);
+  });
+
+  test('the human format lists each distinct fix once', () => {
+    const text = formatDoctorHuman({
+      canAudit: false,
+      checks: [
+        { id: 'chromium', status: 'fail', detail: 'x', fix: 'a11y-loop install-browser' },
+        { id: 'chromium', status: 'fail', detail: 'y', fix: 'a11y-loop install-browser' },
+      ],
+    });
+    assert.equal(text.match(/^Fix: a11y-loop install-browser$/gm).length, 1);
   });
 });

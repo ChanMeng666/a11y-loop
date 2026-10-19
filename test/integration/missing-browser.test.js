@@ -74,6 +74,26 @@ describe('missing Chromium — every target type exits 2 instead of hanging', ()
       assert.ok(result.elapsed < DEADLINE_MS, `took ${result.elapsed}ms`);
       assert.equal(result.code, 2, `exit code ${result.code}; stderr:\n${result.stderr}`);
       assert.match(result.stderr, /Chromium is not available to Playwright/);
+      assert.match(result.stderr, /a11y-loop install-browser/);
+      assert.doesNotMatch(result.stderr, /npx playwright/);
     });
   }
+
+  test('doctor exits 2 and names a11y-loop install-browser as the fix', { timeout: DEADLINE_MS + 10_000 }, async () => {
+    const result = await runCli(['doctor'], { PLAYWRIGHT_BROWSERS_PATH: emptyBrowsers });
+    assert.equal(result.killed, false);
+    assert.equal(result.code, 2, result.stdout + result.stderr);
+    assert.match(result.stdout, /An audit cannot run here\./);
+    assert.match(result.stdout, /Fix: a11y-loop install-browser/);
+  });
+});
+
+describe('doctor with the browser installed', () => {
+  test('exits 0 and reports a successful headless launch', { timeout: 60_000 }, async () => {
+    const result = await runCli(['doctor'], {});
+    assert.equal(result.killed, false);
+    assert.equal(result.code, 0, result.stdout + result.stderr);
+    assert.match(result.stdout, /headless launch succeeded/);
+    assert.match(result.stdout, /An audit can run here\./);
+  });
 });

@@ -72,16 +72,27 @@ export class ToolError extends Error {
   }
 }
 
-const MISSING_BROWSER_HINT = [
-  'Install the browser a11y-loop needs:',
+/**
+ * Points at a11y-loop's own installer, never a bare `playwright` command: a
+ * Playwright found on PATH can be a different version from the one bundled
+ * here, install a browser build this one cannot use, and leave the user
+ * reading this same message again.
+ */
+export const MISSING_BROWSER_HINT = [
+  "Install the browser build that a11y-loop's own Playwright expects:",
   '',
-  '  npx playwright install chromium',
+  '  a11y-loop install-browser',
+  '',
+  '(npx a11y-loop install-browser without a global install; node src/cli.js',
+  'install-browser from a checkout.) A Playwright found on PATH may install a',
+  'different build that this one cannot use. Run a11y-loop doctor to see which',
+  'build is expected and where it is looked for.',
   '',
   'If you keep Playwright browsers outside the default location, set',
   'PLAYWRIGHT_BROWSERS_PATH to that directory both when installing and when running',
   'a11y-loop — a11y-loop honours it automatically when it is set. For example:',
   '',
-  '  PLAYWRIGHT_BROWSERS_PATH=/path/to/playwright-browsers npx playwright install chromium',
+  '  PLAYWRIGHT_BROWSERS_PATH=/path/to/playwright-browsers a11y-loop install-browser',
 ].join('\n');
 
 /** Launch Chromium, translating a missing install into an actionable message. */

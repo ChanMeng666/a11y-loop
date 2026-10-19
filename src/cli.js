@@ -15,6 +15,8 @@ import { readFile } from 'node:fs/promises';
 import { runAuditCommand } from './commands/audit.js';
 import { runContrastCommand } from './commands/contrast.js';
 import { runDiffCommand } from './commands/diff.js';
+import { runDoctorCommand } from './commands/doctor.js';
+import { runInstallBrowserCommand } from './commands/install-browser.js';
 import { ToolError } from './lib/axe-runner.js';
 
 export const EXIT = { OK: 0, FINDINGS: 1, ERROR: 2 };
@@ -47,6 +49,8 @@ USAGE
   a11y-loop audit --html "<button>"  audit a fragment (the usual entry point for an agent)
   a11y-loop contrast <fg> <bg>       check a colour pair against WCAG 2.x
   a11y-loop diff --before a.json --after b.json    compare two audits
+  a11y-loop doctor                   check whether an audit can run here, and what blocks it
+  a11y-loop install-browser          install the Chromium build a11y-loop's own Playwright needs
 
 AUDIT OPTIONS
   --json                 machine-readable report on stdout
@@ -63,10 +67,17 @@ CONTRAST OPTIONS
   --fix                  suggest passing colours, lighter and darker, in OKLCh
   --json                 machine-readable result
 
+DOCTOR OPTIONS
+  --json                 machine-readable result
+
+INSTALL-BROWSER OPTIONS
+  Extra arguments go to Playwright's installer unchanged, e.g. --with-deps or --dry-run.
+  PLAYWRIGHT_BROWSERS_PATH is honoured; set it the same way when you audit.
+
 EXIT CODES
-  0  no violations / threshold met / no regression
+  0  no violations / threshold met / no regression / doctor: an audit can run
   1  violations found / threshold missed / new violations introduced
-  2  tool error
+  2  tool error / doctor: an audit cannot run here
 
 Five rendering passes run per audit: default, dark, forced-colors, reduced-motion,
 and a 320x256 viewport (the WCAG-sanctioned 400% zoom equivalent for SC 1.4.10).
@@ -145,6 +156,16 @@ export async function main(argv, io) {
     writeError: (text) => process.stderr.write(text),
   };
 
+  // install-browser hands its arguments to Playwright's installer untouched,
+  // so they must not go through a11y-loop's own strict option parser.
+  if (argv[0] === 'install-browser') {
+    try {
+      return await runInstallBrowserCommand({ args: argv.slice(1) }, out);
+    } catch (error) {
+      return reportError(error, out);
+    }
+  }
+
   let parsed;
   try {
     parsed = parseCli(argv);
@@ -186,19 +207,28 @@ export async function main(argv, io) {
       return await runDiffCommand({ flags }, out);
     }
 
+    if (command === 'doctor') {
+      return await runDoctorCommand({ flags }, out);
+    }
+
     out.writeError(`a11y-loop: unknown command "${command}"\n\n${USAGE}`);
     return EXIT.ERROR;
   } catch (error) {
-    if (error instanceof ToolError) {
-      out.writeError(`a11y-loop: ${error.message}\n`);
-      if (error.hint) out.writeError(`\n${error.hint}\n`);
-      return EXIT.ERROR;
-    }
-    out.writeError(`a11y-loop: unexpected error: ${error?.message ?? error}\n`);
-    if (process.env.A11Y_LOOP_DEBUG) out.writeError(`${error?.stack ?? ''}\n`);
-    else out.writeError('Set A11Y_LOOP_DEBUG=1 for a stack trace.\n');
+    return reportError(error, out);
+  }
+}
+
+/** Every thrown error is a tool failure: exit 2, with its hint when it has one. */
+function reportError(error, out) {
+  if (error instanceof ToolError) {
+    out.writeError(`a11y-loop: ${error.message}\n`);
+    if (error.hint) out.writeError(`\n${error.hint}\n`);
     return EXIT.ERROR;
   }
+  out.writeError(`a11y-loop: unexpected error: ${error?.message ?? error}\n`);
+  if (process.env.A11Y_LOOP_DEBUG) out.writeError(`${error?.stack ?? ''}\n`);
+  else out.writeError('Set A11Y_LOOP_DEBUG=1 for a stack trace.\n');
+  return EXIT.ERROR;
 }
 
 // Only run when invoked as a program, so tests can import `main` freely.
