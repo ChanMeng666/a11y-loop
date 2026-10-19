@@ -23,7 +23,7 @@ compatibility: >-
   step that says "audit" requires it.
 metadata:
   "a11y-loop/version": "0.3.0"
-allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *) Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)'
+allowed-tools: 'Bash(a11y-loop *) Bash(npx a11y-loop *)'
 ---
 
 # a11y-loop
@@ -48,8 +48,10 @@ result `A11Y` below.
 
 1. `a11y-loop --version` — installed globally or as a project dependency.
 2. `npx a11y-loop --version` — no install needed.
-3. `node ${CLAUDE_SKILL_DIR}/../../src/cli.js --version` — this skill sitting
-   inside a checkout of the a11y-loop repo.
+3. `node src/cli.js --version`, run from the root of an a11y-loop checkout —
+   only when you are working on the a11y-loop repo itself. This form is not
+   pre-approved, so each call asks first; `npm link` in the checkout makes
+   form 1 answer instead.
 
 ```
 A11Y audit <url>                     # dev server — primary loop path

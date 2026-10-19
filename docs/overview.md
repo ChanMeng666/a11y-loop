@@ -547,6 +547,14 @@ pass `--prune`, which is the single flag that asks for confirmation.
 From a local checkout, `claude plugin marketplace add ./` registers the working copy instead, so the
 plugin tracks your edits rather than the published repo.
 
+**What installing it copies.** The plugin is the repository's `plugin/` folder, not the whole
+repository: the skill, the `/a11y-plan` command, the hook and its decision logic, a README and the
+license. That folder has no `package.json`, so the install fetches no packages. Up to 0.3.0 the
+plugin was the repository root, and its `package.json` and `package-lock.json` made Claude Code run
+a scripts-disabled `npm ci` in the plugin cache, about 24 MB of packages the plugin never used.
+`skills/a11y-loop/` and `src/lib/plan-gate.js` stay the canonical sources; `npm run sync-plugin`
+copies them into `plugin/`, and a unit test fails while a copy differs.
+
 **Team-wide, declaratively.** `--scope project` writes `.claude/settings.json`, which you commit —
 after that a clone needs no install commands at all:
 
@@ -697,8 +705,8 @@ The optional plugin layer is plain Node with no dependencies. Exercise the plan 
 
 ```bash
 echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Add a settings page in React: a modal dialog, a members table with row actions, tabs, and a dark mode toggle styled with Tailwind CSS."}}' \
-  | node hooks/plan-gate.mjs        # expect a "deny" verdict
-claude plugin validate . --strict   # shape only — see AGENTS.md on why this is not proof
+  | node plugin/hooks/plan-gate.mjs   # expect a "deny" verdict
+claude plugin validate ./plugin --strict   # shape only — see AGENTS.md on why this is not proof
 ```
 
 Silence and exit 0 is the gate's normal answer, so an example that prints nothing proves nothing:

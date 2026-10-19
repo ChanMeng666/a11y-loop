@@ -8,7 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **`.claude-plugin/icon.png`**, a 1024×1024 PNG rendered from the brand logo, so the Claude Code plugin directory has a listing icon. The directory reads it only the first time a plugin is saved or submitted there, so it has to ship in the release that is submitted.
+- **`PRIVACY.md`.** a11y-loop collects nothing and sends nothing to its author; the file says what
+  each part reads and writes on your machine, and what goes over the network (only Chromium's
+  download by `install-browser`, from Playwright's CDN). It is linked from the README, `llms.txt`
+  and the plugin manifest's new `privacyPolicyUrl`. The manifest now also carries the docs site as
+  `homepage`, plus `documentationUrl` and `supportUrl`: the Anthropic plugin directory had
+  reported 3 of 6 link fields filled. `termsOfServiceUrl` stays empty, because there is no
+  terms-of-service document and the MIT license is not one.
+- `npm run sync-plugin` (`scripts/sync-plugin.mjs`) and `test/unit/plugin-sync.test.js`, which
+  keep the plugin's copies identical to their sources and fail on drift, on a `../` path or
+  `${CLAUDE_SKILL_DIR}` inside `plugin/`, on a `package.json` or lockfile there, and on the version
+  disagreeing across its four files. `test/unit/text-encoding.test.js` fails on a BOM, invalid
+  UTF-8 or a raw control byte in `src/`, `plugin/`, `skills/`, `scripts/`, root and `docs/`
+  Markdown, `llms.txt` or the marketplace manifest.
+- **`plugin/.claude-plugin/icon.png`**, a 1024×1024 PNG rendered from the brand logo, so the Claude Code plugin directory has a listing icon. The directory reads it only the first time a plugin is saved or submitted there, so it has to ship in the release that is submitted.
 - **CI now installs the packed tarball with `npm i -g` on Ubuntu (Node 20 and 22), macOS and Windows
   and runs the installed binary from PATH** — `--version`, `install-browser --only-shell`, `doctor`
   and an `audit` that must print a report. The 0.3.0 symlink fix had only been reproduced on
@@ -30,6 +43,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and none hangs.
 
 ### Changed
+- **BREAKING (for anyone who points at plugin files by path): the Claude Code plugin now ships from
+  `plugin/`, not from the repository root.** Installing it copies only that folder: the skill, the
+  `/a11y-plan` command, the hook, the hook's decision logic, a README and the license. The install
+  commands and the plugin name are unchanged. Two reasons, both from the Anthropic plugin
+  directory's validation of 0.3.0. First, the plugin root was the whole repository, 232 files, so
+  `docs/`, `test/`, `website/` and `evals/` were scanned as plugin content and produced most of
+  the twelve review holds. Second, the root's `package.json` and `package-lock.json` made Claude
+  Code install dependencies at plugin install time, which the README did not disclose. **Installing
+  the 0.3.0 plugin ran `npm ci` in Claude Code's plugin cache:** a real install on 2026-10-19 left a
+  24 MB `node_modules` there (`axe-core`, `@axe-core/playwright`, `playwright`, `playwright-core`,
+  `culori`, `tabbable`; lifecycle scripts disabled, so no browser), none of which the plugin uses.
+  This version's plugin folder has no `package.json`, and its install fetches nothing.
+  `.claude-plugin/marketplace.json` stays at the root with `source: "./plugin"`; the root
+  `.claude-plugin/plugin.json`, `hooks/` and `commands/` are gone, and the npm package no longer
+  includes them. `skills/a11y-loop/` and `src/lib/plan-gate.js` stay the canonical sources, and
+  `plugin/` holds generated copies. The hook now loads its logic from `plugin/hooks/lib/plan-gate.mjs`
+  and still exits 0 with no verdict when that file is missing or throws.
 - The plan gate's decision logic moved from `hooks/plan-gate.mjs` to `src/lib/plan-gate.js`,
   shared by the hook and `plan-check`. The hook keeps its stdin/stdout protocol, its
   once-per-plan guard, its session cap and `A11Y_LOOP_PLAN_GATE=off` unchanged, and re-exports the
@@ -39,6 +69,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The skill pre-approved a command path that climbs out of its folder.** `allowed-tools` in
+  `SKILL.md` included `Bash(node ${CLAUDE_SKILL_DIR}/../../src/cli.js *)`, for running the CLI
+  from a checkout. It now pre-approves only `Bash(a11y-loop *)` and `Bash(npx a11y-loop *)`. From a
+  checkout, `node src/cli.js` asks before each call, or `npm link` makes `a11y-loop` resolve to it.
+- **`src/lib/fingerprint.js` read as a binary file.** The separator in its fingerprint string was a
+  raw NUL byte inside a string literal, so git and the Anthropic plugin directory treated the file
+  as binary and the directory held it as uninspectable. It is now the `'\u0000'` escape: the same
+  string at run time, so every fingerprint, and every `diff` against an older report, is
+  unchanged. `test/unit/plan-gate.test.js` had the same raw byte and got the same fix.
 - **npm served the Chinese README.** npm picks the package readme from the first file matching
   `README` or `README.*` in the package root whose name ends in `.md`, in glob order, and force-includes
   every such file in the tarball. With `README.zh-CN.md` beside `README.md`, 0.3.0 showed the Chinese

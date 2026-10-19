@@ -14,9 +14,9 @@ import {
   evaluate,
   buildReason,
   isEntryPoint,
-} from '../../hooks/plan-gate.mjs';
+} from '../../plugin/hooks/plan-gate.mjs';
 
-const GATE = fileURLToPath(new URL('../../hooks/plan-gate.mjs', import.meta.url));
+const GATE = fileURLToPath(new URL('../../plugin/hooks/plan-gate.mjs', import.meta.url));
 
 /** A plan that is unmistakably UI and says nothing about accessibility. */
 const UI_PLAN = `Build a React settings page. Add a modal dialog for role changes, a
@@ -346,23 +346,22 @@ describe('the hook runs when invoked through a link', () => {
 
   test('isEntryPoint never throws and is false without an argv[1]', () => {
     assert.equal(isEntryPoint('file:///x.mjs', undefined), false);
-    assert.equal(isEntryPoint('file:///x.mjs', ' bad'), false);
+    assert.equal(isEntryPoint('file:///x.mjs', '\u0000bad'), false);
     assert.equal(isEntryPoint(import.meta.url, fileURLToPath(import.meta.url)), true);
   });
 });
 
 describe('the hook without its shared logic', () => {
   /**
-   * Copy the hook into a temp layout whose ../src/lib/plan-gate.js is missing,
+   * Copy the hook into a temp layout whose ./lib/plan-gate.mjs is missing,
    * or present but throwing at load, and run it on a plan it would deny.
    */
   function runDetached(libSource) {
     const root = mkdtempSync(path.join(tmpdir(), 'a11y-gate-nolib-'));
     try {
-      mkdirSync(path.join(root, 'hooks'));
-      mkdirSync(path.join(root, 'src', 'lib'), { recursive: true });
+      mkdirSync(path.join(root, 'hooks', 'lib'), { recursive: true });
       copyFileSync(GATE, path.join(root, 'hooks', 'plan-gate.mjs'));
-      if (libSource !== undefined) writeFileSync(path.join(root, 'src', 'lib', 'plan-gate.js'), libSource);
+      if (libSource !== undefined) writeFileSync(path.join(root, 'hooks', 'lib', 'plan-gate.mjs'), libSource);
       return spawnSync(process.execPath, [path.join(root, 'hooks', 'plan-gate.mjs')], {
         input: JSON.stringify(hookInput(UI_PLAN)),
         encoding: 'utf8',
@@ -374,14 +373,14 @@ describe('the hook without its shared logic', () => {
     }
   }
 
-  test('a missing src/lib/plan-gate.js exits 0 with no verdict', () => {
+  test('a missing hooks/lib/plan-gate.mjs exits 0 with no verdict', () => {
     const r = runDetached(undefined);
     assert.equal(r.status, 0, r.stderr);
     assert.equal(r.stdout.trim(), '');
     assert.match(r.stderr, /did not load/);
   });
 
-  test('a src/lib/plan-gate.js that throws at load exits 0 with no verdict', () => {
+  test('a hooks/lib/plan-gate.mjs that throws at load exits 0 with no verdict', () => {
     const r = runDetached("throw new Error('broken on purpose');\n");
     assert.equal(r.status, 0, r.stderr);
     assert.equal(r.stdout.trim(), '');

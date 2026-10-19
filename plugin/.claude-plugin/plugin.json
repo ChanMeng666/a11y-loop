@@ -9,9 +9,12 @@
     "email": "chanmeng.dev@gmail.com",
     "url": "https://github.com/ChanMeng666"
   },
-  "homepage": "https://github.com/ChanMeng666/a11y-loop#readme",
+  "homepage": "https://chanmeng666.github.io/a11y-loop/",
   "repository": "https://github.com/ChanMeng666/a11y-loop",
   "license": "MIT",
+  "documentationUrl": "https://chanmeng666.github.io/a11y-loop/guide/getting-started",
+  "supportUrl": "https://github.com/ChanMeng666/a11y-loop/blob/main/SUPPORT.md",
+  "privacyPolicyUrl": "https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md",
   "keywords": [
     "accessibility",
     "a11y",

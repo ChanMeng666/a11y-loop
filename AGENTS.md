@@ -10,8 +10,8 @@ write accessible UI by default, then proves what it can prove with a real browse
 states it built, and tells you exactly what it could not check. Two layers: an Agent Skill
 (`skills/a11y-loop/`, open Agent Skills standard) supplying plan rules, standing generation rules
 and honesty rules, and a Node CLI (`src/`) supplying `audit` / `contrast --fix` / `diff`. A third,
-*optional* layer (`.claude-plugin/`, `hooks/`, `commands/`) enforces the plan phase in Claude Code
-only; nothing under `skills/` may depend on it.
+*optional* layer (`plugin/`, published through the root `.claude-plugin/marketplace.json`)
+enforces the plan phase in Claude Code only; nothing under `skills/` may depend on it.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
 - **Default branch:** `main`
@@ -99,20 +99,30 @@ or Playwright will report a missing browser.
   `skills/a11y-loop/references/` holds the supporting docs (plan-phase guidance, AI-specific failure
   modes, APG patterns, manual-testing guidance, a WCAG 2.2 quick reference) loaded on demand, not
   upfront. `skills/a11y-loop/evals/` holds trigger-accuracy and behavior evals for the skill itself.
-- **`.claude-plugin/`, `hooks/`, `commands/`** — an *optional* Claude-Code-only layer.
-  `plugin.json` is the plugin manifest; `marketplace.json` makes the repo installable
-  (`claude plugin marketplace add ChanMeng666/a11y-loop`) and is why the marketplace is named
-  `chanmeng-a11y-loop` while the plugin inside it is `a11y-loop` — installs are
-  `a11y-loop@chanmeng-a11y-loop`. `hooks/plan-gate.mjs` is a `PreToolUse` hook on `ExitPlanMode`
-  that declines a plan changing UI work with no accessibility content in it. Nothing in `skills/`
+- **`plugin/`** — an *optional* Claude-Code-only layer, and the plugin root: an installed plugin
+  gets this folder and nothing else. `plugin/.claude-plugin/plugin.json` (+ `icon.png`) is the
+  manifest, `plugin/hooks/` the hook, `plugin/commands/` the `/a11y-plan` command. The root
+  `.claude-plugin/marketplace.json` makes the repo installable
+  (`claude plugin marketplace add ChanMeng666/a11y-loop`) with `plugins[0].source` = `./plugin`,
+  and is why the marketplace is named `chanmeng-a11y-loop` while the plugin inside it is
+  `a11y-loop` — installs are `a11y-loop@chanmeng-a11y-loop`. `plugin/hooks/plan-gate.mjs` is a
+  `PreToolUse` hook on `ExitPlanMode` that declines a plan changing UI work with no
+  accessibility content in it. Three things in `plugin/` are generated copies, never edited by
+  hand: `plugin/skills/a11y-loop/` (from `skills/a11y-loop/`, minus `evals/`),
+  `plugin/hooks/lib/plan-gate.mjs` (from `src/lib/plan-gate.js`) and `plugin/LICENSE`. Edit the
+  original and run `npm run sync-plugin` (`scripts/sync-plugin.mjs`);
+  `test/unit/plugin-sync.test.js` fails while any copy differs, and also fails if anything in
+  `plugin/` names a `../` path or `${CLAUDE_SKILL_DIR}`, or if a `package.json` or lockfile
+  appears there. `plugin/README.md` is hand-written and is what the plugin directory and
+  `claude plugin details` read. Nothing in `skills/`
   may depend on this layer, and nothing in this layer may appear in `SKILL.md` or `references/` —
   the skill has to stay portable across the 40+ clients that implement the Agent Skills standard.
   The hook's own invariants are documented in its header comment; the load-bearing ones are that it
   never blocks on its own failure, never returns `allow` (off the deny path it returns
   `additionalContext` with no `permissionDecision` at all, so the user's plan-approval prompt still
   appears), and declines a given plan at most once. The hook holds none of the decision itself: it
-  imports `src/lib/plan-gate.js` (see below), which is why `hooks/` reaches into `src/` — the
-  plugin root is the repository, so the path resolves in an installed plugin too.
+  dynamically imports its copy `./lib/plan-gate.mjs` of `src/lib/plan-gate.js` (see below), and
+  if that copy is missing or throws it exits 0 with no verdict.
 - **`src/cli.js`** — argument parsing and dispatch only; each subcommand's logic lives in
   `src/commands/{audit,contrast,diff,doctor,install-browser,plan-check}.js`. Exit codes (`EXIT.OK=0`, `EXIT.FINDINGS=1`,
   `EXIT.ERROR=2`) are a stable contract — don't repurpose them.
@@ -125,7 +135,8 @@ or Playwright will report a missing browser.
   serializer per output format), `wcag-map.js` (rule → WCAG SC + ACT ID mapping), `serve.js` and
   `browser-utils.js` (local static serving for `--file`/`--html`, and Playwright lifecycle helpers),
   and `plan-gate.js` — the plan gate's pure decision (is this UI work, does it carry accessibility
-  content), shared by `hooks/plan-gate.mjs` and `a11y-loop plan-check`. No I/O, no state, nothing
+  content), shared by `plugin/hooks/plan-gate.mjs` (through its copy) and `a11y-loop plan-check`.
+  It may import only `node:` built-ins, because the copy has to run on its own. No I/O, no state, nothing
   Claude-Code-specific: the loop guard, session cap and kill switch stay in the hook, and the CLI
   is stateless.
 - **`demo/before/` and `demo/after/`** — the seeded-violation fixture and its fixed counterpart
@@ -228,9 +239,11 @@ rather than left to be rediscovered.
   files."* This skill must fire while planning, before any UI file exists, and on audit requests
   that name only a URL. `paths` made both unreachable. Solve over-triggering in the `description`'s
   negative clauses and in `evals/trigger-evals.json` instead.
-- **`plugin.json` names no `skills` key, on purpose.** The skill lives in `skills/a11y-loop/`, the
-  conventional folder, so Claude Code, Codex, `npx skills`, `gh skill` and the Agent Plugins
-  standard all find it with no manifest help. This repo used to keep it in `skill/`, which needed
+- **`plugin.json` names no `skills` key, on purpose.** The skill lives in `skills/a11y-loop/` at the
+  repo root and in `plugin/skills/a11y-loop/` inside the plugin, the conventional folder in both,
+  so Claude Code, Codex, `npx skills`, `gh skill` and the Agent Plugins standard all find it with
+  no manifest help. `npx skills add` on the repo still finds one skill, not two (checked
+  2026-10-19). This repo used to keep it in `skill/`, which needed
   a `skills` manifest key and hid it from every standard installer. Observed on Claude Code 2.1.x
   (2026-10-19): a `skills` key *adds* to the default `skills/` folder rather than replacing it
   (a probe plugin with `skills/alpha` plus `"skills": "./extra/"` loaded both). Do not re-add the
@@ -244,9 +257,25 @@ rather than left to be rediscovered.
   proof: the only real check is installing the plugin and reading `claude plugin list` for
   `Status: ✔ enabled`.
 - **The version lives in four files and they must move together:** `package.json`,
-  `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` (twice — `metadata.version` and
-  `plugins[0].version`), and `SKILL.md`'s `metadata."a11y-loop/version"`. Nothing enforces this;
-  a bump that misses one ships a lie.
+  `plugin/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` (twice — `metadata.version`
+  and `plugins[0].version`), and `SKILL.md`'s `metadata."a11y-loop/version"`.
+  `test/unit/plugin-sync.test.js` fails when they disagree; run `npm run sync-plugin` after the
+  bump so the plugin's copy of `SKILL.md` follows.
+- **A `package.json` plus a lockfile in the plugin root makes Claude Code install dependencies at
+  plugin install time,** with no way to turn it off (code.claude.com/docs/en/plugins/loading,
+  "Node.js package dependencies"). Up to 0.3.0 the plugin root was the whole repository, so
+  installing the plugin ran a scripts-disabled `npm ci` in the plugin cache and put about 24 MB of
+  `node_modules` (axe-core, Playwright, culori, tabbable) there that nothing in the plugin used. It
+  also made the Anthropic plugin directory scan all of `docs/`, `test/` and `website/` as plugin
+  content. That is why the plugin is `plugin/`. Never add a `package.json` there.
+- **The skill pre-approves only `Bash(a11y-loop *)` and `Bash(npx a11y-loop *)`.** It used to
+  pre-approve `node ${CLAUDE_SKILL_DIR}/../../src/cli.js *` for checkouts, a path that climbs out
+  of the skill's folder and that the plugin directory holds for review. Working from a checkout,
+  approve each `node src/cli.js` call, or run `npm link` once so `a11y-loop` resolves to it.
+- **Shipped text must be plain text.** A raw NUL inside a string literal made the plugin directory
+  class `src/lib/fingerprint.js` as binary and hold it as uninspectable. Write control characters
+  as escapes (`'\u0000'`); `test/unit/text-encoding.test.js` scans `src/`, `plugin/`, `skills/`, `scripts/`, root and
+  `docs/` Markdown, `llms.txt` and the marketplace manifest.
 - **`ExitPlanMode` does not exist under `claude -p`.** It is absent from the toolset in print mode,
   so the hook's full round trip — Claude Code fires the hook, the hook denies, Claude revises and
   calls `ExitPlanMode` again — cannot be exercised headlessly, only in an interactive session.
@@ -264,14 +293,15 @@ session without installing it:
 
 ```bash
 # Session-scoped: loads this checkout's plugin, skill, hook and command
-claude --plugin-dir . -p "…"
+npm run sync-plugin
+claude --plugin-dir ./plugin -p "…"
 
 # Inspect what a plugin actually contributes, plus its always-on token cost
-claude --plugin-dir . plugin details a11y-loop
+claude --plugin-dir ./plugin plugin details a11y-loop
 
 # Drive the hook directly with a realistic payload — expect a "deny" verdict
 echo '{"session_id":"s1","tool_name":"ExitPlanMode","tool_input":{"plan":"Add a settings page in React: a modal dialog, a members table with row actions, tabs, and a dark mode toggle styled with Tailwind CSS."}}' \
-  | node hooks/plan-gate.mjs
+  | node plugin/hooks/plan-gate.mjs
 ```
 
 Two ways that command misleads you if you are not careful:
@@ -285,11 +315,19 @@ Two ways that command misleads you if you are not careful:
   Code honors it only under `-p` and ignores `additionalContext` alongside it.) Point
   `CLAUDE_PLUGIN_DATA` at a fresh directory to get a clean verdict:
   ```bash
-  echo "$payload" | CLAUDE_PLUGIN_DATA="$(mktemp -d)" node hooks/plan-gate.mjs
+  echo "$payload" | CLAUDE_PLUGIN_DATA="$(mktemp -d)" node plugin/hooks/plan-gate.mjs
   ```
 
 To test as a real install instead, register the checkout as a marketplace — `claude plugin
-marketplace add ./` — so the plugin tracks your edits rather than the published repo.
+marketplace add ./` — so the plugin tracks your edits rather than the published repo. A local
+marketplace reads `plugin/` in place (`claude plugin list` shows `Read from:` the checkout). To see what a user's install actually copies, install from a
+pushed branch (`claude plugin marketplace add ChanMeng666/a11y-loop#<branch>`) into a throwaway
+`CLAUDE_CONFIG_DIR` and list `plugins/cache/` there.
+
+The plugin directory submission must name `plugin` as the plugin path: "If the plugin is one
+folder in a larger repository, give that folder as the plugin path when you submit; the directory
+reads and scans only that folder" (claude.com/docs/plugins/submit). The path cannot be changed
+after submitting.
 
 ## Reading Order
 

@@ -57,8 +57,8 @@ language (no "compliant", "guarantees", "fully accessible", "no manual testing n
 accessibility score) in code, docs, or output you add.
 
 **Keep the skill portable.** `skills/a11y-loop/` is the whole product and it targets the open Agent
-Skills standard, not one client. The Claude-Code-only layer (`.claude-plugin/`, `hooks/`,
-`commands/`) is optional and additive: nothing under `skills/` may depend on it, and no
+Skills standard, not one client. The Claude-Code-only layer (`plugin/`) is optional and
+additive: nothing under `skills/` may depend on it, and no
 Claude-Code-specific mechanism — hooks, plugin manifests, slash commands, `ExitPlanMode` — may
 appear in `SKILL.md` or `references/`. A PR that blurs that line will be asked to split it.
 
@@ -79,12 +79,13 @@ same commit as the CHANGELOG entry, then check before tagging:
 | File | Field |
 |---|---|
 | `package.json` | `version` |
-| `.claude-plugin/plugin.json` | `version` |
+| `plugin/.claude-plugin/plugin.json` | `version` |
 | `.claude-plugin/marketplace.json` | `metadata.version` **and** `plugins[0].version` |
 | `skills/a11y-loop/SKILL.md` | `metadata."a11y-loop/version"` |
 
 ```bash
-node -e "console.log(require('./package.json').version, require('./.claude-plugin/plugin.json').version, require('./.claude-plugin/marketplace.json').plugins[0].version)"
+node -e "console.log(require('./package.json').version, require('./plugin/.claude-plugin/plugin.json').version, require('./.claude-plugin/marketplace.json').plugins[0].version)"
+npm run sync-plugin   # the plugin's copy of SKILL.md carries the version too
 grep -o '\"a11y-loop/version\": \"[^\"]*\"' skills/a11y-loop/SKILL.md
 ```
 

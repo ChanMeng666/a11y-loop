@@ -16,8 +16,11 @@ of the project for large language models and AI agents.
 - `a11y-loop plan-check --file plan.md` is the plan gate for any agent or CI job: exit 1 when a
   plan that changes UI work names no accessibility decisions, 0 otherwise, 2 on a usage error. No
   TTY, no browser, no state
-- Plus one *optional*, Claude-Code-only layer (`.claude-plugin/`, `hooks/`, `commands/`) that
-  enforces the plan phase at plan approval. Nothing under `skills/` depends on it.
+- Plus one *optional*, Claude-Code-only layer (`plugin/`, the plugin root, published by the root
+  `.claude-plugin/marketplace.json`) that enforces the plan phase at plan approval. Installing it
+  copies only `plugin/` and fetches no packages. Nothing under `skills/` depends on it.
+- Privacy: nothing is collected or sent anywhere; see PRIVACY.md
+  (https://github.com/ChanMeng666/a11y-loop/blob/main/PRIVACY.md)
 
 ## What the skill covers
 
@@ -110,8 +113,7 @@ Two rules carry more weight than the rest:
 
 1. **Never weaken the honesty language** (§3 of SKILL.md) anywhere — code, docs, tool output, or
    this file.
-2. **Keep the skill portable.** Nothing under `skills/` may depend on `.claude-plugin/`, `hooks/`
-   or `commands/`, and no Claude-Code-specific mechanism may appear in `SKILL.md` or
+2. **Keep the skill portable.** Nothing under `skills/` may depend on `plugin/`, and no Claude-Code-specific mechanism may appear in `SKILL.md` or
    `references/`. The same `SKILL.md` is meant to work in any client implementing the Agent Skills
    standard.
 

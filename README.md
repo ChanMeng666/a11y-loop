@@ -102,12 +102,15 @@ If you keep browsers off the system drive, set `PLAYWRIGHT_BROWSERS_PATH` before
 ### What it runs on your machine
 
 - **The skill** is text. It runs nothing by itself.
-- **The plugin's hook** runs `node hooks/plan-gate.mjs` before Claude Code leaves plan mode. It reads the plan text and writes one small state file to Claude Code's plugin data directory (or the temp directory). It makes no network requests. Turn it off with `A11Y_LOOP_PLAN_GATE=off`.
+- **The plugin's hook** runs `node hooks/plan-gate.mjs` from the plugin's folder before Claude Code leaves plan mode. It reads the plan text and writes one small state file to Claude Code's plugin data directory (or the temp directory). It makes no network requests. Turn it off with `A11Y_LOOP_PLAN_GATE=off`.
+- **Installing the plugin** copies the repository's `plugin/` folder into Claude Code's plugin cache and fetches no packages. Version 0.3.0 and earlier shipped the whole repository as the plugin, so the install also ran `npm ci` there and downloaded about 24 MB of packages the plugin did not use.
 - **The command-line tool** is a separate install (`npm i -g a11y-loop`). It launches a local Chromium, serves `--file` and `--html` targets on a localhost port, and opens only the URL you give it. It sends no telemetry.
 - **`a11y-loop install-browser`** downloads Chromium and a headless shell from Playwright's CDN, about 700 MB on disk.
 - **In claude.ai chat**, only the skill's rules apply. There is no Node or browser there, so the audit cannot run and the hook does not load.
 
 A clean audit means no automatically detectable failures were found in the states and passes that ran. It is not a conformance claim. Every run ends with a checklist of what still needs a person.
+
+Nothing is collected or sent to the author. See [PRIVACY.md](PRIVACY.md).
 
 ## Why a loop
 

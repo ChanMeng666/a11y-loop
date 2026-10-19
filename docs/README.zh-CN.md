@@ -96,12 +96,15 @@ cp -r "$(npm root -g)/a11y-loop/skills/a11y-loop" ~/.claude/skills/
 ### 它在你的机器上运行什么
 
 - **技能**是文本，自身不运行任何东西。
-- **插件的钩子**在 Claude Code 离开计划模式之前运行 `node hooks/plan-gate.mjs`。它读取计划文本，并向 Claude Code 的插件数据目录（或临时目录）写入一个很小的状态文件。它不发出任何网络请求。可用 `A11Y_LOOP_PLAN_GATE=off` 关闭。
+- **插件的钩子**在 Claude Code 离开计划模式之前，从插件自己的文件夹运行 `node hooks/plan-gate.mjs`。它读取计划文本，并向 Claude Code 的插件数据目录（或临时目录）写入一个很小的状态文件。它不发出任何网络请求。可用 `A11Y_LOOP_PLAN_GATE=off` 关闭。
+- **安装插件**只会把仓库的 `plugin/` 文件夹复制到 Claude Code 的插件缓存中，不下载任何包。0.3.0 及更早版本把整个仓库当作插件，因此安装时还会在缓存里运行 `npm ci`，下载约 24 MB 插件用不到的包。
 - **命令行工具**是单独安装的（`npm i -g a11y-loop`）。它会启动本地的 Chromium，在本机端口上为 `--file` 和 `--html` 目标提供服务，并且只打开你给出的 URL。它不发送任何遥测数据。
 - **`a11y-loop install-browser`** 从 Playwright 的 CDN 下载 Chromium 和一个无头 shell，磁盘占用约 700 MB。
 - **在 claude.ai 聊天中**，只有技能的规则生效。那里没有 Node 或浏览器，所以审计无法运行，钩子也不会加载。
 
 审计结果干净只表示在已运行的状态和渲染轮次中没有发现可被自动检测出来的问题。它不是符合性声明。每次运行都会以一份清单收尾，列出仍然需要人来检查的事项。
+
+它不收集任何数据，也不向作者发送任何内容。参见 [PRIVACY.md](../PRIVACY.md)。
 
 ## 为什么是一个循环
 
