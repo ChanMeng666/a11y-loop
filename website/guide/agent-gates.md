@@ -17,7 +17,7 @@ not say, this page says that, rather than guessing.
 | OpenAI Codex CLI | none verified; skill rules, or run `plan-check` | `Stop` hook can continue the turn | 2026-10-20 | <https://learn.chatgpt.com/docs/hooks> |
 | Cursor | none verified; skill rules | `stop` hook can send a follow-up message | 2026-10-20 | <https://cursor.com/docs/hooks> |
 | GitHub Copilot cloud agent and Copilot CLI | none verified; skill rules | `agentStop` hook can force another turn | 2026-10-20 | <https://docs.github.com/en/copilot/reference/hooks-reference> |
-| Gemini CLI | none verified; skill rules | `AfterAgent` hook can force a retry | 2026-10-20 | <https://geminicli.com/docs/hooks/reference/> |
+| Gemini CLI (not Antigravity CLI; see its section) | none verified; skill rules | `AfterAgent` hook can force a retry | 2026-10-20 | <https://geminicli.com/docs/hooks/reference/> |
 | Windsurf | none verified; skill rules | hooks exist, none found that continues the agent; use CI | 2026-10-20 | <https://docs.devin.ai/desktop/cascade/hooks> |
 | Cline | no hook system found; skill rules | code plugins only; use CI | 2026-10-20 | <https://docs.cline.bot/sdk/plugins> |
 | OpenCode | no hook system found; skill rules | JavaScript plugins only; use CI | 2026-10-20 | <https://opencode.ai/docs/plugins/> |
@@ -64,12 +64,19 @@ Four clients document a hook that fires when the agent finishes and can feed tex
 continues. They differ in event name and in the field that carries the text. One script serves all
 four. It does what the Claude Code hook does in spirit, with a smaller scope:
 
-- It audits `A11Y_LOOP_TARGET` (a URL) if you set it, otherwise every `.html` or `.htm` file that
-  `git status` reports as changed. It does not read the client's transcript, so it does not see
-  other UI file types or know what ran earlier in the session.
+- It audits `A11Y_LOOP_TARGET` (an http or https URL) if you set it, otherwise every `.html` or
+  `.htm` file that `git status` reports as added, modified or renamed. It runs git and the audit from
+  the repository root, because a hook runs in the session's working directory, which can be a
+  subfolder. It does not read the client's transcript, so it does not see other UI file types or
+  know what ran earlier in the session.
+- It starts no shell, so a file name cannot be read as a command. On Windows it finds the installed
+  package through `where` and runs its `cli.js` with node, because the `.cmd` shim needs a shell.
+- It has a time budget, 100 seconds by default (`A11Y_LOOP_GATE_BUDGET_MS`). Files it has not
+  reached when the budget runs out are listed in its reason text for the agent to audit itself.
 - It asks the agent to continue only when an audit exits 1. Exit 2 (no browser, usage error) and any
   error of its own let the agent stop.
-- It stops asking when the client says it is already continuing because of a stop hook.
+- It stops asking when the client says it is already continuing because of a stop hook
+  (`stop_hook_active` for Codex, Copilot and Gemini CLI, `loop_count` for Cursor).
   `A11Y_LOOP_AUDIT_GATE=off` disables it.
 - It never prompts, and the audit it runs has its stdin closed.
 
@@ -79,43 +86,84 @@ Save this as `a11y-gate.mjs` in the folder named for each client below:
 #!/usr/bin/env node
 // Runs `a11y-loop audit` when an agent is about to finish, and asks it to continue if the audit
 // found violations. Usage: node a11y-gate.mjs <codex|copilot|gemini|cursor>
-// Target: A11Y_LOOP_TARGET (a URL) if set, otherwise every .html/.htm file git reports as changed.
-// Never prompts, never reads a TTY, and fails open: any error of its own lets the agent stop.
+// Target: A11Y_LOOP_TARGET (an http or https URL) if set, otherwise every .html/.htm file that git
+// reports as added, modified or renamed in the repository the session is in.
+// Never prompts, never uses a shell, and fails open: any error of its own lets the agent stop.
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 const client = process.argv[2];
 let payload = {};
 try { payload = JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { /* closed or empty stdin */ }
 
-// Loop guard: if the client is already continuing because of a stop hook, let it stop.
+// Loop guards: stop_hook_active (Codex, Copilot, Gemini) or loop_count (Cursor) say the client is
+// already continuing because of a stop hook. status is Cursor's: skip aborted or errored runs.
 if (payload.stop_hook_active === true || Number(payload.loop_count || 0) >= 1) process.exit(0);
-if (payload.status && payload.status !== 'completed') process.exit(0); // Cursor: skip aborted or errored runs
+if (payload.status && payload.status !== 'completed') process.exit(0);
 if (/^(off|0|false)$/i.test(process.env.A11Y_LOOP_AUDIT_GATE || '')) process.exit(0);
 
-const run = (cmd) => spawnSync(cmd, { shell: true, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-let targets = [];
-if (process.env.A11Y_LOOP_TARGET) {
-  targets = [process.env.A11Y_LOOP_TARGET];
-} else {
-  const st = run('git status --porcelain');
-  if (st.status !== 0) process.exit(0);
-  targets = st.stdout.split('\n').map((l) => l.slice(3).trim().replace(/^"|"$/g, ''))
-    .filter((f) => /\.html?$/i.test(f));
+const budgetMs = Number(process.env.A11Y_LOOP_GATE_BUDGET_MS) || 100000; // keep below the client's hook timeout
+const started = Date.now();
+const run = (cmd, args, cwd, timeout) =>
+  spawnSync(cmd, args, { cwd, timeout, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); // no shell
+
+// Hooks run in the session's working directory, which may be a subfolder: work from the repo root.
+const start = payload.cwd || process.cwd();
+const top = run('git', ['-C', start, 'rev-parse', '--show-toplevel'], start, 10000);
+if (top.status !== 0) process.exit(0);
+const root = top.stdout.trim();
+
+// How to start the CLI without a shell. On Windows the global bin is a .cmd shim that cannot be
+// spawned without one, so run the package's cli.js with node instead.
+let cli = ['a11y-loop'];
+if (process.platform === 'win32') {
+  const where = run('where', ['a11y-loop'], root, 10000);
+  const shim = (where.stdout || '').split(/\r?\n/).find((l) => l.trim());
+  const js = shim && join(dirname(shim.trim()), 'node_modules', 'a11y-loop', 'src', 'cli.js');
+  if (!js || !existsSync(js)) { process.stderr.write('a11y-gate: a11y-loop not found on PATH\n'); process.exit(0); }
+  cli = [process.execPath, js];
 }
 
-const failures = [];
+let targets = []; // each is ['--file', path] or [url]
+const url = process.env.A11Y_LOOP_TARGET;
+if (url) {
+  if (!/^https?:\/\//i.test(url)) process.exit(0);
+  targets = [{ name: url, args: [url] }];
+} else {
+  const st = run('git', ['-c', 'core.quotepath=off', 'status', '--porcelain', '-uall', '-z'], root, 20000);
+  if (st.status !== 0) process.exit(0);
+  const entries = st.stdout.split('\0');
+  for (let i = 0; i < entries.length; i++) {
+    const e = entries[i];
+    if (e.length < 4) continue;
+    const xy = e.slice(0, 2), file = e.slice(3);
+    if (/[RC]/.test(xy)) i++; // a rename or copy is followed by its old path: skip that entry
+    if (xy.includes('D') || !/\.html?$/i.test(file)) continue;
+    targets.push({ name: file, args: ['--file', file] });
+  }
+}
+
+const failures = [], skipped = [];
 for (const t of targets) {
-  const flag = /^https?:\/\//i.test(t) ? '' : '--file ';
-  const r = run(`a11y-loop audit ${flag}"${t}" --quiet`);
-  if (r.status === 1) failures.push(`${t}: ${(r.stdout || '').trim().split('\n')[0]}`);
+  const left = budgetMs - (Date.now() - started);
+  if (left < 5000) { skipped.push(t.name); continue; }
+  const r = run(cli[0], [...cli.slice(1), 'audit', ...t.args, '--quiet'], root, left);
+  if (r.error || r.signal) skipped.push(t.name); // timed out
+  else if (r.status === 1) failures.push(`${t.name}: ${(r.stdout || '').trim().split('\n')[0]}`);
   // status 2 (no browser, usage error) and anything else: fail open, like the Claude Code hook.
 }
-if (failures.length === 0) process.exit(0);
+if (failures.length === 0 && skipped.length === 0) process.exit(0);
 
-const reason = `a11y-loop audit found violations. Run \`a11y-loop audit <target> --json --out report.json\`, fix them, ` +
-  `then re-run until it exits 0. ${failures.join('; ')}. An audit covers only what automation can detect; ` +
-  `say what you did not check.`;
+let reason = '';
+if (failures.length) {
+  reason += 'a11y-loop audit found violations. Run `a11y-loop audit <target> --json --out report.json`, ' +
+    `fix them, then re-run until it exits 0. ${failures.join('; ')}. `;
+}
+if (skipped.length) {
+  reason += `The audit time budget ran out before these were audited: ${skipped.join(', ')}. Audit them yourself. `;
+}
+reason += 'An audit covers only what automation can detect; say what you did not check.';
 const out = {
   codex: { decision: 'block', reason },
   copilot: { decision: 'block', reason },
@@ -126,8 +174,10 @@ if (!out) process.exit(0);
 process.stdout.write(JSON.stringify(out));
 ```
 
-This script was run with all four client arguments against a seeded-violation page, with the loop
-guard set, and with closed stdin. It was not run inside the clients themselves. Check each client's
+This script was run on Windows with all four client arguments, from a subfolder, against a new
+folder, a renamed file and a non-ASCII file name with spaces, with the loop guard set, with closed
+stdin, with an invalid URL target, and with a budget too short to finish. It was not run inside the
+clients themselves. Check each client's
 hook log once before relying on it.
 
 ### OpenAI Codex CLI
@@ -158,9 +208,12 @@ Save the script as `.codex/hooks/a11y-gate.mjs` and add to `.codex/hooks.json`:
 }
 ```
 
-The page's own example uses a timeout of 30 and does not state the unit; set it long enough for an
-audit. Not verified: whether the hook runs under `codex exec`, and which shell expands the command
-on Windows.
+The page says `timeout` is in seconds (default 600 for most hooks) and that commands run with the
+session `cwd`, which is why the script finds the repository root itself. `Stop` input includes
+`stop_hook_active`, "whether this turn was already continued by `Stop`", which the script's loop
+guard reads. What happens when a `Stop` hook times out is not documented; the page says only that a
+`SessionEnd` timeout is reported as a hook failure. Not verified: whether the hook runs under
+`codex exec`, and which shell expands the command on Windows.
 
 ### Cursor
 
@@ -177,7 +230,7 @@ Save the script as `.cursor/hooks/a11y-gate.mjs` and add to `.cursor/hooks.json`
   "version": 1,
   "hooks": {
     "stop": [
-      { "command": "node .cursor/hooks/a11y-gate.mjs cursor", "loop_limit": 1 }
+      { "command": "node .cursor/hooks/a11y-gate.mjs cursor", "timeout": 120, "loop_limit": 1 }
     ]
   }
 }
@@ -185,8 +238,11 @@ Save the script as `.cursor/hooks/a11y-gate.mjs` and add to `.cursor/hooks.json`
 
 Not verified: whether the Cursor CLI runs hooks. The CLI overview page read on the same date does not
 mention them, and the hooks page names the CLI only for one unrelated event. Do not assume it does.
-The hooks page does not state the unit of `timeout`, so the snippet leaves it at the default; raise
-it if audits are cut off.
+The page says `timeout` is in seconds, with a "platform default" it does not give as a number, and
+that project hooks run from the project root. It says crashes, timeouts and non-zero exits other than
+2 fail open, in the section on permission hooks; it does not repeat that for `stop`. `loop_count`
+counts the automatic follow-ups already made, which the script's guard reads, and `loop_limit` caps
+them.
 
 ### GitHub Copilot cloud agent and Copilot CLI
 
@@ -194,8 +250,10 @@ Hooks are JSON files in `.github/hooks/` (repository, for the cloud agent and th
 `~/.copilot/hooks/` (CLI), with `"version": 1`. For `agentStop`,
 `{"decision":"block","reason":"..."}` forces another turn using the reason as the prompt. The CLI
 overrides the hook after eight consecutive blocks, and on the cloud agent each extra turn counts
-against the job's timeout. The cloud agent reads only `.github/hooks/*.json` and honors only the
-`bash` field. Sources: <https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-hooks>
+against the job's timeout. `agentStop` input includes `stop_hook_active`, which the script's guard reads.
+The `timeoutSec` default is 30; the page does not say what happens when a hook exceeds it. The cloud
+agent reads only `.github/hooks/*.json` and honors only the
+`bash` field. Sources: <https://docs.github.com/en/copilot/concepts/agents/hooks>
 and <https://docs.github.com/en/copilot/reference/hooks-reference>, read 2026-10-20.
 
 Save the script as `.github/hooks/a11y-gate.mjs` and add `.github/hooks/a11y-gate.json`:
@@ -223,13 +281,18 @@ The overview page labels its example file `~/.github/hooks/project-hooks.json` w
 
 ### Gemini CLI
 
-Hooks live under a `hooks` key in `settings.json`, keyed by event name. `AfterAgent` receives
+This section describes Gemini CLI only. Both Gemini hook pages carry the notice "Unpaid tier and
+Google One users: Gemini CLI was replaced by Antigravity CLI on June 18th, 2026." Whether Antigravity
+CLI reads the same hooks was not checked.
+
+Hooks live under a `hooks` key in `settings.json`, keyed by event name. The project file is
+`.gemini/settings.json`, then `~/.gemini/settings.json`, then `/etc/gemini-cli/settings.json`. `AfterAgent` receives
 `prompt`, `prompt_response` and `stop_hook_active`. `{"decision":"deny","reason":"..."}` rejects the
 response and sends the reason to the agent as a new prompt; exit 2 does the same with stderr as the
 prompt. Stdout must hold only the final JSON object. Sources: <https://geminicli.com/docs/hooks/>
 and <https://geminicli.com/docs/hooks/reference/>, read 2026-10-20.
 
-Save the script as `.gemini/hooks/a11y-gate.mjs` and merge into your project `settings.json`:
+Save the script as `.gemini/hooks/a11y-gate.mjs` and merge into `.gemini/settings.json`:
 
 ```json
 {
@@ -241,7 +304,7 @@ Save the script as `.gemini/hooks/a11y-gate.mjs` and merge into your project `se
           {
             "name": "a11y-loop-audit",
             "type": "command",
-            "command": "node $GEMINI_PROJECT_DIR/.gemini/hooks/a11y-gate.mjs gemini",
+            "command": "node \"$GEMINI_PROJECT_DIR/.gemini/hooks/a11y-gate.mjs\" gemini",
             "timeout": 120000
           }
         ]
@@ -251,8 +314,8 @@ Save the script as `.gemini/hooks/a11y-gate.mjs` and merge into your project `se
 }
 ```
 
-The `timeout` is in milliseconds, default 60000. Not verified: which file path counts as the project
-`settings.json`; the hooks page names the project layer but the path was not read from it.
+The `timeout` is in milliseconds, default 60000. The pages read do not say what happens when a hook
+exceeds it.
 
 ### Windsurf
 
@@ -285,14 +348,15 @@ report lists the manual checks that remain.
 
 A pre-commit hook, saved as `.git/hooks/pre-commit` and made executable:
 
-```sh
-#!/bin/sh
-# Audit staged HTML files. Non-interactive: stdin is closed for the audit.
+```bash
+#!/bin/bash
+# Audit staged HTML files (the files on disk, not only the staged content).
+# File names are read NUL-separated, so spaces and odd characters are safe. stdin is closed.
 status=0
-for f in $(git diff --cached --name-only --diff-filter=ACM | grep -Ei '\.html?$'); do
+while IFS= read -r -d '' f; do
   a11y-loop audit --file "$f" --quiet </dev/null
   [ $? -eq 1 ] && status=1
-done
+done < <(git diff --cached -z --name-only --diff-filter=ACMR | grep -z -Ei '\.html?$')
 exit $status
 ```
 
