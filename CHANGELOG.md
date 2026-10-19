@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   It runs only in Claude Code. Other clients rely on the skill text plus `a11y-loop audit` in CI.
 - **Native plugin evals.** `plugin/evals/` is a suite for `claude plugin eval` (Claude Code 2.1.269 or later): one trigger case per prompt in `trigger-evals.json` (21 should-trigger, 11 should-not) and 7 behaviour cases with graders for the plan, the APG modal and tabs contracts, the audit loop, and the honesty rules. Hand-written cases live in `skills/a11y-loop/evals/native/`; `npm run sync-plugin` generates the rest. `npm run eval:skill` runs it with and without the plugin and prints the delta. First measured results are in `evals/skill-eval-report-2026-10.md`.
 - **A composite GitHub Action** (`action.yml` at the repository root, usable as
-  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version (falling back to the action's own checkout when that version is not on npm yet) and the
+  `uses: ChanMeng666/a11y-loop@<tag>`). It installs the CLI at the action ref's own version (falling back to the action's own checkout when no `version` input is given and that version is not on npm yet) and the
   headless-shell browser, runs `doctor` and `audit`, and writes a step summary with the totals, the
   first violations, the manual-check count and the sentence about what a clean report means. Inputs:
   `target`, `interact`, `baseline`, `fail-on` (`violations`, `new` or `never`), `sarif`, `pr-comment`,

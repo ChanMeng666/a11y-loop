@@ -171,8 +171,8 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   Do not rename the file: its name is part of the npm trusted-publisher contract.
 - **`.github/workflows/action-selftest.yml`** — runs the composite action (`uses: ./`) on Ubuntu and
   Windows against the demo pages and asserts its outputs. A release PR runs it before the version is
-  published, so the action's install step falls back to its own checkout when `npm view` does not
-  find the version; without that fallback the self-test could never pass on a release PR.
+  published, so, when no `version` input is given, the action's install step falls back to its own checkout if
+  `npm view` does not find the version (an explicit `version` that is missing still fails); without that fallback the self-test could never pass on a release PR.
 - **`.github/workflows/deploy-docs.yml`** — builds the VitePress site in `website/` and deploys it to
   GitHub Pages on pushes to `main` that touch it.
 
