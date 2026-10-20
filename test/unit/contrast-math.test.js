@@ -224,3 +224,40 @@ describe('checkContrast verdicts', () => {
     assert.equal(formatRatio(1), '1');
   });
 });
+
+// Each test below kills a mutant of src/lib/contrast-math.js that the tests
+// above let survive; the comment names it. Equivalent mutants have no test here.
+describe('contrast math: mutation-tested edges', () => {
+  // Kills `isLargeText(fontSizePx, bold = false)` → `bold = true`: 20px with
+  // no weight given is normal text, and has to meet 4.5:1.
+  test('isLargeText assumes regular weight when none is given', () => {
+    assert.equal(isLargeText(20), false);
+    assert.equal(isLargeText(20, true), true);
+  });
+
+  // Kills CONTEXT_SC's `large` entry → `{}` or either SC → `''`, and the
+  // normal-text AAA criterion → `''`.
+  test('normal and large text both cite SC 1.4.3 at AA and SC 1.4.6 at AAA', () => {
+    for (const large of [false, true]) {
+      assert.deepEqual(checkContrast('#777777', '#ffffff', { large }).sc, { AA: '1.4.3', AAA: '1.4.6' });
+    }
+  });
+
+  // Kills `input.trim()` → `input` before the bare-hex test: pasted colours
+  // carry stray spaces, and culori does not parse " 777777 " on its own.
+  test('a bare hex with surrounding spaces parses', () => {
+    assert.equal(parseColor(' 777777 ').hex, '#777777');
+  });
+
+  // Kills the `input` echo mutants (`typeof … === 'string'` → `false`, `!==`,
+  // or `'string'` → `''`), `rgb: [r, g, b]` → `[]` for both colours, and
+  // `bgRaw.alpha ?? 1` → `&& 1`. These fields are the `contrast --json` output.
+  test('the result echoes each input as given, with its channels and alpha', () => {
+    const r = checkContrast('777', 'rgba(255, 255, 255, 0.5)', { pageBackground: '#000000' });
+    assert.equal(r.fg.input, '777');
+    assert.equal(r.bg.input, 'rgba(255, 255, 255, 0.5)');
+    assert.deepEqual(r.fg.rgb, [119, 119, 119]);
+    assert.deepEqual(r.bg.rgb, [128, 128, 128]);
+    assert.equal(r.bg.alpha, 0.5);
+  });
+});

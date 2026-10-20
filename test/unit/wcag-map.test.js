@@ -215,3 +215,53 @@ describe('formatCitation', () => {
     assert.equal(formatCitation({}), null);
   });
 });
+
+// Each test below kills a mutant of src/lib/wcag-map.js that the tests above let
+// survive; the comment names it. Equivalent mutants have no test here.
+describe('wcag-map: mutation-tested edges', () => {
+  // Kills `tags.some(…)` → `tags.every(…)` in levelFromTags and
+  // versionFromTags: real rules carry one level tag among several others.
+  test('level and version are read from a full axe tag set', () => {
+    assert.equal(levelFromTags(['cat.color', 'wcag2aaa', 'wcag146']), 'AAA');
+    assert.equal(versionFromTags(['cat.structure', 'wcag21aa', 'wcag1410']), '2.1');
+    assert.equal(versionFromTags(['cat.forms', 'wcag2a', 'wcag412']), '2.0');
+  });
+
+  // Kills `\d?` → `\D?` in the AAA and A level patterns and `a{1,3}` → `a` in
+  // the 2.0 version pattern: every tag axe-core actually ships is read.
+  test('every level and version tag axe-core ships is recognised', () => {
+    assert.equal(levelFromTags(['wcag21a']), 'A');
+    assert.equal(levelFromTags(['wcag21aaa']), 'AAA');
+    assert.equal(versionFromTags(['wcag2aa']), '2.0');
+    assert.equal(versionFromTags(['wcag2aaa']), '2.0');
+  });
+
+  // Kills the `$` anchor dropped from the A level and the 2.0 version patterns:
+  // `wcag2a-obsolete` (duplicate-id, SC 4.1.1, removed in WCAG 2.2) is not a
+  // Level A tag, so the fallback reports no level and no version.
+  test('the obsolete 4.1.1 tag set gets no level or version', () => {
+    const w = wcagFromTags(['cat.parsing', 'wcag2a-obsolete', 'wcag411', 'deprecated']);
+    assert.deepEqual([w.sc, w.level, w.minVersion, w.wcag22Only], ['4.1.1', null, null, false]);
+  });
+
+  // Kills `scs.sort(compareSc)` → `scs`: the primary criterion is the lowest,
+  // whatever order the tags arrive in.
+  test('the primary criterion does not depend on tag order', () => {
+    const w = wcagFromTags(['wcag2a', 'wcag412', 'wcag244']);
+    assert.equal(w.sc, '2.4.4');
+    assert.deepEqual(w.alsoSc, ['4.1.2']);
+  });
+
+  // Kills the fallback's `versionFromTags(tags) === '2.2'` → `true`, `false`,
+  // `!==` or `=== ''`, and `alsoSc: sorted.slice(1)` → `sorted`.
+  test('an unknown criterion falls back with the right 2.2 flag and secondaries', () => {
+    const new22 = wcagFromTags(['wcag22aa', 'wcag999', 'wcag998']);
+    assert.deepEqual([new22.sc, new22.wcag22Only, new22.alsoSc], ['9.9.8', true, ['9.9.9']]);
+    assert.equal(wcagFromTags(['wcag21aa', 'wcag999']).wcag22Only, false);
+  });
+
+  // Kills the empty-name and empty-level fallbacks `''` → junk.
+  test('a citation with no name or level is just the SC', () => {
+    assert.equal(formatCitation({ sc: '9.9.9', name: null, level: null }), 'SC 9.9.9');
+  });
+});

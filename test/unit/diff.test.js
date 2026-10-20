@@ -201,3 +201,43 @@ describe('diffReports: RECLASSIFIED, never FIXED', () => {
     assert.match(text, /Not fixed\./);
   });
 });
+
+// Each test below kills a mutant of src/lib/diff.js that the tests above let
+// survive; the comment names it. Equivalent mutants have no test here.
+describe('diff: mutation-tested edges', () => {
+  // Kills `remaining: [...afterMap.values()].filter(…)` → `[...afterMap.values()]`,
+  // which counted a NEW violation as REMAINING too.
+  test('a new violation is NEW only, not also REMAINING', () => {
+    const diff = diffReports(
+      makeReport({ findings: [emptyButtonFinding(), contrastFinding()] }),
+      makeReport({ findings: [contrastFinding(), emptyButtonFinding({ selector: 'html > body > main > button' })] }),
+    );
+    assert.deepEqual(fps(diff.remaining), fps([contrastFinding()]));
+    assert.deepEqual(fps(diff.new), fps([emptyButtonFinding({ selector: 'html > body > main > button' })]));
+    // Kills the verdict's `${remaining} still present)` → ``.
+    assert.equal(diff.summary.verdict, 'REGRESSION: 1 new violation introduced (1 fixed, 1 still present)');
+  });
+
+  // Kills `reclassified > 0` → `true` / `>= 0` and `needsReviewNew > 0` →
+  // `true` / `>= 0`: a plain diff must not print "0 RECLASSIFIED … Not fixed."
+  // or "0 new needs-review finding(s)".
+  test('the RECLASSIFIED and needs-review notes appear only when there is something to say', () => {
+    const text = formatDiffHuman(diffReports(makeReport({ findings: [emptyButtonFinding()] }), cleanReport()));
+    assert.doesNotMatch(text, /RECLASSIFIED/);
+    assert.doesNotMatch(text, /needs-review/);
+  });
+
+  // Kills `finding.wcag?.sc` → `finding.wcag.sc` (throws on a row with no
+  // criterion), the `'—'` placeholder → `''`, and `selector || '(document)'`
+  // mutated to `&&`, `true`, `false` or an empty placeholder.
+  test('a row with no criterion and no selector still renders', () => {
+    const diff = diffReports(
+      cleanReport(),
+      makeReport({ findings: [emptyButtonFinding({ tags: [], selector: '' }), contrastFinding()] }),
+    );
+    assert.equal(diff.new[0].wcag, null);
+    const text = formatDiffHuman(diff);
+    assert.match(text, /^NEW\s+—\s+button-name\s+\(document\)$/m);
+    assert.match(text, /^NEW\s+SC 1\.4\.3\s+color-contrast\s+html > body > p$/m);
+  });
+});

@@ -114,7 +114,11 @@ describe('suggestColors', () => {
   });
 
   test('can skip the background option', () => {
-    const r = suggestColors('#777777', '#ffffff', { target: 4.5, includeBackground: false });
+    // A pair that does get a background suggestion by default (white text on
+    // #888888), so the option is what removes it. On #777777-on-white it never
+    // appeared, and `if (includeBackground)` → `if (true)` survived.
+    assert.ok(pick(suggestColors('#ffffff', '#888888', { target: 4.5 }), 'background', 'darker'));
+    const r = suggestColors('#ffffff', '#888888', { target: 4.5, includeBackground: false });
     assert.equal(
       r.suggestions.some((s) => s.role === 'background'),
       false,
@@ -132,5 +136,60 @@ describe('formatSuggestions', () => {
 
   test('returns null when there is nothing to suggest', () => {
     assert.equal(formatSuggestions({ suggestions: [], original: {} }), null);
+  });
+});
+
+// Each test below kills a mutant of src/lib/suggest-color.js that the tests
+// above let survive; the comment names it. Equivalent mutants have no test here.
+describe('suggestColors: mutation-tested edges', () => {
+  // Kills the bisection's `else { lo = mid; }` → `else {}`, which stops the
+  // search one step past the smallest change (#b65f00 instead of #b66000).
+  test('the darker text suggestion for #ff8800 on white is the nearest passing orange', () => {
+    const darker = pick(suggestColors('#ff8800', '#ffffff', { target: 4.5 }), 'foreground', 'darker');
+    assert.equal(darker.hex, '#b66000');
+  });
+
+  // Kills `bg.r / 255` → `bg.r * 255` (and g, b), which left the background
+  // search starting from nonsense, and the direction test → `true` (always
+  // "lighter"): light text on a mid surface needs a darker surface.
+  test('the background suggestion for white text on #888888 is a darker #767676', () => {
+    const bg = pick(suggestColors('#ffffff', '#888888', { target: 4.5 }), 'background', 'darker');
+    assert.deepEqual([bg.hex, bg.newRatioDisplay], ['#767676', '4.54']);
+  });
+
+  // Kills the `'lighter'` direction label → `''`.
+  test('the background suggestion for dark text on #777777 is a lighter #9b9b9b', () => {
+    const bg = pick(suggestColors('#333333', '#777777', { target: 4.5 }), 'background', 'lighter');
+    assert.equal(bg.hex, '#9b9b9b');
+  });
+
+  // Kills `i <= SCAN_STEPS` → `<`: the far end of the scan (pure white here)
+  // is a candidate, and for a 21:1 target on black it is the only one. (Going
+  // darker, the second-to-last step already rounds to #000000.)
+  test('the end of the lightness range is probed', () => {
+    const r = suggestColors('#888888', '#000000', { target: 21 });
+    assert.deepEqual(r.suggestions.map((s) => [s.role, s.hex]), [['foreground', '#ffffff']]);
+  });
+
+  // Kills `original >= target` → `>`: a pair exactly at the target passes.
+  test('a pair exactly at the target passes', () => {
+    assert.equal(suggestColors('#000000', '#ffffff', { target: 21 }).original.passes, true);
+  });
+
+  // Kills `found.hex !== bg.hex` → `true`: on a pair that already passes, the
+  // background search lands back on the background itself, which is no suggestion.
+  test('a passing pair gets no suggestion that repeats an input colour', () => {
+    assert.deepEqual(suggestColors('#000000', '#eeeeee', { target: 4.5 }).suggestions, []);
+  });
+});
+
+describe('formatSuggestions: mutation-tested edges', () => {
+  // Kills the `role === 'foreground'` tests (→ true / false / `!==`), the
+  // 'text' and 'background' words → '', and `.join('; ')` → `.join('')`.
+  test('renders a text and a background suggestion, joined', () => {
+    assert.equal(
+      formatSuggestions(suggestColors('#ffffff', '#888888', { target: 4.5 })),
+      'text darker: #ffffff → #212121 (3.54 → 4.54); background darker: #888888 → #767676 (3.54 → 4.54)',
+    );
   });
 });
