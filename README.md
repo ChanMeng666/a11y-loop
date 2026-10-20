@@ -23,13 +23,9 @@ Your coding agent writes accessible UI, audits the rendered page, fixes what it 
 
 <br>
 
-
-
 https://github.com/user-attachments/assets/ae827c22-c302-4ca5-b475-ee0c85dbd85e
 
-
-
-> 🎬 **New launch film coming soon.** How it was made: [a11y-loop-promo-film](https://github.com/ChanMeng666/a11y-loop-promo-film).
+<sub>How the film was made: [a11y-loop-promo-film](https://github.com/ChanMeng666/a11y-loop-promo-film).</sub>
 
 <details>
 <summary>Previous demo video</summary>
