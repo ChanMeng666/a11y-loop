@@ -504,8 +504,8 @@ planning. The 2026-07 run was against the v0.1.x skill.
   [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 641 tests across unit and integration suites
-  (0.4.1), including a 32-fixture matrix of seeded violations and correct-behaviour regression
+- **Tests:** the built-in `node --test` runner, 769 tests across unit and integration suites
+  (on `main` after 0.4.1), including a 32-fixture matrix of seeded violations and correct-behaviour regression
   guards, a demo end-to-end run, a forced-colors gradient regression test, and release guards:
   plugin-copy sync and version agreement, skill frontmatter against the Agent Skills spec, text
   encoding, every subcommand run with stdin closed, the CLI and hook run through a symlink and a
