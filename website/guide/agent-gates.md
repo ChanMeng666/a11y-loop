@@ -2,8 +2,8 @@
 
 In Claude Code the plugin ships two hooks. A plan gate declines a UI plan that says nothing about
 accessibility, once. An audit gate declines ending a session that wrote UI files and never ran
-`a11y-loop audit`, once per session. Both only remind and trigger the audit. Neither makes anything
-accessible, and neither checks what the audit found beyond its exit code.
+`a11y-loop audit`, once per session. Both only remind. Neither makes anything accessible, and the
+audit gate checks only that an audit ran, not what it found.
 
 Other clients cannot load that plugin. This page says what each one offers instead, using only what
 its own documentation describes. Everything was read on **2026-10-20**. Where the documentation does
@@ -53,7 +53,8 @@ a11y-loop plan-check --file plan.md --json </dev/null
 a11y-loop plan-check --text "Add a settings page with a modal dialog and a members table"
 ```
 
-Exit 0 means the plan carries accessibility content or is not UI work. Exit 1 means a UI plan with
+Exit 0 means the plan carries accessibility content, is not UI work, or is too short to assess. Exit 1
+means a UI plan with
 thin or absent accessibility content. Exit 2 is a usage error. In a client with no plan hook, the
 useful place for this is your own instructions: "run `a11y-loop plan-check` on the plan before
 writing UI code." The model may or may not comply; nothing here enforces it.

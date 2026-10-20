@@ -131,7 +131,7 @@ is unchanged. `test/integration/demo.test.js` holds the count exactly: 150 outsi
 9 inside it.
 
 `FIXED` / `NEW` / `REMAINING` status per finding, matched by stable fingerprint (rule + selector +
-WCAG success criterion), is what makes that verdict checkable rather than asserted — see
+element shape), is what makes that verdict checkable rather than asserted — see
 [`demo/before/VIOLATIONS.md`](../demo/before/VIOLATIONS.md) and
 [`demo/after/FIXES.md`](../demo/after/FIXES.md) for the finding-by-finding record.
 
@@ -173,14 +173,14 @@ state closed itself, with a submit inside it, is checked for focus return too.
 axe running once on page load finds nothing in a dialog that only misbehaves once it's open.
 
 `4` **Stable fingerprints power regression detection** — `a11y-loop diff` matches findings across
-two reports by rule + selector + WCAG success criterion and classifies each as FIXED, NEW
+two reports by rule + selector + element shape and classifies each as FIXED, NEW
 (a regression — this fails the command even if the total count went down), or REMAINING. A
 violation that a documented rule moved to needs-review (the forced-colors contrast routing) is
 RECLASSIFIED, never FIXED.
 
-`5` **Structured, honest output** — JSON is the primary format: every finding carries its WCAG
-success criterion, ACT rule ID where one exists, and a provenance block (axe-core version, browser,
-URL, viewport, timestamp, states exercised). SARIF v2.1 is available as a secondary format with
+`5` **Structured, honest output** — JSON is the primary format: every violation carries its WCAG
+success criterion and its ACT rule ID where one exists, and every report carries a provenance block
+(axe-core version, browser, URL, viewport, timestamp, states exercised). SARIF v2.1 is available as a secondary format with
 [a documented limitation](#-honest-coverage) rather than a silent gap. A generated manual-review
 checklist, scoped to what was actually built, ships with every run.
 
@@ -770,7 +770,8 @@ a11y-loop plan-check --file plan.md          # or --text "<plan>", or pipe the p
 a11y-loop plan-check --file plan.md --json   # verdict, isUiWork, hasA11yContent, missing items
 ```
 
-It exits `0` when the plan carries accessibility content or is not UI work, `1` when a UI plan's
+It exits `0` when the plan carries accessibility content, is not UI work, or is too short to assess,
+`1` when a UI plan's
 accessibility content is thin or absent, and `2` on a usage or input error. It never prompts: with
 neither flag it reads stdin only when stdin is not a TTY, and gives up with `2` if a pipe stays
 open with no data. It is stateless, with no loop guard and no session cap, so the same plan always
@@ -899,7 +900,7 @@ The terminal output starts with a summary: what the exit code means, violations 
 needs-review and best-practice counts, how many colour pairs and clusters account for the
 violations, and how many manual checks remain. Root causes come next, one block per cluster with
 its cause, an example, the fix and `+N more like this`, then the rows no cluster explains. On
-`demo/before` that is 356 lines where it used to be 565, for the same 159 violations.
+`demo/before` that is 358 lines where it used to be 565, for the same 159 violations.
 
 The JSON report (`--out`, `--json`) is `schemaVersion: 2`. Everything from version 1 is where it
 was; version 2 adds `evidence` and, when they apply, `confidence`, `note`, `noteUrl`,

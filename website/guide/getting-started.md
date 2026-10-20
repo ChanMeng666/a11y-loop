@@ -60,11 +60,13 @@ npm install --save-dev a11y-loop
 npx a11y-loop --help
 ```
 
-Then install the Chromium build a11y-loop's own Playwright needs to run audits, and check the setup:
+Then install the Chromium build a11y-loop's own Playwright needs to run audits, and check the setup.
+A project dependency is not on your PATH, so run it through `npx` (after `npm i -g a11y-loop`, drop
+the `npx`):
 
 ```bash
-a11y-loop install-browser
-a11y-loop doctor
+npx a11y-loop install-browser
+npx a11y-loop doctor
 ```
 
 If you keep browser binaries off your system drive, set `PLAYWRIGHT_BROWSERS_PATH` before running
