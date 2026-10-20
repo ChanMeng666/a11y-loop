@@ -6,7 +6,7 @@ moves to **shipped** in the same pull request that ships it, with the version, a
 a promise of a date.
 
 **Status values.** **shipped**: released on npm, with the version. **on main**: merged, but in no
-release tag yet (no row has this status after 0.4.1; the one untagged change on `main` is a CI fix, see [State](#state-as-of-2026-10-20)). **in progress**: being built on a branch now. **planned**: agreed direction, no
+release tag yet (no row has this status after 0.4.1; the untagged changes on `main` are a CI fix and a plan-gate false-positive fix, see [State](#state-as-of-2026-10-20)). **in progress**: being built on a branch now. **planned**: agreed direction, no
 branch yet. Only **shipped** items may
 be described anywhere else in this repository, in the README, the docs site, `SKILL.md`, CLI output
 or a directory listing, as something a11y-loop does.
@@ -75,9 +75,9 @@ Checked against npm, GitHub and the code. Replace this section, with its date, w
 | Releases | 0.4.0 (tag at `d3a91f1`) and 0.4.1 (`30017df`), both 2026-10-20 local time (22:10 and 22:50 UTC on 2026-10-19). GitHub Release v0.4.1 is Latest |
 | 0.4.0 shipped | evidence tiers, root-cause clusters, forced-colors contrast routed to needs-review (an exit-code change), `schemaVersion: 2`, `diff` RECLASSIFIED, summary-first output, SARIF messages, the Stop-hook audit gate, the GitHub Action, `a11y-loop mcp`, plugin evals, three `--interact` checks, the dialog-opener fix |
 | 0.4.1 shipped | the action's `description` cut to 116 characters for the Marketplace, held by `test/unit/action-manifest.test.js` |
-| On `main`, untagged | `release.yml` checks out full history and fails a refused fast-forward (CHANGELOG `[Unreleased]`) |
+| On `main`, untagged | `release.yml` checks out full history and fails a refused fast-forward; `plan-check` and the plan gate ignore a foreclosing risk the plan rules out, such as "no drag-only controls" (#45). Both in CHANGELOG `[Unreleased]` |
 | `release` branch | at v0.4.1, pushed by hand after the v0.4.1 run only warned |
-| Tests, fixtures, demo | 641 tests pass; 32 fixtures in the manifest; the demo reports 159 violations at axe-core 4.14.0 and converges to 0 |
+| Tests, fixtures, demo | 647 tests pass; 32 fixtures in the manifest; the demo reports 159 violations at axe-core 4.14.0 and converges to 0 |
 | GitHub Marketplace | live from v0.4.1, categories Code quality and Testing: <https://github.com/marketplace/actions/a11y-loop-audit> |
 | Anthropic plugin directory | In review for v0.3.2, plugin path `plugin`, auto-publish on, ref checked about every 6 hours (no webhook). The tracked ref is locked during review |
 | Lists | skills.sh indexed; awesome-accessibility #113 merged; awesome-a11y #341 and ruanyf/weekly #12549 open; HelloGitHub declined |

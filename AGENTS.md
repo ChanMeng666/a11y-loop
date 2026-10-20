@@ -30,9 +30,10 @@ the audit: there the skill's rules apply, but nothing is verified. `plugin/READM
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
 describe a planned or in-progress item as existing, and do not describe something merged on `main`
 but not yet tagged as usable from a release. The latest release is 0.4.1 (2026-10-20). The GitHub
-Action, the Stop-hook audit gate and `a11y-loop mcp` shipped in 0.4.0. As of 2026-10-20 the only
-change merged on `main` but untagged is the `release.yml` full-checkout fix (CHANGELOG
-`[Unreleased]`), which takes effect from the next tag. The current state of every release and
+Action, the Stop-hook audit gate and `a11y-loop mcp` shipped in 0.4.0. As of 2026-10-20 two changes
+are merged on `main` but untagged (CHANGELOG `[Unreleased]`): the `release.yml` full-checkout fix,
+which takes effect from the next tag, and the plan gate no longer flagging a foreclosing risk the
+plan rules out ("no drag-only controls", #45). The current state of every release and
 channel, and what is pending on whom, is the "State as of" section of `docs/roadmap.md`.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
