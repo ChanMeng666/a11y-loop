@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **`plan-check` and the plan gate no longer flag a risk the plan rules out.** A plan that said "no drag-only or hover-only controls" was told it had planned drag-based reordering and asked for a single-pointer alternative (SC 2.5.7). A match now counts only when it is not directly negated ("no", "not", "never", "without", "avoid", "don't", with at most two words between). "No keyboard alternative for drag and drop" still flags dragging. Only the list of hard-to-reverse decisions changes; the verdict and the exit code do not.
 - **`release.yml` now fast-forwards the `release` branch from a full checkout.** The shallow checkout of the tag could not prove the push was a fast-forward, so the v0.4.1 run was rejected with "fetch first" and only warned. The step now fails when the tag descends from the branch tip and still warns for an older tag.
 
 ## [0.4.1] - 2026-10-20
