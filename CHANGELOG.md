@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`plan-check` and the plan gate no longer flag a risk the plan rules out.** A plan that said "no drag-only or hover-only controls" was told it had planned drag-based reordering and asked for a single-pointer alternative (SC 2.5.7). A match now counts only when it is not directly negated ("no", "not", "never", "without", "avoid", "don't", with at most two words between). "No keyboard alternative for drag and drop" still flags dragging. Only the list of hard-to-reverse decisions changes; the verdict and the exit code do not.
 - **`release.yml` now fast-forwards the `release` branch from a full checkout.** The shallow checkout of the tag could not prove the push was a fast-forward, so the v0.4.1 run was rejected with "fetch first" and only warned. The step now fails when the tag descends from the branch tip and still warns for an older tag.
 
+### Docs
+- **User-facing docs checked against the code and corrected where they were wrong.** A fingerprint is rule + selector + element shape, not rule + selector + WCAG criterion (`docs/overview.md`, the CLI guide). `plan-check` also exits 0 on a plan too short to assess (`docs/overview.md`, `docs/agent-gates.md`, the CI guide). The Claude Code audit gate checks that an audit ran, not its exit code (`docs/agent-gates.md`). Provenance is per report and the WCAG criterion per violation, not per finding (`docs/overview.md`, the site's home page). A project-local install runs through `npx a11y-loop` (the getting-started guide). The demo's terminal output is 358 lines, not 356, and two example ratios in `references/plan-phase.md` now match what `contrast` prints. No behaviour change.
+
 ## [0.4.1] - 2026-10-20
 
 ### Fixed

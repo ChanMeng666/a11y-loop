@@ -24,7 +24,7 @@ lists its inputs and outputs.
 
 | Code | Meaning |
 |---|---|
-| `0` | No violations, threshold met, no regression, the plan carries accessibility content, or (`doctor`) an audit can run |
+| `0` | No violations, threshold met, no regression, the plan carries accessibility content (or is not UI work, or is too short to assess), or (`doctor`) an audit can run |
 | `1` | Violations found, a regression was introduced, or a UI plan names no accessibility decisions |
 | `2` | Tool or usage error (e.g. a missing browser), or (`doctor`) an audit cannot run here |
 

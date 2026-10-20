@@ -49,7 +49,7 @@ passing values become the tokens: see [Planning with Accessibility](/guide/plann
 a11y-loop diff --before base.json --after head.json
 ```
 
-Matches findings across two reports by rule + selector + WCAG success criterion and classifies
+Matches findings across two reports by rule + selector + element shape and classifies
 each as `FIXED`, `NEW` (a regression — fails the command even if the total count went down), or
 `REMAINING`. A violation that a documented rule moved to needs-review, such as forced-colors
 contrast, is listed as `RECLASSIFIED` and never counted as fixed.
