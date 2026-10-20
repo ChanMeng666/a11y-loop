@@ -510,3 +510,117 @@ describe('the hook without its shared logic', () => {
     assert.equal(runGate(stopPayload(tempTranscript(UI_NO_AUDIT)))?.decision, 'block');
   });
 });
+
+// ---------------------------------------------------------------------------
+// Each test below kills a mutant of src/lib/audit-gate.js that the tests above
+// let survive; the comment names it. Equivalent mutants have no test here.
+// ---------------------------------------------------------------------------
+
+describe('audit gate: mutation-tested edges', () => {
+  // Kills `(\s[^<>]*)?\/>` → `(\s[^<>]*)\/>`: a self-closing tag with no
+  // attributes is the only UI signal in this content.
+  test('a bare self-closing JSX tag is UI', () => {
+    assert.equal(looksLikeUiScript('return cond ? <Spinner/> : null;'), true);
+  });
+
+  // Kills `<template[\s>]` → `[^\s>]` and → `[\S>]`. The opening tag is the
+  // only signal: no closing tag, no self-closing tag.
+  test('an opening <template> with attributes is UI on its own', () => {
+    assert.equal(looksLikeUiScript('const row = `<template id="row">`;'), true);
+  });
+
+  // Kills `NotebookEdit: … ({ path: input.notebook_path, … })` → `({})`: the
+  // path is read from notebook_path, never file_path.
+  test('NotebookEdit is read from notebook_path', () => {
+    assert.equal(uiEditPath({ name: 'NotebookEdit', input: { notebook_path: 'page.html', new_source: '' } }), 'page.html');
+    assert.equal(uiEditPath({ name: 'NotebookEdit', input: { file_path: 'page.html', new_source: '' } }), null);
+  });
+
+  // Kills `e?.new_string` → `e.new_string`, which throws on a null edit.
+  test('a MultiEdit with a null entry is read, not thrown on', () => {
+    const input = { file_path: 'c.js', edits: [null, { old_string: 'a', new_string: 'document.title = x' }] };
+    assert.equal(uiEditPath({ name: 'MultiEdit', input }), 'c.js');
+  });
+
+  // Kills `\bnode(\.exe)?["']?` → `[^"']?` and `cli\.js["']?` → `[^"']?`:
+  // the quoted forms PowerShell users type on Windows.
+  test('quoted node and script paths still count as an audit', () => {
+    for (const cmd of [
+      '& "C:\\Program Files\\nodejs\\node.exe" src\\cli.js audit --file x.html',
+      'node "D:\\work\\a11y-loop\\src\\cli.js" audit --file x.html',
+    ]) {
+      assert.equal(isAuditCommand(cmd), true, cmd);
+    }
+  });
+
+  // Kills `toolUse?.input?.command` → `toolUse?.input.command`: a tool_use block
+  // with no input is a shape the transcript can carry.
+  test('a shell tool call with no input is skipped, not thrown on', () => {
+    const line = JSON.stringify({ type: 'assistant', message: { content: [{ type: 'tool_use', name: 'Bash' }] } });
+    assert.deepEqual(scanTranscript(`${line}\n${jsonl(writeHtml())}`).unauditedFiles, ['D:\\work\\app\\index.html']);
+  });
+
+  // Kills `entry?.message?.content` → `entry?.message.content` (a line that
+  // mentions tool_use with no top-level message, as progress lines do) and
+  // `!Array.isArray(content)` → `false` (content that is an object).
+  // Kills the block guard mutants: `block && …` → `true` (null block),
+  // `block.type === 'tool_use'` dropped or `||`-ed (server_tool_use is not a
+  // tool call this gate reads), `typeof block.name === 'string'` → `true`.
+  test('only tool_use blocks with a string name are tool calls', () => {
+    const lines = [
+      { type: 'progress', data: { message: { content: [{ type: 'tool_use', name: 'Write', input: { file_path: 'sub.html' } }] } } },
+      { type: 'assistant', message: { content: { type: 'tool_use', name: 'Write', input: { file_path: 'obj.html' } } } },
+      {
+        type: 'assistant',
+        message: {
+          content: [
+            null,
+            { type: 'server_tool_use', name: 'web_search', input: {} },
+            { type: 'tool_use', input: { command: 'ls' } },
+            { type: 'text', text: 'tool_use' },
+          ],
+        },
+      },
+    ];
+    const text = `${lines.map((l) => JSON.stringify(l)).join('\n')}\n${jsonl(writeHtml())}`;
+    assert.deepEqual(toolUsesFrom(text).toolUses.map((t) => t.name), ['Write']);
+    assert.deepEqual(scanTranscript(text).unauditedFiles, ['D:\\work\\app\\index.html']);
+  });
+
+  // Kills `audits++` → `audits--` and `uiEdits++` → `uiEdits--`.
+  test('scanTranscript counts UI edits and audits', () => {
+    const scan = scanTranscript(AUDIT_THEN_UI);
+    assert.deepEqual([scan.uiEdits, scan.audits], [2, 1]);
+  });
+
+  // Kills `parsedLines === 0` → `false` and the `'no-transcript'` literal.
+  test('an empty transcript is reported as no transcript, not as no UI edits', () => {
+    assert.equal(evaluate({ transcriptText: '' }).why, 'no-transcript');
+  });
+
+  // Kills `/\.html?$/i` → `/\.html$/i`: an .htm page is still a --file target.
+  test('an .htm page is the audit target', () => {
+    assert.match(buildReason({ files: ['src/A.tsx', 'legacy/index.htm'] }), /audit --file legacy\/index\.htm --out/);
+  });
+
+  // Kills `more > 0` → `true` or `>= 0`, and the empty branch `[]` → a junk line.
+  test('exactly MAX_FILES_LISTED files have no "and N more" line', () => {
+    const files = Array.from({ length: 12 }, (_, i) => `src/C${i}.tsx`);
+    const reason = buildReason({ files });
+    assert.equal((reason.match(/^- src\/C\d+\.tsx$/gm) ?? []).length, 12);
+    assert.doesNotMatch(reason, /more$/m);
+    const listEnd = reason.indexOf('\n\n');
+    assert.equal(reason.slice(0, listEnd).split('\n').length, 13);
+  });
+
+  // Kills the reason's instruction lines mutated to "": the re-audit to a new
+  // file, the instruction to fix in source, and the honest fallback when the
+  // audit cannot run.
+  test('the reason asks for a re-audit and says what to do when the audit cannot run', () => {
+    const reason = buildReason({ files: ['a.html'] });
+    assert.match(reason, /including any state you built .* with `--interact`/);
+    assert.match(reason, /^Fix what it reports in the source, re-audit to a new file, and compare:$/m);
+    assert.match(reason, /^ {2}npx a11y-loop audit --file a\.html --out \.a11y\/run-2\.json --quiet$/m);
+    assert.match(reason, /say so in your reply, state that the change is unverified/);
+  });
+});

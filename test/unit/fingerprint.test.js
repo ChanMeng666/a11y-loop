@@ -129,3 +129,55 @@ describe('fingerprint', () => {
     assert.match(fingerprint({ ruleId: 'html-has-lang', selector: 'html' }), /^[0-9a-f]{12}$/);
   });
 });
+
+// Each test below kills a mutant of src/lib/fingerprint.js that the tests above
+// let survive; the comment names it. Equivalent mutants have no test here.
+describe('fingerprint: mutation-tested edges', () => {
+  // Kills `.trim()` dropped, `/\s+/g` → `/\s/g`, and `.filter(Boolean)` dropped:
+  // whitespace and an empty frame segment must not change the selector.
+  test('normalizeSelector trims, collapses runs of spaces and drops empty segments', () => {
+    assert.equal(normalizeSelector('  #a  '), '#a');
+    assert.equal(normalizeSelector('div    span'), 'div span');
+    assert.equal(normalizeSelector(['#a', '  ']), '#a');
+  });
+
+  // Kills `.slice(0, 60)` and `.trim()` dropped on the no-tag path.
+  test('a snippet with no tag is trimmed and capped at 60 characters', () => {
+    assert.equal(normalizeHtmlShape(`  ${'X'.repeat(80)}`), 'x'.repeat(60));
+  });
+
+  // Kills `\s*=\s*` → `\S*=\s*`: spaces around `=` would turn the value into
+  // a second attribute name.
+  test('spaces around = still read the value', () => {
+    assert.equal(normalizeHtmlShape('<div role = "button">'), 'div[role][role=button]');
+  });
+
+  // Kills the single-quoted alternative `'([^']*)'` → `'([^'])'` or `'([']*)'`,
+  // and the unquoted alternative `([^\s"'>]+)` → `([^\s"'>])`, `([\s"'>]+)`
+  // or `([^\S"'>]+)`.
+  test('single-quoted and unquoted semantic values are read in full', () => {
+    assert.equal(normalizeHtmlShape("<input type='checkbox'>"), 'input[type][type=checkbox]');
+    assert.equal(normalizeHtmlShape('<input type=checkbox>'), 'input[type][type=checkbox]');
+  });
+
+  // Kills `value.trim().toLowerCase()` → `value` and the `?? ''` default for
+  // an attribute with no value.
+  test('semantic values are case- and space-insensitive; a bare attribute has an empty value', () => {
+    assert.equal(normalizeHtmlShape('<div role=" Button ">'), 'div[role][role=button]');
+    assert.equal(normalizeHtmlShape('<div role>'), 'div[role][role=]');
+  });
+
+  // Kills the semantic list's `.join('')` → a separator.
+  test('two semantic attributes are written back to back', () => {
+    assert.equal(normalizeHtmlShape('<input role="switch" type="checkbox">'), 'input[role,type][role=switch][type=checkbox]');
+  });
+
+  // Kills `.join('\u0000')` → `.join('')`: without a separator, text can slide
+  // from one field into the next and two different findings hash the same.
+  test('fields cannot run into each other', () => {
+    assert.notEqual(
+      fingerprint({ ruleId: 'a', selector: 'b', html: '' }),
+      fingerprint({ ruleId: 'ab', selector: '', html: '' }),
+    );
+  });
+});

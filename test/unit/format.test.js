@@ -12,8 +12,8 @@ import {
 } from '../../src/lib/format/json.js';
 import { formatHuman, findingHeadline, groupFindings, describeTarget } from '../../src/lib/format/human.js';
 import { buildChecklist } from '../../src/lib/format/checklist.js';
-import { toAxeShape, toSarif, wcagTaxa, GITHUB_LIMITATION_NOTE } from '../../src/lib/format/sarif.js';
-import { SEVERITY } from '../../src/lib/finding.js';
+import { toAxeShape, toSarif, wcagTaxa, GITHUB_LIMITATION_NOTE, resultMessage, serializeSarif } from '../../src/lib/format/sarif.js';
+import { SEVERITY, makeFinding } from '../../src/lib/finding.js';
 import {
   makeReport,
   cleanReport,
@@ -537,5 +537,168 @@ describe('SARIF output matches the axe-sarif-converter golden file', () => {
       html.results.map((r) => r.locations[0].logicalLocations),
       golden.results.map((r) => r.locations[0].logicalLocations),
     );
+  });
+});
+
+// Each test below kills a mutant of src/lib/format/json.js that the tests above
+// let survive; the comment names it. Equivalent mutants have no test here.
+describe('json report: mutation-tested edges', () => {
+  // Kills `\s+` → `\S+` in five red-line patterns, `conforms?` → `conforms`,
+  // `guarantee\w*` → `guarantee\w` and `reduces?` → `reduces`. Each phrase is
+  // a credibility red line (AGENTS.md) the existing cases did not exercise.
+  test('every red-line phrase is caught in its plain spelling', () => {
+    for (const phrase of [
+      'compliance achieved',
+      'the page conforms to WCAG 2.2',
+      'pages conform to WCAG 2.2',
+      'the form is fully accessible',
+      'we guarantee it',
+      'this will reduce legal risk',
+      '100% accessible',
+    ]) {
+      assert.ok(findRedLineLanguage(phrase).length > 0, phrase);
+    }
+  });
+
+  // Kills `.map((pattern) => pattern.source)` → `() => undefined`.
+  test('findRedLineLanguage names the patterns it matched', () => {
+    assert.deepEqual(findRedLineLanguage('Now fully accessible.'), ['\\bfully\\s+accessible\\b']);
+  });
+
+  // Kills the two denominators → empty strings: a percentage is never quoted
+  // without what it is a percentage of.
+  test('the coverage percentages carry their denominators', () => {
+    assert.equal(COVERAGE.criteriaWithAnyAutomatedRuleDenominator, '17 of the 55 WCAG 2.2 A/AA criteria');
+    assert.equal(COVERAGE.criteriaReliablyAutomatedDenominator, '7 of the 55 WCAG 2.2 A/AA criteria');
+  });
+
+  // Kills `!finding.wcag?.sc` → `false` and `finding.wcag.sc` (throws on a
+  // violation with no criterion), `!map.has(sc)` → `true` (count reset),
+  // `count += 1` → `-= 1`, and the criterion sort removed.
+  test('affectedCriteria skips rows with no criterion, counts per SC and sorts', () => {
+    const noSc = emptyButtonFinding({ tags: [], selector: 'x' });
+    const criteria = affectedCriteria([
+      emptyButtonFinding(),
+      noSc,
+      contrastFinding(),
+      contrastFinding({ selector: 'html > body > h2' }),
+    ]);
+    assert.deepEqual(criteria.map((c) => [c.sc, c.count]), [['1.4.3', 2], ['4.1.2', 1]]);
+  });
+
+  // Kills `'minor'` → `''` in IMPACTS, and `f.wcag?.wcag22Only` →
+  // `f.wcag.wcag22Only` (throws on a violation with no criterion).
+  test('summary counts minor violations and survives a violation with no criterion', () => {
+    const report = makeReport({ findings: [emptyButtonFinding({ impact: 'minor', tags: [] })] });
+    assert.deepEqual(report.summary.byImpact, { minor: 1 });
+    assert.equal(report.summary.wcag22OnlyViolations, 0);
+  });
+
+  // Kills the summary filters removed or mutated: `reducedConfidence` counts only
+  // rows with confidence, `routedToNeedsReview` only rows with routedFrom, and
+  // `clusters.violations` / `violationRowsClustered` only violation clusters
+  // (`=== 'violation'` → `true`, `false`, `!==`, `''`; `n + c.count` → `n - c.count`).
+  test('summary counters count only what they name', () => {
+    const link = (n, severity, extra = {}) =>
+      makeFinding({ ruleId: 'link-name', source: 'axe', severity, tags: ['wcag2a', 'wcag244'], selector: `a:nth-child(${n})`, html: '<a></a>', message: 'm', passes: ['default'], ...extra });
+    const report = makeReport({
+      findings: [
+        link(1, SEVERITY.VIOLATION, { confidence: { level: 'reduced', reason: 'budget' } }),
+        link(2, SEVERITY.VIOLATION),
+        link(3, SEVERITY.VIOLATION),
+        link(1, SEVERITY.NEEDS_REVIEW, { routedFrom: 'violation', state: 's' }),
+        link(2, SEVERITY.NEEDS_REVIEW, { state: 's' }),
+        link(1, SEVERITY.NEEDS_REVIEW, { state: 't' }),
+        link(2, SEVERITY.NEEDS_REVIEW, { state: 't' }),
+      ],
+    });
+    assert.equal(report.summary.evidence.reducedConfidence, 1);
+    assert.equal(report.summary.evidence.routedToNeedsReview, 1);
+    assert.deepEqual(report.summary.clusters, { total: 3, violations: 1, violationRowsClustered: 3 });
+  });
+});
+
+// Each test below kills a mutant of src/lib/format/sarif.js that the tests above
+// let survive; the comment names it. SARIF is a secondary output (see the
+// file's header), so its static metadata strings get one assertion, not one each.
+describe('sarif: mutation-tested edges', () => {
+  // Kills serializeSarif's body → `{}` and its template → ``, and SARIF_SCHEMA → ''.
+  // `audit --sarif` writes exactly this string.
+  test('serializeSarif is the SARIF log as JSON with a trailing newline', () => {
+    const report = makeReport();
+    const text = serializeSarif(report);
+    assert.ok(text.endsWith('}\n'));
+    assert.deepEqual(JSON.parse(text), toSarif(report));
+    assert.equal(JSON.parse(text).$schema, 'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json');
+  });
+
+  // Kills `if (finding.wcag.level)` → `true` (throws on a criterion with no
+  // level, the unknown-SC fallback), `minVersion === '2.0'` → `true`, the
+  // `replace('.', '')` arguments mutated, and `const tags = []` → a junk tag.
+  test('rule tags follow the criterion\'s own version and level, and tolerate no level', () => {
+    const reflow = emptyButtonFinding({ ruleId: 'own-reflow', source: 'a11y-loop', sc: '1.4.10', tags: [], act: [] });
+    const unknown = emptyButtonFinding({ ruleId: 'future-rule', tags: ['wcag999'], act: [] });
+    assert.equal(unknown.wcag.level, null);
+    const shape = toAxeShape(makeReport({ findings: [reflow, unknown] }));
+    assert.deepEqual(shape.violations.map((g) => [g.id, g.tags]), [
+      ['own-reflow', ['wcag1410', 'wcag21aa']],
+      ['future-rule', ['wcag999']],
+    ]);
+  });
+
+  // Kills the period rule mutated (`&&` → `||`, the negation dropped, the
+  // `[.!?]$` anchor dropped or negated, constant true/false), and every
+  // optional part made unconditional (`if (meta.passes?.length)`,
+  // `if (meta.state)`, `if (meta.evidence)`, `if (meta.note)` → `true`).
+  test('a bare result message is the summary with one full stop', () => {
+    const msg = (failureSummary, a11yLoop = {}) => resultMessage({ failureSummary, a11yLoop: { passes: [], ...a11yLoop } }).text;
+    assert.equal(msg('Fix it'), 'Fix it.');
+    assert.equal(msg('Fix it!'), 'Fix it!');
+    assert.equal(msg('A. Then b'), 'A. Then b.');
+    assert.equal(msg(''), '');
+  });
+
+  // Kills `c?.fgColor && c?.bgColor` → `||`, the ratio guard → `true`, and the
+  // empty-ratio, empty-requirement and empty-noteUrl fallbacks → junk.
+  test('Measured needs both colours, and leaves out what axe did not give', () => {
+    const msg = (a11yLoop) => resultMessage({ failureSummary: 'Low contrast', a11yLoop }).text;
+    assert.equal(msg({ contrast: { fgColor: '#999999', bgColor: '#ffffff' } }), 'Low contrast. Measured: foreground #999999 on background #ffffff.');
+    assert.equal(msg({ contrast: { fgColor: '#999999' } }), 'Low contrast.');
+    assert.equal(msg({ note: 'Routed.' }), 'Low contrast. Note: Routed.');
+  });
+
+  // Kills `if (meta.confidence)` → `false`, its text → ``, `confidence ?? null`
+  // → `&& null` in toAxeShape, `.join(', ')` on passes → `''`, and the markdown
+  // label pattern `Confidence \w+` → `\w` / `\W+` and its `.join(' ')` → `''`.
+  // A row whose probe hit a budget has to say so wherever it is read.
+  test('a reduced-confidence row says so, in text and in markdown', () => {
+    const finding = dialogFinding({ passes: ['default', 'dark'], confidence: { level: 'reduced', reason: 'the Tab walk hit its step budget.' } });
+    const [result] = toSarif(makeReport({ findings: [finding] })).runs[0].results;
+    assert.equal(
+      result.message.text,
+      'Tabbing inside this dialog moved focus out of it. Passes: default, dark. State: dialog-open. Evidence: inferred. Confidence reduced: the Tab walk hit its step budget.',
+    );
+    assert.equal(
+      result.message.markdown,
+      'Tabbing inside this dialog moved focus out of it. **Passes:** default, dark. **State:** dialog-open. **Evidence:** inferred. **Confidence reduced:** the Tab walk hit its step budget.',
+    );
+  });
+
+  // Kills `kinds: ['superset']` → `[]` or `['']`, and the taxonomy's name,
+  // fullName, organization, informationUri and isComprehensive mutated.
+  test('relationships are supersets, and the taxonomy names WCAG 2.2 by W3C', () => {
+    const run = toSarif(makeReport()).runs[0];
+    const kinds = run.tool.driver.rules.flatMap((r) => r.relationships.map((rel) => rel.kinds));
+    assert.ok(kinds.length > 0);
+    for (const k of kinds) assert.deepEqual(k, ['superset']);
+    const { taxa: _taxa, guid: _guid, ...taxonomy } = run.taxonomies[0];
+    assert.deepEqual(taxonomy, {
+      name: 'WCAG',
+      fullName: 'Web Content Accessibility Guidelines (WCAG) 2.2',
+      organization: 'W3C',
+      informationUri: 'https://www.w3.org/TR/WCAG22',
+      version: '2.2',
+      isComprehensive: true,
+    });
   });
 });

@@ -30,6 +30,8 @@ import {
   selectorPattern,
   colourPairSummary,
   contrastCommand,
+  contrastCause,
+  describeCause,
 } from '../../src/lib/cluster.js';
 import { buildReport, serializeReport, SCHEMA_VERSION, findRedLineLanguage } from '../../src/lib/format/json.js';
 import { formatHuman } from '../../src/lib/format/human.js';
@@ -410,5 +412,147 @@ describe('human output: summary first, clusters, then the long tail', () => {
     assert.deepEqual(findRedLineLanguage(formatHuman(snapshotReport())), []);
     assert.deepEqual(findRedLineLanguage(formatHuman(snapshotReport(), { verbose: true })), []);
     assert.deepEqual(findRedLineLanguage(serializeReport(snapshotReport())), []);
+  });
+});
+
+// Each test below kills a mutant of src/lib/cluster.js that the tests above let
+// survive; the comment names it. Equivalent mutants have no test here.
+describe('root-cause clusters: mutation-tested edges', () => {
+  const link = (n, overrides = {}) =>
+    makeFinding({
+      ruleId: 'link-name',
+      source: 'axe',
+      severity: SEVERITY.VIOLATION,
+      tags: ['wcag2a', 'wcag244'],
+      selector: `footer > a:nth-child(${n})`,
+      html: '<a href="#"></a>',
+      message: 'm',
+      passes: ['default'],
+      ...overrides,
+    });
+  const pairRow = (n, overrides = {}) =>
+    makeFinding({
+      ruleId: 'color-contrast',
+      source: 'axe',
+      severity: SEVERITY.VIOLATION,
+      tags: ['wcag2aa', 'wcag143'],
+      selector: `p:nth-child(${n})`,
+      html: '<p>x</p>',
+      message: 'm',
+      passes: ['default'],
+      data: { contrast: { fgColor: '#999999', bgColor: '#ffffff', contrastRatio: 2.84, expectedContrastRatio: '4.5:1' } },
+      ...overrides,
+    });
+
+  // Kills `members.length < MIN_CLUSTER_SIZE` → `<=`.
+  test('two members are enough for a cluster', () => {
+    const clusters = buildClusters(bucketFindings([link(1), link(2)]));
+    assert.equal(clusters.length, 1);
+    assert.equal(clusters[0].count, 2);
+  });
+
+  // Kills the `['needsReview', …]` and `['bestPractice', …]` order entries
+  // mutated to `[]` or to an empty bucket name.
+  test('needs-review and best-practice rows cluster in their own buckets', () => {
+    const clusters = buildClusters(
+      bucketFindings([
+        link(1, { severity: SEVERITY.NEEDS_REVIEW }),
+        link(2, { severity: SEVERITY.NEEDS_REVIEW }),
+        link(1, { severity: SEVERITY.BEST_PRACTICE, ruleId: 'region' }),
+        link(2, { severity: SEVERITY.BEST_PRACTICE, ruleId: 'region' }),
+      ]),
+    );
+    assert.deepEqual(clusters.map((c) => [c.ruleId, c.severity]), [
+      ['link-name', SEVERITY.NEEDS_REVIEW],
+      ['region', SEVERITY.BEST_PRACTICE],
+    ]);
+  });
+
+  // Kills the sort comparator mutants (removed, `b.count + a.count`, `&&`,
+  // `a.seq + b.seq`, constant true/false) and `seq++` → `seq--`.
+  test('clusters are ordered largest first, then by first appearance', () => {
+    const rows = [
+      link(1, { ruleId: 'a-rule' }),
+      link(2, { ruleId: 'a-rule' }),
+      link(1, { ruleId: 'b-rule' }),
+      link(2, { ruleId: 'b-rule' }),
+      link(1, { ruleId: 'c-rule' }),
+      link(2, { ruleId: 'c-rule' }),
+      link(3, { ruleId: 'c-rule' }),
+      link(1, { ruleId: 'd-rule' }),
+      link(2, { ruleId: 'd-rule' }),
+    ];
+    assert.deepEqual(buildClusters(bucketFindings(rows)).map((c) => c.ruleId), ['c-rule', 'a-rule', 'b-rule', 'd-rule']);
+  });
+
+  // Kills `finding.state ?? null` → `&& null`, `first.evidence ?? null` →
+  // `&& null`, `first.wcag ?? null` → `&& null`, and `state ?? ''` → `state && ''`
+  // in clusterId (which made the same cause in two states share one id).
+  test('a cluster carries its state, evidence and criterion, and its id depends on the state', () => {
+    const clusters = buildClusters(
+      bucketFindings([link(1, { state: 'menu-open' }), link(2, { state: 'menu-open' }), link(1, { state: 'menu-closed' }), link(2, { state: 'menu-closed' })]),
+    );
+    assert.deepEqual(clusters.map((c) => c.state), ['menu-open', 'menu-closed']);
+    assert.equal(clusters[0].evidence, EVIDENCE.MEASURED);
+    assert.equal(clusters[0].wcag.sc, '2.4.4');
+    assert.notEqual(clusters[0].id, clusters[1].id);
+  });
+
+  // Kills clusterId's `[bucket, ruleId, …]` → `[]`, which gives every cluster one id.
+  test('different causes get different cluster ids', () => {
+    const clusters = buildClusters(bucketFindings([link(1), link(2), pairRow(1), pairRow(2)]));
+    assert.equal(clusters.length, 2);
+    assert.notEqual(clusters[0].id, clusters[1].id);
+  });
+
+  // Kills `group.kind === 'colour-pair' && suggestions` → `||` and → `true`.
+  // A routed forced-colors row has its suggestion dropped, so its cluster must
+  // not hand out a fix command either.
+  test('a colour-pair cluster without suggestions has no fix command', () => {
+    const [cluster] = buildClusters(bucketFindings([pairRow(1), pairRow(2)]));
+    assert.equal(cluster.kind, 'colour-pair');
+    assert.equal(cluster.fixCommand, undefined);
+  });
+
+  // Kills `members.find((m) => m.note)` → `() => undefined`, `if (note)` →
+  // `false` or an empty block, and `if (note.noteUrl)` → `false`.
+  test('a routed row\'s note and noteUrl reach its cluster', () => {
+    const routed = { severity: SEVERITY.NEEDS_REVIEW, passes: ['forced-colors'], note: 'axe reads the fill colour first.', noteUrl: 'https://example.test/n', routedFrom: 'violation' };
+    const [cluster] = buildClusters(bucketFindings([pairRow(1, routed), pairRow(2, routed)]));
+    assert.equal(cluster.note, routed.note);
+    assert.equal(cluster.noteUrl, routed.noteUrl);
+  });
+
+  // Kills `'color-contrast-enhanced'` → `''` in CONTRAST_RULES.
+  test('color-contrast-enhanced rows cluster by colour pair too', () => {
+    const enhanced = { ruleId: 'color-contrast-enhanced', tags: ['wcag2aaa', 'wcag146'] };
+    const [cluster] = buildClusters(bucketFindings([pairRow(1, enhanced), pairRow(2, enhanced)]));
+    assert.equal(cluster.kind, 'colour-pair');
+  });
+
+  // Kills `!CONTRAST_RULES.has(ruleId)` → `false` and `!fg || !bg` → `&&`.
+  test('only a contrast rule with both colours measured has a colour-pair cause', () => {
+    const contrast = { fgColor: '#999999', bgColor: '#ffffff' };
+    assert.equal(contrastCause({ ruleId: 'link-in-text-block', data: { contrast } }), null);
+    assert.equal(contrastCause({ ruleId: 'color-contrast', data: { contrast: { fgColor: '#999999' } } }), null);
+  });
+
+  // Kills `[^)]*` → `[^)]` in selectorPattern.
+  test('a multi-digit index is replaced too', () => {
+    assert.equal(selectorPattern('ul > li:nth-child(12) > a'), 'ul > li:nth-child(n) > a');
+  });
+
+  // Kills `cluster.kind === 'colour-pair'` → `true` in describeCause, the
+  // selector sentence mutated to an empty string, and ratioText's null and
+  // undefined checks (→ `false`, `&&`) and its `'?'` → `''`.
+  test('describeCause words both kinds, with ? for a ratio axe did not give', () => {
+    assert.equal(
+      describeCause({ kind: 'selector-pattern', cause: { selectorPattern: 'a:nth-child(n)' } }),
+      'the same rule on elements matching a:nth-child(n)',
+    );
+    assert.equal(
+      describeCause({ kind: 'colour-pair', cause: { foreground: '#999999', background: '#ffffff', contrastRatio: null, expectedContrastRatio: undefined } }),
+      '#999999 text on #ffffff: ?:1 against ?:1 required',
+    );
   });
 });
