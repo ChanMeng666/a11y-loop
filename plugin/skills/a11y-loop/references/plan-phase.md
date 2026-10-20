@@ -211,8 +211,8 @@ real answer, and it costs one HTML file.
 later; a hex alone is not.
 
 ```
-- Color tokens: --text-body #1F2937 on --surface #FFFFFF — 15.29:1 light / 14.61:1 dark
-                --link #2563EB on #FFFFFF — 5.17:1 light; dark #93C5FD — 7.42:1
+- Color tokens: --text-body #1F2937 on --surface #FFFFFF — 14.67:1 light / 14.61:1 dark
+                --link #2563EB on #FFFFFF — 5.16:1 light; dark #93C5FD — 7.42:1
                 --border #D1D5DB on #FFFFFF — 1.47:1 FAIL (ui) → #6B7280, 4.83:1
 ```
 
