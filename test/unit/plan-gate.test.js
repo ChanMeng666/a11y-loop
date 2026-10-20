@@ -148,6 +148,27 @@ describe('detectForeclosingRisks', () => {
   test('a clean plan raises nothing', () => {
     assert.deepEqual(detectForeclosingRisks(BACKEND_PLAN), []);
   });
+
+  // A plan that rules a pattern out was being told to plan an alternative for it.
+  for (const [id, plan] of [
+    ['dragging', '- **Foreclosing decisions:** none reviewed; no drag-only or hover-only controls.'],
+    ['autoplay', 'The hero image is static. Do not use autoplay anywhere on the page.'],
+    ['timing', 'Checkout works without a countdown.'],
+    ['canvas', 'Charts are SVG, never canvas.'],
+  ]) {
+    test(`does not flag ${id} when the plan rules it out`, () => {
+      assert.ok(!detectForeclosingRisks(plan).some((r) => r.id === id));
+    });
+  }
+
+  test('a negation that belongs to another word does not hide the risk', () => {
+    assert.ok(detectForeclosingRisks('Cards reorder by drag and drop, with no keyboard alternative for drag and drop yet.').some((r) => r.id === 'dragging'));
+    assert.ok(detectForeclosingRisks('There is no keyboard alternative for drag and drop.').some((r) => r.id === 'dragging'));
+  });
+
+  test('one planned mention is enough even when another is negated', () => {
+    assert.ok(detectForeclosingRisks('No autoplay in the header. The hero has an autoplay background video.').some((r) => r.id === 'autoplay'));
+  });
 });
 
 describe('planHash', () => {

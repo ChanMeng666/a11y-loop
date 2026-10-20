@@ -247,11 +247,35 @@ export function assessAccessibility(text) {
 }
 
 /**
+ * A negation that governs the words right after it: "no drag-only controls",
+ * "do not use autoplay", "without a countdown". At most two words may sit
+ * between it and the match, so "no keyboard alternative for drag and drop",
+ * where the negation belongs to something else, still counts as dragging.
+ */
+const NEGATED_BEFORE = /\b(?:no|not|never|without|avoid(?:s|ing|ed)?|nor|don'?t|doesn'?t|won'?t)\b(?:\s+[\w'-]+){0,2}\s*$/i;
+
+/**
+ * Does the plan mention this risk as something it will build? A mention counts
+ * unless every occurrence is directly negated.
+ *
+ * @param {RegExp} re
+ * @param {string} text
+ * @returns {boolean}
+ */
+function mentionedAsPlanned(re, text) {
+  const all = new RegExp(re.source, re.flags.includes('g') ? re.flags : `${re.flags}g`);
+  for (const m of text.matchAll(all)) {
+    if (!NEGATED_BEFORE.test(text.slice(Math.max(0, m.index - 60), m.index))) return true;
+  }
+  return false;
+}
+
+/**
  * @param {string} text
  * @returns {{id:string, note:string}[]}
  */
 export function detectForeclosingRisks(text) {
-  return FORECLOSING_RISKS.filter((r) => r.detect.test(text)).map(({ id, note }) => ({ id, note }));
+  return FORECLOSING_RISKS.filter((r) => mentionedAsPlanned(r.detect, text)).map(({ id, note }) => ({ id, note }));
 }
 
 /**
