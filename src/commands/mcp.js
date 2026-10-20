@@ -282,7 +282,7 @@ export function createServer({ log = () => {} } = {}) {
     'a11y_loop_audit',
     {
       title: 'Audit a page in a real browser',
-      description: `Audit one page in headless Chromium with axe-core and a11y-loop's own checks (keyboard reachability, focus visibility, dialog focus trap, div-as-button, link text, reduced motion, reflow, target size), across five rendering passes: ${PASSES.map((p) => p.name).join(', ')}. Give exactly one of url, file or html. Files and html are served over http on 127.0.0.1, never file://.
+      description: `Audit one page in headless Chromium with axe-core and a11y-loop's own checks (keyboard reachability, focus visibility, dialog focus trap, div-as-button, link text, reduced motion, reflow, target size; with interact, also focus after a client-side route change and status messages reaching a live region), across five rendering passes: ${PASSES.map((p) => p.name).join(', ')}. Give exactly one of url, file or html. Files and html are served over http on 127.0.0.1, never file://.
 
 Returns the same report \`a11y-loop audit --json\` writes, trimmed: a runId, the verdict, summary counts, violations / needsReview / bestPractice findings (each with fingerprint, ruleId, WCAG criterion, selector, passes, message, helpUrl, evidence tier, and colour suggestions for contrast failures), root-cause clusters (one cause behind many rows, so the fix is planned once), the manual checklist of what a person must still verify, and the coverage statement. Only violations are failures; best-practice findings never are.
 

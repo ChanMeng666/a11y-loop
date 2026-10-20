@@ -4,7 +4,8 @@
  *
  * Exit codes are the loop's contract:
  *   0 — no violations (audit) / threshold met (contrast) / no regression (diff)
- *       / plan carries accessibility content or is not UI work (plan-check)
+ *       / plan carries accessibility content, is not UI work, or is too short
+ *       to assess (plan-check)
  *   1 — violations found / threshold missed / regression introduced
  *       / UI plan with no accessibility content (plan-check)
  *   2 — tool error (bad arguments, missing browser, unreadable report)
@@ -106,7 +107,8 @@ INSTALL-BROWSER OPTIONS
 
 EXIT CODES
   0  no violations / threshold met / no regression / doctor: an audit can run
-     / plan-check: the plan carries accessibility content, or is not UI work
+     / plan-check: the plan carries accessibility content, is not UI work,
+       or is too short to assess
   1  violations found / threshold missed / new violations introduced
      / plan-check: a UI plan with thin or absent accessibility content
   2  tool error / doctor: an audit cannot run here

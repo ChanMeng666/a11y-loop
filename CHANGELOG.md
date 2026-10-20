@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 - **User-facing docs checked against the code and corrected where they were wrong.** A fingerprint is rule + selector + element shape, not rule + selector + WCAG criterion (`docs/overview.md`, the CLI guide). `plan-check` also exits 0 on a plan too short to assess (`docs/overview.md`, `docs/agent-gates.md`, the CI guide). The Claude Code audit gate checks that an audit ran, not its exit code (`docs/agent-gates.md`). Provenance is per report and the WCAG criterion per violation, not per finding (`docs/overview.md`, the site's home page). A project-local install runs through `npx a11y-loop` (the getting-started guide). The demo's terminal output is 358 lines, not 356, and two example ratios in `references/plan-phase.md` now match what `contrast` prints. No behaviour change.
+- **`--help` and the MCP audit tool now say what the code does.** `--help` gives plan-check's exit 0 as carrying accessibility content, not UI work, or too short to assess; the `a11y_loop_audit` tool description names the route-change focus and status-message checks that run with `interact`. The quoted test count is 769 on `main`.
 
 ## [0.4.1] - 2026-10-20
 

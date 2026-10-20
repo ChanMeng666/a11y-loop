@@ -77,7 +77,7 @@ Checked against npm, GitHub and the code. Replace this section, with its date, w
 | 0.4.1 shipped | the action's `description` cut to 116 characters for the Marketplace, held by `test/unit/action-manifest.test.js` |
 | On `main`, untagged | `release.yml` checks out full history and fails a refused fast-forward; `plan-check` and the plan gate ignore a foreclosing risk the plan rules out, such as "no drag-only controls" (#45). Both in CHANGELOG `[Unreleased]` |
 | `release` branch | at v0.4.1, pushed by hand after the v0.4.1 run only warned |
-| Tests, fixtures, demo | 647 tests pass; 32 fixtures in the manifest; the demo reports 159 violations at axe-core 4.14.0 and converges to 0 |
+| Tests, fixtures, demo | 769 tests pass on `main` (647 before the mutation-test additions in #48); 32 fixtures in the manifest; the demo reports 159 violations at axe-core 4.14.0 and converges to 0 |
 | GitHub Marketplace | live from v0.4.1, categories Code quality and Testing: <https://github.com/marketplace/actions/a11y-loop-audit> |
 | Anthropic plugin directory | In review for v0.3.2, plugin path `plugin`, auto-publish on, ref checked about every 6 hours (no webhook). The tracked ref is locked during review |
 | Lists | skills.sh indexed; awesome-accessibility #113 merged; awesome-a11y #341 and ruanyf/weekly #12549 open; HelloGitHub declined |
