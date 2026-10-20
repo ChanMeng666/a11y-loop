@@ -23,7 +23,16 @@ Your coding agent writes accessible UI, audits the rendered page, fixes what it 
 
 <br>
 
+<!-- NEW LAUNCH FILM PLACEHOLDER: drag the new MP4 into this spot in the GitHub editor, then delete this comment and the line below. -->
+
+> 🎬 **New launch film coming soon.** How it was made: [a11y-loop-promo-film](https://github.com/ChanMeng666/a11y-loop-promo-film).
+
+<details>
+<summary>Previous demo video</summary>
+
 https://github.com/user-attachments/assets/33ff8672-7690-4581-9ceb-d95476883c54
+
+</details>
 
 ## Try it
 
