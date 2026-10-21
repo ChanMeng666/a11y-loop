@@ -370,7 +370,7 @@ A11Y audit --html "<button class='icon'><svg/></button>" --out .a11y/frag.json -
 A11Y audit --file .a11y/scratch/price-card.html --out .a11y/card.json --quiet
 ```
 
-`--headed` when you need to watch a state fail. `--no-best-practice` when
+`--headed` when you need to watch a state fail (it needs `a11y-loop install-browser --full`). `--no-best-practice` when
 best-practice noise is drowning the real violations; the WCAG-mapped findings
 are unaffected.
 

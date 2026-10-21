@@ -72,7 +72,7 @@ installed, run these yourself rather than handing them back:
 
 ```bash
 npm i -g a11y-loop
-a11y-loop install-browser                     # Chromium for a11y-loop's own Playwright
+a11y-loop install-browser                     # Chromium headless shell for a11y-loop's own Playwright (~280 MB; --full for audit --headed)
 a11y-loop doctor                              # exit 0 when an audit can run here
 # then ONE of:
 npx skills add ChanMeng666/a11y-loop -g -y    # portable skill, any client

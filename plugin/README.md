@@ -39,7 +39,7 @@ commands to run. It ships four things:
 - **Installing the plugin** copies this folder and nothing else. There is no `package.json` here,
   so the install fetches no packages.
 - **The audit** needs the separate command-line tool: `npm i -g a11y-loop` and then
-  `a11y-loop install-browser`, which downloads Chromium from Playwright's CDN. The plugin does not
+  `a11y-loop install-browser`, which downloads the Chromium headless shell (about 280 MB) from Playwright's CDN. The plugin does not
   install it for you.
 
 A clean audit means no automatically detectable failures were found in the states and passes that

@@ -142,9 +142,9 @@ runs:
         fi
         a11y-loop --version
         if [ "$IN_BROWSER" = "chromium" ]; then
-          a11y-loop install-browser
+          a11y-loop install-browser --full
         else
-          a11y-loop install-browser --only-shell
+          a11y-loop install-browser
         fi
         a11y-loop doctor
 

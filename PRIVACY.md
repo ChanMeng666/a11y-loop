@@ -30,7 +30,7 @@ What each part does on your machine:
 - **The GitHub Action** runs in your own workflow on GitHub's runners. It installs a11y-loop from
   npm, audits the target you give it, and, only with `pr-comment: 'true'`, posts one comment on the
   pull request with the workflow's own token. Nothing goes to the author.
-- **`a11y-loop install-browser`** downloads Chromium and a headless shell from Playwright's
+- **`a11y-loop install-browser`** downloads the Chromium headless shell (or, with `--full`, the full Chromium as well) from Playwright's
   download servers. That request goes to Playwright's CDN, not to a11y-loop.
 - **Installing from npm or GitHub** is handled by npm, GitHub and your agent client, under their
   own privacy policies.
