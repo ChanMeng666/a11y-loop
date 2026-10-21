@@ -14,7 +14,7 @@
 import { parseArgs } from 'node:util';
 import { pathToFileURL } from 'node:url';
 import { readFile } from 'node:fs/promises';
-import { realpathSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 
 import { runAuditCommand, resolveAuditTarget } from './commands/audit.js';
 import { runContrastCommand } from './commands/contrast.js';
@@ -60,7 +60,8 @@ USAGE
   a11y-loop contrast <fg> <bg>       check a colour pair against WCAG 2.x
   a11y-loop diff --before a.json --after b.json    compare two audits
   a11y-loop doctor                   check whether an audit can run here, and what blocks it
-  a11y-loop install-browser          install the Chromium build a11y-loop's own Playwright needs
+  a11y-loop install-browser          install the Chromium headless shell a11y-loop's own Playwright needs
+                                     (~280 MB; --full adds the full Chromium for audit --headed, ~715 MB)
   a11y-loop plan-check --file plan.md   check a plan names its accessibility decisions before UI is built
   a11y-loop plan-check --text "<plan>"  the same, plan given inline (or piped on stdin)
   a11y-loop mcp                      serve these commands as MCP tools over stdio
@@ -70,7 +71,7 @@ AUDIT OPTIONS
   --out <path>           write the JSON report to a file
   --sarif <path>         also write SARIF v2.1 (see notes in the report)
   --interact <path.mjs>  audit interaction states: export const states = { name: async (page) => {} }
-  --headed               run a visible browser (debugging)
+  --headed               run a visible browser (debugging; needs install-browser --full)
   --no-best-practice     omit axe best-practice rules (they are never blocking either way)
   --quiet                one-line summary only
   --verbose              list every row of every cluster instead of one example each
@@ -98,9 +99,12 @@ MCP
   a11y_loop_audit, a11y_loop_diff, a11y_loop_contrast_fix, a11y_loop_plan_check,
   a11y_loop_doctor, a11y_loop_manual_checklist. Each returns the same report the
   matching command writes with --json. Exits 0 when the client closes stdin.
+  Needs two optional packages a normal install skips: npm i -g @modelcontextprotocol/server zod
 
 INSTALL-BROWSER OPTIONS
-  Extra arguments go to Playwright's installer unchanged, e.g. --with-deps or --dry-run.
+  Default: the Chromium headless shell only (~280 MB on disk), which every audit uses.
+  --full (or --headed) installs the full Chromium too (~715 MB in all); only audit --headed needs it.
+  Other arguments go to Playwright's installer unchanged, e.g. --with-deps or --dry-run.
   PLAYWRIGHT_BROWSERS_PATH is honoured; set it the same way when you audit.
   stdin is ignored, so --with-deps cannot answer a sudo password prompt: run it where
   sudo needs no password (CI, root), or install the OS dependencies separately.
@@ -212,9 +216,15 @@ export async function main(argv, io) {
     }
 
     if (command === 'mcp') {
-      // Loaded only when the server is asked for, so the MCP SDK is not needed by any other command.
-      const { runMcpCommand } = await import('./commands/mcp.js');
-      return await runMcpCommand({ flags }, out);
+      // Loaded only when the server is asked for. The MCP SDK and zod are optional peer
+      // dependencies, so no other command may import them, and a missing one is explained here.
+      let mcp;
+      try {
+        mcp = await import('./commands/mcp.js');
+      } catch (error) {
+        throw missingMcpDependency(error) ?? error;
+      }
+      return await mcp.runMcpCommand({ flags }, out);
     }
 
     out.writeError(`a11y-loop: unknown command "${command}"\n\n${USAGE}`);
@@ -222,6 +232,42 @@ export async function main(argv, io) {
   } catch (error) {
     return reportError(error, out);
   }
+}
+
+/**
+ * `@modelcontextprotocol/server` and `zod` are optional peer dependencies: npm skips optional
+ * peers, so `npm i -g a11y-loop` does not fetch them. Returns a ToolError when a failed import
+ * is for one of those two packages, and null for any other error.
+ */
+const MCP_PACKAGES = ['@modelcontextprotocol/server', 'zod'];
+
+export function missingMcpDependency(error) {
+  if (error?.code !== 'ERR_MODULE_NOT_FOUND') return null;
+  const text = String(error.message ?? '');
+  const missing = MCP_PACKAGES.filter((name) => text.includes(`'${name}'`));
+  if (missing.length === 0) return null;
+  let peers = {};
+  try {
+    peers = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).peerDependencies ?? {};
+  } catch {
+    // Fall back to unpinned names below.
+  }
+  const pinned = (name) => (peers[name] ? `${name}@${peers[name].replace(/^[\^~]/, '')}` : name);
+  const specs = MCP_PACKAGES.map(pinned);
+  return new ToolError(`the MCP server needs ${missing.join(' and ')}, which is not installed.`, {
+    hint: [
+      'a11y-loop mcp uses two optional packages that a normal install skips, so every other',
+      'command stays small. Install them next to a11y-loop:',
+      '',
+      `  npm i -g ${specs.join(' ')}`,
+      '',
+      "Without a global install, run the server with them on npx's package list:",
+      '',
+      `  npx -y -p a11y-loop ${specs.map((s) => `-p ${s}`).join(' ')} a11y-loop mcp`,
+      '',
+      `In a project, add them as dev dependencies: npm i -D a11y-loop ${specs.join(' ')}`,
+    ].join('\n'),
+  });
 }
 
 /** Every thrown error is a tool failure: exit 2, with its hint when it has one. */

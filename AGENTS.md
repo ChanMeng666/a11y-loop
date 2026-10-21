@@ -50,7 +50,7 @@ non-interactive, idempotent, and needs no TTY, so do it yourself rather than han
 ```bash
 # 1. The CLI and its browser. Every route needs these for the audit.
 npm i -g a11y-loop
-a11y-loop install-browser       # Chromium for a11y-loop's own Playwright (~700 MB on disk)
+a11y-loop install-browser       # Chromium headless shell for a11y-loop's own Playwright (~280 MB on disk; --full adds the full Chromium, ~715 MB)
 a11y-loop doctor                # exit 0: an audit can run here; exit 2: it cannot, and why
 
 # 2a. The skill, for any Agent Skills client (Claude Code, Codex, Cursor, Copilot, Gemini CLI)
@@ -160,7 +160,7 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
 | `plan-check` with `--file`, `--text` or piped stdin | the plan gate's decision; stateless, never prompts; `--json` | plan carries a11y content, is not UI work, or is too short to assess | UI plan with thin or absent a11y content | usage or input error, or stdin held open with no data for 3 s (`A11Y_LOOP_STDIN_IDLE_MS`) |
 | `doctor` | Node, the bundled Playwright and its Chromium (judged by a real headless launch), `PLAYWRIGHT_BROWSERS_PATH`, axe-core version, skill copies, plugin, double registration; `--json` | an audit can run here | never | an audit cannot run here |
 | `mcp` | stdio MCP server: the commands above as six tools, each returning the matching `--json` report (see `src/commands/mcp.js` below); stdout is the protocol channel | the client closed stdin | never | the server could not start, e.g. the MCP SDK is missing; a failed tool call is an `isError` tool result, not an exit code |
-| `install-browser` | runs the *bundled* Playwright's installer for Chromium; extra arguments pass through (`--only-shell`, `--with-deps`, `--dry-run`); stdin ignored | installed | never | installer failed |
+| `install-browser` | runs the *bundled* Playwright's installer for the Chromium headless shell (`--only-shell` is added by default; `--full`/`--headed` installs the full Chromium too); other arguments pass through (`--with-deps`, `--dry-run`); stdin ignored | installed | never | installer failed |
 
 `A11Y_LOOP_DEBUG=1` prints a stack trace on a tool error.
 
@@ -451,6 +451,17 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   command failed whenever `@modelcontextprotocol/server` could not be loaded. The `mcp` branch of
   `main()` now loads `src/commands/mcp.js` with a dynamic `import()`, and nothing else may import
   it statically. Any future optional dependency gets the same treatment.
+- **Chromium installs the headless shell only, and `--headed` needs `install-browser --full`.**
+  `install-browser` adds `--only-shell` unless given `--full`/`--headed` (or an explicit
+  `--only-shell`/`--no-shell`). Sizes measured on disk for Playwright 1.64.1 (chromium 1248):
+  headless shell 278 MB, full Chromium 437 MB, so the default is ~280 MB and `--full` ~715 MB.
+  `launchBrowser({ headed: true })` checks `chromium.executablePath()` exists before launching.
+  Headless launches use the shell on their own, so `doctor`'s launch probe needs no change.
+- **`@modelcontextprotocol/server` and `zod` are optional peer dependencies** (also in
+  `devDependencies`, so tests run). npm skips optional peers, so a plain install does not fetch
+  them. `src/cli.js` imports `commands/mcp.js` dynamically and turns `ERR_MODULE_NOT_FOUND` for
+  either package into an exit-2 message with the install command (`missingMcpDependency`). Nothing
+  else may import them. A client config that runs `npx -y a11y-loop mcp` needs the `-p` form.
 - **`npm i -g <directory>` links the directory and installs none of its dependencies.** npm treats a
   local folder as a link, so the installed binary runs from that folder with whatever
   `node_modules` it happens to have. That is why the action's checkout fallback runs `npm pack` and

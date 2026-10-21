@@ -11,6 +11,8 @@
  * forced-colors failures.
  */
 
+import { existsSync } from 'node:fs';
+
 import { chromium } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
 
@@ -100,8 +102,32 @@ export const MISSING_BROWSER_HINT = [
   '  PLAYWRIGHT_BROWSERS_PATH=/path/to/playwright-browsers a11y-loop install-browser',
 ].join('\n');
 
+export const MISSING_FULL_BROWSER_HINT = [
+  'Install the full Chromium build, then re-run:',
+  '',
+  '  a11y-loop install-browser --full',
+  '',
+  '(npx a11y-loop install-browser --full without a global install; node src/cli.js',
+  'install-browser --full from a checkout.) a11y-loop installs only the headless',
+  'shell by default, which is all an audit without --headed needs.',
+].join('\n');
+
 /** Launch Chromium, translating a missing install into an actionable message. */
 export async function launchBrowser({ headed = false } = {}) {
+  if (headed) {
+    // A headed launch uses the full Chromium build, not the headless shell.
+    let fullPath = null;
+    try {
+      fullPath = chromium.executablePath();
+    } catch {
+      // Unresolvable: launch() reports it below.
+    }
+    if (fullPath && !existsSync(fullPath)) {
+      throw new ToolError('--headed needs the full Chromium, which is not installed.', {
+        hint: MISSING_FULL_BROWSER_HINT,
+      });
+    }
+  }
   try {
     return await chromium.launch({ headless: !headed });
   } catch (error) {

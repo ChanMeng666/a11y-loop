@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { parseCli, resolveAuditTarget, main, EXIT, isEntryPoint } from '../../src/cli.js';
+import { parseCli, resolveAuditTarget, main, EXIT, isEntryPoint, missingMcpDependency } from '../../src/cli.js';
 import { ToolError } from '../../src/lib/axe-runner.js';
 import { loadStates } from '../../src/commands/audit.js';
 import { contrastResult, formatContrastHuman } from '../../src/commands/contrast.js';
@@ -14,6 +14,7 @@ import { MISSING_BROWSER_HINT } from '../../src/lib/axe-runner.js';
 import {
   bundledPlaywright,
   installBrowserArgs,
+  playwrightFlags,
   runInstallBrowserCommand,
 } from '../../src/commands/install-browser.js';
 import {
@@ -471,10 +472,48 @@ describe('missing-browser hint', () => {
 });
 
 describe('install-browser', () => {
-  test('runs the bundled Playwright cli.js and passes extra arguments through', () => {
+  test('runs the bundled Playwright cli.js, headless shell only, and passes extra arguments through', () => {
     const args = installBrowserArgs(['--with-deps', '--dry-run']);
     assert.equal(args[0], join(bundledPlaywright().dir, 'cli.js'));
-    assert.deepEqual(args.slice(1), ['install', 'chromium', '--with-deps', '--dry-run']);
+    assert.deepEqual(args.slice(1), ['install', 'chromium', '--only-shell', '--with-deps', '--dry-run']);
+  });
+
+  test('installs only the headless shell by default', () => {
+    assert.deepEqual(installBrowserArgs().slice(1), ['install', 'chromium', '--only-shell']);
+  });
+
+  test('--full and --headed install the full Chromium: no --only-shell, and the flag is not forwarded', () => {
+    for (const flag of ['--full', '--headed']) {
+      assert.deepEqual(installBrowserArgs([flag]).slice(1), ['install', 'chromium']);
+      assert.deepEqual(installBrowserArgs([flag, '--dry-run']).slice(1), ['install', 'chromium', '--dry-run']);
+    }
+  });
+
+  test('an explicit --only-shell or --no-shell is respected and never doubled', () => {
+    assert.deepEqual(playwrightFlags(['--only-shell']), ['--only-shell']);
+    assert.deepEqual(playwrightFlags(['--no-shell']), ['--no-shell']);
+    assert.deepEqual(playwrightFlags(['--full', '--only-shell']), ['--only-shell']);
+  });
+
+  test('the Playwright installer accepts --only-shell (--dry-run names only the headless shell)', () => {
+    const result = spawnSync(process.execPath, [CLI_PATH, 'install-browser', '--dry-run'], {
+      encoding: 'utf8',
+      timeout: 60_000,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /chromium-headless-shell/);
+    assert.doesNotMatch(result.stdout, /Chrome for Testing/);
+    assert.match(result.stderr, /headless shell/);
+  });
+
+  test('--full --dry-run names the full Chromium as well', () => {
+    const result = spawnSync(process.execPath, [CLI_PATH, 'install-browser', '--full', '--dry-run'], {
+      encoding: 'utf8',
+      timeout: 60_000,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /Chrome for Testing/);
+    assert.match(result.stdout, /chromium-headless-shell/);
   });
 
   test('--dry-run prints the build the bundled Playwright expects, even with another playwright first on PATH', () => {
@@ -497,7 +536,7 @@ describe('install-browser', () => {
     const pathKey = Object.keys(process.env).find((k) => k.toUpperCase() === 'PATH') ?? 'PATH';
     const sep = process.platform === 'win32' ? ';' : ':';
     try {
-      const result = spawnSync(process.execPath, [CLI_PATH, 'install-browser', '--dry-run'], {
+      const result = spawnSync(process.execPath, [CLI_PATH, 'install-browser', '--full', '--dry-run'], {
         encoding: 'utf8',
         env: { ...process.env, [pathKey]: `${decoyDir}${sep}${process.env[pathKey]}` },
         timeout: 60_000,
@@ -537,6 +576,54 @@ describe('install-browser', () => {
       runInstallBrowserCommand({}, io, { spawnImpl: impl }),
       (error) => error instanceof ToolError && /exited with code 1/.test(error.message),
     );
+  });
+});
+
+describe('--headed without the full Chromium', () => {
+  test('launchBrowser fails with the install-browser --full hint before launching', async () => {
+    const { chromium } = await import('playwright');
+    const { launchBrowser, MISSING_FULL_BROWSER_HINT } = await import('../../src/lib/axe-runner.js');
+    const original = chromium.executablePath;
+    chromium.executablePath = () => join(tmpdir(), 'a11y-loop-no-such-dir', 'chrome');
+    try {
+      await assert.rejects(
+        launchBrowser({ headed: true }),
+        (error) =>
+          error instanceof ToolError &&
+          /full Chromium/.test(error.message) &&
+          /a11y-loop install-browser --full/.test(error.hint),
+      );
+      assert.match(MISSING_FULL_BROWSER_HINT, /install-browser --full/);
+    } finally {
+      chromium.executablePath = original;
+    }
+  });
+
+  test('usage says --headed needs install-browser --full', async () => {
+    const { io, stdout } = captureIo();
+    await main(['--help'], io);
+    assert.match(stdout(), /--headed .*install-browser --full/);
+  });
+});
+
+describe('mcp optional dependencies', () => {
+  const notFound = (name) =>
+    Object.assign(new Error(`Cannot find package '${name}' imported from /x/mcp.js`), { code: 'ERR_MODULE_NOT_FOUND' });
+
+  test('a missing MCP SDK or zod becomes a tool error naming the install command', () => {
+    for (const name of ['@modelcontextprotocol/server', 'zod']) {
+      const error = missingMcpDependency(notFound(name));
+      assert.ok(error instanceof ToolError);
+      assert.ok(error.message.includes(name));
+      assert.match(error.hint, /npm i -g @modelcontextprotocol\/server@\S+ zod@\S+/);
+      assert.match(error.hint, /npx -y -p a11y-loop -p @modelcontextprotocol\/server@\S+ -p zod@\S+ a11y-loop mcp/);
+    }
+  });
+
+  test('any other import failure is not swallowed', () => {
+    assert.equal(missingMcpDependency(notFound('culori')), null);
+    assert.equal(missingMcpDependency(new Error("Cannot find package 'zod'")), null);
+    assert.equal(missingMcpDependency(null), null);
   });
 });
 

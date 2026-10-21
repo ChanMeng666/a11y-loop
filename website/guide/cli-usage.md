@@ -88,14 +88,14 @@ and the plugin are installed. It exits `0` when an audit can run here and `2` wh
 ## `install-browser`
 
 ```bash
-a11y-loop install-browser                # Chromium plus the headless shell, about 700 MB
-a11y-loop install-browser --only-shell   # headless shell only, enough for audits (CI)
+a11y-loop install-browser          # headless shell only, about 280 MB, enough for every audit
+a11y-loop install-browser --full   # adds the full Chromium (about 715 MB in all), for audit --headed
 ```
 
 Installs Chromium with a11y-loop's own bundled Playwright. Use it instead of
 `npx playwright install chromium`, which runs whichever Playwright comes first and can install a
 build this copy cannot launch. Extra arguments go to Playwright's installer unchanged
-(`--with-deps`, `--dry-run`, `--only-shell`). stdin is ignored, so `--with-deps` cannot answer a
+(`--with-deps`, `--dry-run`). `--full` (alias `--headed`) is a11y-loop's own flag. stdin is ignored, so `--with-deps` cannot answer a
 sudo prompt. Set `PLAYWRIGHT_BROWSERS_PATH` the same way here and when you audit.
 
 ## `mcp`
@@ -103,6 +103,11 @@ sudo prompt. Set `PLAYWRIGHT_BROWSERS_PATH` the same way here and when you audit
 ```bash
 a11y-loop mcp
 ```
+
+The MCP SDK and `zod` are optional peer dependencies that a normal install skips. Install them
+once with `npm i -g @modelcontextprotocol/server zod`, or run
+`npx -y -p a11y-loop -p @modelcontextprotocol/server@2.3.1 -p zod@4.6.7 a11y-loop mcp`.
+Every other command works without them.
 
 Serves `audit`, `diff`, `contrast --fix`, `plan-check`, `doctor` and the manual checklist as six
 Model Context Protocol tools over stdio, for clients that load MCP servers but not Agent Skills.
@@ -120,7 +125,7 @@ exits `0` when the client closes stdin. Setup for Claude Code, Codex and Cursor 
 | `--out <path>` | audit | write the JSON report to a file |
 | `--sarif <path>` | audit | also write SARIF v2.1 — see [Honest Coverage](/guide/honest-coverage) for a documented limitation |
 | `--interact <path.mjs>` | audit | export `const states = { name: async (page) => {} }` to drive built states |
-| `--headed` | audit | run a visible browser, for debugging |
+| `--headed` | audit | run a visible browser, for debugging; needs `install-browser --full` |
 | `--no-best-practice` | audit | omit axe best-practice rules (never blocking either way) |
 | `--quiet` | audit | one-line summary only |
 | `--verbose` | audit | list every row of every cluster; by default a cluster prints one example and "+N more like this" |

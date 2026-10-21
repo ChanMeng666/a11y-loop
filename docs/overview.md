@@ -504,7 +504,7 @@ planning. The 2026-07 run was against the v0.1.x skill.
   [axe-sarif-converter](https://github.com/microsoft/axe-sarif-converter) produced before 0.3.0
 - **Agent integration:** the open [Agent Skills](https://agentskills.io/specification) standard —
   `SKILL.md` + `references/`, no client-proprietary format
-- **Tests:** the built-in `node --test` runner, 769 tests across unit and integration suites
+- **Tests:** the built-in `node --test` runner, 778 tests across unit and integration suites
   (on `main` after 0.4.1), including a 32-fixture matrix of seeded violations and correct-behaviour regression
   guards, a demo end-to-end run, a forced-colors gradient regression test, and release guards:
   plugin-copy sync and version agreement, skill frontmatter against the Agent Skills spec, text
@@ -632,7 +632,8 @@ npx a11y-loop <command>
 npm i -g a11y-loop
 
 # Either way, install the Chromium build a11y-loop's own Playwright needs for audits
-a11y-loop install-browser
+a11y-loop install-browser           # headless shell only, about 280 MB, enough for every audit
+a11y-loop install-browser --full    # optional: the full Chromium too (about 715 MB in all), for audit --headed
 ```
 
 Prefer working from source (e.g. to contribute)? Clone and install instead:
@@ -822,7 +823,7 @@ then audit:
 
 ```bash
 npm i -g a11y-loop
-a11y-loop install-browser --only-shell   # headless shell only; set PLAYWRIGHT_BROWSERS_PATH to cache it
+a11y-loop install-browser               # headless shell only (the default); set PLAYWRIGHT_BROWSERS_PATH to cache it
 a11y-loop doctor                        # exits 0 when an audit can run here
 ```
 
@@ -882,7 +883,7 @@ a11y-loop plan-check --file plan.md
 | `--out <path>` | audit | write the JSON report to a file |
 | `--sarif <path>` | audit | also write SARIF v2.1 (see [Honest Coverage](#-honest-coverage)) |
 | `--interact <path.mjs>` | audit | export `const states = { name: async (page) => {} }` to drive built states |
-| `--headed` | audit | run a visible browser, for debugging |
+| `--headed` | audit | run a visible browser, for debugging; needs `a11y-loop install-browser --full` |
 | `--no-best-practice` | audit | omit axe best-practice rules (never blocking either way) |
 | `--quiet` | audit | one-line summary only |
 | `--verbose` | audit | list every row of every cluster; by default a cluster prints one example and "+N more like this" |
@@ -923,7 +924,7 @@ built from the finding, its measured values and its evidence tier.
 
 The full report and the checklist of each run are also resources, at `a11y-loop://runs/<runId>/report` and `a11y-loop://runs/<runId>/checklist`. Runs live in memory for the life of the connection, the last 20 at most. The audit reports progress after each rendering pass when the client sends a progress token. A missing browser comes back within seconds as a tool error that names `a11y-loop install-browser`. It never hangs.
 
-The server needs what the CLI needs: Node 20 or later, and Chromium from `a11y-loop install-browser`. With a global install (`npm i -g a11y-loop`) the command is `a11y-loop mcp`. Without one, it is `npx -y a11y-loop mcp`, which resolves the package on every launch. Paths given to `file`, `interact` and `out` resolve against the server's working directory, so pass absolute paths. If you keep browsers outside the default location, set `PLAYWRIGHT_BROWSERS_PATH` in the server's `env`, since many clients do not pass your shell's environment through.
+The server needs what the CLI needs: Node 20 or later, and the browser from `a11y-loop install-browser`. It also needs two packages that a normal install skips, because every other command works without them: `npm i -g @modelcontextprotocol/server zod`. With a global install (`npm i -g a11y-loop`) the command is then `a11y-loop mcp`. Without one, it is `npx -y -p a11y-loop -p @modelcontextprotocol/server@2.3.1 -p zod@4.6.7 a11y-loop mcp`, which resolves the packages on every launch. If they are missing, `a11y-loop mcp` says so, prints this command and exits `2`. Paths given to `file`, `interact` and `out` resolve against the server's working directory, so pass absolute paths. If you keep browsers outside the default location, set `PLAYWRIGHT_BROWSERS_PATH` in the server's `env`, since many clients do not pass your shell's environment through.
 
 **Claude Code**
 
