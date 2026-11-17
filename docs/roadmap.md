@@ -1,13 +1,13 @@
 # Roadmap
 
-*As of 2026-10-20, after 0.4.1.* What has shipped, what is being built, and what is planned. A row
+*As of 2026-11-17, after 0.4.1.* What has shipped, what is being built, and what is planned. A row
 moves to **shipped** in the same pull request that ships it, with the version, and the
 [CHANGELOG](../CHANGELOG.md) entry is the record of what it actually does. Nothing in this file is
 a promise of a date.
 
 **Status values.** **shipped**: released on npm, with the version. **on main**: merged, but in no
-release tag yet (no row has this status after 0.4.1; the untagged changes on `main` are a CI fix and a plan-gate false-positive fix, see [State](#state-as-of-2026-10-20)). **in progress**: being built on a branch now. **planned**: agreed direction, no
-branch yet. Only **shipped** items may
+release tag yet (no row has this status after 0.4.1; the untagged changes on `main` are listed in [State](#state-as-of-2026-11-17)). **in progress**: being built on a branch now. **planned**: agreed direction, no
+branch yet. **withdrawn**: shipped, then removed, with the reason. **not done**: an option recorded so it is not lost, not agreed. Only **shipped** items may
 be described anywhere else in this repository, in the README, the docs site, `SKILL.md`, CLI output
 or a directory listing, as something a11y-loop does.
 
@@ -37,7 +37,7 @@ Released on 2026-10-19 across 0.3.0, 0.3.1 and 0.3.2. Details in the [CHANGELOG]
 | Demo count deterministic (159 at axe-core 4.14.0) | shipped, 0.3.1 |
 | English README on npm; plugin icon; `PRIVACY.md`; narrower `allowed-tools` | shipped, 0.3.1 |
 | Plugin README says where each part runs | shipped, 0.3.2 |
-| Directory and list submissions (see [`research/distribution.md`](research/distribution.md)) | submitted 2026-10-19/20; partly resolved: GitHub Marketplace live, awesome-accessibility merged, skills.sh indexed, HelloGitHub declined, the rest pending (see [State](#state-as-of-2026-10-20)) |
+| Directory and list submissions (see [`research/distribution.md`](research/distribution.md)) | submitted 2026-10-19/20; partly resolved: GitHub Marketplace live, awesome-accessibility merged, skills.sh indexed, HelloGitHub declined, the Anthropic plugin directory submission withdrawn 2026-11-17, the rest pending (see [State](#state-as-of-2026-11-17)) |
 
 ## Phase 2: evidence
 
@@ -61,11 +61,12 @@ the strength of them.
 | **Evidence tiers, root-cause clustering, forced-colors routing** | Each finding says how it was obtained (axe rule, a11y-loop's own check, needs-review). Findings that share one cause, such as one token on fifty elements, are grouped so a fix is planned once. The known forced-colors `color-contrast` false positive (see [overview, Field Notes](overview.md#-field-notes)) is routed to needs-review by rule id and pass, with its own measurement and release note, because it changes the exit code. | shipped, 0.4.0: `evidence` on every finding, `clusters`, `schemaVersion: 2`, and the forced-colors `color-contrast` rows routed to needs-review (an exit-code change, noted in the CHANGELOG) |
 | **Route-change focus and live-region checks** | Checks that focus moves sensibly after a client-side route change, and that status messages reach a live region (SC 4.1.3), with fixtures in `test/fixtures/manifest.json`. | shipped, 0.4.0: `route-change-focus-lost`, `status-message-not-announced` and `live-region-injected-late`, run on `--interact` states only, with the `dialog-focus-not-returned` trigger fix from the 2026-10 benchmark |
 | **Thin MCP server** | An MCP server that exposes the existing CLI subcommands as tools, adding no logic of its own, for clients that prefer MCP to a shell. | shipped, 0.4.0 (#31): `a11y-loop mcp`, six tools over stdio. Not yet submitted to the MCP registry, which lists no `a11y-loop` server on 2026-10-20 (`docs/overview.md` has the `server.json`) |
-| **Release-branch tracking for the plugin directory** | The Anthropic directory submission tracks a release branch instead of a tag, so a release reaches the listing without re-pointing the submission by hand (see [`AGENTS.md`](../AGENTS.md#the-anthropic-plugin-directory)). `release.yml` fast-forwards `release` to each tag (#28); switching the submission's tracked ref to it is a manual step in the portal, not done yet. | shipped, 0.4.0: `release.yml` fast-forwards `release` to each tag (#28). The v0.4.1 run checked out shallow, was refused and only warned, so `release` was pushed to v0.4.1 by hand; the full-checkout fix is on `main` (CHANGELOG `[Unreleased]`) and first runs on the next tag. Switching the directory submission's tracked ref to `release` is a manual step in the portal, blocked while the submission is in review |
+| **Release-branch tracking for the plugin directory** | The Anthropic directory submission tracks a release branch instead of a tag, so a release reaches the listing without re-pointing the submission by hand (see [`AGENTS.md`](../AGENTS.md#the-anthropic-plugin-directory)). | withdrawn: shipped in 0.4.0 (#28), then removed on `main` after the directory submission was withdrawn on 2026-11-17. `release.yml` no longer pushes a `release` branch and the branch (last at v0.4.1) is deleted. The submission's tracked ref was never switched to it |
+| **Hooks-free directory edition** | A separate plugin folder with only the skill and `/a11y-plan`, no hooks and no `.mjs` files, submitted to the Anthropic plugin directory as a new submission, since the directory accepts command hooks and script files only from Verified organizations. | not done: a possible later option, not agreed |
 | **SARIF messages** | SARIF results carry a non-empty `message.text`. It has been empty since the converter era, a gap 0.3.0 left for its own change. | shipped, 0.4.0 |
 | **Research refresh** | The July 2026 briefings in `docs/research/` brought up to date with dated, appended sections, and the distribution briefing kept current as submissions resolve. | shipped, 2026-10: dated sections appended in each briefing (#35); the distribution briefing is updated as submissions resolve |
 
-## State as of 2026-10-20
+## State as of 2026-11-17
 
 Checked against npm, GitHub and the code. Replace this section, with its date, when a line changes.
 
@@ -75,23 +76,21 @@ Checked against npm, GitHub and the code. Replace this section, with its date, w
 | Releases | 0.4.0 (tag at `d3a91f1`) and 0.4.1 (`30017df`), both 2026-10-20 local time (22:10 and 22:50 UTC on 2026-10-19). GitHub Release v0.4.1 is Latest |
 | 0.4.0 shipped | evidence tiers, root-cause clusters, forced-colors contrast routed to needs-review (an exit-code change), `schemaVersion: 2`, `diff` RECLASSIFIED, summary-first output, SARIF messages, the Stop-hook audit gate, the GitHub Action, `a11y-loop mcp`, plugin evals, three `--interact` checks, the dialog-opener fix |
 | 0.4.1 shipped | the action's `description` cut to 116 characters for the Marketplace, held by `test/unit/action-manifest.test.js` |
-| On `main`, untagged | `release.yml` checks out full history and fails a refused fast-forward; `plan-check` and the plan gate ignore a foreclosing risk the plan rules out, such as "no drag-only controls" (#45). Both in CHANGELOG `[Unreleased]` |
-| `release` branch | at v0.4.1, pushed by hand after the v0.4.1 run only warned |
+| On `main`, untagged | `install-browser` installs only the Chromium headless shell by default; the MCP SDK and `zod` are optional peer dependencies; `plan-check` and the plan gate ignore a foreclosing risk the plan rules out, such as "no drag-only controls" (#45); `release.yml` no longer maintains a `release` branch. All in CHANGELOG `[Unreleased]` |
+| `release` branch | deleted 2026-11-17 (it was at v0.4.1, `30017df`); `release.yml` no longer pushes it |
 | Tests, fixtures, demo | 778 tests pass (647 before the mutation-test additions in #48); 32 fixtures in the manifest; the demo reports 159 violations at axe-core 4.14.0 and converges to 0 |
 | GitHub Marketplace | live from v0.4.1, categories Code quality and Testing: <https://github.com/marketplace/actions/a11y-loop-audit> |
-| Anthropic plugin directory | In review for v0.3.2, plugin path `plugin`, auto-publish on, ref checked about every 6 hours (no webhook). The tracked ref is locked during review |
+| Anthropic plugin directory | not listed. On 2026-11-17 the portal refused v0.3.2 automatically (command hooks and non-text files are accepted only from Verified organizations since 2026-11-09) and the maintainer withdrew the submission; nothing was published. The plugin ships through this repository's own marketplace |
 | Lists | skills.sh indexed; awesome-accessibility #113 merged; awesome-a11y #341 and ruanyf/weekly #12549 open; HelloGitHub declined |
 | Submitted by hand, outcome unknown | W3C WAI tools list, awesome-copilot, axe-con 2027 call for speakers |
 | MCP registry | not submitted |
 
 **Pending, and on whom.**
-- **The maintainer:** switch the directory's tracked ref to `release` once the review ends; tick
-  "Publish this release to the GitHub Marketplace" on each new Release; publish to the MCP registry
-  if wanted.
-- **The next release:** the first run of the full-checkout `release.yml`; `release` must move with
-  no hand push.
-- **Others:** the directory review, awesome-a11y #341, ruanyf/weekly #12549, the W3C list,
-  awesome-copilot, and axe-con (notification by 13 November).
+- **The maintainer:** tick "Publish this release to the GitHub Marketplace" on each new Release;
+  publish to the MCP registry if wanted; decide whether a hooks-free directory edition is worth a
+  new submission (not done).
+- **Others:** awesome-a11y #341 and ruanyf/weekly #12549 (both still open on 2026-11-17), the W3C
+  list, awesome-copilot, and axe-con (notification was due by 13 November; no outcome recorded).
 
 ## How to use this file
 

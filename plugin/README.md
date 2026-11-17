@@ -18,8 +18,8 @@ commands to run. It ships four things:
 
 - **Claude Code (CLI and desktop)** gets all four: the skill, the `/a11y-plan` command, the
   plan-mode hook and the audit hook. The audit hook also runs in headless `claude -p` sessions.
-- **Cowork and the Claude apps (web, desktop, mobile)** get the skill's plan, generation and
-  reporting rules only. Neither hook runs there. The audit loop (the skill's §2)
+- **Cowork and the Claude apps (web, desktop, mobile)**, if the plugin is loaded there, get the
+  skill's plan, generation and reporting rules only. Neither hook runs there. The audit loop (the skill's §2)
   cannot run there either, because it needs Node and a browser. So the skill's rules apply, but
   nothing is verified.
 

@@ -97,7 +97,7 @@ git tag v1.2.3
 git push origin v1.2.3
 ```
 
-The full sequence, including the checks after publishing (the Anthropic plugin directory, which
+The full sequence, including the checks after publishing (the GitHub Marketplace listing, which
 README npm shows, skills.sh), is the release checklist in [`AGENTS.md`](AGENTS.md#release-checklist).
 
 **The version lives in six files.** Bump all of them in the same commit as the CHANGELOG entry,
@@ -128,8 +128,7 @@ which publishes to npm using [trusted publishing](https://docs.npmjs.com/trusted
 workflow proves its own identity to npm over OIDC and receives a short-lived, publish-only
 credential, so every release is signed with build provenance and no long-lived secret exists. After
 publishing it creates the GitHub Release from the matching `## [x.y.z]` section of `CHANGELOG.md`,
-and fails if that section is missing, then fast-forwards the `release` branch that the Anthropic
-plugin directory can track. Tests run in `ci.yml` on every push and PR, not here. The
+and fails if that section is missing. Tests run in `ci.yml` on every push and PR, not here. The
 workflow skips any version already on the registry and still creates a missing Release, so a failed
 release is safe to re-run (`gh workflow run release.yml`).
 
