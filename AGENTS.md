@@ -22,18 +22,18 @@ states it built, and tells you exactly what it could not check. Three layers:
 Beside the three layers, the repository root is a composite **GitHub Action** (`action.yml`,
 `uses: ChanMeng666/a11y-loop@v0.4.1`), listed on the GitHub Marketplace as "a11y-loop audit".
 
-The hooks run only in Claude Code (CLI and desktop). The Anthropic plugin directory also lists the
-plugin on Cowork and the Claude apps, where hooks do not run and there is no Node or browser for
-the audit: there the skill's rules apply, but nothing is verified. `plugin/README.md`, section
-"Where each part works", says this to users.
+The hooks run only in Claude Code (CLI and desktop). In Cowork and the Claude apps hooks do not
+run and there is no Node or browser for the audit: there the skill's rules apply, but nothing is
+verified. `plugin/README.md`, section "Where each part works", says this to users. The plugin is
+not in the Anthropic plugin directory: that submission was withdrawn on 2026-11-17 (see
+[below](#the-anthropic-plugin-directory)), and the plugin ships through this repository's own
+marketplace.
 
 What is shipped and what is only planned is tracked in [`docs/roadmap.md`](docs/roadmap.md). Do not
 describe a planned or in-progress item as existing, and do not describe something merged on `main`
 but not yet tagged as usable from a release. The latest release is 0.4.1 (2026-10-20). The GitHub
-Action, the Stop-hook audit gate and `a11y-loop mcp` shipped in 0.4.0. As of 2026-10-20 two changes
-are merged on `main` but untagged (CHANGELOG `[Unreleased]`): the `release.yml` full-checkout fix,
-which takes effect from the next tag, and the plan gate no longer flagging a foreclosing risk the
-plan rules out ("no drag-only controls", #45). The current state of every release and
+Action, the Stop-hook audit gate and `a11y-loop mcp` shipped in 0.4.0. Changes merged on `main` but
+untagged are listed in CHANGELOG `[Unreleased]`. The current state of every release and
 channel, and what is pending on whom, is the "State as of" section of `docs/roadmap.md`.
 
 - **Primary language / stack:** Node.js ≥ 20, ESM, Playwright + axe-core
@@ -175,12 +175,11 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
 - **`.github/workflows/release.yml`** — on a `v*` tag. Publishes to npm by trusted publishing (OIDC,
   provenance, no token anywhere), skipping a version already on the registry, then creates the
   GitHub Release from the matching `## [x.y.z]` section of `CHANGELOG.md` and fails loudly if that
-  section is missing, then fast-forwards the `release` branch to the tag for the plugin directory.
-  It checks out with `fetch-depth: 0`, because a shallow checkout cannot prove the push is a
-  fast-forward. The step fails when the tag descends from the branch tip and the push is still
-  refused, and only warns for an older tag. That rule is on `main` and first runs on the tag after
-  0.4.1; the v0.4.1 run used a shallow checkout, only warned, and `release` was pushed by hand.
-  Do not rename the file: its name is part of the npm trusted-publisher contract.
+  section is missing. Up to 0.4.1 it also fast-forwarded a `release` branch for the Anthropic
+  plugin directory; that step and the branch were removed after the directory submission was
+  withdrawn (2026-11-17), so the job no longer pushes anything to the repository and a shallow
+  checkout is enough. Do not rename the file: its name is part of the npm trusted-publisher
+  contract.
 - **`.github/workflows/action-selftest.yml`** — on every push to `main` and every PR, runs the
   composite action (`uses: ./`) on Ubuntu and Windows against the demo pages and asserts its
   outputs. A release PR runs it before the version is
@@ -216,8 +215,8 @@ are `EXIT.OK=0`, `EXIT.FINDINGS=1`, `EXIT.ERROR=2`, a stable contract — don't 
   original and run `npm run sync-plugin` (`scripts/sync-plugin.mjs`);
   `test/unit/plugin-sync.test.js` fails while any copy differs, and also fails if anything in
   `plugin/` names a `../` path or `${CLAUDE_SKILL_DIR}`, or if a `package.json` or lockfile
-  appears there. `plugin/README.md` is hand-written and is what the plugin directory and
-  `claude plugin details` read. Nothing in `skills/`
+  appears there. `plugin/README.md` is hand-written and is what `claude plugin details`
+  reads (and what a directory listing would read, if the plugin is ever resubmitted). Nothing in `skills/`
   may depend on this layer, and nothing in this layer may appear in `SKILL.md` or `references/` —
   the skill has to stay portable across the 40+ clients that implement the Agent Skills standard.
   The plan-gate hook's own invariants are documented in its header comment (the audit gate's are
@@ -539,12 +538,13 @@ rather than left to be rediscovered.
   to a human reviewer, plus three unknown-key notes for `documentationUrl`, `privacyPolicyUrl` and
   `supportUrl` (which the directory itself reads) and the uninspected hook output. Anything you add
   to `plugin/` is scanned as plugin code, including prose. 0.4.x adds the audit gate and
-  `plugin/evals/` (90 files of eval prompts and graders), about 106 tracked files in all; as of
-  2026-10-20 no version after 0.3.2 has been scanned, because the submission is locked while in
-  review.
+  `plugin/evals/` (90 files of eval prompts and graders), about 106 tracked files in all. No
+  version after 0.3.2 was ever scanned: the submission was locked in review and then withdrawn on
+  2026-11-17 (see [below](#the-anthropic-plugin-directory)). The design reasons still hold for the
+  plugin's own install, and for any resubmission.
 - **The skill pre-approves only `Bash(a11y-loop *)` and `Bash(npx a11y-loop *)`.** It used to
   pre-approve `node ${CLAUDE_SKILL_DIR}/../../src/cli.js *` for checkouts, a path that climbs out
-  of the skill's folder and that the plugin directory holds for review. Working from a checkout,
+  of the skill's folder and that the plugin directory held for review. Working from a checkout,
   approve each `node src/cli.js` call, or run `npm link` once so `a11y-loop` resolves to it.
 - **Shipped text must be plain text.** A raw NUL inside a string literal made the plugin directory
   class `src/lib/fingerprint.js` as binary and hold it as uninspectable. Write control characters
@@ -574,14 +574,12 @@ rather than left to be rediscovered.
   If that shape changes, `scanTranscript()` finds no tool calls and the gate passes silently: it
   fails open, never closed. Check a fresh transcript when bumping the supported Claude Code
   version. Files written by a shell command, and edits made inside a subagent, are not seen.
-- **The `release` branch exists only for the Anthropic plugin directory and always equals the latest
-  tagged release.** `release.yml` fast-forwards it on every `v*` tag push and nothing else should
-  ever write to it. When the maintainer next edits the directory submission, switch the tracked ref
-  from the tag to the `release` branch and keep auto-publish on, so new releases are picked up
-  without a manual re-validate. The workflow must check out with `fetch-depth: 0`: from a shallow
-  checkout of the tag git cannot prove the push is a fast-forward and the server rejects it with
-  "fetch first" (v0.4.1 hit this). The step fails loudly when the tag descends from the branch tip
-  and only warns for an older tag.
+- **There is no `release` branch any more.** It existed only so the Anthropic plugin directory
+  could track a branch instead of a tag (0.4.0 to 0.4.1, last at v0.4.1, `30017df`). It was deleted,
+  and its step removed from `release.yml`, after the submission was withdrawn on 2026-11-17. If a
+  resubmission ever needs a moving ref, the lesson from v0.4.1 applies: a workflow that
+  fast-forwards a branch must check out with `fetch-depth: 0`, because from a shallow checkout of
+  the tag git cannot prove the push is a fast-forward and the server rejects it with "fetch first".
 
 ## Testing the plugin layer
 
@@ -634,31 +632,44 @@ pushed branch (`claude plugin marketplace add ChanMeng666/a11y-loop#<branch>`) i
 
 ### The Anthropic plugin directory
 
-Facts from the submission portal (`claude.ai/directory/manage`) and Anthropic's submission docs,
-read on 2026-10-19 and 2026-10-20. Distribution channels in general are in
+**Withdrawn on 2026-11-17. The plugin is not in the directory and nothing was ever published
+there.** It ships through this repository's own marketplace (`.claude-plugin/marketplace.json`),
+npm, `npx skills add`, the GitHub Action and the other channels in
 [`docs/research/distribution.md`](docs/research/distribution.md).
+
+- **Why.** On 2026-11-17 the portal re-checked v0.3.2 (`97ca0ca`) and refused it automatically,
+  among four findings "Files outside the allowed list accepted only from Verified organizations"
+  and "Hooks of type command accepted only from Verified organizations". Since 2026-11-09 the
+  directory accepts command hooks, mods, scripts or programs, and any file that is not Markdown,
+  text, JSON, YAML or an image, only from Verified organizations (Anthropic knows the organisation
+  is a real company). `ChanMeng666` is not one. The plugin's two hooks (`plan-gate.mjs`,
+  `audit-gate.mjs`) and their `.mjs` files are exactly what is refused. The maintainer withdrew the
+  submission the same day; the portal's dialog said this removes it from the list and from any
+  scanning or review.
+- **How to reopen.** Submitting the same repository and plugin path again reopens it (portal
+  dialog, 2026-11-17). Under the current rules that cannot pass with the hooks in the plugin. A
+  hooks-free "directory edition" (the skill and `/a11y-plan` only, in its own folder, as a new
+  submission) is a possible later option, recorded in `docs/roadmap.md` as not done.
+
+Facts from the submission portal (`claude.ai/directory/manage`) and Anthropic's submission docs,
+read on 2026-10-19 and 2026-10-20, kept because they would matter for any resubmission:
 
 - **Plugin path: `plugin`.** "If the plugin is one folder in a larger repository, give that folder
   as the plugin path when you submit; the directory reads and scans only that folder"
   (claude.com/docs/plugins/submit). The path cannot be changed after submitting.
 - **It tracks the ref you submit, and a tag never moves.** The portal tracks a branch or a tag; new
-  commits on a branch are picked up and re-scanned, while a tag stays on its commit. The submission
-  was made against a release tag. `release.yml` now fast-forwards a `release` branch to every tag
-  (see the gotcha above), but that only helps once the maintainer switches the submission's tracked
-  ref to `release`, which is a manual edit in the portal. Until then, **every release needs the
-  tracked ref moved to the new tag** and re-validated, or the listing stays on the old version.
-- **State on 2026-10-20 (portal, read by the maintainer):** the submission is In review for v0.3.2.
-  The tracked ref cannot be changed while it is under review, so the switch to `release` waits for
-  the outcome. Auto-publish is on. There is no webhook: the portal checks the tracked ref on a
-  schedule, about every 6 hours.
+  commits on a branch are picked up and re-scanned, while a tag stays on its commit, so a
+  tag-tracked listing needs the ref moved and re-validated for every release. The tracked ref
+  cannot be changed while a submission is in review. There is no webhook: the portal checks the
+  tracked ref on a schedule, about every 6 hours.
 - **The listing icon is read once.** The directory takes `plugin/.claude-plugin/icon.png` (square
   PNG or JPEG, 512 to 2048 px, under 2 MB; SVG and WebP are refused) only the first time the plugin
   is saved or submitted. Replacing the file later does not change the listing.
-- **Hooks do not run in Cowork or the Claude apps.** The portal lists the plugin there and says
-  "Not used here: hooks. Slash commands load as skills here." Only Claude Code runs the plan gate
-  and the audit gate. Never describe either hook as working on those surfaces.
+- **Hooks do not run in Cowork or the Claude apps.** The portal's form said "Not used here: hooks.
+  Slash commands load as skills here." Only Claude Code runs the plan gate and the audit gate.
+  Never describe either hook as working on those surfaces.
 - **Every version is scanned, and a person reviews a new listing** before it goes live. A hold is a
-  reviewer-read item, not a rejection.
+  reviewer-read item, not a rejection; a refusal under the Verified-organization rule is automatic.
 
 ## Release checklist
 
@@ -680,19 +691,12 @@ publishes until a tag is pushed, and publishing is the one irreversible step.
    publishes to npm with provenance and creates the GitHub Release. Check both:
    `npm view a11y-loop version` and `gh release view vX.Y.Z`.
 6. **Check the channels that follow a tag.**
-   - **`release` branch.** `git ls-remote origin release` must print the tag's commit
-     (`git rev-list -n1 vX.Y.Z`). If the workflow step only warned, read its log before pushing
-     anything by hand.
    - **GitHub Marketplace.** The listing (<https://github.com/marketplace/actions/a11y-loop-audit>)
      must show the new tag. `release.yml` creates the Release with `gh`, which cannot tick
      "Publish this release to the GitHub Marketplace", so edit the Release and tick it (see
      `CONTRIBUTING.md`). The Marketplace validates `action.yml` at the release's own tag
      (description under 125 characters, branding present); `test/unit/action-manifest.test.js`
      holds both before the tag, and 0.4.0 was refused for a 260-character description.
-   - **Anthropic directory.** If the submission tracks `release`, confirm the portal picked up the
-     new commit; it checks on a schedule, about every 6 hours. If it still tracks a tag, move it to
-     the new tag and re-validate; once the review of v0.3.2 is over, switch the tracked ref to
-     `release` instead. Either way, read the hold and warning counts.
 7. **Check what users get:** that npmjs.com shows the English README, that
    `npx skills add ChanMeng666/a11y-loop -g -y` reports `Found 1 skill` and skills.sh lists it, that
    `gh skill` finds it, and that `claude plugin marketplace update chanmeng-a11y-loop` followed by

@@ -35,8 +35,7 @@ of the project for large language models and AI agents.
   files without running `a11y-loop audit` afterwards (ships in release 0.4.0).
   Other clients rely on the skill text plus `a11y-loop audit` in CI. Installing it copies only
   `plugin/` and fetches no packages. Nothing under `skills/` depends on it. Its hooks run only in
-  Claude Code: on Cowork and the Claude apps, where the plugin directory also lists it, only the
-  skill's rules apply and nothing is verified.
+  Claude Code: on Cowork and the Claude apps only the skill's rules apply and nothing is verified.
 - Shipped, in progress and planned work: docs/roadmap.md. Planned and in-progress items do not
   exist yet; do not describe them as if they did. Items marked "on main" are not in a tagged
   release until the CHANGELOG has a version section for them

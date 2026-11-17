@@ -147,9 +147,8 @@ the files and the exact `audit` and `diff` commands. It declines at most once pe
 session end on any failure of its own, and `A11Y_LOOP_AUDIT_GATE=off` turns it off. It checks that
 an audit ran, not what it found.
 
-The hooks run only in Claude Code. The Anthropic plugin directory also lists the plugin on Cowork
-and the Claude apps, where hooks do not run and the audit cannot, so there only the skill's rules
-apply. Outside plan mode, and in any other agent or CI job, `a11y-loop plan-check --file plan.md` runs
+The hooks run only in Claude Code. In Cowork and the Claude apps hooks do not run and the audit
+cannot, so there only the skill's rules apply. Outside plan mode, and in any other agent or CI job, `a11y-loop plan-check --file plan.md` runs
 the same check (see [CLI Usage](/guide/cli-usage#plan-check)).
 
 Its limits are deliberate: it never returns `allow`, and off the deny path it sends at most a

@@ -756,10 +756,11 @@ changed.
 | Gives you | §0 planning, §1 generation, §2 the loop, §3 honest reporting | plan-mode enforcement, §2 enforcement at Stop, `/a11y-plan` |
 | Required? | yes | no |
 
-**Where the hooks do not run.** The Anthropic plugin directory also lists the plugin on Cowork and
-the Claude apps (web, desktop, mobile). Hooks do not run there, and there is no Node or browser for
-the audit, so those surfaces get the skill's plan, generation and reporting rules, and nothing is
-verified.
+**Where the hooks do not run.** Hooks do not run in Cowork or the Claude apps (web, desktop,
+mobile), and there is no Node or browser for the audit, so those surfaces get the skill's plan,
+generation and reporting rules, and nothing is verified. The plugin is not in the Anthropic plugin
+directory: that submission was withdrawn on 2026-11-17, because the directory now accepts command
+hooks only from Verified organizations.
 
 **Plan gate without Claude Code.** The hook only exists inside Claude Code's interactive plan mode:
 it fires on `ExitPlanMode`, and that tool is absent under `claude -p` and in every other client.
